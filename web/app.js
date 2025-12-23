@@ -130,6 +130,16 @@ function renderConsentRating(q, existing = {}) {
   const comfort = (existing.comfort ?? 2);
   const conditions = existing.conditions || "";
   const notes = existing.notes || "";
+  
+  // Support for active/passive variants
+  const activeStatus = existing.active || existing.active_status || "MAYBE";
+  const passiveStatus = existing.passive || existing.passive_status || "MAYBE";
+  const hasActivePassive = q.has_active_passive || (q.label && (q.label.toLowerCase().includes("aktiv") || q.label.toLowerCase().includes("passiv")));
+  
+  // Support for Dom/Sub variants (7-point BDSM scale mapping)
+  const domRating = existing.dom_rating || existing.dom || null;
+  const subRating = existing.sub_rating || existing.sub || null;
+  const hasDomSub = q.has_dom_sub || false;
 
   const riskClass = `risk-badge-${q.risk_level || "A"}`;
   const tagsHtml = (q.tags || []).map(t => `<span class="tag-badge">${escapeHtml(t)}</span>`).join("");
@@ -142,22 +152,98 @@ function renderConsentRating(q, existing = {}) {
     </div>
     <div style="margin-top:6px"><strong>${escapeHtml(q.label)}</strong></div>
     ${q.help ? `<div class="hint">${escapeHtml(q.help)}</div>` : ""}
-    <div class="row" style="margin-top:10px">
-      <label style="min-width:160px">Status
-        <select data-k="status" aria-label="Status für ${escapeHtml(q.id)}">
-          <option value="YES">JA</option>
-          <option value="MAYBE">VIELLEICHT</option>
-          <option value="NO">NEIN (Soft Limit)</option>
-          <option value="HARD_LIMIT">HARD LIMIT (Niemals)</option>
-        </select>
-      </label>
-      <label style="min-width:160px">Interesse (0–4)
-        <input data-k="interest" type="number" min="0" max="4" step="1" aria-label="Interesse für ${escapeHtml(q.id)}" />
-      </label>
-      <label style="min-width:160px">Komfort (0–4)
-        <input data-k="comfort" type="number" min="0" max="4" step="1" aria-label="Komfort für ${escapeHtml(q.id)}" />
-      </label>
-    </div>
+    ${hasDomSub ? `
+      <div class="row" style="margin-top:10px">
+        <div style="flex: 1; padding-right: 10px;">
+          <div style="font-weight: bold; margin-bottom: 8px;">Dominant (Dom)</div>
+          <label style="min-width:160px">Status
+            <select data-k="dom_status" aria-label="Dom Status für ${escapeHtml(q.id)}">
+              <option value="YES">JA</option>
+              <option value="MAYBE">VIELLEICHT</option>
+              <option value="NO">NEIN</option>
+              <option value="HARD_LIMIT">HARD LIMIT</option>
+            </select>
+          </label>
+          <label style="min-width:160px; margin-top: 8px;">Interesse (0–4)
+            <input data-k="dom_interest" type="number" min="0" max="4" step="1" aria-label="Dom Interesse für ${escapeHtml(q.id)}" />
+          </label>
+          <label style="min-width:160px; margin-top: 8px;">Komfort (0–4)
+            <input data-k="dom_comfort" type="number" min="0" max="4" step="1" aria-label="Dom Komfort für ${escapeHtml(q.id)}" />
+          </label>
+        </div>
+        <div style="flex: 1; padding-left: 10px;">
+          <div style="font-weight: bold; margin-bottom: 8px;">Submissiv (Sub)</div>
+          <label style="min-width:160px">Status
+            <select data-k="sub_status" aria-label="Sub Status für ${escapeHtml(q.id)}">
+              <option value="YES">JA</option>
+              <option value="MAYBE">VIELLEICHT</option>
+              <option value="NO">NEIN</option>
+              <option value="HARD_LIMIT">HARD LIMIT</option>
+            </select>
+          </label>
+          <label style="min-width:160px; margin-top: 8px;">Interesse (0–4)
+            <input data-k="sub_interest" type="number" min="0" max="4" step="1" aria-label="Sub Interesse für ${escapeHtml(q.id)}" />
+          </label>
+          <label style="min-width:160px; margin-top: 8px;">Komfort (0–4)
+            <input data-k="sub_comfort" type="number" min="0" max="4" step="1" aria-label="Sub Komfort für ${escapeHtml(q.id)}" />
+          </label>
+        </div>
+      </div>
+    ` : hasActivePassive ? `
+      <div class="row" style="margin-top:10px">
+        <div style="flex: 1; padding-right: 10px;">
+          <div style="font-weight: bold; margin-bottom: 8px;">Aktiv (geben)</div>
+          <label style="min-width:160px">Status
+            <select data-k="active_status" aria-label="Aktiv Status für ${escapeHtml(q.id)}">
+              <option value="YES">JA</option>
+              <option value="MAYBE">VIELLEICHT</option>
+              <option value="NO">NEIN</option>
+              <option value="HARD_LIMIT">HARD LIMIT</option>
+            </select>
+          </label>
+          <label style="min-width:160px; margin-top: 8px;">Interesse (0–4)
+            <input data-k="active_interest" type="number" min="0" max="4" step="1" aria-label="Aktiv Interesse für ${escapeHtml(q.id)}" />
+          </label>
+          <label style="min-width:160px; margin-top: 8px;">Komfort (0–4)
+            <input data-k="active_comfort" type="number" min="0" max="4" step="1" aria-label="Aktiv Komfort für ${escapeHtml(q.id)}" />
+          </label>
+        </div>
+        <div style="flex: 1; padding-left: 10px;">
+          <div style="font-weight: bold; margin-bottom: 8px;">Passiv (empfangen)</div>
+          <label style="min-width:160px">Status
+            <select data-k="passive_status" aria-label="Passiv Status für ${escapeHtml(q.id)}">
+              <option value="YES">JA</option>
+              <option value="MAYBE">VIELLEICHT</option>
+              <option value="NO">NEIN</option>
+              <option value="HARD_LIMIT">HARD LIMIT</option>
+            </select>
+          </label>
+          <label style="min-width:160px; margin-top: 8px;">Interesse (0–4)
+            <input data-k="passive_interest" type="number" min="0" max="4" step="1" aria-label="Passiv Interesse für ${escapeHtml(q.id)}" />
+          </label>
+          <label style="min-width:160px; margin-top: 8px;">Komfort (0–4)
+            <input data-k="passive_comfort" type="number" min="0" max="4" step="1" aria-label="Passiv Komfort für ${escapeHtml(q.id)}" />
+          </label>
+        </div>
+      </div>
+    ` : `
+      <div class="row" style="margin-top:10px">
+        <label style="min-width:160px">Status
+          <select data-k="status" aria-label="Status für ${escapeHtml(q.id)}">
+            <option value="YES">JA</option>
+            <option value="MAYBE">VIELLEICHT</option>
+            <option value="NO">NEIN (Soft Limit)</option>
+            <option value="HARD_LIMIT">HARD LIMIT (Niemals)</option>
+          </select>
+        </label>
+        <label style="min-width:160px">Interesse (0–4)
+          <input data-k="interest" type="number" min="0" max="4" step="1" aria-label="Interesse für ${escapeHtml(q.id)}" />
+        </label>
+        <label style="min-width:160px">Komfort (0–4)
+          <input data-k="comfort" type="number" min="0" max="4" step="1" aria-label="Komfort für ${escapeHtml(q.id)}" />
+        </label>
+      </div>
+    `}
     <div class="grid2" style="margin-top:10px">
       <label>Bedingungen
         <textarea data-k="conditions" placeholder="Nur wenn..., nicht wenn..., Tempo..., Stop..." aria-label="Bedingungen für ${escapeHtml(q.id)}"></textarea>
@@ -168,12 +254,41 @@ function renderConsentRating(q, existing = {}) {
     </div>
   `;
 
-  const sel = wrap.querySelector('select[data-k="status"]');
-  sel.value = status;
-  const inpInterest = wrap.querySelector('input[data-k="interest"]');
-  inpInterest.value = interest;
-  const inpComfort = wrap.querySelector('input[data-k="comfort"]');
-  inpComfort.value = comfort;
+  // Set values based on variant type
+  if (hasDomSub) {
+    const domStatusSel = wrap.querySelector('select[data-k="dom_status"]');
+    const subStatusSel = wrap.querySelector('select[data-k="sub_status"]');
+    if (domStatusSel) domStatusSel.value = existing.dom_status || existing.dom?.status || status;
+    if (subStatusSel) subStatusSel.value = existing.sub_status || existing.sub?.status || status;
+    const domInterest = wrap.querySelector('input[data-k="dom_interest"]');
+    const domComfort = wrap.querySelector('input[data-k="dom_comfort"]');
+    const subInterest = wrap.querySelector('input[data-k="sub_interest"]');
+    const subComfort = wrap.querySelector('input[data-k="sub_comfort"]');
+    if (domInterest) domInterest.value = existing.dom_interest || (existing.dom?.interest ?? interest);
+    if (domComfort) domComfort.value = existing.dom_comfort || (existing.dom?.comfort ?? comfort);
+    if (subInterest) subInterest.value = existing.sub_interest || (existing.sub?.interest ?? interest);
+    if (subComfort) subComfort.value = existing.sub_comfort || (existing.sub?.comfort ?? comfort);
+  } else if (hasActivePassive) {
+    const activeStatusSel = wrap.querySelector('select[data-k="active_status"]');
+    const passiveStatusSel = wrap.querySelector('select[data-k="passive_status"]');
+    if (activeStatusSel) activeStatusSel.value = existing.active_status || existing.active?.status || activeStatus;
+    if (passiveStatusSel) passiveStatusSel.value = existing.passive_status || existing.passive?.status || passiveStatus;
+    const activeInterest = wrap.querySelector('input[data-k="active_interest"]');
+    const activeComfort = wrap.querySelector('input[data-k="active_comfort"]');
+    const passiveInterest = wrap.querySelector('input[data-k="passive_interest"]');
+    const passiveComfort = wrap.querySelector('input[data-k="passive_comfort"]');
+    if (activeInterest) activeInterest.value = existing.active_interest || (existing.active?.interest ?? interest);
+    if (activeComfort) activeComfort.value = existing.active_comfort || (existing.active?.comfort ?? comfort);
+    if (passiveInterest) passiveInterest.value = existing.passive_interest || (existing.passive?.interest ?? interest);
+    if (passiveComfort) passiveComfort.value = existing.passive_comfort || (existing.passive?.comfort ?? comfort);
+  } else {
+    const sel = wrap.querySelector('select[data-k="status"]');
+    if (sel) sel.value = status;
+    const inpInterest = wrap.querySelector('input[data-k="interest"]');
+    if (inpInterest) inpInterest.value = interest;
+    const inpComfort = wrap.querySelector('input[data-k="comfort"]');
+    if (inpComfort) inpComfort.value = comfort;
+  }
   wrap.querySelector('textarea[data-k="conditions"]').value = conditions;
   wrap.querySelector('textarea[data-k="notes"]').value = notes;
 
@@ -189,7 +304,8 @@ function renderConsentRating(q, existing = {}) {
         }
       }
       state.hasUnsavedChanges = true;
-      state.formResponses = collectForm();
+      collectFormCache = null; // Invalidate cache
+      state.formResponses = collectFormCached();
       updateVisibility();
       validateAndShowHints();
       updateProgress();
@@ -197,7 +313,8 @@ function renderConsentRating(q, existing = {}) {
     });
     input.addEventListener('input', () => {
       state.hasUnsavedChanges = true;
-      state.formResponses = collectForm();
+      collectFormCache = null; // Invalidate cache
+      state.formResponses = collectFormCached();
       updateProgress();
       scheduleAutoSave();
     });
@@ -230,14 +347,16 @@ function renderScale(q, existing = {}) {
   input.value = value;
   input.addEventListener('change', () => {
     state.hasUnsavedChanges = true;
-    state.formResponses = collectForm();
+    collectFormCache = null; // Invalidate cache
+    state.formResponses = collectFormCached();
     validateAndShowHints();
     updateProgress();
     scheduleAutoSave();
   });
   input.addEventListener('input', () => {
     state.hasUnsavedChanges = true;
-    state.formResponses = collectForm();
+    collectFormCache = null; // Invalidate cache
+    state.formResponses = collectFormCached();
     updateProgress();
     scheduleAutoSave();
   });
@@ -268,7 +387,8 @@ function renderEnum(q, existing = {}) {
   sel.value = value;
   sel.addEventListener('change', () => {
     state.hasUnsavedChanges = true;
-    state.formResponses = collectForm();
+    collectFormCache = null; // Invalidate cache
+    state.formResponses = collectFormCached();
     updateProgress();
     scheduleAutoSave();
   });
@@ -303,7 +423,8 @@ function renderMulti(q, existing = {}) {
   wrap.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     cb.addEventListener('change', () => {
       state.hasUnsavedChanges = true;
-      state.formResponses = collectForm();
+      collectFormCache = null; // Invalidate cache
+      state.formResponses = collectFormCached();
       updateProgress();
       scheduleAutoSave();
     });
@@ -333,7 +454,8 @@ function renderText(q, existing = {}) {
   const textarea = wrap.querySelector('textarea[data-k="text"]');
   textarea.addEventListener('input', () => {
     state.hasUnsavedChanges = true;
-    state.formResponses = collectForm();
+    collectFormCache = null; // Invalidate cache
+    state.formResponses = collectFormCached();
     updateProgress();
     scheduleAutoSave();
   });
@@ -404,13 +526,45 @@ function collectForm() {
     const schema = b.dataset.schema;
 
     if (schema === "consent_rating") {
-      out[qid] = {
-        status: b.querySelector('select[data-k="status"]').value,
-        interest: Number(b.querySelector('input[data-k="interest"]').value),
-        comfort: Number(b.querySelector('input[data-k="comfort"]').value),
-        conditions: b.querySelector('textarea[data-k="conditions"]').value.trim(),
-        notes: b.querySelector('textarea[data-k="notes"]').value.trim(),
-      };
+      const question = state.currentTemplate?.modules
+        .flatMap(m => m.questions || [])
+        .find(q => q.id === qid);
+      
+      const hasDomSub = question?.has_dom_sub || false;
+      const hasActivePassive = question?.has_active_passive || 
+        (question?.label && (question.label.toLowerCase().includes("aktiv") || question.label.toLowerCase().includes("passiv")));
+      
+      if (hasDomSub) {
+        out[qid] = {
+          dom_status: b.querySelector('select[data-k="dom_status"]')?.value || "MAYBE",
+          dom_interest: Number(b.querySelector('input[data-k="dom_interest"]')?.value || 2),
+          dom_comfort: Number(b.querySelector('input[data-k="dom_comfort"]')?.value || 2),
+          sub_status: b.querySelector('select[data-k="sub_status"]')?.value || "MAYBE",
+          sub_interest: Number(b.querySelector('input[data-k="sub_interest"]')?.value || 2),
+          sub_comfort: Number(b.querySelector('input[data-k="sub_comfort"]')?.value || 2),
+          conditions: b.querySelector('textarea[data-k="conditions"]')?.value.trim() || "",
+          notes: b.querySelector('textarea[data-k="notes"]')?.value.trim() || "",
+        };
+      } else if (hasActivePassive) {
+        out[qid] = {
+          active_status: b.querySelector('select[data-k="active_status"]')?.value || "MAYBE",
+          active_interest: Number(b.querySelector('input[data-k="active_interest"]')?.value || 2),
+          active_comfort: Number(b.querySelector('input[data-k="active_comfort"]')?.value || 2),
+          passive_status: b.querySelector('select[data-k="passive_status"]')?.value || "MAYBE",
+          passive_interest: Number(b.querySelector('input[data-k="passive_interest"]')?.value || 2),
+          passive_comfort: Number(b.querySelector('input[data-k="passive_comfort"]')?.value || 2),
+          conditions: b.querySelector('textarea[data-k="conditions"]')?.value.trim() || "",
+          notes: b.querySelector('textarea[data-k="notes"]')?.value.trim() || "",
+        };
+      } else {
+        out[qid] = {
+          status: b.querySelector('select[data-k="status"]')?.value || "MAYBE",
+          interest: Number(b.querySelector('input[data-k="interest"]')?.value || 2),
+          comfort: Number(b.querySelector('input[data-k="comfort"]')?.value || 2),
+          conditions: b.querySelector('textarea[data-k="conditions"]')?.value.trim() || "",
+          notes: b.querySelector('textarea[data-k="notes"]')?.value.trim() || "",
+        };
+      }
     } else if (schema === "scale_0_10") {
       out[qid] = { value: Number(b.querySelector('input[data-k="value"]').value) };
     } else if (schema === "enum") {
@@ -708,7 +862,7 @@ function updateVisibility() {
   if (!state.currentTemplate) return;
   
   // We need current values. collectForm reads from DOM, which is fine.
-  const responses = collectForm();
+  const responses = collectFormCached();
 
   // Build map of questions for easy lookup
   const qMap = {};
@@ -837,6 +991,10 @@ function showContextualHints() {
 }
 
 let autoSaveTimeout = null;
+let collectFormCache = null;
+let collectFormCacheTime = 0;
+const COLLECT_FORM_CACHE_MS = 100; // Cache collectForm for 100ms
+
 function scheduleAutoSave() {
   if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
   autoSaveTimeout = setTimeout(() => {
@@ -844,6 +1002,17 @@ function scheduleAutoSave() {
       autoSave();
     }
   }, 500);
+}
+
+// Optimized collectForm with caching
+function collectFormCached() {
+  const now = Date.now();
+  if (collectFormCache && (now - collectFormCacheTime) < COLLECT_FORM_CACHE_MS) {
+    return collectFormCache;
+  }
+  collectFormCache = collectForm();
+  collectFormCacheTime = now;
+  return collectFormCache;
 }
 
 async function autoSave() {
@@ -938,7 +1107,8 @@ async function startFill(person) {
   
   // Update formResponses after building form for navigation
   setTimeout(() => {
-    state.formResponses = collectForm();
+    collectFormCache = null; // Invalidate cache
+    state.formResponses = collectFormCached();
     updateProgress();
   }, 100);
 
@@ -974,6 +1144,7 @@ async function saveFill() {
     return;
   }
 
+  collectFormCache = null; // Force fresh collection for save
   const responses = collectForm();
   
   try {

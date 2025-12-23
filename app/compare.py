@@ -121,34 +121,105 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
             pair_status = None
 
             if schema == "consent_rating":
-                sa = a.get("status")
-                sb = b.get("status")
-                if sa and sb:
-                    pair_status = _status_pair(sa, sb)
+                # Handle Dom/Sub variants
+                if a.get("dom_status") is not None or b.get("dom_status") is not None:
+                    # Dom/Sub variant: compare both Dom and Sub separately
+                    dom_sa = a.get("dom_status")
+                    dom_sb = b.get("dom_status")
+                    sub_sa = a.get("sub_status")
+                    sub_sb = b.get("sub_status")
+                    
+                    dom_status = _status_pair(dom_sa or "MAYBE", dom_sb or "MAYBE")
+                    sub_status = _status_pair(sub_sa or "MAYBE", sub_sb or "MAYBE")
+                    
+                    # Overall status is worst case
+                    if dom_status == "BOUNDARY" or sub_status == "BOUNDARY":
+                        pair_status = "BOUNDARY"
+                    elif dom_status == "MATCH" and sub_status == "MATCH":
+                        pair_status = "MATCH"
+                    else:
+                        pair_status = "EXPLORE"
+                    
+                    # Calculate deltas for both
+                    dom_ia = _safe_int(a.get("dom_interest"))
+                    dom_ib = _safe_int(b.get("dom_interest"))
+                    dom_ca = _safe_int(a.get("dom_comfort"))
+                    dom_cb = _safe_int(b.get("dom_comfort"))
+                    sub_ia = _safe_int(a.get("sub_interest"))
+                    sub_ib = _safe_int(b.get("sub_interest"))
+                    sub_ca = _safe_int(a.get("sub_comfort"))
+                    sub_cb = _safe_int(b.get("sub_comfort"))
+                    
+                    row["delta_interest"] = max(_abs_delta(dom_ia, dom_ib) or 0, _abs_delta(sub_ia, sub_ib) or 0)
+                    row["delta_comfort"] = max(_abs_delta(dom_ca, dom_cb) or 0, _abs_delta(sub_ca, sub_cb) or 0)
+                    
+                    row["dom_status"] = dom_status
+                    row["sub_status"] = sub_status
+                
+                # Handle active/passive variants
+                elif a.get("active_status") is not None or b.get("active_status") is not None:
+                    active_sa = a.get("active_status")
+                    active_sb = b.get("active_status")
+                    passive_sa = a.get("passive_status")
+                    passive_sb = b.get("passive_status")
+                    
+                    active_status = _status_pair(active_sa or "MAYBE", active_sb or "MAYBE")
+                    passive_status = _status_pair(passive_sa or "MAYBE", passive_sb or "MAYBE")
+                    
+                    # Overall status is worst case
+                    if active_status == "BOUNDARY" or passive_status == "BOUNDARY":
+                        pair_status = "BOUNDARY"
+                    elif active_status == "MATCH" and passive_status == "MATCH":
+                        pair_status = "MATCH"
+                    else:
+                        pair_status = "EXPLORE"
+                    
+                    # Calculate deltas for both
+                    active_ia = _safe_int(a.get("active_interest"))
+                    active_ib = _safe_int(b.get("active_interest"))
+                    active_ca = _safe_int(a.get("active_comfort"))
+                    active_cb = _safe_int(b.get("active_comfort"))
+                    passive_ia = _safe_int(a.get("passive_interest"))
+                    passive_ib = _safe_int(b.get("passive_interest"))
+                    passive_ca = _safe_int(a.get("passive_comfort"))
+                    passive_cb = _safe_int(b.get("passive_comfort"))
+                    
+                    row["delta_interest"] = max(_abs_delta(active_ia, active_ib) or 0, _abs_delta(passive_ia, passive_ib) or 0)
+                    row["delta_comfort"] = max(_abs_delta(active_ca, active_cb) or 0, _abs_delta(passive_ca, passive_cb) or 0)
+                    
+                    row["active_status"] = active_status
+                    row["passive_status"] = passive_status
+                
+                # Standard consent_rating
                 else:
-                    pair_status = "EXPLORE"  # incomplete treated as explore
+                    sa = a.get("status")
+                    sb = b.get("status")
+                    if sa and sb:
+                        pair_status = _status_pair(sa, sb)
+                    else:
+                        pair_status = "EXPLORE"  # incomplete treated as explore
 
-                # Check for Hard Limit Violations (One wants it, other has hard limit)
-                wants_it = ["YES", "MAYBE"]
-                if (sa == "HARD_LIMIT" and sb in wants_it) or (sb == "HARD_LIMIT" and sa in wants_it):
-                    flags.append("hard_limit_violation")
-                    summary["flags"]["hard_limit_violation"] += 1
+                    # Check for Hard Limit Violations (One wants it, other has hard limit)
+                    wants_it = ["YES", "MAYBE"]
+                    if (sa == "HARD_LIMIT" and sb in wants_it) or (sb == "HARD_LIMIT" and sa in wants_it):
+                        flags.append("hard_limit_violation")
+                        summary["flags"]["hard_limit_violation"] += 1
 
-                ia = _safe_int(a.get("interest"))
-                ib = _safe_int(b.get("interest"))
-                ca = _safe_int(a.get("comfort"))
-                cb = _safe_int(b.get("comfort"))
+                    ia = _safe_int(a.get("interest"))
+                    ib = _safe_int(b.get("interest"))
+                    ca = _safe_int(a.get("comfort"))
+                    cb = _safe_int(b.get("comfort"))
 
-                row["delta_interest"] = _abs_delta(ia, ib)
-                row["delta_comfort"] = _abs_delta(ca, cb)
+                    row["delta_interest"] = _abs_delta(ia, ib)
+                    row["delta_comfort"] = _abs_delta(ca, cb)
 
-                if _flag_low_comfort_high_interest(a) or _flag_low_comfort_high_interest(b):
-                    flags.append("low_comfort_high_interest")
-                    summary["flags"]["low_comfort_high_interest"] += 1
+                    if _flag_low_comfort_high_interest(a) or _flag_low_comfort_high_interest(b):
+                        flags.append("low_comfort_high_interest")
+                        summary["flags"]["low_comfort_high_interest"] += 1
 
-                if (row["delta_interest"] is not None and row["delta_interest"] >= 3) or (row["delta_comfort"] is not None and row["delta_comfort"] >= 3):
-                    flags.append("big_delta")
-                    summary["flags"]["big_delta"] += 1
+                    if (row["delta_interest"] is not None and row["delta_interest"] >= 3) or (row["delta_comfort"] is not None and row["delta_comfort"] >= 3):
+                        flags.append("big_delta")
+                        summary["flags"]["big_delta"] += 1
 
             elif schema == "scale_0_10":
                 va = _safe_int(a.get("value"))
