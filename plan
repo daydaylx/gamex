@@ -1,0 +1,297 @@
+1) Tool-Ziel und harte Anforderungen
+Muss können (MVP)
+
+Fragebogen-Template (mit IDs, Modulen, Skalen, Freitext, Optional/High-Risk)
+
+Zwei getrennte Antwort-Sets erfassen (Person A / Person B)
+
+Vergleichslogik:
+
+Matches (JA/JA)
+
+Explore (VIELLEICHT beteiligt, kein NEIN)
+
+Grenzen (mind. ein NEIN)
+
+Risiko-Flags (hohes Interesse, niedriger Komfort, große Diskrepanz)
+
+Ergebnis-Report (übersichtlich + exportierbar)
+
+“Bereits erlebt”-Review als eigener Block (z.B. Fisting bei dir: Wiederholen? Bedingungen? Nachwirkungen?)
+
+Soll können (V2)
+
+KI-Auswertung:
+
+lokal (falls du später ein lokales Modell nutzen willst) oder
+
+remote via API (OpenRouter o.ä.), aber opt-in und mit Redaction
+
+Experiment-Planer (4 Wochen) inkl. Debrief-Log
+
+Templates (vordefiniert: “sanft”, “rollen/kontrolle”, “high-risk”)
+
+Nicht machen (bewusst)
+
+Keine “Anleitungsmaschine” für riskante Praktiken.
+
+Kein “überreden”-Output. Tool muss Grenzen respektieren.
+
+2) Empfehlung: Lokales “Local-first” Tool (Web-App lokal)
+
+Warum? Weil:
+
+Smartphone/Tablet tauglich (beide können getrennt ausfüllen)
+
+UI ist angenehmer als TUI für intime Fragen
+
+Läuft lokal (LAN oder nur localhost), keine Cloud nötig
+
+Stack (robust, pragmatisch):
+
+Backend: Python + FastAPI (oder Flask, FastAPI ist sauberer)
+
+Frontend: einfache HTML/JS UI (MVP) oder später React
+
+Storage: SQLite (lokal), alternativ reine JSON-Dateien
+
+Verschlüsselung: Passwort-basierte Verschlüsselung für gespeicherte Antworten
+
+Du kannst es dann auf deinem Mint starten und im WLAN öffnen. Kein Deployment-Zirkus.
+
+3) Nutzerfluss (UX), damit das Tool wirklich benutzt wird
+Schritt 1: Session anlegen
+
+Session-Name: “Dez 2025”
+
+Hinweis: “Beide füllen getrennt aus”
+
+Optional: PIN/Passwort pro Person (damit nicht “mal kurz gucken” passiert)
+
+Schritt 2: Template wählen
+
+Template: “Basis + Rollen/Kontrolle + Optional High-Risk + Bereits erlebt”
+
+Du kannst Templates auch importieren/exportieren (JSON)
+
+Schritt 3: Antworten erfassen
+
+Person A füllt aus
+
+Person B füllt aus
+
+UI zeigt Fortschritt, aber keine Antworten des anderen
+
+Schritt 4: Vergleich anzeigen
+
+Tabs:
+
+Matches
+
+Explore (mit Bedingungen beider)
+
+Grenzen
+
+Risiko-Flags
+
+“Sofort umsetzbare 3 Experimente” (aus Regeln generiert, ohne KI)
+
+Schritt 5: KI-Auswertung (optional Button)
+
+Warnhinweis: “Daten können an einen Provider gesendet werden”
+
+Redaction: Namen entfernen, Freitext optional auslassen
+
+Ergebnis wird als zusätzlicher Report gespeichert (nicht überschreibt)
+
+4) Datenmodell (entscheidend für Vergleich + KI)
+4.1 Template-Schema (JSON)
+
+Jede Frage hat:
+
+id: "Q12"
+
+module: "roles_control"
+
+type: "choice" | "scale" | "text" | "multi"
+
+prompt: Text
+
+options: bei choice/multi
+
+required: true/false
+
+risk_level: "A" | "B" | "C" (C = High-Risk Themen)
+
+tags: ["dominance", "control", "voyeurism", ...]
+
+4.2 Antwort-Schema (pro Person)
+
+Für jeden question_id:
+
+status: "YES" | "MAYBE" | "NO"
+
+interest: 0..4
+
+comfort: 0..4
+
+notes: string (optional)
+
+conditions: string (optional)
+
+timestamp: optional
+
+4.3 Vergleichs-Ergebnis (generiert)
+
+Pro Frage:
+
+pair_status: "MATCH" | "EXPLORE" | "BOUNDARY"
+
+delta_interest: abs(A-B)
+
+delta_comfort: abs(A-B)
+
+flags: ["low_comfort_high_interest", "big_delta", "high_risk"]
+
+5) Vergleichslogik (ohne KI schon richtig gut)
+Regeln
+
+Wenn mind. eine Person NO → BOUNDARY
+
+Sonst wenn beide YES → MATCH
+
+Sonst (YES/MAYBE oder MAYBE/MAYBE) → EXPLORE
+
+Risiko-Flags (Beispiele)
+
+low_comfort_high_interest: interest >=3 && comfort <=2
+
+big_delta: |interestA - interestB| >= 3 oder |comfortA - comfortB| >= 3
+
+high_risk_topic: risk_level == "C"
+
+pressure_risk: eine Person YES/4/4, andere MAYBE/1/1 (klassischer “Gefallen tun”-Abgrund)
+
+“Experiment-Vorschläge” ohne explizite Inhalte
+
+Die Vorschläge basieren auf Tags:
+
+dominance/control → “Rollenabend light: Führung/Tempo klar vereinbart + Stop-Regel”
+
+voyeur/exhibition → “nur Fantasie/Erzählung testen” bevor Realität
+
+high-risk → “nur Gespräch + Bedingungen sammeln + Sicherheitsrahmen definieren”
+
+Das Tool soll nicht “technische Anleitungen” geben, sondern Kommunikations- und Rahmen-Experimente.
+
+6) KI-Modul (optional, aber sauber)
+Ziel
+
+KI soll nicht “mehr, härter, weiter”, sondern:
+
+Bedingungen zusammenführen
+
+Konflikte neutral formulieren
+
+4-Wochen Plan strukturieren
+
+Gesprächsleitfaden liefern
+
+Datenschutz-Design
+
+Standard: KI AUS
+
+Vor dem Senden:
+
+Freitext optional auslassen
+
+Namen/Orte rausfiltern
+
+Nur IDs + Scores + Status + Bedingungen senden
+
+Prompt-Generator
+
+Das Tool erzeugt aus den strukturierten Daten automatisch:
+
+Summary pro Modul
+
+Liste der Explore-Themen + Bedingungen
+
+Grenzenliste (nur als Info)
+
+Risiko-Flags
+
+Dann geht erst der KI-Call raus.
+
+7) Sicherheitsfeatures (weil Menschen gern “aus Versehen” Mist bauen)
+
+Hard-Limit-Lock: Grenzen werden im UI nicht als “Diskussion” dargestellt, sondern als “respektieren”
+
+Kein “Gamification”: keine Scores, die jemanden schlecht aussehen lassen
+
+Audit-Log lokal: nur “wann ausgewertet”, nicht Inhalte
+
+Export: PDF/Markdown/JSON (später), aber standardmäßig lokal
+
+8) Projektstruktur (praktisch, umsetzbar)
+Backend
+
+app/main.py (FastAPI Start)
+
+app/storage.py (SQLite/JSON + Verschlüsselung)
+
+app/models.py (Pydantic Schemas)
+
+app/compare.py (Vergleichslogik)
+
+app/ai.py (Provider, Promptbau, Redaction)
+
+app/routes.py (API Endpoints)
+
+Frontend (MVP)
+
+web/index.html
+
+web/app.js
+
+web/styles.css
+
+Später kannst du auf React umsteigen, aber fürs MVP ist “vanilla” schneller und stabil.
+
+9) Umsetzungsplan in Phasen (realistisch)
+Phase 1: MVP ohne KI (funktioniert schon perfekt)
+
+Template-Loader (JSON)
+
+Antwortformular (2 Personen, getrennt)
+
+Speicherung (SQLite/JSON)
+
+Compare Engine + Report UI
+
+Export: JSON + Markdown
+
+Fertig. Damit habt ihr den Einstieg und die Auswertung ohne irgendeinen Provider.
+
+Phase 2: Komfort & Qualität
+
+Wizard UI (Schritt für Schritt)
+
+Experiment-Planer + Debrief-Log
+
+“Bereits erlebt”-Review Screen
+
+Verschlüsselung/Passwortschutz sauber
+
+Phase 3: KI optional
+
+Redaction + Promptbau
+
+Provider-Integration (opt-in)
+
+Report “KI-Zusatzanalyse” speichern + anzeigen
+
+10) Design-Entscheidung, die du jetzt treffen solltest (ohne Diskussion)
+
+Local-first ist Pflicht.
+Wenn du intime Daten direkt “einfach so” an irgendeine KI-API schickst, ist das dummes Risiko ohne Not. Tool soll auch ohne KI volle Ergebnisse liefern. KI ist Bonus, nicht Fundament.

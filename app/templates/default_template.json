@@ -1,0 +1,225 @@
+{
+  "id": "default_v1",
+  "name": "Basis + Rollen/Kontrolle + Optional High-Risk + Review (v1)",
+  "version": 1,
+  "description": "Local-first Fragebogen mit Fokus auf Konsens, Bedingungen und sichere Kommunikation. High-Risk Themen sind als eigene Karten gedacht: keine Anleitungen, nur Abgleich + Rahmen.",
+  "modules": [
+    {
+      "id": "base",
+      "name": "Basis & Kommunikation",
+      "description": "Bestandsaufnahme, Kommunikation, Aftercare, Stop-Regel.",
+      "questions": [
+        {
+          "id": "Q01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["satisfaction"],
+          "label": "Wie zufrieden bist du aktuell insgesamt mit eurem Sexleben?",
+          "help": "0 = gar nicht, 10 = sehr."
+        },
+        {
+          "id": "Q02",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["communication"],
+          "label": "Wie leicht fällt es dir, Wünsche auszusprechen?",
+          "help": "0 = sehr schwer, 10 = sehr leicht."
+        },
+        {
+          "id": "Q03",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["boundaries"],
+          "label": "Wie leicht fällt es dir, 'Nein' zu sagen?",
+          "help": "0 = sehr schwer, 10 = sehr leicht."
+        },
+        {
+          "id": "Q04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["aftercare"],
+          "label": "Was brauchst du nach intensiveren Momenten eher?",
+          "help": "Wähle das, was am häufigsten stimmt.",
+          "options": ["Nähe/Kuscheln", "Reden/Feedback", "Ruhe/Schlaf", "Space/Allein sein", "Kommt drauf an"]
+        },
+        {
+          "id": "Q05",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["safety"],
+          "label": "Stop-Regel: Was soll ein Stop bedeuten?",
+          "help": "Ein Stop sollte eindeutig sein und nicht diskutiert werden.",
+          "options": ["Sofort beenden", "Pause & Check-in", "Thema wechseln & soft weitermachen", "Weiß ich noch nicht"]
+        }
+      ]
+    },
+    {
+      "id": "roles",
+      "name": "Rollen & Kontrolle",
+      "description": "Dominant/Devot/Switch, führen/geführt werden, Regeln.",
+      "questions": [
+        {
+          "id": "Q10",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["roles"],
+          "label": "Welche Rolle fühlt sich für dich am natürlichsten an?",
+          "help": "Das ist eine Tendenz, kein Vertrag.",
+          "options": ["Dominant", "Devot", "Switch", "Neutral", "Kommt drauf an"]
+        },
+        {
+          "id": "Q11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["control", "lead"],
+          "label": "Ich mag es, klar zu führen (Tempo/Ablauf/Entscheidungen).",
+          "help": "Bewerte Interesse + Komfort und setze Ja/Vielleicht/Nein."
+        },
+        {
+          "id": "Q12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["control", "follow"],
+          "label": "Ich mag es, geführt zu werden (Loslassen/Annehmen).",
+          "help": "Bewerte Interesse + Komfort und setze Ja/Vielleicht/Nein."
+        },
+        {
+          "id": "Q13",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["rules"],
+          "label": "Regeln/Rituale (klarer Start/Stop, Signale) finde ich reizvoll.",
+          "help": "Nur wenn es sich sicher und freiwillig anfühlt."
+        },
+        {
+          "id": "Q14",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["communication_style"],
+          "label": "Klare Ansagen/Feedback im Moment sind okay für mich.",
+          "help": "Ohne Druck, ohne Erniedrigung, wenn das nicht gewollt ist."
+        }
+      ]
+    },
+    {
+      "id": "observe",
+      "name": "Beobachten / Beobachtet werden (optional)",
+      "description": "Voyeur/Exhibition als Fantasie oder unter Bedingungen. Kein öffentlicher Quatsch ohne Zustimmung.",
+      "questions": [
+        {
+          "id": "Q20",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["voyeurism"],
+          "label": "Der Gedanke, andere zu beobachten, reizt mich.",
+          "help": "Fantasie und Realität können getrennt bewertet werden (Bedingungen ins Feld)."
+        },
+        {
+          "id": "Q21",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["exhibition"],
+          "label": "Der Gedanke, beobachtet zu werden, reizt mich.",
+          "help": "Wenn 'Vielleicht': unbedingt Bedingungen ergänzen."
+        },
+        {
+          "id": "Q22",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["privacy"],
+          "label": "Fotos/Videos grundsätzlich?",
+          "help": "Privatsphäre ist hier kein Detail, sondern die Hauptsache.",
+          "options": ["Nie", "Nur ohne Gesicht", "Nur privat auf eigenem Gerät", "Nur mit extra Consent jedes Mal", "Kommt drauf an"]
+        }
+      ]
+    },
+    {
+      "id": "third",
+      "name": "Dritte Personen / Öffnung (optional)",
+      "description": "Nur als Abgleich, nicht als Push. Emotional oft riskanter als es klingt.",
+      "questions": [
+        {
+          "id": "Q30",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["third_person"],
+          "label": "Fantasie über eine dritte Person ist für mich okay.",
+          "help": "Fantasie ≠ Umsetzung."
+        },
+        {
+          "id": "Q31",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["third_person"],
+          "label": "Umsetzung mit einer dritten Person wäre (unter Bedingungen) denkbar.",
+          "help": "Wenn 'Vielleicht': Bedingungen sehr klar formulieren, sonst lieber Nein."
+        },
+        {
+          "id": "Q32",
+          "schema": "multi",
+          "risk_level": "C",
+          "tags": ["emotional_risk"],
+          "label": "Welche emotionalen Risiken siehst du hier am ehesten?",
+          "help": "Mehrere Auswahl möglich.",
+          "options": ["Eifersucht", "Vergleich/Unsicherheit", "Bindung/Verliebtheit", "Kontrollverlust", "Scham", "Konflikte danach", "Keins davon", "Anderes"]
+        }
+      ]
+    },
+    {
+      "id": "highrisk",
+      "name": "High-Risk Themen (Extra-Infokarten)",
+      "description": "Hier geht es um Abgleich + Rahmen. Keine Anleitungen. Wenn etwas körperlich/psychisch 'nachbrennt', wird es ernst genommen.",
+      "questions": [
+        {
+          "id": "HR01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["anal"],
+          "label": "Anal (Stimulation/Penetration) wäre für mich (Fantasie oder Realität) denkbar.",
+          "help": "Wenn 'Vielleicht': Bedingungen + Tempo + No-Gos notieren."
+        },
+        {
+          "id": "HR02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["intense"],
+          "label": "Sehr intensive Praktiken (z.B. starke Dehnung) interessieren mich grundsätzlich.",
+          "help": "High-Risk: hier ist 'Nein' völlig normal. Wenn 'Vielleicht': nur mit Sicherheitsrahmen."
+        },
+        {
+          "id": "HR03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["fluids"],
+          "label": "Body-fluid Play (z.B. Natursekt) interessiert mich (Fantasie oder Realität).",
+          "help": "Wenn 'Vielleicht': Grenzen + Hygiene/Privatsphäre + Trigger/Scham berücksichtigen."
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "name": "Bereits erlebt: Review",
+      "description": "Für Dinge, die schon passiert sind. Consent gilt jedes Mal neu.",
+      "questions": [
+        {
+          "id": "R01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["review", "experienced"],
+          "label": "Bereits erlebt: Intensive Praktik (z.B. Fisting bei ihm) nochmals (unter Bedingungen) denkbar.",
+          "help": "Hier unbedingt Komfort, Bedingungen und ggf. Nachwirkungen in Notizen festhalten."
+        },
+        {
+          "id": "R02",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["review", "notes"],
+          "label": "Review-Notizen: Was war gut, was war zu viel, was muss beim nächsten Mal anders laufen?",
+          "help": "Kurz und ehrlich. Kein Roman nötig."
+        }
+      ]
+    }
+  ]
+}
+
+

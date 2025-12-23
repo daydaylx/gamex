@@ -1,0 +1,2015 @@
+Gut. Dann bauen wir das Tool jetzt wirklich, statt weiter in der Theorie rumzuschwimmen.
+Du bekommst **eine local-first Web-App** (FastAPI + SQLite + statisches Frontend), die:
+
+* Templates (Fragenkatalog) lädt
+* getrennte Antworten für **Person A/B** speichert (**verschlüsselt** mit Session-Passwort)
+* **Vergleich + Report** erzeugt (Matches / Explore / Grenzen / Risiko-Flags)
+* **Export** (JSON + Markdown)
+* optional ein **KI-Analyse-Endpunkt** (opt-in, mit Redaction), aber das Tool funktioniert komplett ohne KI.
+
+Kein Cloud-Zwang, kein Account, kein Bullshit.
+
+---
+
+## Projektstruktur
+
+```
+intimacy-tool/
+  README.md
+  requirements.txt
+  app/
+    __init__.py
+    __main__.py
+    main.py
+    db.py
+    models.py
+    crypto.py
+    template_store.py
+    compare.py
+    ai.py
+    routes.py
+    templates/
+      default_template.json
+  web/
+    index.html
+    styles.css
+    app.js
+```
+
+---
+
+## Setup und Start (Linux Mint)
+
+```bash
+mkdir -p intimacy-tool && cd intimacy-tool
+
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# starten
+python -m app
+
+# dann im Browser:
+# http://127.0.0.1:8000
+# (im WLAN auch erreichbar über http://<deine-ip>:8000 wenn Firewall passt)
+```
+
+---
+
+## Dateien
+
+### `requirements.txt`
+
+```txt
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.3
+cryptography==44.0.0
+httpx==0.28.1
+python-multipart==0.0.20
+```
+
+---
+
+### `README.md`
+
+````md
+# Intimacy Questionnaire Tool (Local-first)
+
+Dieses Tool hilft zwei Personen (A/B), getrennt einen Fragebogen auszufüllen, die Antworten zu vergleichen
+und einen Report zu erzeugen: Matches / Explore / Grenzen / Risiko-Flags.
+
+## Wichtige Prinzipien
+- "NEIN" ist final. Kein Diskutieren/Überreden.
+- "VIELLEICHT" gilt nur unter Bedingungen.
+- Fantasie ≠ Wunsch ≠ Identität.
+
+## Datenschutz
+- Antworten werden pro Session mit einem Passwort verschlüsselt gespeichert.
+- Wenn du das Passwort vergisst, sind die Daten nicht wiederherstellbar (Absicht).
+- KI-Analyse ist optional und standardmäßig nicht nötig. Wenn du sie nutzt: du sendest Daten an einen Provider.
+
+## Medizinischer Hinweis
+Das Tool ist keine medizinische Beratung. Bei Schmerzen/Blut/anhaltenden Beschwerden nach intensiven Praktiken:
+ärztlich abklären.
+
+## Start
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m app
+````
+
+Dann: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+````
+
+---
+
+### `app/__init__.py`
+```py
+__all__ = []
+````
+
+---
+
+### `app/__main__.py`
+
+```py
+from app.main import run
+
+if __name__ == "__main__":
+    run()
+```
+
+---
+
+### `app/main.py`
+
+```py
+import os
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+from app.db import init_db
+from app.template_store import ensure_default_template
+from app.routes import api_router
+
+APP_TITLE = "Intimacy Tool (Local-first)"
+
+def create_app() -> FastAPI:
+    app = FastAPI(title=APP_TITLE)
+
+    init_db()
+    ensure_default_template()
+
+    app.include_router(api_router, prefix="/api")
+
+    # Serve static frontend
+    web_dir = os.path.join(os.path.dirname(__file__), "..", "web")
+    web_dir = os.path.abspath(web_dir)
+    app.mount("/", StaticFiles(directory=web_dir, html=True), name="web")
+
+    return app
+
+app = create_app()
+
+def run() -> None:
+    import uvicorn
+    host = os.environ.get("INTIMACY_TOOL_HOST", "127.0.0.1")
+    port = int(os.environ.get("INTIMACY_TOOL_PORT", "8000"))
+    uvicorn.run("app.main:app", host=host, port=port, reload=False)
+```
+
+---
+
+### `app/db.py`
+
+```py
+import os
+import sqlite3
+from contextlib import contextmanager
+from typing import Iterator
+
+DB_PATH = os.environ.get("INTIMACY_TOOL_DB", os.path.abspath("intimacy_tool.sqlite3"))
+
+def get_conn() -> sqlite3.Connection:
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON;")
+    return conn
+
+@contextmanager
+def db() -> Iterator[sqlite3.Connection]:
+    conn = get_conn()
+    try:
+        yield conn
+        conn.commit()
+    finally:
+        conn.close()
+
+def init_db() -> None:
+    with db() as conn:
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS templates (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            version INTEGER NOT NULL,
+            json TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        );
+        """)
+
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS sessions (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            template_id TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            salt BLOB NOT NULL,
+            pw_verifier TEXT NOT NULL,
+            pin_a_hash TEXT,
+            pin_b_hash TEXT,
+            FOREIGN KEY(template_id) REFERENCES templates(id)
+        );
+        """)
+
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS responses (
+            session_id TEXT NOT NULL,
+            person TEXT NOT NULL CHECK(person IN ('A','B')),
+            encrypted_blob BLOB NOT NULL,
+            updated_at TEXT NOT NULL,
+            PRIMARY KEY(session_id, person),
+            FOREIGN KEY(session_id) REFERENCES sessions(id) ON DELETE CASCADE
+        );
+        """)
+
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS ai_reports (
+            id TEXT PRIMARY KEY,
+            session_id TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            provider TEXT NOT NULL,
+            model TEXT NOT NULL,
+            encrypted_blob BLOB NOT NULL,
+            FOREIGN KEY(session_id) REFERENCES sessions(id) ON DELETE CASCADE
+        );
+        """)
+```
+
+---
+
+### `app/models.py`
+
+```py
+from typing import Any, Dict, List, Literal, Optional
+from pydantic import BaseModel, Field
+
+Person = Literal["A", "B"]
+YesMaybeNo = Literal["YES", "MAYBE", "NO"]
+
+class TemplateListItem(BaseModel):
+    id: str
+    name: str
+    version: int
+
+class CreateSessionRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    template_id: str
+    password: str = Field(min_length=6, max_length=200)
+    pin_a: Optional[str] = Field(default=None, max_length=50)
+    pin_b: Optional[str] = Field(default=None, max_length=50)
+
+class SessionListItem(BaseModel):
+    id: str
+    name: str
+    template_id: str
+    created_at: str
+    has_a: bool
+    has_b: bool
+
+class SessionInfo(BaseModel):
+    id: str
+    name: str
+    template: Dict[str, Any]
+    created_at: str
+    has_a: bool
+    has_b: bool
+
+class LoadResponsesRequest(BaseModel):
+    password: str = Field(min_length=6, max_length=200)
+    pin: Optional[str] = Field(default=None, max_length=50)
+
+class SaveResponsesRequest(BaseModel):
+    password: str = Field(min_length=6, max_length=200)
+    pin: Optional[str] = Field(default=None, max_length=50)
+    responses: Dict[str, Any]
+
+class CompareRequest(BaseModel):
+    password: str = Field(min_length=6, max_length=200)
+
+class ExportRequest(BaseModel):
+    password: str = Field(min_length=6, max_length=200)
+
+class AIAnalyzeRequest(BaseModel):
+    password: str = Field(min_length=6, max_length=200)
+    provider: Literal["openrouter"] = "openrouter"
+    api_key: str = Field(min_length=10, max_length=500)
+    model: str = Field(min_length=1, max_length=200)
+    base_url: str = Field(default="https://openrouter.ai/api/v1")
+    redact_free_text: bool = True
+    max_tokens: int = 800
+
+class CompareResult(BaseModel):
+    meta: Dict[str, Any]
+    summary: Dict[str, Any]
+    items: List[Dict[str, Any]]
+
+class AIReport(BaseModel):
+    id: str
+    created_at: str
+    provider: str
+    model: str
+    text: str
+```
+
+---
+
+### `app/crypto.py`
+
+```py
+import base64
+import hashlib
+import os
+from dataclasses import dataclass
+from typing import Optional
+
+from cryptography.fernet import Fernet, InvalidToken
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives import hashes
+
+PBKDF_ITERATIONS = 390_000
+
+@dataclass(frozen=True)
+class KeyMaterial:
+    salt: bytes
+    fernet_key: bytes  # urlsafe base64 32 bytes
+    verifier: str      # hex
+
+def _derive_raw(password: str, salt: bytes) -> bytes:
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=PBKDF_ITERATIONS,
+    )
+    return kdf.derive(password.encode("utf-8"))
+
+def create_key_material(password: str, salt: Optional[bytes] = None) -> KeyMaterial:
+    if salt is None:
+        salt = os.urandom(16)
+    raw = _derive_raw(password, salt)
+    fernet_key = base64.urlsafe_b64encode(raw)
+    verifier = hashlib.sha256(raw + b"::verifier").hexdigest()
+    return KeyMaterial(salt=salt, fernet_key=fernet_key, verifier=verifier)
+
+def verify_password(password: str, salt: bytes, expected_verifier: str) -> bool:
+    raw = _derive_raw(password, salt)
+    verifier = hashlib.sha256(raw + b"::verifier").hexdigest()
+    return hashlib.compare_digest(verifier, expected_verifier)
+
+def encrypt_json(password: str, salt: bytes, plaintext_json: str) -> bytes:
+    km = create_key_material(password, salt=salt)
+    f = Fernet(km.fernet_key)
+    return f.encrypt(plaintext_json.encode("utf-8"))
+
+def decrypt_json(password: str, salt: bytes, ciphertext: bytes) -> str:
+    km = create_key_material(password, salt=salt)
+    f = Fernet(km.fernet_key)
+    try:
+        out = f.decrypt(ciphertext)
+    except InvalidToken as e:
+        raise ValueError("Decrypt failed (wrong password or corrupted data).") from e
+    return out.decode("utf-8")
+
+def hash_pin(pin: str, salt: bytes, person: str) -> str:
+    # pin hashing separate from encryption; uses PBKDF2 with person-specific salt
+    pin_salt = hashlib.sha256(salt + person.encode("utf-8") + b"::pin").digest()
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=pin_salt,
+        iterations=220_000,
+    )
+    raw = kdf.derive(pin.encode("utf-8"))
+    return hashlib.sha256(raw).hexdigest()
+
+def verify_pin(pin: Optional[str], stored_hash: Optional[str], salt: bytes, person: str) -> bool:
+    if stored_hash is None:
+        # no pin required
+        return True
+    if not pin:
+        return False
+    candidate = hash_pin(pin, salt, person)
+    return hashlib.compare_digest(candidate, stored_hash)
+```
+
+---
+
+### `app/template_store.py`
+
+```py
+import json
+import os
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+
+from app.db import db
+from app.models import TemplateListItem
+
+DEFAULT_TEMPLATE_ID = "default_v1"
+
+def _utcnow() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+def ensure_default_template() -> None:
+    with db() as conn:
+        row = conn.execute("SELECT id FROM templates WHERE id = ?", (DEFAULT_TEMPLATE_ID,)).fetchone()
+        if row:
+            return
+
+    here = os.path.dirname(__file__)
+    path = os.path.join(here, "templates", "default_template.json")
+    with open(path, "r", encoding="utf-8") as f:
+        tpl = json.load(f)
+
+    save_template(DEFAULT_TEMPLATE_ID, tpl["name"], tpl["version"], tpl)
+
+def save_template(template_id: str, name: str, version: int, tpl_json: Dict[str, Any]) -> None:
+    with db() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO templates(id, name, version, json, created_at) VALUES (?,?,?,?,?)",
+            (template_id, name, version, json.dumps(tpl_json, ensure_ascii=False), _utcnow())
+        )
+
+def list_templates() -> List[TemplateListItem]:
+    with db() as conn:
+        rows = conn.execute("SELECT id, name, version FROM templates ORDER BY created_at DESC").fetchall()
+    return [TemplateListItem(id=r["id"], name=r["name"], version=int(r["version"])) for r in rows]
+
+def load_template(template_id: str) -> Dict[str, Any]:
+    with db() as conn:
+        row = conn.execute("SELECT json FROM templates WHERE id = ?", (template_id,)).fetchone()
+    if not row:
+        raise KeyError(f"Template not found: {template_id}")
+    return json.loads(row["json"])
+```
+
+---
+
+### `app/compare.py`
+
+```py
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Tuple
+
+def _utcnow() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+def _get(resp: Dict[str, Any], qid: str) -> Dict[str, Any]:
+    v = resp.get(qid)
+    return v if isinstance(v, dict) else {}
+
+def _status_pair(a: str, b: str) -> str:
+    # boundaries override everything
+    if a == "NO" or b == "NO":
+        return "BOUNDARY"
+    if a == "YES" and b == "YES":
+        return "MATCH"
+    return "EXPLORE"
+
+def _flag_low_comfort_high_interest(entry: Dict[str, Any]) -> bool:
+    try:
+        i = int(entry.get("interest", -1))
+        c = int(entry.get("comfort", -1))
+        return i >= 3 and c <= 2
+    except Exception:
+        return False
+
+def _abs_delta(a: Optional[int], b: Optional[int]) -> Optional[int]:
+    if a is None or b is None:
+        return None
+    return abs(a - b)
+
+def _safe_int(v: Any) -> Optional[int]:
+    try:
+        if v is None:
+            return None
+        return int(v)
+    except Exception:
+        return None
+
+def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, Any]) -> Dict[str, Any]:
+    items: List[Dict[str, Any]] = []
+    summary = {
+        "counts": {"MATCH": 0, "EXPLORE": 0, "BOUNDARY": 0},
+        "flags": {"low_comfort_high_interest": 0, "big_delta": 0, "high_risk": 0},
+        "generated_at": _utcnow()
+    }
+
+    modules = template.get("modules", [])
+    for mod in modules:
+        mod_id = mod.get("id", "")
+        mod_name = mod.get("name", "")
+        for q in mod.get("questions", []):
+            qid = q.get("id")
+            schema = q.get("schema")
+            risk = q.get("risk_level", "A")
+            label = q.get("label", "")
+            help_text = q.get("help", "")
+            tags = q.get("tags", [])
+
+            row: Dict[str, Any] = {
+                "question_id": qid,
+                "module_id": mod_id,
+                "module_name": mod_name,
+                "label": label,
+                "help": help_text,
+                "schema": schema,
+                "risk_level": risk,
+                "tags": tags,
+            }
+
+            a = _get(resp_a, qid)
+            b = _get(resp_b, qid)
+            row["a"] = a
+            row["b"] = b
+
+            flags: List[str] = []
+            pair_status = None
+
+            if schema == "consent_rating":
+                sa = a.get("status")
+                sb = b.get("status")
+                if sa and sb:
+                    pair_status = _status_pair(sa, sb)
+                else:
+                    pair_status = "EXPLORE"  # incomplete treated as explore
+
+                ia = _safe_int(a.get("interest"))
+                ib = _safe_int(b.get("interest"))
+                ca = _safe_int(a.get("comfort"))
+                cb = _safe_int(b.get("comfort"))
+
+                row["delta_interest"] = _abs_delta(ia, ib)
+                row["delta_comfort"] = _abs_delta(ca, cb)
+
+                if _flag_low_comfort_high_interest(a) or _flag_low_comfort_high_interest(b):
+                    flags.append("low_comfort_high_interest")
+                    summary["flags"]["low_comfort_high_interest"] += 1
+
+                if (row["delta_interest"] is not None and row["delta_interest"] >= 3) or (row["delta_comfort"] is not None and row["delta_comfort"] >= 3):
+                    flags.append("big_delta")
+                    summary["flags"]["big_delta"] += 1
+
+            elif schema == "scale_0_10":
+                va = _safe_int(a.get("value"))
+                vb = _safe_int(b.get("value"))
+                row["delta_value"] = _abs_delta(va, vb)
+                pair_status = "MATCH" if (va is not None and vb is not None and row["delta_value"] <= 1) else "EXPLORE"
+                if row.get("delta_value") is not None and row["delta_value"] >= 4:
+                    flags.append("big_delta")
+                    summary["flags"]["big_delta"] += 1
+
+            elif schema == "enum":
+                va = a.get("value")
+                vb = b.get("value")
+                row["match_value"] = (va == vb and va is not None)
+                pair_status = "MATCH" if row["match_value"] else "EXPLORE"
+
+            elif schema == "multi":
+                la = a.get("values") if isinstance(a.get("values"), list) else []
+                lb = b.get("values") if isinstance(b.get("values"), list) else []
+                inter = sorted(list(set(la).intersection(set(lb))))
+                row["intersection"] = inter
+                pair_status = "MATCH" if len(inter) > 0 else "EXPLORE"
+
+            elif schema == "text":
+                # not matchable automatically
+                pair_status = "EXPLORE"
+
+            else:
+                pair_status = "EXPLORE"
+
+            if risk == "C":
+                flags.append("high_risk")
+                summary["flags"]["high_risk"] += 1
+
+            row["pair_status"] = pair_status
+            row["flags"] = flags
+
+            if pair_status in summary["counts"]:
+                summary["counts"][pair_status] += 1
+
+            items.append(row)
+
+    # Sort for presentation: boundaries first, then explore, then matches; high risk within groups
+    order = {"BOUNDARY": 0, "EXPLORE": 1, "MATCH": 2}
+    items.sort(key=lambda r: (order.get(r["pair_status"], 9), 0 if r.get("risk_level") == "C" else 1, r.get("module_name",""), r.get("question_id","")))
+
+    meta = {"template_id": template.get("id"), "template_name": template.get("name"), "template_version": template.get("version")}
+    return {"meta": meta, "summary": summary, "items": items}
+```
+
+---
+
+### `app/ai.py`
+
+```py
+from __future__ import annotations
+
+import json
+import uuid
+from datetime import datetime, timezone
+from typing import Any, Dict, Optional
+
+import httpx
+
+from app.crypto import encrypt_json
+from app.db import db
+
+def _utcnow() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+def _build_prompt(compare_result: Dict[str, Any]) -> str:
+    # Keep it non-explicit. Focus on consent, boundaries, planning.
+    return (
+        "Du bist ein neutraler Auswerter von zwei Fragebögen zu Intimität, Rollen/Kontrolle und optionalen Themen.\n"
+        "Priorität: Sicherheit, Konsens, keine Überredung. Ein 'NEIN' ist final. 'VIELLEICHT' gilt nur unter Bedingungen.\n"
+        "Aufgabe:\n"
+        "1) Matches (JA/JA) zusammenfassen und 5 konkrete, low-risk Ideen vorschlagen (ohne explizite Anleitungen).\n"
+        "2) Explore (VIELLEICHT beteiligt) inkl. Bedingungen beider und einem vorsichtigen Einstieg je Thema.\n"
+        "3) Grenzenliste (mind. ein NEIN) ohne Diskussion.\n"
+        "4) Risiko-Flags erklären (Diskrepanzen, niedriger Komfort bei hohem Interesse, High-Risk).\n"
+        "5) 4-Wochen-Plan: 3 Experimente + Debrief-Fragen.\n"
+        "Ausgabe: Überschriften + Bulletpoints, konkret, nicht grafisch explizit.\n\n"
+        "Eingabedaten (Vergleichsergebnis als JSON):\n"
+        f"{json.dumps(compare_result, ensure_ascii=False)}"
+    )
+
+def redact(compare_result: Dict[str, Any], drop_free_text: bool = True) -> Dict[str, Any]:
+    if not drop_free_text:
+        return compare_result
+
+    red = json.loads(json.dumps(compare_result))
+    for item in red.get("items", []):
+        for side in ("a", "b"):
+            if isinstance(item.get(side), dict):
+                item[side].pop("notes", None)
+                item[side].pop("conditions", None)
+                item[side].pop("text", None)
+    return red
+
+async def openrouter_analyze(
+    session_id: str,
+    password: str,
+    salt: bytes,
+    compare_result: Dict[str, Any],
+    api_key: str,
+    model: str,
+    base_url: str,
+    max_tokens: int,
+    redact_free_text: bool,
+) -> Dict[str, Any]:
+    payload_compare = redact(compare_result, drop_free_text=redact_free_text)
+    prompt = _build_prompt(payload_compare)
+
+    url = base_url.rstrip("/") + "/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    body = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": "Du arbeitest sachlich, consent-orientiert, nicht explizit und ohne Überredung."},
+            {"role": "user", "content": prompt},
+        ],
+        "max_tokens": max_tokens,
+        "temperature": 0.5,
+    }
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        r = await client.post(url, headers=headers, json=body)
+        r.raise_for_status()
+        data = r.json()
+
+    text = ""
+    try:
+        text = data["choices"][0]["message"]["content"]
+    except Exception:
+        text = json.dumps(data, ensure_ascii=False)
+
+    report_id = str(uuid.uuid4())
+    blob = encrypt_json(password, salt, json.dumps({"text": text}, ensure_ascii=False))
+
+    with db() as conn:
+        conn.execute(
+            "INSERT INTO ai_reports(id, session_id, created_at, provider, model, encrypted_blob) VALUES (?,?,?,?,?,?)",
+            (report_id, session_id, _utcnow(), "openrouter", model, blob),
+        )
+
+    return {"id": report_id, "created_at": _utcnow(), "provider": "openrouter", "model": model, "text": text}
+
+def list_ai_reports(session_id: str, password: str, salt: bytes):
+    from app.crypto import decrypt_json
+    with db() as conn:
+        rows = conn.execute(
+            "SELECT id, created_at, provider, model, encrypted_blob FROM ai_reports WHERE session_id = ? ORDER BY created_at DESC",
+            (session_id,),
+        ).fetchall()
+    out = []
+    for r in rows:
+        payload = json.loads(decrypt_json(password, salt, r["encrypted_blob"]))
+        out.append({
+            "id": r["id"],
+            "created_at": r["created_at"],
+            "provider": r["provider"],
+            "model": r["model"],
+            "text": payload.get("text",""),
+        })
+    return out
+```
+
+---
+
+### `app/routes.py`
+
+```py
+import json
+import uuid
+from datetime import datetime, timezone
+from typing import Any, Dict
+
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse, Response
+
+from app.db import db
+from app.models import (
+    TemplateListItem,
+    CreateSessionRequest,
+    SessionListItem,
+    SessionInfo,
+    LoadResponsesRequest,
+    SaveResponsesRequest,
+    CompareRequest,
+    CompareResult,
+    ExportRequest,
+    AIAnalyzeRequest,
+)
+from app.template_store import list_templates, load_template
+from app.crypto import create_key_material, verify_password, verify_pin, encrypt_json, decrypt_json, hash_pin
+from app.compare import compare
+from app.ai import openrouter_analyze, list_ai_reports
+
+api_router = APIRouter()
+
+def _utcnow() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+@api_router.get("/health")
+def health() -> Dict[str, Any]:
+    return {"ok": True}
+
+@api_router.get("/templates", response_model=list[TemplateListItem])
+def templates():
+    return list_templates()
+
+@api_router.get("/templates/{template_id}")
+def get_template(template_id: str) -> Dict[str, Any]:
+    try:
+        return load_template(template_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+@api_router.get("/sessions", response_model=list[SessionListItem])
+def sessions():
+    with db() as conn:
+        rows = conn.execute("""
+            SELECT s.id, s.name, s.template_id, s.created_at,
+                   (SELECT 1 FROM responses r WHERE r.session_id=s.id AND r.person='A') AS has_a,
+                   (SELECT 1 FROM responses r WHERE r.session_id=s.id AND r.person='B') AS has_b
+            FROM sessions s
+            ORDER BY s.created_at DESC
+        """).fetchall()
+
+    out = []
+    for r in rows:
+        out.append(SessionListItem(
+            id=r["id"],
+            name=r["name"],
+            template_id=r["template_id"],
+            created_at=r["created_at"],
+            has_a=bool(r["has_a"]),
+            has_b=bool(r["has_b"]),
+        ))
+    return out
+
+@api_router.post("/sessions", response_model=SessionListItem)
+def create_session(req: CreateSessionRequest):
+    # verify template exists
+    try:
+        load_template(req.template_id)
+    except KeyError:
+        raise HTTPException(status_code=400, detail="Invalid template_id")
+
+    session_id = str(uuid.uuid4())
+    km = create_key_material(req.password)
+
+    pin_a_hash = hash_pin(req.pin_a, km.salt, "A") if req.pin_a else None
+    pin_b_hash = hash_pin(req.pin_b, km.salt, "B") if req.pin_b else None
+
+    with db() as conn:
+        conn.execute(
+            "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) VALUES (?,?,?,?,?,?,?,?)",
+            (session_id, req.name, req.template_id, _utcnow(), km.salt, km.verifier, pin_a_hash, pin_b_hash),
+        )
+
+    return SessionListItem(
+        id=session_id,
+        name=req.name,
+        template_id=req.template_id,
+        created_at=_utcnow(),
+        has_a=False,
+        has_b=False,
+    )
+
+def _load_session_row(session_id: str):
+    with db() as conn:
+        row = conn.execute("SELECT * FROM sessions WHERE id = ?", (session_id,)).fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return row
+
+def _require_password(session_row, password: str):
+    salt = session_row["salt"]
+    if not verify_password(password, salt, session_row["pw_verifier"]):
+        raise HTTPException(status_code=401, detail="Wrong password")
+    return salt
+
+@api_router.get("/sessions/{session_id}", response_model=SessionInfo)
+def session_info(session_id: str):
+    srow = _load_session_row(session_id)
+    tpl = load_template(srow["template_id"])
+
+    with db() as conn:
+        has_a = conn.execute("SELECT 1 FROM responses WHERE session_id=? AND person='A'", (session_id,)).fetchone()
+        has_b = conn.execute("SELECT 1 FROM responses WHERE session_id=? AND person='B'", (session_id,)).fetchone()
+
+    return SessionInfo(
+        id=srow["id"],
+        name=srow["name"],
+        template=tpl,
+        created_at=srow["created_at"],
+        has_a=bool(has_a),
+        has_b=bool(has_b),
+    )
+
+@api_router.post("/sessions/{session_id}/responses/{person}/load")
+def load_responses(session_id: str, person: str, req: LoadResponsesRequest):
+    if person not in ("A", "B"):
+        raise HTTPException(status_code=400, detail="Invalid person")
+    srow = _load_session_row(session_id)
+    salt = _require_password(srow, req.password)
+
+    stored_pin_hash = srow["pin_a_hash"] if person == "A" else srow["pin_b_hash"]
+    if not verify_pin(req.pin, stored_pin_hash, salt, person):
+        raise HTTPException(status_code=401, detail="Wrong PIN")
+
+    with db() as conn:
+        row = conn.execute("SELECT encrypted_blob FROM responses WHERE session_id=? AND person=?", (session_id, person)).fetchone()
+    if not row:
+        return {"responses": {}}
+
+    try:
+        plaintext = decrypt_json(req.password, salt, row["encrypted_blob"])
+        return {"responses": json.loads(plaintext)}
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Decrypt failed")
+
+@api_router.post("/sessions/{session_id}/responses/{person}/save")
+def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
+    if person not in ("A", "B"):
+        raise HTTPException(status_code=400, detail="Invalid person")
+    srow = _load_session_row(session_id)
+    salt = _require_password(srow, req.password)
+
+    stored_pin_hash = srow["pin_a_hash"] if person == "A" else srow["pin_b_hash"]
+    if not verify_pin(req.pin, stored_pin_hash, salt, person):
+        raise HTTPException(status_code=401, detail="Wrong PIN")
+
+    # basic sanity: must be dict
+    if not isinstance(req.responses, dict):
+        raise HTTPException(status_code=400, detail="responses must be object/dict")
+
+    blob = encrypt_json(req.password, salt, json.dumps(req.responses, ensure_ascii=False))
+
+    with db() as conn:
+        conn.execute(
+            "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?) "
+            "ON CONFLICT(session_id, person) DO UPDATE SET encrypted_blob=excluded.encrypted_blob, updated_at=excluded.updated_at",
+            (session_id, person, blob, _utcnow()),
+        )
+    return {"ok": True, "updated_at": _utcnow()}
+
+def _load_both_responses(session_id: str, password: str):
+    srow = _load_session_row(session_id)
+    salt = _require_password(srow, password)
+    with db() as conn:
+        ra = conn.execute("SELECT encrypted_blob FROM responses WHERE session_id=? AND person='A'", (session_id,)).fetchone()
+        rb = conn.execute("SELECT encrypted_blob FROM responses WHERE session_id=? AND person='B'", (session_id,)).fetchone()
+    if not ra or not rb:
+        raise HTTPException(status_code=400, detail="Need both A and B responses to compare")
+
+    resp_a = json.loads(decrypt_json(password, salt, ra["encrypted_blob"]))
+    resp_b = json.loads(decrypt_json(password, salt, rb["encrypted_blob"]))
+    return srow, salt, resp_a, resp_b
+
+@api_router.post("/sessions/{session_id}/compare", response_model=CompareResult)
+def compare_session(session_id: str, req: CompareRequest):
+    srow, _salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+    tpl = load_template(srow["template_id"])
+    result = compare(tpl, resp_a, resp_b)
+    return result
+
+@api_router.post("/sessions/{session_id}/export/json")
+def export_json(session_id: str, req: ExportRequest):
+    srow, _salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+    tpl = load_template(srow["template_id"])
+    result = compare(tpl, resp_a, resp_b)
+
+    payload = {
+        "session": {"id": srow["id"], "name": srow["name"], "created_at": srow["created_at"]},
+        "template": {"id": tpl.get("id"), "name": tpl.get("name"), "version": tpl.get("version")},
+        "responses": {"A": resp_a, "B": resp_b},
+        "compare": result,
+    }
+    data = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+    fname = f"intimacy_export_{session_id}.json"
+    return Response(content=data, media_type="application/json", headers={"Content-Disposition": f'attachment; filename="{fname}"'})
+
+@api_router.post("/sessions/{session_id}/export/markdown")
+def export_markdown(session_id: str, req: ExportRequest):
+    srow, _salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+    tpl = load_template(srow["template_id"])
+    result = compare(tpl, resp_a, resp_b)
+
+    lines = []
+    lines.append(f"# Report: {srow['name']}")
+    lines.append(f"- Session ID: `{srow['id']}`")
+    lines.append(f"- Template: `{tpl.get('name')}` v{tpl.get('version')}")
+    lines.append("")
+    lines.append("## Summary")
+    lines.append(f"- MATCH: {result['summary']['counts']['MATCH']}")
+    lines.append(f"- EXPLORE: {result['summary']['counts']['EXPLORE']}")
+    lines.append(f"- BOUNDARY: {result['summary']['counts']['BOUNDARY']}")
+    lines.append("")
+    lines.append("## Items (sorted)")
+    lines.append("")
+    for it in result["items"]:
+        lines.append(f"### {it['pair_status']} | {it['module_name']} | {it['question_id']}")
+        lines.append(f"**{it['label']}**")
+        if it.get("risk_level") == "C":
+            lines.append(f"- Risk: **High (C)**")
+        if it.get("flags"):
+            lines.append(f"- Flags: {', '.join(it['flags'])}")
+        # Show minimal per-side summary without forcing free text
+        a = it.get("a", {}) or {}
+        b = it.get("b", {}) or {}
+        if it.get("schema") == "consent_rating":
+            lines.append(f"- A: {a.get('status')} | interest {a.get('interest')} | comfort {a.get('comfort')}")
+            lines.append(f"- B: {b.get('status')} | interest {b.get('interest')} | comfort {b.get('comfort')}")
+        elif it.get("schema") in ("scale_0_10", "enum", "multi"):
+            lines.append(f"- A: {a}")
+            lines.append(f"- B: {b}")
+        else:
+            lines.append(f"- A: {a}")
+            lines.append(f"- B: {b}")
+        lines.append("")
+
+    md = "\n".join(lines).encode("utf-8")
+    fname = f"intimacy_report_{session_id}.md"
+    return Response(content=md, media_type="text/markdown", headers={"Content-Disposition": f'attachment; filename="{fname}"'})
+
+@api_router.post("/sessions/{session_id}/ai/analyze")
+async def ai_analyze(session_id: str, req: AIAnalyzeRequest):
+    srow, salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+    tpl = load_template(srow["template_id"])
+    result = compare(tpl, resp_a, resp_b)
+
+    if req.provider != "openrouter":
+        raise HTTPException(status_code=400, detail="Only openrouter supported currently")
+
+    report = await openrouter_analyze(
+        session_id=session_id,
+        password=req.password,
+        salt=salt,
+        compare_result=result,
+        api_key=req.api_key,
+        model=req.model,
+        base_url=req.base_url,
+        max_tokens=req.max_tokens,
+        redact_free_text=req.redact_free_text,
+    )
+    return report
+
+@api_router.post("/sessions/{session_id}/ai/list")
+def ai_list(session_id: str, req: CompareRequest):
+    srow = _load_session_row(session_id)
+    salt = _require_password(srow, req.password)
+    return {"reports": list_ai_reports(session_id, req.password, salt)}
+```
+
+---
+
+### `app/templates/default_template.json`
+
+```json
+{
+  "id": "default_v1",
+  "name": "Basis + Rollen/Kontrolle + Optional High-Risk + Review (v1)",
+  "version": 1,
+  "description": "Local-first Fragebogen mit Fokus auf Konsens, Bedingungen und sichere Kommunikation. High-Risk Themen sind als eigene Karten gedacht: keine Anleitungen, nur Abgleich + Rahmen.",
+  "modules": [
+    {
+      "id": "base",
+      "name": "Basis & Kommunikation",
+      "description": "Bestandsaufnahme, Kommunikation, Aftercare, Stop-Regel.",
+      "questions": [
+        {
+          "id": "Q01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["satisfaction"],
+          "label": "Wie zufrieden bist du aktuell insgesamt mit eurem Sexleben?",
+          "help": "0 = gar nicht, 10 = sehr."
+        },
+        {
+          "id": "Q02",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["communication"],
+          "label": "Wie leicht fällt es dir, Wünsche auszusprechen?",
+          "help": "0 = sehr schwer, 10 = sehr leicht."
+        },
+        {
+          "id": "Q03",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["boundaries"],
+          "label": "Wie leicht fällt es dir, 'Nein' zu sagen?",
+          "help": "0 = sehr schwer, 10 = sehr leicht."
+        },
+        {
+          "id": "Q04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["aftercare"],
+          "label": "Was brauchst du nach intensiveren Momenten eher?",
+          "help": "Wähle das, was am häufigsten stimmt.",
+          "options": ["Nähe/Kuscheln", "Reden/Feedback", "Ruhe/Schlaf", "Space/Allein sein", "Kommt drauf an"]
+        },
+        {
+          "id": "Q05",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["safety"],
+          "label": "Stop-Regel: Was soll ein Stop bedeuten?",
+          "help": "Ein Stop sollte eindeutig sein und nicht diskutiert werden.",
+          "options": ["Sofort beenden", "Pause & Check-in", "Thema wechseln & soft weitermachen", "Weiß ich noch nicht"]
+        }
+      ]
+    },
+    {
+      "id": "roles",
+      "name": "Rollen & Kontrolle",
+      "description": "Dominant/Devot/Switch, führen/geführt werden, Regeln.",
+      "questions": [
+        {
+          "id": "Q10",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["roles"],
+          "label": "Welche Rolle fühlt sich für dich am natürlichsten an?",
+          "help": "Das ist eine Tendenz, kein Vertrag.",
+          "options": ["Dominant", "Devot", "Switch", "Neutral", "Kommt drauf an"]
+        },
+        {
+          "id": "Q11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["control", "lead"],
+          "label": "Ich mag es, klar zu führen (Tempo/Ablauf/Entscheidungen).",
+          "help": "Bewerte Interesse + Komfort und setze Ja/Vielleicht/Nein."
+        },
+        {
+          "id": "Q12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["control", "follow"],
+          "label": "Ich mag es, geführt zu werden (Loslassen/Annehmen).",
+          "help": "Bewerte Interesse + Komfort und setze Ja/Vielleicht/Nein."
+        },
+        {
+          "id": "Q13",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["rules"],
+          "label": "Regeln/Rituale (klarer Start/Stop, Signale) finde ich reizvoll.",
+          "help": "Nur wenn es sich sicher und freiwillig anfühlt."
+        },
+        {
+          "id": "Q14",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["communication_style"],
+          "label": "Klare Ansagen/Feedback im Moment sind okay für mich.",
+          "help": "Ohne Druck, ohne Erniedrigung, wenn das nicht gewollt ist."
+        }
+      ]
+    },
+    {
+      "id": "observe",
+      "name": "Beobachten / Beobachtet werden (optional)",
+      "description": "Voyeur/Exhibition als Fantasie oder unter Bedingungen. Kein öffentlicher Quatsch ohne Zustimmung.",
+      "questions": [
+        {
+          "id": "Q20",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["voyeurism"],
+          "label": "Der Gedanke, andere zu beobachten, reizt mich.",
+          "help": "Fantasie und Realität können getrennt bewertet werden (Bedingungen ins Feld)."
+        },
+        {
+          "id": "Q21",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["exhibition"],
+          "label": "Der Gedanke, beobachtet zu werden, reizt mich.",
+          "help": "Wenn 'Vielleicht': unbedingt Bedingungen ergänzen."
+        },
+        {
+          "id": "Q22",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["privacy"],
+          "label": "Fotos/Videos grundsätzlich?",
+          "help": "Privatsphäre ist hier kein Detail, sondern die Hauptsache.",
+          "options": ["Nie", "Nur ohne Gesicht", "Nur privat auf eigenem Gerät", "Nur mit extra Consent jedes Mal", "Kommt drauf an"]
+        }
+      ]
+    },
+    {
+      "id": "third",
+      "name": "Dritte Personen / Öffnung (optional)",
+      "description": "Nur als Abgleich, nicht als Push. Emotional oft riskanter als es klingt.",
+      "questions": [
+        {
+          "id": "Q30",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["third_person"],
+          "label": "Fantasie über eine dritte Person ist für mich okay.",
+          "help": "Fantasie ≠ Umsetzung."
+        },
+        {
+          "id": "Q31",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["third_person"],
+          "label": "Umsetzung mit einer dritten Person wäre (unter Bedingungen) denkbar.",
+          "help": "Wenn 'Vielleicht': Bedingungen sehr klar formulieren, sonst lieber Nein."
+        },
+        {
+          "id": "Q32",
+          "schema": "multi",
+          "risk_level": "C",
+          "tags": ["emotional_risk"],
+          "label": "Welche emotionalen Risiken siehst du hier am ehesten?",
+          "help": "Mehrere Auswahl möglich.",
+          "options": ["Eifersucht", "Vergleich/Unsicherheit", "Bindung/Verliebtheit", "Kontrollverlust", "Scham", "Konflikte danach", "Keins davon", "Anderes"]
+        }
+      ]
+    },
+    {
+      "id": "highrisk",
+      "name": "High-Risk Themen (Extra-Infokarten)",
+      "description": "Hier geht es um Abgleich + Rahmen. Keine Anleitungen. Wenn etwas körperlich/psychisch 'nachbrennt', wird es ernst genommen.",
+      "questions": [
+        {
+          "id": "HR01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["anal"],
+          "label": "Anal (Stimulation/Penetration) wäre für mich (Fantasie oder Realität) denkbar.",
+          "help": "Wenn 'Vielleicht': Bedingungen + Tempo + No-Gos notieren."
+        },
+        {
+          "id": "HR02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["intense"],
+          "label": "Sehr intensive Praktiken (z.B. starke Dehnung) interessieren mich grundsätzlich.",
+          "help": "High-Risk: hier ist 'Nein' völlig normal. Wenn 'Vielleicht': nur mit Sicherheitsrahmen."
+        },
+        {
+          "id": "HR03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["fluids"],
+          "label": "Body-fluid Play (z.B. Natursekt) interessiert mich (Fantasie oder Realität).",
+          "help": "Wenn 'Vielleicht': Grenzen + Hygiene/Privatsphäre + Trigger/Scham berücksichtigen."
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "name": "Bereits erlebt: Review",
+      "description": "Für Dinge, die schon passiert sind. Consent gilt jedes Mal neu.",
+      "questions": [
+        {
+          "id": "R01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["review", "experienced"],
+          "label": "Bereits erlebt: Intensive Praktik (z.B. Fisting bei ihm) nochmals (unter Bedingungen) denkbar.",
+          "help": "Hier unbedingt Komfort, Bedingungen und ggf. Nachwirkungen in Notizen festhalten."
+        },
+        {
+          "id": "R02",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["review", "notes"],
+          "label": "Review-Notizen: Was war gut, was war zu viel, was muss beim nächsten Mal anders laufen?",
+          "help": "Kurz und ehrlich. Kein Roman nötig."
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### `web/index.html`
+
+```html
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Intimacy Tool (Local)</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <h1>Intimacy Tool</h1>
+      <p class="sub">Local-first. Verschlüsselt. Kein Overthinking, nur Struktur.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card" id="home">
+      <h2>Sessions</h2>
+      <div class="row">
+        <button class="btn" id="btnRefresh">Aktualisieren</button>
+      </div>
+      <div id="sessionsList" class="list"></div>
+    </section>
+
+    <section class="card" id="create">
+      <h2>Neue Session</h2>
+
+      <div class="grid2">
+        <label>
+          Name
+          <input id="newName" placeholder="z.B. Dez 2025" />
+        </label>
+
+        <label>
+          Template
+          <select id="newTemplate"></select>
+        </label>
+
+        <label>
+          Session-Passwort (für Verschlüsselung)
+          <input id="newPassword" type="password" placeholder="mind. 6 Zeichen" />
+        </label>
+
+        <label>
+          PIN A (optional)
+          <input id="newPinA" type="password" placeholder="optional" />
+        </label>
+
+        <label>
+          PIN B (optional)
+          <input id="newPinB" type="password" placeholder="optional" />
+        </label>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="btnCreate">Erstellen</button>
+        <span class="hint">Passwort nicht verlieren. Wirklich.</span>
+      </div>
+      <div id="createMsg" class="msg"></div>
+    </section>
+
+    <section class="card hidden" id="sessionView">
+      <div class="row space">
+        <div>
+          <h2 id="sessTitle">Session</h2>
+          <p class="sub" id="sessMeta"></p>
+        </div>
+        <button class="btn" id="btnBack">Zurück</button>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="btnFillA">Ausfüllen: Person A</button>
+        <button class="btn" id="btnFillB">Ausfüllen: Person B</button>
+        <button class="btn" id="btnCompare">Vergleich anzeigen</button>
+        <button class="btn" id="btnExportMd">Export Markdown</button>
+        <button class="btn" id="btnExportJson">Export JSON</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div id="panelAuth" class="panel">
+        <h3>Zugang</h3>
+        <div class="grid2">
+          <label>
+            Passwort
+            <input id="authPassword" type="password" placeholder="Session-Passwort" />
+          </label>
+          <label>
+            PIN (nur fürs Ausfüllen, falls gesetzt)
+            <input id="authPin" type="password" placeholder="optional" />
+          </label>
+        </div>
+        <p class="hint">Das Passwort wird nur im Browser gehalten. Kein Auto-Save auf Serverseite.</p>
+      </div>
+
+      <div id="panelForm" class="panel hidden">
+        <div class="row space">
+          <h3 id="formTitle">Fragebogen</h3>
+          <button class="btn" id="btnCloseForm">Schließen</button>
+        </div>
+        <div id="formHost"></div>
+        <div class="row">
+          <button class="btn primary" id="btnSaveForm">Speichern</button>
+          <span id="saveMsg" class="msg"></span>
+        </div>
+      </div>
+
+      <div id="panelCompare" class="panel hidden">
+        <div class="row space">
+          <h3>Vergleich</h3>
+          <button class="btn" id="btnCloseCompare">Schließen</button>
+        </div>
+        <div id="compareHost"></div>
+      </div>
+
+      <div id="panelAI" class="panel hidden">
+        <h3>KI-Auswertung (optional)</h3>
+        <p class="hint">
+          Wenn du das nutzt, sendest du Daten an einen Provider. Standard: Redaction (Freitext raus).
+        </p>
+        <div class="grid2">
+          <label>OpenRouter API Key<input id="aiKey" type="password" placeholder="optional" /></label>
+          <label>Model<input id="aiModel" placeholder="z.B. openai/gpt-4.1-mini" /></label>
+          <label>Redact Freitext
+            <select id="aiRedact">
+              <option value="true" selected>true</option>
+              <option value="false">false</option>
+            </select>
+          </label>
+          <label>Max tokens<input id="aiMaxTokens" type="number" value="800" min="200" max="2000" /></label>
+        </div>
+        <div class="row">
+          <button class="btn" id="btnRunAI">KI-Analyse starten</button>
+        </div>
+        <pre id="aiOut" class="pre"></pre>
+      </div>
+
+      <div id="sessionMsg" class="msg"></div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
+```
+
+---
+
+### `web/styles.css`
+
+```css
+:root {
+  --bg: #0b0e14;
+  --card: #101828;
+  --text: #e8eefc;
+  --muted: #a8b3cf;
+  --line: #22304a;
+  --btn: #1a2740;
+  --btn2: #2b3b5e;
+  --accent: #4aa3ff;
+  --danger: #ff5d5d;
+  --ok: #43d17b;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+.wrap { max-width: 980px; margin: 0 auto; padding: 16px; }
+.topbar { border-bottom: 1px solid var(--line); background: rgba(16,24,40,0.7); position: sticky; top: 0; backdrop-filter: blur(10px); }
+h1 { margin: 0; font-size: 20px; }
+.sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  margin: 14px 0;
+}
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.row.space { justify-content: space-between; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+label { display: block; font-size: 13px; color: var(--muted); }
+input, select, textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,0.2);
+  color: var(--text);
+}
+textarea { min-height: 70px; resize: vertical; }
+
+.btn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--btn);
+  color: var(--text);
+  cursor: pointer;
+}
+.btn:hover { background: var(--btn2); }
+.btn.primary { border-color: rgba(74,163,255,0.4); background: rgba(74,163,255,0.18); }
+.btn.primary:hover { background: rgba(74,163,255,0.28); }
+
+.hint { color: var(--muted); font-size: 12px; }
+.msg { margin-top: 10px; color: var(--muted); font-size: 13px; }
+.msg.ok { color: var(--ok); }
+.msg.err { color: var(--danger); }
+.hidden { display: none; }
+
+.list { display: grid; gap: 10px; margin-top: 10px; }
+.item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(0,0,0,0.15);
+}
+.item .title { font-weight: 700; }
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  margin-left: 8px;
+}
+
+.divider { height: 1px; background: var(--line); margin: 14px 0; }
+.panel { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(0,0,0,0.10); margin-top: 10px; }
+.pre { white-space: pre-wrap; background: rgba(0,0,0,0.35); padding: 12px; border-radius: 12px; border: 1px solid var(--line); }
+hr { border: none; border-top: 1px solid var(--line); margin: 12px 0; }
+small { color: var(--muted); }
+```
+
+---
+
+### `web/app.js`
+
+```js
+const $ = (id) => document.getElementById(id);
+
+const state = {
+  templates: [],
+  sessions: [],
+  currentSession: null,
+  currentTemplate: null,
+  currentPerson: null, // "A" | "B"
+  formResponses: {},   // qid -> answer object
+};
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
+    ...opts,
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`${res.status} ${res.statusText}: ${txt}`);
+  }
+  const ct = res.headers.get("content-type") || "";
+  if (ct.includes("application/json")) return await res.json();
+  return await res.blob();
+}
+
+function show(el, yes) {
+  if (yes) el.classList.remove("hidden");
+  else el.classList.add("hidden");
+}
+
+function msg(el, text, kind = "") {
+  el.textContent = text || "";
+  el.className = "msg" + (kind ? ` ${kind}` : "");
+}
+
+async function loadTemplates() {
+  state.templates = await api("/api/templates");
+  const sel = $("newTemplate");
+  sel.innerHTML = "";
+  for (const t of state.templates) {
+    const opt = document.createElement("option");
+    opt.value = t.id;
+    opt.textContent = `${t.name} (v${t.version})`;
+    sel.appendChild(opt);
+  }
+}
+
+async function loadSessions() {
+  state.sessions = await api("/api/sessions");
+  const host = $("sessionsList");
+  host.innerHTML = "";
+  for (const s of state.sessions) {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div class="title">${escapeHtml(s.name)}
+        <span class="badge">A: ${s.has_a ? "✓" : "—"}</span>
+        <span class="badge">B: ${s.has_b ? "✓" : "—"}</span>
+      </div>
+      <div class="hint">Session: ${escapeHtml(s.id)} | Template: ${escapeHtml(s.template_id)} | ${escapeHtml(s.created_at)}</div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" data-open="${escapeHtml(s.id)}">Öffnen</button>
+      </div>
+    `;
+    div.querySelector("button").addEventListener("click", () => openSession(s.id));
+    host.appendChild(div);
+  }
+}
+
+async function openSession(sessionId) {
+  const info = await api(`/api/sessions/${sessionId}`);
+  state.currentSession = info;
+  state.currentTemplate = info.template;
+
+  show($("home"), false);
+  show($("create"), false);
+  show($("sessionView"), true);
+
+  $("sessTitle").textContent = `Session: ${info.name}`;
+  $("sessMeta").textContent = `A: ${info.has_a ? "gefüllt" : "offen"} | B: ${info.has_b ? "gefüllt" : "offen"} | Template: ${info.template.name} v${info.template.version}`;
+
+  show($("panelForm"), false);
+  show($("panelCompare"), false);
+  show($("panelAI"), false);
+  msg($("sessionMsg"), "");
+}
+
+function backHome() {
+  state.currentSession = null;
+  state.currentTemplate = null;
+  show($("sessionView"), false);
+  show($("home"), true);
+  show($("create"), true);
+}
+
+function escapeHtml(str) {
+  return String(str || "").replace(/[&<>"']/g, (m) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  }[m]));
+}
+
+function getAuth() {
+  const password = $("authPassword").value.trim();
+  const pin = $("authPin").value.trim();
+  if (!password || password.length < 6) throw new Error("Passwort fehlt/zu kurz.");
+  return { password, pin: pin || null };
+}
+
+function renderConsentRating(q, existing = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "item";
+
+  const status = existing.status || "MAYBE";
+  const interest = (existing.interest ?? 2);
+  const comfort = (existing.comfort ?? 2);
+  const conditions = existing.conditions || "";
+  const notes = existing.notes || "";
+
+  wrap.innerHTML = `
+    <div class="title">${escapeHtml(q.id)} <span class="badge">Risk ${escapeHtml(q.risk_level || "A")}</span></div>
+    <div style="margin-top:6px"><strong>${escapeHtml(q.label)}</strong></div>
+    ${q.help ? `<div class="hint">${escapeHtml(q.help)}</div>` : ""}
+    <div class="row" style="margin-top:10px">
+      <label style="min-width:160px">Status
+        <select data-k="status">
+          <option value="YES">JA</option>
+          <option value="MAYBE">VIELLEICHT</option>
+          <option value="NO">NEIN</option>
+        </select>
+      </label>
+      <label style="min-width:160px">Interesse (0–4)
+        <input data-k="interest" type="number" min="0" max="4" step="1" />
+      </label>
+      <label style="min-width:160px">Komfort (0–4)
+        <input data-k="comfort" type="number" min="0" max="4" step="1" />
+      </label>
+    </div>
+    <div class="grid2" style="margin-top:10px">
+      <label>Bedingungen
+        <textarea data-k="conditions" placeholder="Nur wenn..., nicht wenn..., Tempo..., Stop..."></textarea>
+      </label>
+      <label>Notizen (optional)
+        <textarea data-k="notes" placeholder="kurz & ehrlich"></textarea>
+      </label>
+    </div>
+  `;
+
+  const sel = wrap.querySelector('select[data-k="status"]');
+  sel.value = status;
+  wrap.querySelector('input[data-k="interest"]').value = interest;
+  wrap.querySelector('input[data-k="comfort"]').value = comfort;
+  wrap.querySelector('textarea[data-k="conditions"]').value = conditions;
+  wrap.querySelector('textarea[data-k="notes"]').value = notes;
+
+  return wrap;
+}
+
+function renderScale(q, existing = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "item";
+  const value = existing.value ?? 5;
+
+  wrap.innerHTML = `
+    <div class="title">${escapeHtml(q.id)} <span class="badge">Risk ${escapeHtml(q.risk_level || "A")}</span></div>
+    <div style="margin-top:6px"><strong>${escapeHtml(q.label)}</strong></div>
+    ${q.help ? `<div class="hint">${escapeHtml(q.help)}</div>` : ""}
+    <label style="margin-top:10px">Wert (0–10)
+      <input data-k="value" type="number" min="0" max="10" step="1" />
+    </label>
+  `;
+  wrap.querySelector('input[data-k="value"]').value = value;
+  return wrap;
+}
+
+function renderEnum(q, existing = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "item";
+  const value = existing.value ?? (q.options?.[0] ?? "");
+
+  const opts = (q.options || []).map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join("");
+  wrap.innerHTML = `
+    <div class="title">${escapeHtml(q.id)} <span class="badge">Risk ${escapeHtml(q.risk_level || "A")}</span></div>
+    <div style="margin-top:6px"><strong>${escapeHtml(q.label)}</strong></div>
+    ${q.help ? `<div class="hint">${escapeHtml(q.help)}</div>` : ""}
+    <label style="margin-top:10px">Auswahl
+      <select data-k="value">${opts}</select>
+    </label>
+  `;
+  const sel = wrap.querySelector('select[data-k="value"]');
+  sel.value = value;
+  return wrap;
+}
+
+function renderMulti(q, existing = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "item";
+  const values = new Set(existing.values || []);
+
+  const boxes = (q.options || []).map(o => {
+    const checked = values.has(o) ? "checked" : "";
+    return `<label style="display:flex;gap:10px;align-items:center;margin-top:8px;color:var(--text)">
+      <input type="checkbox" data-v="${escapeHtml(o)}" ${checked} />
+      <span>${escapeHtml(o)}</span>
+    </label>`;
+  }).join("");
+
+  wrap.innerHTML = `
+    <div class="title">${escapeHtml(q.id)} <span class="badge">Risk ${escapeHtml(q.risk_level || "A")}</span></div>
+    <div style="margin-top:6px"><strong>${escapeHtml(q.label)}</strong></div>
+    ${q.help ? `<div class="hint">${escapeHtml(q.help)}</div>` : ""}
+    <div style="margin-top:10px">${boxes}</div>
+  `;
+  return wrap;
+}
+
+function renderText(q, existing = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "item";
+  const text = existing.text || "";
+  wrap.innerHTML = `
+    <div class="title">${escapeHtml(q.id)} <span class="badge">Risk ${escapeHtml(q.risk_level || "A")}</span></div>
+    <div style="margin-top:6px"><strong>${escapeHtml(q.label)}</strong></div>
+    ${q.help ? `<div class="hint">${escapeHtml(q.help)}</div>` : ""}
+    <label style="margin-top:10px">Text
+      <textarea data-k="text" placeholder="kurz & ehrlich">${escapeHtml(text)}</textarea>
+    </label>
+  `;
+  return wrap;
+}
+
+function buildForm(template, responses) {
+  const host = $("formHost");
+  host.innerHTML = "";
+
+  for (const mod of template.modules || []) {
+    const section = document.createElement("div");
+    section.className = "panel";
+    section.innerHTML = `
+      <h4>${escapeHtml(mod.name)}</h4>
+      ${mod.description ? `<div class="hint">${escapeHtml(mod.description)}</div>` : ""}
+      <div class="divider"></div>
+    `;
+
+    for (const q of mod.questions || []) {
+      const existing = responses[q.id] || {};
+      let el;
+      if (q.schema === "consent_rating") el = renderConsentRating(q, existing);
+      else if (q.schema === "scale_0_10") el = renderScale(q, existing);
+      else if (q.schema === "enum") el = renderEnum(q, existing);
+      else if (q.schema === "multi") el = renderMulti(q, existing);
+      else if (q.schema === "text") el = renderText(q, existing);
+      else el = renderText({ ...q, schema: "text" }, existing);
+
+      el.dataset.qid = q.id;
+      el.dataset.schema = q.schema;
+      section.appendChild(el);
+    }
+
+    host.appendChild(section);
+  }
+}
+
+function collectForm() {
+  const host = $("formHost");
+  const blocks = host.querySelectorAll(".item[data-qid]");
+  const out = {};
+  blocks.forEach((b) => {
+    const qid = b.dataset.qid;
+    const schema = b.dataset.schema;
+
+    if (schema === "consent_rating") {
+      out[qid] = {
+        status: b.querySelector('select[data-k="status"]').value,
+        interest: Number(b.querySelector('input[data-k="interest"]').value),
+        comfort: Number(b.querySelector('input[data-k="comfort"]').value),
+        conditions: b.querySelector('textarea[data-k="conditions"]').value.trim(),
+        notes: b.querySelector('textarea[data-k="notes"]').value.trim(),
+      };
+    } else if (schema === "scale_0_10") {
+      out[qid] = { value: Number(b.querySelector('input[data-k="value"]').value) };
+    } else if (schema === "enum") {
+      out[qid] = { value: b.querySelector('select[data-k="value"]').value };
+    } else if (schema === "multi") {
+      const vals = [];
+      b.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+        if (cb.checked) vals.push(cb.dataset.v);
+      });
+      out[qid] = { values: vals };
+    } else if (schema === "text") {
+      out[qid] = { text: b.querySelector('textarea[data-k="text"]').value.trim() };
+    } else {
+      out[qid] = {};
+    }
+  });
+  return out;
+}
+
+async function startFill(person) {
+  const { password, pin } = getAuth();
+  state.currentPerson = person;
+  $("formTitle").textContent = `Fragebogen: Person ${person}`;
+  msg($("saveMsg"), "");
+
+  const loaded = await api(`/api/sessions/${state.currentSession.id}/responses/${person}/load`, {
+    method: "POST",
+    body: JSON.stringify({ password, pin }),
+  });
+
+  state.formResponses = loaded.responses || {};
+  buildForm(state.currentTemplate, state.formResponses);
+
+  show($("panelForm"), true);
+  show($("panelCompare"), false);
+  show($("panelAI"), false);
+}
+
+async function saveFill() {
+  const { password, pin } = getAuth();
+  const person = state.currentPerson;
+  if (!person) throw new Error("No person selected");
+
+  const responses = collectForm();
+  await api(`/api/sessions/${state.currentSession.id}/responses/${person}/save`, {
+    method: "POST",
+    body: JSON.stringify({ password, pin, responses }),
+  });
+
+  msg($("saveMsg"), "Gespeichert.", "ok");
+  // refresh session metadata
+  await openSession(state.currentSession.id);
+  show($("panelForm"), true);
+}
+
+function renderCompare(result) {
+  const host = $("compareHost");
+  host.innerHTML = "";
+
+  const top = document.createElement("div");
+  top.className = "item";
+  top.innerHTML = `
+    <div class="title">Summary</div>
+    <div class="hint">MATCH: ${result.summary.counts.MATCH} | EXPLORE: ${result.summary.counts.EXPLORE} | BOUNDARY: ${result.summary.counts.BOUNDARY}</div>
+    <div class="hint">Flags: low_comfort_high_interest ${result.summary.flags.low_comfort_high_interest} | big_delta ${result.summary.flags.big_delta} | high_risk ${result.summary.flags.high_risk}</div>
+  `;
+  host.appendChild(top);
+
+  for (const it of result.items || []) {
+    const div = document.createElement("div");
+    div.className = "item";
+    const flags = (it.flags || []).map(f => `<span class="badge">${escapeHtml(f)}</span>`).join(" ");
+    const risk = it.risk_level === "C" ? `<span class="badge" style="border-color:rgba(255,93,93,0.4)">High Risk</span>` : `<span class="badge">Risk ${escapeHtml(it.risk_level)}</span>`;
+    div.innerHTML = `
+      <div class="title">${escapeHtml(it.pair_status)} ${risk} ${flags}</div>
+      <div style="margin-top:6px"><strong>${escapeHtml(it.label)}</strong></div>
+      <div class="hint">${escapeHtml(it.module_name)} | ${escapeHtml(it.question_id)}</div>
+      <hr />
+      <div class="grid2">
+        <div>
+          <div class="hint">Person A</div>
+          <pre class="pre">${escapeHtml(JSON.stringify(it.a || {}, null, 2))}</pre>
+        </div>
+        <div>
+          <div class="hint">Person B</div>
+          <pre class="pre">${escapeHtml(JSON.stringify(it.b || {}, null, 2))}</pre>
+        </div>
+      </div>
+    `;
+    host.appendChild(div);
+  }
+}
+
+async function doCompare() {
+  const { password } = getAuth();
+  const result = await api(`/api/sessions/${state.currentSession.id}/compare`, {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+  renderCompare(result);
+  show($("panelCompare"), true);
+  show($("panelForm"), false);
+  show($("panelAI"), true);
+}
+
+async function doExport(kind) {
+  const { password } = getAuth();
+  const blob = await api(`/api/sessions/${state.currentSession.id}/export/${kind}`, {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = kind === "markdown" ? "report.md" : "export.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function doAI() {
+  const { password } = getAuth();
+  const apiKey = $("aiKey").value.trim();
+  const model = $("aiModel").value.trim();
+  const redact = $("aiRedact").value === "true";
+  const maxTokens = Number($("aiMaxTokens").value || 800);
+
+  if (!apiKey || !model) {
+    $("aiOut").textContent = "API Key und Model fehlen.";
+    return;
+  }
+
+  $("aiOut").textContent = "läuft...";
+  try {
+    const rep = await api(`/api/sessions/${state.currentSession.id}/ai/analyze`, {
+      method: "POST",
+      body: JSON.stringify({
+        password,
+        provider: "openrouter",
+        api_key: apiKey,
+        model,
+        redact_free_text: redact,
+        max_tokens: maxTokens,
+      }),
+    });
+    $("aiOut").textContent = rep.text || JSON.stringify(rep, null, 2);
+  } catch (e) {
+    $("aiOut").textContent = String(e);
+  }
+}
+
+// wire events
+$("btnRefresh").addEventListener("click", () => loadSessions());
+$("btnCreate").addEventListener("click", async () => {
+  msg($("createMsg"), "");
+  try {
+    const name = $("newName").value.trim();
+    const templateId = $("newTemplate").value;
+    const password = $("newPassword").value;
+    const pinA = $("newPinA").value || null;
+    const pinB = $("newPinB").value || null;
+
+    if (!name) throw new Error("Name fehlt.");
+    if (!password || password.length < 6) throw new Error("Passwort fehlt/zu kurz.");
+
+    await api("/api/sessions", {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        template_id: templateId,
+        password,
+        pin_a: pinA,
+        pin_b: pinB,
+      }),
+    });
+    msg($("createMsg"), "Session erstellt.", "ok");
+    $("newName").value = "";
+    $("newPassword").value = "";
+    $("newPinA").value = "";
+    $("newPinB").value = "";
+    await loadSessions();
+  } catch (e) {
+    msg($("createMsg"), String(e), "err");
+  }
+});
+
+$("btnBack").addEventListener("click", backHome);
+$("btnFillA").addEventListener("click", () => startFill("A").catch(e => msg($("sessionMsg"), String(e), "err")));
+$("btnFillB").addEventListener("click", () => startFill("B").catch(e => msg($("sessionMsg"), String(e), "err")));
+$("btnSaveForm").addEventListener("click", () => saveFill().catch(e => msg($("saveMsg"), String(e), "err")));
+$("btnCloseForm").addEventListener("click", () => show($("panelForm"), false));
+$("btnCompare").addEventListener("click", () => doCompare().catch(e => msg($("sessionMsg"), String(e), "err")));
+$("btnCloseCompare").addEventListener("click", () => show($("panelCompare"), false));
+$("btnExportMd").addEventListener("click", () => doExport("markdown").catch(e => msg($("sessionMsg"), String(e), "err")));
+$("btnExportJson").addEventListener("click", () => doExport("json").catch(e => msg($("sessionMsg"), String(e), "err")));
+$("btnRunAI").addEventListener("click", () => doAI());
+
+// initial load
+(async () => {
+  await loadTemplates();
+  await loadSessions();
+})();
+```
+
+---
+
+## Was du jetzt hast (und was nicht)
+
+### ✅ Du hast:
+
+* Verschlüsselte lokale Speicherung (Session-Passwort)
+* Optional PIN pro Person
+* Vergleichsreport mit Risiko-Flags
+* Export Markdown/JSON
+* Optional KI-Auswertung (OpenRouter) mit Redaction
+
+### ❌ Du hast absichtlich nicht:
+
+* “How-to”-Anleitungen für riskante Praktiken (weil das dumm und gefährlich wäre)
+* Cloud/Accounts
+* fancy React-Bomben für eine Aufgabe, die eigentlich nur Struktur braucht
+
+---
+
+## Nächste sinnvolle Ausbaustufen (wenn du willst)
+
+* Template-Editor im UI (eigene Fragen + Module)
+* “4-Wochen-Planer” als eigenes Modul mit Debrief-Log
+* Besseres Compare-UI: Filter nach MATCH/EXPLORE/BOUNDARY + High-Risk toggle
+* QR-Code “Session öffnen” fürs Handy im WLAN
+
+Wenn du mir sagst, ob du das Tool **nur lokal auf deinem Rechner** nutzt oder im **WLAN am Handy** (beide gleichzeitig), passe ich dir als nächstes die Defaults (Host/IP, CORS, Firewall-Hinweise) sauber an.
+

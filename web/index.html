@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Intimacy Tool (Local)</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <h1>Intimacy Tool</h1>
+      <p class="sub">Local-first. Verschlüsselt. Kein Overthinking, nur Struktur.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
+    <div id="main-content">
+    <section class="card" id="home">
+      <h2>Sessions</h2>
+      <div class="row">
+        <button class="btn" id="btnRefresh">Aktualisieren</button>
+      </div>
+      <div id="sessionsList" class="list"></div>
+    </section>
+
+    <section class="card" id="create">
+      <h2>Neue Session</h2>
+
+      <div class="grid2">
+        <label>
+          Name
+          <input id="newName" placeholder="z.B. Dez 2025" />
+        </label>
+
+        <label>
+          Template
+          <select id="newTemplate"></select>
+        </label>
+
+        <label>
+          Session-Passwort (für Verschlüsselung)
+          <input id="newPassword" type="password" placeholder="mind. 6 Zeichen" />
+        </label>
+
+        <label>
+          PIN A (optional)
+          <input id="newPinA" type="password" placeholder="optional" />
+        </label>
+
+        <label>
+          PIN B (optional)
+          <input id="newPinB" type="password" placeholder="optional" />
+        </label>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="btnCreate">Erstellen</button>
+        <span class="hint">Passwort nicht verlieren. Wirklich.</span>
+      </div>
+      <div id="createMsg" class="msg"></div>
+    </section>
+
+    <section class="card hidden" id="sessionView">
+      <div class="row space">
+        <div>
+          <h2 id="sessTitle">Session</h2>
+          <p class="sub" id="sessMeta"></p>
+        </div>
+        <button class="btn" id="btnBack">Zurück</button>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="btnFillA">Ausfüllen: Person A</button>
+        <button class="btn" id="btnFillB">Ausfüllen: Person B</button>
+        <button class="btn" id="btnCompare">Vergleich anzeigen</button>
+        <button class="btn" id="btnExportMd">Export Markdown</button>
+        <button class="btn" id="btnExportJson">Export JSON</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div id="panelAuth" class="panel">
+        <h3>Zugang</h3>
+        <div class="grid2">
+          <label>
+            Passwort
+            <input id="authPassword" type="password" placeholder="Session-Passwort" aria-label="Session-Passwort eingeben" aria-required="true" />
+          </label>
+          <label>
+            PIN (nur fürs Ausfüllen, falls gesetzt)
+            <input id="authPin" type="password" placeholder="optional" aria-label="PIN eingeben (optional)" />
+          </label>
+        </div>
+        <p class="hint">Das Passwort wird nur im Browser gehalten. Kein Auto-Save auf Serverseite.</p>
+      </div>
+
+      <div id="panelForm" class="panel hidden" role="region" aria-labelledby="formTitle">
+        <div class="row space">
+          <h3 id="formTitle">Fragebogen</h3>
+          <button class="btn" id="btnCloseForm" aria-label="Formular schließen">Schließen</button>
+        </div>
+        <div id="formHost" role="form" aria-label="Fragebogen Formular"></div>
+        <div class="row">
+          <button class="btn primary" id="btnSaveForm" aria-label="Antworten speichern">Speichern</button>
+          <span id="saveMsg" class="msg" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <div id="panelCompare" class="panel hidden" role="region" aria-label="Vergleichsansicht">
+        <div class="row space">
+          <h3>Vergleich</h3>
+          <button class="btn" id="btnCloseCompare" aria-label="Vergleich schließen">Schließen</button>
+        </div>
+        <div id="compareHost" role="main" aria-label="Vergleichsergebnisse"></div>
+      </div>
+
+      <div id="panelAI" class="panel hidden">
+        <h3>KI-Auswertung (optional)</h3>
+        <p class="hint">
+          Wenn du das nutzt, sendest du Daten an einen Provider. Standard: Redaction (Freitext raus).
+        </p>
+        <div class="grid2">
+          <label>OpenRouter API Key<input id="aiKey" type="password" placeholder="optional" /></label>
+          <label>Model<input id="aiModel" placeholder="z.B. openai/gpt-4.1-mini" /></label>
+          <label>Redact Freitext
+            <select id="aiRedact">
+              <option value="true" selected>true</option>
+              <option value="false">false</option>
+            </select>
+          </label>
+          <label>Max tokens<input id="aiMaxTokens" type="number" value="800" min="200" max="2000" /></label>
+        </div>
+        <div class="row">
+          <button class="btn" id="btnRunAI">KI-Analyse starten</button>
+        </div>
+        <pre id="aiOut" class="pre"></pre>
+      </div>
+
+      <div id="sessionMsg" class="msg"></div>
+    </section>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
+
+
