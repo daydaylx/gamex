@@ -166,33 +166,205 @@
       ]
     },
     {
-      "id": "highrisk",
-      "name": "High-Risk Themen (Extra-Infokarten)",
-      "description": "Hier geht es um Abgleich + Rahmen. Keine Anleitungen. Wenn etwas körperlich/psychisch 'nachbrennt', wird es ernst genommen.",
+      "id": "touch",
+      "name": "Körperlichkeit & Intimität",
+      "description": "Konkrete physische Praktiken und Berührungen.",
       "questions": [
         {
-          "id": "HR01",
+          "id": "T01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensual", "massage"],
+          "label": "Ausführliche Massagen / Sinnliche Berührungen (Ganzkörper).",
+          "help": "Fokus auf Entspannung und Sinnlichkeit, nicht zwingend Orgasmus."
+        },
+        {
+          "id": "T02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["oral", "give"],
+          "label": "Oralsex aktiv geben (dich verwöhnen).",
+          "help": "Bewerte, wie gerne du das tust."
+        },
+        {
+          "id": "T03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["oral", "receive"],
+          "label": "Oralsex empfangen (verwöhnt werden).",
+          "help": "Bewerte, wie sehr du das genießt."
+        },
+        {
+          "id": "T04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["manual"],
+          "label": "Manuelle Stimulation (Handjob / Fingern).",
+          "help": "Mit den Händen zum Höhepunkt bringen/gebracht werden."
+        },
+        {
+          "id": "T05",
           "schema": "consent_rating",
           "risk_level": "B",
-          "tags": ["anal"],
-          "label": "Anal (Stimulation/Penetration) wäre für mich (Fantasie oder Realität) denkbar.",
-          "help": "Wenn 'Vielleicht': Bedingungen + Tempo + No-Gos notieren."
+          "tags": ["roughness"],
+          "label": "Etwas härtere Gangart (z.B. festes Zupacken, Haare ziehen).",
+          "help": "Nur im Konsens und wenn es sich gut anfühlt."
+        }
+      ]
+    },
+    {
+      "id": "toys",
+      "name": "Toys & Hilfsmittel",
+      "description": "Einsatz von Spielzeug und Zubehör.",
+      "questions": [
+        {
+          "id": "Y01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "vibrator"],
+          "label": "Einsatz von Vibratoren / Sextoys während des Sex.",
+          "help": "Zur gemeinsamen Stimulation."
         },
         {
-          "id": "HR02",
+          "id": "Y02",
           "schema": "consent_rating",
-          "risk_level": "C",
-          "tags": ["intense"],
-          "label": "Sehr intensive Praktiken (z.B. starke Dehnung) interessieren mich grundsätzlich.",
-          "help": "High-Risk: hier ist 'Nein' völlig normal. Wenn 'Vielleicht': nur mit Sicherheitsrahmen."
+          "risk_level": "B",
+          "tags": ["bondage", "soft"],
+          "label": "Leichte Fesselungen / Fixierung (Soft Bondage).",
+          "help": "Z.B. Festhalten, Seidentücher, Handschellen. Jederzeit lösbar."
         },
         {
-          "id": "HR03",
+          "id": "Y03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["sensory", "blindfold"],
+          "label": "Augen verbinden / Sinnesentzug.",
+          "help": "Fokus auf das Fühlen verstärken."
+        }
+      ]
+    },
+    {
+      "id": "sensation",
+      "name": "Sensation Play & Impact",
+      "description": "Lustschmerz, Reize und körperliche Intensität.",
+      "questions": [
+        {
+          "id": "S01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["spanking", "impact"],
+          "label": "Spanking / Hauen (Hand oder Toys).",
+          "help": "Lustschmerz auf dem Hintern oder anderen Stellen."
+        },
+        {
+          "id": "S02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["marking", "biting"],
+          "label": "Beißen, Kratzen oder 'Markieren' (Knutschflecken).",
+          "help": "Spuren hinterlassen, die evtl. Tage sichtbar bleiben."
+        },
+        {
+          "id": "S03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["temperature"],
+          "label": "Temperaturspiele (Eiswürfel, warmes Öl/Wachs).",
+          "help": "Reiz durch Kälte oder Hitze."
+        },
+        {
+          "id": "S04",
           "schema": "consent_rating",
           "risk_level": "C",
-          "tags": ["fluids"],
-          "label": "Body-fluid Play (z.B. Natursekt) interessiert mich (Fantasie oder Realität).",
-          "help": "Wenn 'Vielleicht': Grenzen + Hygiene/Privatsphäre + Trigger/Scham berücksichtigen."
+          "tags": ["breathplay", "choking"],
+          "label": "Breathplay Light (Hand am Hals / Würgen).",
+          "help": "HIGH RISK: Nur andeuten oder sehr kontrolliert. Sofortiges Stop-Signal muss klar sein."
+        }
+      ]
+    },
+    {
+      "id": "mind_roles",
+      "name": "Kopfkino, Rollen & Psych",
+      "description": "Psychologische Spielarten, Dirty Talk und Rollenspiele.",
+      "questions": [
+        {
+          "id": "M01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["dirty_talk"],
+          "label": "Dirty Talk (Schmutziges Reden währenddessen).",
+          "help": "Worte, die anturnen. Ggf. in Notizen Beispiele schreiben."
+        },
+        {
+          "id": "M02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["degradation"],
+          "label": "Erniedrigung / Degradation (Worte oder Handlungen).",
+          "help": "Beleidigungen, Objektifizierung (nur im Spiel!)."
+        },
+        {
+          "id": "M03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["petplay", "roleplay"],
+          "label": "Petplay (Tierrollenspiel, z.B. Puppy/Kitten) oder andere Rollenspiele.",
+          "help": "In eine andere Rolle schlüpfen (Haustier, Arzt, Lehrer etc.)."
+        },
+        {
+          "id": "M04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["control", "orgasm_control"],
+          "label": "Orgasmuskontrolle / Edging (Hinauszögern oder Verwehren).",
+          "help": "Kontrolle über den Höhepunkt abgeben/übernehmen."
+        }
+      ]
+    },
+    {
+      "id": "fetish_advanced",
+      "name": "Fetische, High-Risk & Hardcore",
+      "description": "Spezielle Vorlieben und körperlich intensive Praktiken. Hier ist Kommunikation essenziell.",
+      "questions": [
+        {
+          "id": "F01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["anal", "plug"],
+          "label": "Analverkehr / Analspielzeug (Plugs, Beads).",
+          "help": "Vorbereitung und Gleitgel sind Pflicht."
+        },
+        {
+          "id": "F02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["fisting", "intense"],
+          "label": "Fisting (Vaginal oder Anal).",
+          "help": "Extreme Dehnung. Erfordert viel Erfahrung, Vorbereitung und Vertrauen."
+        },
+        {
+          "id": "F03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["watersports", "fluids"],
+          "label": "Natursekt (Watersports) / Body Fluids.",
+          "help": "Urinspiele. Hygiene, Ort und Ausmaß (nur auf Körper, in Mund etc.) klären."
+        },
+        {
+          "id": "F04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["feet", "bodyparts"],
+          "label": "Fußfetisch / Körperteil-Worship.",
+          "help": "Fokus auf bestimmte Körperteile (Füße, Hände, Achseln)."
+        },
+        {
+          "id": "F05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["gear", "material"],
+          "label": "Material-Fetisch (Latex, Leder, Lack, Nylon).",
+          "help": "Bestimmte Kleidung oder Materialien tragen/fühlen."
         }
       ]
     },
