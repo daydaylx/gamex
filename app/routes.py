@@ -1,4 +1,5 @@
 import json
+import time
 import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict
@@ -23,9 +24,10 @@ from app.template_store import list_templates, load_template
 from app.crypto import create_key_material, verify_password, verify_pin, encrypt_json, decrypt_json, hash_pin
 from app.compare import compare
 from app.ai import openrouter_analyze, list_ai_reports
+from app.logging import log_api_call, log_performance
 
 def validate_responses(template: Dict[str, Any], responses: Dict[str, Any]) -> tuple:
-    """Validate responses against template. Returns (errors, warnings)."""
+    """Validate responses against template. Returns (errors, warnings) as structured objects."""
     errors = []
     warnings = []
     
@@ -43,40 +45,196 @@ def validate_responses(template: Dict[str, Any], responses: Dict[str, Any]) -> t
             
         question = question_map.get(qid)
         if not question:
+            warnings.append({
+                "question_id": qid,
+                "question_label": qid,
+                "field": None,
+                "message": f"Unknown question ID (may be from different template version)",
+                "type": "unknown_question"
+            })
             continue
         
         schema = question.get("schema")
         risk_level = question.get("risk_level", "A")
+        label = question.get("label", qid)
         
         if schema == "consent_rating":
-            status = resp_data.get("status")
-            conditions = resp_data.get("conditions", "").strip()
-            interest = resp_data.get("interest")
-            comfort = resp_data.get("comfort")
+            # Dom/Sub Varianten
+            if "dom_status" in resp_data or "sub_status" in resp_data:
+                dom_status = resp_data.get("dom_status")
+                sub_status = resp_data.get("sub_status")
+                conditions = resp_data.get("conditions", "").strip()
+                
+                if dom_status == "MAYBE" and not conditions:
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "dom_conditions",
+                        "message": "Dom Status 'VIELLEICHT' erfordert Bedingungen",
+                        "type": "missing_required"
+                    })
+                if sub_status == "MAYBE" and not conditions:
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "sub_conditions",
+                        "message": "Sub Status 'VIELLEICHT' erfordert Bedingungen",
+                        "type": "missing_required"
+                    })
+                
+                # Validate ranges für dom/sub
+                for variant in ["dom", "sub"]:
+                    interest = resp_data.get(f"{variant}_interest")
+                    comfort = resp_data.get(f"{variant}_comfort")
+                    if interest is not None and (interest < 0 or interest > 4):
+                        errors.append({
+                            "question_id": qid,
+                            "question_label": label,
+                            "field": f"{variant}_interest",
+                            "message": f"{variant.capitalize()} Interesse muss zwischen 0 und 4 liegen",
+                            "type": "range_error"
+                        })
+                    if comfort is not None and (comfort < 0 or comfort > 4):
+                        errors.append({
+                            "question_id": qid,
+                            "question_label": label,
+                            "field": f"{variant}_comfort",
+                            "message": f"{variant.capitalize()} Komfort muss zwischen 0 und 4 liegen",
+                            "type": "range_error"
+                        })
+                    
+                    # Low comfort high interest warning
+                    if interest is not None and comfort is not None:
+                        if interest >= 3 and comfort <= 2:
+                            warnings.append({
+                                "question_id": qid,
+                                "question_label": label,
+                                "field": f"{variant}_interest",
+                                "message": f"{variant.capitalize()}: Hohes Interesse ({interest}) aber niedriger Komfort ({comfort})",
+                                "type": "low_comfort_high_interest"
+                            })
             
-            # MAYBE requires conditions
-            if status == "MAYBE" and not conditions:
-                errors.append(f"Question {qid}: Status 'MAYBE' requires conditions")
+            # Active/Passive Varianten
+            elif "active_status" in resp_data or "passive_status" in resp_data:
+                active_status = resp_data.get("active_status")
+                passive_status = resp_data.get("passive_status")
+                conditions = resp_data.get("conditions", "").strip()
+                
+                if active_status == "MAYBE" and not conditions:
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "active_conditions",
+                        "message": "Aktiv Status 'VIELLEICHT' erfordert Bedingungen",
+                        "type": "missing_required"
+                    })
+                if passive_status == "MAYBE" and not conditions:
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "passive_conditions",
+                        "message": "Passiv Status 'VIELLEICHT' erfordert Bedingungen",
+                        "type": "missing_required"
+                    })
+                
+                # Validate ranges für active/passive
+                for variant in ["active", "passive"]:
+                    interest = resp_data.get(f"{variant}_interest")
+                    comfort = resp_data.get(f"{variant}_comfort")
+                    if interest is not None and (interest < 0 or interest > 4):
+                        errors.append({
+                            "question_id": qid,
+                            "question_label": label,
+                            "field": f"{variant}_interest",
+                            "message": f"{variant.capitalize()} Interesse muss zwischen 0 und 4 liegen",
+                            "type": "range_error"
+                        })
+                    if comfort is not None and (comfort < 0 or comfort > 4):
+                        errors.append({
+                            "question_id": qid,
+                            "question_label": label,
+                            "field": f"{variant}_comfort",
+                            "message": f"{variant.capitalize()} Komfort muss zwischen 0 und 4 liegen",
+                            "type": "range_error"
+                        })
+                    
+                    # Low comfort high interest warning
+                    if interest is not None and comfort is not None:
+                        if interest >= 3 and comfort <= 2:
+                            warnings.append({
+                                "question_id": qid,
+                                "question_label": label,
+                                "field": f"{variant}_interest",
+                                "message": f"{variant.capitalize()}: Hohes Interesse ({interest}) aber niedriger Komfort ({comfort})",
+                                "type": "low_comfort_high_interest"
+                            })
             
-            # Validate ranges
-            if interest is not None and (interest < 0 or interest > 4):
-                errors.append(f"Question {qid}: Interest must be between 0 and 4")
-            if comfort is not None and (comfort < 0 or comfort > 4):
-                errors.append(f"Question {qid}: Comfort must be between 0 and 4")
-            
-            # Low comfort high interest warning
-            if interest is not None and comfort is not None:
-                if interest >= 3 and comfort <= 2:
-                    warnings.append(f"Question {qid}: High interest ({interest}) but low comfort ({comfort})")
-            
-            # High-risk questions should have conditions if YES
-            if risk_level == "C" and status == "YES" and not conditions:
-                warnings.append(f"Question {qid}: High-risk question with YES status should have conditions")
+            # Standard consent_rating
+            else:
+                status = resp_data.get("status")
+                conditions = resp_data.get("conditions", "").strip()
+                interest = resp_data.get("interest")
+                comfort = resp_data.get("comfort")
+                
+                # MAYBE requires conditions
+                if status == "MAYBE" and not conditions:
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "conditions",
+                        "message": "Bei Status 'VIELLEICHT' müssen Bedingungen angegeben werden",
+                        "type": "missing_required"
+                    })
+                
+                # Validate ranges
+                if interest is not None and (interest < 0 or interest > 4):
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "interest",
+                        "message": "Interesse muss zwischen 0 und 4 liegen",
+                        "type": "range_error"
+                    })
+                if comfort is not None and (comfort < 0 or comfort > 4):
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "comfort",
+                        "message": "Komfort muss zwischen 0 und 4 liegen",
+                        "type": "range_error"
+                    })
+                
+                # Low comfort high interest warning
+                if interest is not None and comfort is not None:
+                    if interest >= 3 and comfort <= 2:
+                        warnings.append({
+                            "question_id": qid,
+                            "question_label": label,
+                            "field": "interest",
+                            "message": f"Hohes Interesse ({interest}) aber niedriger Komfort ({comfort})",
+                            "type": "low_comfort_high_interest"
+                        })
+                
+                # High-risk questions should have conditions if YES
+                if risk_level == "C" and status == "YES" and not conditions:
+                    warnings.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "conditions",
+                        "message": "High-Risk Frage: Bitte Bedingungen für Sicherheit notieren",
+                        "type": "high_risk_missing_conditions"
+                    })
         
         elif schema == "scale_0_10":
             value = resp_data.get("value")
             if value is not None and (value < 0 or value > 10):
-                errors.append(f"Question {qid}: Value must be between 0 and 10")
+                errors.append({
+                    "question_id": qid,
+                    "question_label": label,
+                    "field": "value",
+                    "message": "Wert muss zwischen 0 und 10 liegen",
+                    "type": "range_error"
+                })
     
     return errors, warnings
 
@@ -260,10 +418,27 @@ def _load_both_responses(session_id: str, password: str):
 
 @api_router.post("/sessions/{session_id}/compare", response_model=CompareResult)
 def compare_session(session_id: str, req: CompareRequest):
-    srow, _salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
-    tpl = load_template(srow["template_id"])
-    result = compare(tpl, resp_a, resp_b)
-    return result
+    start = time.time()
+    try:
+        srow, _salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+        tpl = load_template(srow["template_id"])
+        
+        compare_start = time.time()
+        result = compare(tpl, resp_a, resp_b)
+        compare_duration = (time.time() - compare_start) * 1000
+        log_performance("compare", compare_duration, 
+                      session_id=session_id, 
+                      template_id=tpl.get("id"),
+                      question_count=len(result["items"]))
+        
+        total_duration = (time.time() - start) * 1000
+        log_api_call(f"/sessions/{session_id}/compare", "POST", 200, total_duration)
+        
+        return result
+    except Exception as e:
+        total_duration = (time.time() - start) * 1000
+        log_api_call(f"/sessions/{session_id}/compare", "POST", 500, total_duration)
+        raise
 
 @api_router.post("/sessions/{session_id}/export/json")
 def export_json(session_id: str, req: ExportRequest):
@@ -323,6 +498,16 @@ def export_markdown(session_id: str, req: ExportRequest):
     md = "\n".join(lines).encode("utf-8")
     fname = f"intimacy_report_{session_id}.md"
     return Response(content=md, media_type="text/markdown", headers={"Content-Disposition": f'attachment; filename="{fname}"'})
+
+@api_router.get("/scenarios")
+def get_scenarios():
+    import os
+    here = os.path.dirname(__file__)
+    path = os.path.join(here, "templates", "scenarios.json")
+    if not os.path.exists(path):
+        return []
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 @api_router.post("/sessions/{session_id}/ai/analyze")
 async def ai_analyze(session_id: str, req: AIAnalyzeRequest):

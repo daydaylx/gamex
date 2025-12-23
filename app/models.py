@@ -70,3 +70,4 @@ class AIReport(BaseModel):
     text: str
 
 
+

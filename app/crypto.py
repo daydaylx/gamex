@@ -74,3 +74,4 @@ def verify_pin(pin: Optional[str], stored_hash: Optional[str], salt: bytes, pers
     return hashlib.compare_digest(candidate, stored_hash)
 
 
+

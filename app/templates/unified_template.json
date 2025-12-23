@@ -1,703 +1,374 @@
 {
-  "id": "unified_v1",
-  "name": "Unified Master Template (v1)",
-  "version": 1,
-  "description": "Umfassender Fragebogen aus 3 Quellen (GentleDom, QueerTopia, Gamex v2). Strukturiert von Soft bis Hardcore.",
+  "id": "unified_v2",
+  "name": "Intimacy & Kink (v2 - Polished)",
+  "version": 2,
+  "description": "Der moderne Standard. Startet sanft (Rahmen, Kommunikation) und steigert sich modular zu Kink & BDSM. Fokus auf Konsens und psychologische Sicherheit.",
   "modules": [
     {
-      "id": "frame",
-      "name": "01. Rahmen, Gesundheit & Sicherheit",
-      "description": "Bevor wir starten: Gesundheitliche und emotionale Basis.",
+      "id": "intro",
+      "name": "01. Das Fundament: Wir & Rahmen",
+      "description": "Bevor wir über Praktiken reden: Wie wollen wir miteinander umgehen? Was ist unsere emotionale Basis?",
       "questions": [
         {
-          "id": "H01",
+          "id": "REL00",
           "schema": "text",
           "risk_level": "A",
-          "label": "Gibt es gesundheitliche Einschränkungen? (Asthma, Herz, Gelenke)",
-          "tags": [
-            "health"
-          ],
-          "help": "Wichtig für Fesselungen oder Atemspiele."
-        },
-        {
-          "id": "H02",
-          "schema": "text",
-          "risk_level": "A",
-          "label": "Nimmst du Medikamente, die Einfluss haben könnten? (Blutverdünner, Schmerzmittel)",
-          "tags": [
-            "health"
-          ],
-          "help": "Erhöhtes Risiko bei Impact/Spanking."
-        },
-        {
-          "id": "H03",
-          "schema": "text",
-          "risk_level": "A",
-          "label": "Allergien (Latex, Massageöle, Gleitgel-Inhaltsstoffe)?",
-          "tags": [
-            "health",
-            "safety"
-          ]
+          "label": "Intention & Vibe",
+          "help": "Warum machen wir das? (z.B. Neugier, Grenzen klären, Neues entdecken, Vertrauen vertiefen)",
+          "tags": ["meta", "level1"],
+          "info_details": "Es hilft extrem, das 'Warum' zu kennen. Geht es um Spaß? Um tiefe Verbindung? Um Grenzaustestung? Wenn einer nur Spaß will und der andere eine spirituelle Erfahrung sucht, gibt es Missverständnisse."
         },
         {
           "id": "SAF01",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Stop-Regel & Safeword",
-          "tags": [
-            "safety"
-          ],
-          "help": "Wie stoppen wir?",
+          "label": "Unser Safeword / Stop-Signal",
+          "help": "Ein Wort, das IMMER den sofortigen Stopp bedeutet. (Klassiker: 'Rot' oder 'Pause').",
           "options": [
             "Ampelsystem (Rot/Gelb/Grün)",
             "Klares 'Stop'",
-            "Non-verbales Signal (Klopfen)",
-            "Anderes"
-          ]
+            "Besonderes Wort (z.B. 'Flugzeug')",
+            "Non-verbal (2x Klopfen)"
+          ],
+          "tags": ["safety", "essential", "level1"]
         },
         {
           "id": "SAF02",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Aftercare-Bedürfnis",
-          "tags": [
-            "aftercare"
-          ],
-          "help": "Was brauchst du danach?",
+          "label": "Aftercare-Bedürfnis (Danach)",
+          "help": "Wenn das Adrenalin sinkt: Was brauchst du, um wieder 'zu landen'?",
           "options": [
-            "Kuscheln & Nähe",
-            "Ruhe & Alleinsein",
-            "Gespräch / Debrief",
-            "Essen/Trinken",
-            "Kommt drauf an"
-          ]
+            "Kuscheln & physische Nähe (Hold me)",
+            "Ruhe & Space (Leave me)",
+            "Aktives Gespräch / Feedback (Talk to me)",
+            "Essen/Trinken & Erdung",
+            "Unterschiedlich / Kommt drauf an"
+          ],
+          "tags": ["aftercare", "level1"],
+          "info_details": "Aftercare ist kein 'Bonus', sondern physiologisch notwendig. Nach intensivem Sex oder BDSM fällt der Hormonspiegel (Adrenalin/Endorphine) rapid ab ('Sub Drop'). Das kann zu Weinen, Zittern oder Traurigkeit führen. Aftercare fängt das auf."
+        },
+        {
+          "id": "H01",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Gesundheitliche 'Red Flags'",
+          "help": "Gibt es etwas, das ich wissen MUSS, um dich nicht zu verletzen? (Asthma, Gelenke, Herz, Medikamente, Allergien)",
+          "tags": ["health", "safety", "level1"]
         }
       ]
     },
     {
-      "id": "rel",
-      "name": "02. Beziehung & Kommunikation",
-      "description": "Wie wir miteinander umgehen und was wir suchen.",
+      "id": "comms",
+      "name": "02. Kommunikation & Dynamik",
+      "description": "Wie wir währenddessen reden (oder schweigen).",
       "questions": [
         {
-          "id": "REL01",
-          "schema": "enum",
-          "risk_level": "A",
-          "label": "Beziehungsform / Rahmen",
-          "tags": [
-            "relationship"
-          ],
-          "help": "Was ist der Kontext?",
-          "options": [
-            "Feste Beziehung (Monogam)",
-            "Offene Beziehung",
-            "Spielbeziehung / F+ / Affäre",
-            "Nur einmaliges Treffen"
-          ]
-        },
-        {
-          "id": "REL02",
-          "schema": "enum",
-          "risk_level": "B",
-          "label": "Digitale Privatsphäre (Fotos/Videos)",
-          "tags": [
-            "privacy"
-          ],
-          "help": "Dürfen Aufnahmen gemacht werden?",
-          "options": [
-            "Niemals",
-            "Nur ohne Gesicht",
-            "Nur auf privatem Gerät (Offline)",
-            "Cloud/Teilen ok"
-          ]
-        },
-        {
           "id": "COM01",
-          "schema": "scale_0_10",
+          "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Über Wünsche/Grenzen sprechen",
-          "tags": [
-            "communication"
-          ],
-          "help": "0 = fällt mir extrem schwer, 10 = ganz leicht"
+          "label": "Dirty Talk (Worte während Sex)",
+          "help": "Magst du es, wenn gesprochen wird? Welche Art von Worten?",
+          "tags": ["communication", "level1"]
         },
         {
           "id": "COM02",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Dirty Talk (währenddessen sprechen)",
-          "tags": [
-            "dirty_talk"
-          ],
-          "help": "Worte, die anturnen (oder abturnen)."
+          "label": "Anleitung & Feedback (in the moment)",
+          "help": "Darf ich sagen 'Mach das schneller' oder 'Fass mich da an'?",
+          "tags": ["communication", "level1"]
+        },
+        {
+          "id": "COM03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Lob & Bestätigung (Praising)",
+          "help": "'Gutes Mädchen', 'Braver Junge', 'Du machst das toll'.",
+          "tags": ["communication", "kink_light", "level2"]
+        },
+        {
+          "id": "COM04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Erniedrigung / Degradierung (Verbal)",
+          "help": "Beleidigungen, Objektifizierung (natürlich nur im konsensuellen Rahmen).",
+          "tags": ["communication", "kink", "level2"],
+          "info_details": "Psychologie: Für viele ist es befreiend, 'wertlos' zu sein, weil damit auch jede Verantwortung abfällt. Es ist oft eine Flucht vor dem Leistungsdruck des Alltags. Wichtig: Immer zwischen Rolle und Mensch trennen."
         }
       ]
     },
     {
-      "id": "body",
-      "name": "03. Körper, Nähe & Zärtlichkeit",
-      "description": "Die Basis physischer Intimität.",
+      "id": "touch",
+      "name": "03. Berührung & Sinnlichkeit",
+      "description": "Von sanft bis intensiv. Was darf dein Körper spüren?",
       "questions": [
         {
-          "id": "B01",
+          "id": "SEN01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Nacktheit (sich zeigen / angeschaut werden)",
-          "tags": [
-            "nude",
-            "comfort"
-          ]
+          "label": "Sinnliche Massage (Öl, Federn)",
+          "tags": ["sensory", "soft", "level1"]
         },
         {
-          "id": "B02",
+          "id": "SEN02",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Küssen (Mund/Zunge)",
-          "tags": [
-            "kissing"
-          ]
+          "label": "Gehalten werden / Festhalten",
+          "tags": ["intimacy", "level1"]
         },
         {
-          "id": "B03",
+          "id": "SEN03",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Küssen / Berühren an anderen Stellen (Hals, Ohren, Brust)",
-          "tags": [
-            "kissing",
-            "body"
-          ]
+          "label": "Kratzen / Nägel spüren",
+          "help": "Leichtes Kratzen am Rücken oder Po.",
+          "tags": ["sensation", "level1"]
         },
         {
-          "id": "B04",
+          "id": "SEN04",
           "schema": "consent_rating",
-          "risk_level": "A",
-          "label": "Gemeinsam Baden / Duschen",
-          "tags": [
-            "intimacy"
-          ]
+          "risk_level": "B",
+          "label": "Temperaturspiele (Eis / Warmes Wachs)",
+          "help": "Der Reiz von heiß/kalt auf der Haut. (Wachs nur Niedrigtemperatur!)",
+          "tags": ["sensation", "kink", "level2"]
         },
         {
-          "id": "B05",
+          "id": "SEN05",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Schlafen (im selben Bett übernachten)",
-          "tags": [
-            "intimacy",
-            "sleep"
-          ]
+          "label": "Augen verbinden (Blindfold)",
+          "help": "Kontrolle über das Sehen abgeben. Verstärkt andere Sinne.",
+          "tags": ["sensory", "level1"],
+          "info_details": "Einfachste Form des Kontrollverlusts. Erfordert mehr verbale Kommunikation, da Körpersprache nicht gesehen wird."
         }
       ]
     },
     {
-      "id": "sex",
-      "name": "04. Sexuelle Praktiken (Genital)",
-      "description": "Alles rund um Stimulation, Oral und Verkehr.",
+      "id": "sex_basic",
+      "name": "04. Sex & Genitales",
+      "description": "Die Klassiker. Was gefällt uns im Bett?",
       "questions": [
         {
-          "id": "SX01",
+          "id": "SEX01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Manuelle Stimulation (Handjob / Fingern) empfangen",
-          "tags": [
-            "manual",
-            "receive"
-          ]
+          "label": "Oralsex (Geben)",
+          "has_active_passive": false,
+          "tags": ["sex", "oral", "give", "level1"]
         },
         {
-          "id": "SX02",
+          "id": "SEX02",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Manuelle Stimulation (Handjob / Fingern) geben",
-          "tags": [
-            "manual",
-            "give"
-          ]
+          "label": "Oralsex (Empfangen)",
+          "tags": ["sex", "oral", "receive", "level1"]
         },
         {
-          "id": "SX03",
+          "id": "SEX03",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Oralsex empfangen (geleckt/geblasen werden)",
-          "tags": [
-            "oral",
-            "receive"
-          ]
+          "label": "Vaginale Penetration",
+          "tags": ["sex", "penetration", "level1"]
         },
         {
-          "id": "SX04",
-          "schema": "consent_rating",
-          "risk_level": "A",
-          "label": "Oralsex geben (lecken/blasen)",
-          "tags": [
-            "oral",
-            "give"
-          ]
-        },
-        {
-          "id": "SX05",
-          "schema": "consent_rating",
-          "risk_level": "A",
-          "label": "Vaginale Penetration (mit Penis)",
-          "tags": [
-            "penetration",
-            "vaginal"
-          ],
-          "help": "Klassischer Verkehr."
-        },
-        {
-          "id": "SX06",
+          "id": "SEX04",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Körperflüssigkeiten / Ejakulat (Grundsätzliches Interesse)",
-          "tags": [
-            "fluids"
-          ],
-          "help": "Sperma, Squirting etc. im Spiel?"
+          "label": "Anale Stimulation (Finger/Zunge/Toy)",
+          "help": "Vorsichtiges Tasten, Lecken oder Spielen am Eingang.",
+          "tags": ["sex", "anal", "level2"]
         },
         {
-          "id": "SX07",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Ejakulat im Mund / Schlucken",
-          "tags": [
-            "fluids",
-            "oral"
-          ],
-          "depends_on": {
-            "id": "SX06",
-            "values": [
-              "YES",
-              "MAYBE"
-            ]
-          }
-        },
-        {
-          "id": "SX08",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Ejakulat auf dem Körper / Gesicht",
-          "tags": [
-            "fluids",
-            "body"
-          ],
-          "depends_on": {
-            "id": "SX06",
-            "values": [
-              "YES",
-              "MAYBE"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "anal",
-      "name": "05. Anal & Tiefe",
-      "description": "Der hintere Bereich. Erfordert Hygiene, Gleitgel und Geduld.",
-      "questions": [
-        {
-          "id": "AN01",
-          "schema": "consent_rating",
-          "risk_level": "A",
-          "label": "Analbereich berühren / massieren (außen)",
-          "tags": [
-            "anal",
-            "massage"
-          ]
-        },
-        {
-          "id": "AN02",
-          "schema": "consent_rating",
-          "risk_level": "A",
-          "label": "Rimming (Lecken des Anus)",
-          "tags": [
-            "anal",
-            "oral"
-          ],
-          "depends_on": {
-            "id": "AN01",
-            "values": [
-              "YES",
-              "MAYBE"
-            ]
-          }
-        },
-        {
-          "id": "AN03",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Anale Spielzeuge (Plugs, Dildos)",
-          "tags": [
-            "anal",
-            "toys"
-          ],
-          "help": "Nur mit Sicherheits-Rückholer!",
-          "depends_on": {
-            "id": "AN01",
-            "values": [
-              "YES",
-              "MAYBE"
-            ]
-          }
-        },
-        {
-          "id": "AN04",
+          "id": "SEX05",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Anale Penetration (Penis)",
-          "tags": [
-            "anal",
-            "penetration"
-          ],
-          "help": "Vorbereitung ist Pflicht.",
-          "depends_on": {
-            "id": "AN03",
-            "values": [
-              "YES",
-              "MAYBE"
-            ]
-          }
+          "label": "Anale Penetration (Sex)",
+          "help": "Erfordert Vorbereitung, Gleitgel und Entspannung.",
+          "tags": ["sex", "anal", "hard", "level2"],
+          "depends_on": { "id": "SEX04", "values": ["YES", "MAYBE"] }
         },
         {
-          "id": "AN05",
+          "id": "SEX06",
           "schema": "consent_rating",
-          "risk_level": "C",
-          "label": "Fisting (Anal oder Vaginal)",
-          "tags": [
-            "fisting",
-            "extreme"
-          ],
-          "help": "Extreme Dehnung. Nur für Profis/Erfahrene.",
-          "depends_on": {
-            "id": "AN03",
-            "values": [
-              "YES",
-              "MAYBE"
-            ]
-          }
+          "risk_level": "B",
+          "label": "Toys einbeziehen (Vibratoren, Dildos)",
+          "tags": ["sex", "toys", "level1"]
         }
       ]
     },
     {
-      "id": "ds",
-      "name": "06. BDSM: Macht & Rollen",
-      "description": "Dominanz, Submission und psychologische Spiele.",
+      "id": "power",
+      "name": "05. Macht & Dynamik (D/s)",
+      "description": "Wer führt? Wer lässt los? Psychologische Spiele.",
       "questions": [
         {
           "id": "DS01",
-          "schema": "enum",
+          "schema": "consent_rating",
+          "has_dom_sub": true,
           "risk_level": "A",
-          "label": "Welche Rolle liegt dir?",
-          "tags": [
-            "roles"
-          ],
-          "options": [
-            "Dominant (Top)",
-            "Submissiv (Bottom)",
-            "Switch (Beides)",
-            "Egal/Keine"
-          ]
+          "label": "Führen & Geführt werden (Generell)",
+          "help": "Magst du es, die Kontrolle zu haben (Dom) oder abzugeben (Sub)?",
+          "tags": ["ds", "core", "level2"],
+          "info_details": "Psychologie: Machtabgabe (Submission) ist oft ein Akt der Stärke ('Ich vertraue dir so sehr, dass ich loslasse'). Dominanz ist Dienstleistung ('Ich übernehme die Verantwortung für unser Erlebnis')."
         },
         {
           "id": "DS02",
           "schema": "consent_rating",
-          "risk_level": "A",
-          "label": "Macht abgeben / Gehorsam sein",
-          "tags": [
-            "sub",
-            "obedience"
-          ]
+          "risk_level": "B",
+          "label": "Gehorsam & Dienen (Service)",
+          "help": "Getränke bringen, Aufgaben erfüllen, 'zu Diensten sein'.",
+          "tags": ["ds", "service", "level2"],
+          "depends_on": { "id": "DS01", "conditions": [
+             {"operator": "!=", "value": "NO"} 
+          ]}
         },
         {
           "id": "DS03",
           "schema": "consent_rating",
-          "risk_level": "A",
-          "label": "Macht ausüben / Befehle geben",
-          "tags": [
-            "dom",
-            "orders"
-          ]
+          "risk_level": "B",
+          "label": "Disziplinierung / Bestrafung",
+          "help": "Wenn Regeln gebrochen werden, folgt eine Konsequenz (abgesprochen!).",
+          "tags": ["ds", "punishment", "level2"]
         },
         {
           "id": "DS04",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Regeln, Rituale & Protokolle",
-          "tags": [
-            "rules",
-            "protocol"
-          ],
-          "help": "Z.B. Haltung annehmen, um Erlaubnis fragen."
-        },
-        {
-          "id": "DS05",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Erniedrigung / Demütigung (verbal)",
-          "tags": [
-            "degradation"
-          ],
-          "help": "Beleidigungen, Objektifizierung (nur im Konsens!)."
-        },
-        {
-          "id": "DS06",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Petplay (Hund, Katze, Pferd...)",
-          "tags": [
-            "roleplay",
-            "petplay"
-          ]
-        },
-        {
-          "id": "DS07",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Ageplay / Daddy / Mommy",
-          "tags": [
-            "roleplay",
-            "ageplay"
-          ]
+          "label": "Orgasmuskontrolle / Verweigern",
+          "help": "Du entscheidest, wann (und ob) der andere kommen darf.",
+          "tags": ["ds", "control", "level2"],
+          "info_details": "Erzeugt immense Spannung und Frustration, die sich in intensiverer Lust entladen kann. Erfordert viel Vertrauen, da es tief in die körperliche Autonomie eingreift."
         }
       ]
     },
     {
       "id": "impact",
-      "name": "07. BDSM: Impact (Schmerz) & Reize",
-      "description": "Spanking, Schlagen und sensorische Spiele.",
+      "name": "06. Impact & Spanking",
+      "description": "Wenn es klatschen darf.",
       "questions": [
         {
           "id": "IMP01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Leichtes Spanking (Hand auf Po)",
-          "tags": [
-            "spanking",
-            "light"
-          ]
+          "label": "Spanking: Spaß & Lustvoll",
+          "help": "Leichtes Hauen auf den Po, während dem Sex oder zum Flirten.",
+          "tags": ["impact", "fun", "level1"]
         },
         {
           "id": "IMP02",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Härtere Gangart (Gegenstände/Toys)",
-          "tags": [
-            "impact",
-            "toys"
-          ],
-          "help": "Interesse an Gerten, Paddles, Peitschen?",
-          "depends_on": {
-            "id": "IMP01",
-            "values": [
-              "YES",
-              "MAYBE"
-            ]
-          }
+          "label": "Spanking: Ernst & Strafe",
+          "help": "Methodisches Hauen, um Schmerz zu erzeugen oder Dominanz zu zeigen.",
+          "tags": ["impact", "punishment", "level2"],
+          "info_details": "Schmerz setzt Endorphine frei (körpereigene Drogen). Das kann zu einem rauschähnlichen Zustand ('Subspace') führen. Wichtig: Unterscheide 'guten Schmerz' (dumpf, Po) von 'schlechtem Schmerz' (Gelenke, Organe)."
         },
         {
           "id": "IMP03",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Beißen / Kratzen / Markieren",
-          "tags": [
-            "marks",
-            "rough"
-          ],
-          "help": "Spuren können bleiben."
+          "label": "Tools: Gerten, Paddles, Peitschen",
+          "help": "Einsatz von Hilfsmitteln statt nur der Hand.",
+          "tags": ["impact", "toys", "level2"],
+          "depends_on": { "id": "IMP02", "values": ["YES", "MAYBE"] }
         },
         {
           "id": "IMP04",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Nippelspiele (Klemmen, Beißen)",
-          "tags": [
-            "nipples",
-            "pain"
-          ]
-        },
-        {
-          "id": "IMP05",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Temperatur (Eis / Wachs)",
-          "tags": [
-            "temperature"
-          ],
-          "help": "Heißes Wachs nur spezialisiert (Niedrigtemperatur)!"
-        },
-        {
-          "id": "IMP06",
-          "schema": "consent_rating",
-          "risk_level": "C",
-          "label": "Nadeln / Cutting / Blut",
-          "tags": [
-            "blood",
-            "needles"
-          ],
-          "help": "High Risk. Strenge Hygiene."
+          "label": "Andere Zonen (Brüste, Oberschenkel)",
+          "help": "Po ist Standard. Darf es woanders hin?",
+          "tags": ["impact", "zones", "level2"]
         }
       ]
     },
     {
-      "id": "bondage",
-      "name": "08. BDSM: Fesseln & Kontrolle",
-      "description": "Bondage, Fixierung und Einschränkung.",
+      "id": "restraint",
+      "name": "07. Bondage & Fixierung",
+      "description": "Die Kunst des Fesselns.",
       "questions": [
         {
-          "id": "BON01",
+          "id": "BND01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Leichte Fesselung (Soft Bondage)",
-          "tags": [
-            "bondage",
-            "soft"
-          ],
-          "help": "Tücher, Handschellen, Festhalten."
+          "label": "Leichte Fixierung (Soft Bondage)",
+          "help": "Festhalten, Tücher, Krawatten. Man kann sich theoretisch befreien.",
+          "tags": ["bondage", "soft", "level1"]
         },
         {
-          "id": "BON02",
+          "id": "BND02",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Feste Bondage / Seile",
-          "tags": [
-            "bondage",
-            "rope"
-          ],
-          "help": "Nervenbahnen beachten! Nicht allein lassen.",
-          "depends_on": {
-            "id": "BON01",
-            "values": [
-              "YES",
-              "MAYBE"
-            ]
-          }
+          "label": "Feste Fesseln (Handschellen, Seile)",
+          "help": "Man ist wirklich fixiert und hilflos.",
+          "tags": ["bondage", "hard", "level2"],
+          "info_details": "Gefühl der völligen Auslieferung. Kann sehr entspannend wirken, weil man 'nichts mehr tun muss'. Sicherheit: Niemals allein lassen. Schere bereit halten. Auf Nervenbahnen achten (taube Finger = sofort lösen!)."
         },
         {
-          "id": "BON03",
-          "schema": "consent_rating",
-          "risk_level": "A",
-          "label": "Augen verbinden (Sinnesentzug)",
-          "tags": [
-            "sensory",
-            "blindfold"
-          ]
-        },
-        {
-          "id": "BON04",
+          "id": "BND03",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Gag / Knebel",
-          "tags": [
-            "gag",
-            "silence"
-          ],
-          "help": "Atmung muss immer frei sein."
-        },
-        {
-          "id": "BON05",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Käfig / Keuschheit (Chastity)",
-          "tags": [
-            "chastity",
-            "control"
-          ]
-        },
-        {
-          "id": "BON06",
-          "schema": "consent_rating",
-          "risk_level": "C",
-          "label": "Breathplay / Würgen",
-          "tags": [
-            "breathplay",
-            "risk"
-          ],
-          "help": "EXTREM RISIKOREICH. Kehlkopf tabu. Schlaganfallrisiko. Nur andeuten!"
+          "label": "Knebel (Gags)",
+          "help": "Den Mund verschließen. (Atmung muss immer frei sein!)",
+          "tags": ["bondage", "gag", "level2"]
         }
       ]
     },
     {
-      "id": "settings",
-      "name": "09. Settings, Gruppen & Tabus",
-      "description": "Wo, mit wem und was gar nicht geht.",
+      "id": "risks",
+      "name": "08. High Risk & Tabus (Optional)",
+      "description": "Dinge, die besondere Vorsicht erfordern.",
       "questions": [
         {
-          "id": "SET01",
+          "id": "RSK01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Atemspiele / Breathplay",
+          "help": "WARNUNG: Extrem hohes Risiko! Niemals allein. Niemals Kehlkopf.",
+          "tags": ["risk", "breath", "level3"],
+          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Das Hirn schüttet Panik-Hormone aus, gefolgt von Euphorie. Physisch EXTREM gefährlich. Nur Carotiden (seitlich) und nur Sekunden."
+        },
+        {
+          "id": "RSK02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Nadeln / Blut / Cutting",
+          "help": "WARNUNG: Infektionsrisiko. Nur mit Fachwissen.",
+          "tags": ["risk", "blood", "level3"]
+        },
+        {
+          "id": "RSK03",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Sex in der Öffentlichkeit / Exhibitionismus",
-          "tags": [
-            "public",
-            "exhibition"
-          ]
-        },
-        {
-          "id": "SET02",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "label": "Zuschauen (Voyeurismus)",
-          "tags": [
-            "voyeur"
-          ]
-        },
-        {
-          "id": "SET03",
-          "schema": "consent_rating",
-          "risk_level": "C",
-          "label": "Dreier / Gruppensex",
-          "tags": [
-            "group",
-            "threesome"
-          ],
-          "help": "Erfordert sehr stabile Beziehung und klare Regeln."
-        },
-        {
-          "id": "SET04",
-          "schema": "consent_rating",
-          "risk_level": "C",
-          "label": "Natursekt (Watersports)",
-          "tags": [
-            "watersports"
-          ],
-          "help": "Urinspiele."
-        },
-        {
-          "id": "SET05",
-          "schema": "consent_rating",
-          "risk_level": "C",
-          "label": "Fäkalien (Scat)",
-          "tags": [
-            "scat",
-            "taboo"
-          ],
-          "help": "Hohes Infektionsrisiko."
+          "label": "Andere Personen (Dreier / Gruppen)",
+          "help": "Hohes emotionales Risiko. Klare Regeln nötig.",
+          "tags": ["risk", "group", "level2"]
         }
       ]
     },
     {
-      "id": "review",
-      "name": "10. Review & Wünsche",
-      "description": "Blick zurück und nach vorn.",
+      "id": "extreme",
+      "name": "09. Extreme Praktiken & Tiefe",
+      "description": "Für Fortgeschrittene.",
       "questions": [
         {
-          "id": "R01",
-          "schema": "text",
-          "risk_level": "A",
-          "label": "Wiederholungswunsch: Was war gut?",
-          "tags": [
-            "review",
-            "positive"
-          ]
+          "id": "EXT01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Fisting (Vaginal/Anal)",
+          "help": "Einführen der ganzen Hand.",
+          "tags": ["extreme", "fisting"],
+          "info_details": "Psychologie: Die ultimative Öffnung und das 'Füllen' der Leere. Erfordert extremes Vertrauen und Loslassen. Physisch ein sehr langsamer Prozess des Dehnens. Führt oft in einen tiefen Trance-Zustand (Subspace)."
         },
         {
-          "id": "R02",
-          "schema": "text",
-          "risk_level": "A",
-          "label": "Drop-List: Was lieber pausieren?",
-          "tags": [
-            "review",
-            "negative"
-          ]
+          "id": "EXT02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Petplay (Hund/Pony)",
+          "help": "Rollenspiel als Tier.",
+          "tags": ["roleplay", "petplay"],
+          "info_details": "Psychologie: 'Headspace'. Urlaub vom Menschsein. Keine Worte, keine komplexen Gedanken, nur Instinkt und Gehorsam. Sehr meditativ und befreiend von Alltagssorgen."
         }
       ]
     }

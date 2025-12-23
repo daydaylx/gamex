@@ -1,11 +1,26 @@
 from __future__ import annotations
 
 import json
+import time
+import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
+from app.logging import log_performance
+
 def _utcnow() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+def _load_scenarios() -> List[Dict[str, Any]]:
+    try:
+        here = os.path.dirname(__file__)
+        path = os.path.join(here, "templates", "scenarios.json")
+        if not os.path.exists(path):
+            return []
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
 
 def _get(resp: Dict[str, Any], qid: str) -> Dict[str, Any]:
     v = resp.get(qid)
@@ -48,40 +63,83 @@ def _generate_action_plan(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         and it.get("schema") == "consent_rating"
     ]
     
-    # Calculate score (avg interest + avg comfort)
-    scored = []
+    # Filter by comfort level (both >= 3)
+    comfort_filtered = []
     for m in matches:
+        ca = _safe_int(m["a"].get("comfort")) or 0
+        cb = _safe_int(m["b"].get("comfort")) or 0
+        if ca >= 3 and cb >= 3:
+            comfort_filtered.append(m)
+    
+    # Calculate enhanced score
+    scored = []
+    for m in comfort_filtered:
         ia = _safe_int(m["a"].get("interest")) or 0
         ib = _safe_int(m["b"].get("interest")) or 0
         ca = _safe_int(m["a"].get("comfort")) or 0
         cb = _safe_int(m["b"].get("comfort")) or 0
-        score = (ia + ib) + (ca + cb) # Higher is better
-        scored.append((score, m))
         
-    # Sort descending
+        # Base score: interest + comfort
+        base_score = (ia + ib) + (ca + cb)
+        
+        # Bonus für moderate risk (nicht nur high-risk)
+        risk_bonus = 0
+        if m.get("risk_level") == "B":
+            risk_bonus = 1
+        elif m.get("risk_level") == "A":
+            risk_bonus = 2
+        
+        score = base_score + risk_bonus
+        scored.append((score, m))
+    
     scored.sort(key=lambda x: x[0], reverse=True)
     
-    # Pick top 3 unique modules if possible
+    # Tag-basierte Diversität
     plan = []
     used_modules = set()
+    used_tags = set()
+    tag_categories = {
+        "soft": ["kissing", "touching", "cuddling"],
+        "toy": ["toy", "vibrator", "plug"],
+        "kink": ["bdsm", "roleplay", "fetish"],
+        "intense": ["impact", "breath", "edge"]
+    }
     
-    # First pass: try to get different modules
+    # First pass: versuche verschiedene Tags
     for score, m in scored:
-        if len(plan) >= 3: break
-        if m["module_id"] not in used_modules:
+        if len(plan) >= 3:
+            break
+        tags = set(m.get("tags", []))
+        category = None
+        for cat, tag_list in tag_categories.items():
+            if tags.intersection(tag_list):
+                category = cat
+                break
+        
+        if category and category not in used_tags:
             plan.append(m)
             used_modules.add(m["module_id"])
-            
-    # Second pass: fill if needed
-    if len(plan) < 3:
-        for score, m in scored:
-            if len(plan) >= 3: break
-            if m not in plan:
-                plan.append(m)
-                
+            used_tags.add(category)
+    
+    # Second pass: verschiedene Module
+    for score, m in scored:
+        if len(plan) >= 3:
+            break
+        if m["module_id"] not in used_modules and m not in plan:
+            plan.append(m)
+            used_modules.add(m["module_id"])
+    
+    # Third pass: fill remaining slots
+    for score, m in scored:
+        if len(plan) >= 3:
+            break
+        if m not in plan:
+            plan.append(m)
+    
     return plan
 
 def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, Any]) -> Dict[str, Any]:
+    start = time.time()
     items: List[Dict[str, Any]] = []
     summary = {
         "counts": {"MATCH": 0, "EXPLORE": 0, "BOUNDARY": 0},
@@ -123,7 +181,7 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
             if schema == "consent_rating":
                 # Handle Dom/Sub variants
                 if a.get("dom_status") is not None or b.get("dom_status") is not None:
-                    # Dom/Sub variant: compare both Dom and Sub separately
+                    # Dom/Sub variant logic
                     dom_sa = a.get("dom_status")
                     dom_sb = b.get("dom_status")
                     sub_sa = a.get("sub_status")
@@ -158,6 +216,7 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
                 
                 # Handle active/passive variants
                 elif a.get("active_status") is not None or b.get("active_status") is not None:
+                    # Active/Passive logic
                     active_sa = a.get("active_status")
                     active_sb = b.get("active_status")
                     passive_sa = a.get("passive_status")
@@ -197,7 +256,7 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
                     if sa and sb:
                         pair_status = _status_pair(sa, sb)
                     else:
-                        pair_status = "EXPLORE"  # incomplete treated as explore
+                        pair_status = "EXPLORE"
 
                     # Check for Hard Limit Violations (One wants it, other has hard limit)
                     wants_it = ["YES", "MAYBE"]
@@ -262,11 +321,61 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
 
             items.append(row)
 
+    # 2. Compare Scenarios
+    scenarios = _load_scenarios()
+    for scen in scenarios:
+        sid = scen["id"]
+        key = f"SCENARIO_{sid}"
+        
+        sa = resp_a.get(key)
+        sb = resp_b.get(key)
+        
+        if sa or sb:
+            choice_a = sa.get("choice") if isinstance(sa, dict) else None
+            choice_b = sb.get("choice") if isinstance(sb, dict) else None
+            
+            p_status = "EXPLORE"
+            if choice_a and choice_b:
+                if choice_a == choice_b:
+                    p_status = "MATCH"
+                else:
+                    risk_a = sa.get("risk_type")
+                    risk_b = sb.get("risk_type")
+                    risky_types = ["active", "explore", "masochism", "submission", "fantasy_active"]
+                    stop_types = ["boundary", "safety", "no"]
+                    
+                    if (risk_a in risky_types and risk_b in stop_types) or \
+                       (risk_b in risky_types and risk_a in stop_types):
+                        p_status = "BOUNDARY"
+            
+            if p_status in summary["counts"]:
+                summary["counts"][p_status] += 1
+                
+            items.append({
+                "question_id": sid,
+                "module_id": "scenarios",
+                "module_name": f"Szenario: {scen.get('category')}",
+                "label": scen.get("title"),
+                "help": scen.get("description"),
+                "schema": "scenario",
+                "risk_level": "B",
+                "tags": ["scenario"],
+                "a": sa,
+                "b": sb,
+                "pair_status": p_status,
+                "flags": ["scenario"]
+            })
+
     # Sort for presentation: boundaries first, then explore, then matches; high risk within groups
     order = {"BOUNDARY": 0, "EXPLORE": 1, "MATCH": 2}
-    items.sort(key=lambda r: (order.get(r["pair_status"], 9), 0 if r.get("risk_level") == "C" else 1, r.get("module_name",""), r.get("question_id","")))
+    items.sort(key=lambda r: (order.get(r["pair_status"], 9), 0 if r.get("risk_level") == "C" else 1, r.get("module_name","), r.get("question_id", ")))
 
     action_plan = _generate_action_plan(items)
 
+    duration = (time.time() - start) * 1000
+    log_performance("compare_operation", duration,
+                   template_id=template.get("id"),
+                   item_count=len(items))
+    
     meta = {"template_id": template.get("id"), "template_name": template.get("name"), "template_version": template.get("version")}
     return {"meta": meta, "summary": summary, "items": items, "action_plan": action_plan}

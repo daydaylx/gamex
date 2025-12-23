@@ -1,0 +1,182 @@
+[
+  {
+    "id": "S01",
+    "title": "Die offene Tür",
+    "category": "Public/Voyeur",
+    "description": "Du bist auf einer Party, gehst kurz raus. In der Garage siehst du zwei Leute, die offensichtlich miteinander beschäftigt sind. Sie bemerken dich, lachen und sagen: 'Wenn du willst, bleib. Oder komm dazu.'",
+    "options": [
+      { "id": "A", "label": "Mitmachen (Ich steige ein)", "risk_type": "active" },
+      { "id": "B", "label": "Zuschauen (Ich bleibe, fasse aber nicht an)", "risk_type": "passive" },
+      { "id": "C", "label": "Gehen (Freundlich ablehnen)", "risk_type": "none" },
+      { "id": "D", "label": "Erst klären ('Seid ihr nüchtern/sicher?')", "risk_type": "safety" }
+    ]
+  },
+  {
+    "id": "S02",
+    "title": "Kontrollverlust Light",
+    "category": "Power Dynamics",
+    "description": "Beim Abendessen sagt dein:e Partner:in plötzlich mit ernster, dominanter Stimme: 'Heute Abend triffst du keine Entscheidungen mehr. Ich bestimme, wann wir gehen, was du anziehst und was im Bett passiert.'",
+    "options": [
+      { "id": "A", "label": "Sich darauf einlassen (Hingabe genießen)", "risk_type": "submission" },
+      { "id": "B", "label": "Spielerisch herausfordern ('Zwing mich doch')", "risk_type": "playful" },
+      { "id": "C", "label": "Ablehnen / Grenze ziehen ('Heute nicht')", "risk_type": "boundary" },
+      { "id": "D", "label": "Rahmen checken (Safeword vereinbaren)", "risk_type": "safety" }
+    ]
+  },
+  {
+    "id": "S03",
+    "title": "Das Foto-Dilemma",
+    "category": "Digital/Privacy",
+    "description": "In einem sehr intimen, entblößten Moment greift dein:e Partner:in zum Handy: 'Das sieht so gut aus, ich will das festhalten.' Es war vorher nicht abgesprochen.",
+    "options": [
+      { "id": "A", "label": "Ja, gerne (Erregung durchs Gesehenwerden)", "risk_type": "active" },
+      { "id": "B", "label": "Ja, aber nur ohne Gesicht/Identität", "risk_type": "conditional" },
+      { "id": "C", "label": "Nein, sofort Handy weg!", "risk_type": "boundary" },
+      { "id": "D", "label": "Kurz stoppen und Speicherort klären", "risk_type": "safety" }
+    ]
+  },
+  {
+    "id": "S04",
+    "title": "Schmerz als Impuls",
+    "category": "Impact/Sensation",
+    "description": "Beim normalen Sex wird dein:e Partner:in plötzlich grober, packt fest am Hals zu oder deutet einen Schlag an. Der Blick ist fordernd und intensiv.",
+    "options": [
+      { "id": "A", "label": "Ermutigen / Härter (Lust am Schmerz)", "risk_type": "masochism" },
+      { "id": "B", "label": "Sanft bleiben / Bremsen ('Nicht so fest')", "risk_type": "soft" },
+      { "id": "C", "label": "Stop / Unterbrechen (Das macht mir Angst)", "risk_type": "boundary" },
+      { "id": "D", "label": "Check-in ('Ist alles okay bei dir?')", "risk_type": "checkin" }
+    ]
+  },
+  {
+    "id": "S05",
+    "title": "Der Rollentausch",
+    "category": "Roles",
+    "description": "Ihr habt eine etablierte Dynamik (einer führt, einer folgt). Plötzlich schlägt die andere Person vor: 'Heute drehen wir alles komplett um. Du nimmst meine Rolle ein.'",
+    "options": [
+      { "id": "A", "label": "Neugierig ausprobieren (Challenge accepted)", "risk_type": "explore" },
+      { "id": "B", "label": "Zögerlich / Unsicher (Kann ich das?)", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nein, das gefällt mir absolut nicht", "risk_type": "boundary" },
+      { "id": "D", "label": "Erst 'Wie genau?' besprechen (Anleitung nötig)", "risk_type": "negotiation" }
+    ]
+  },
+  {
+    "id": "S06",
+    "title": "Dritte Person (Fantasie)",
+    "category": "Group/Fantasy",
+    "description": "Ihr liegt im Bett und redet. 'Stell dir vor, XY (eine konkrete Person aus eurem Bekanntenkreis) wäre jetzt hier und würde zuschauen.' Es ist sehr konkret.",
+    "options": [
+      { "id": "A", "label": "Einsteigen & weiterspinnen (Kopfkino)", "risk_type": "fantasy_active" },
+      { "id": "B", "label": "Zuhören, aber passiv bleiben", "risk_type": "fantasy_passive" },
+      { "id": "C", "label": "Thema wechseln (Abtörn / Eifersucht)", "risk_type": "boundary" },
+      { "id": "D", "label": "Realitätscheck ('Nur Fantasie oder Wunsch?')", "risk_type": "checkin" }
+    ]
+  },
+  {
+    "id": "S07",
+    "title": "Das 'Nein'-Spiel (CNC)",
+    "category": "High Risk/CNC",
+    "description": "Ihr rauft spielerisch. Du sagst lachend 'Nein, hör auf', aber dein:e Partner:in macht weiter und hält dich fester. Du spürst, dass die Grenze zwischen Spiel und Ernst verschwimmt.",
+    "options": [
+      { "id": "A", "label": "Genießen (Der Kitzel des Zwingens)", "risk_type": "submission" },
+      { "id": "B", "label": "Körperlich wehren, aber im Spiel bleiben", "risk_type": "playful" },
+      { "id": "C", "label": "Safeword benutzen (Sofort beenden)", "risk_type": "boundary" },
+      { "id": "D", "label": "Tonfall ändern ('Ernsthaft jetzt, lass los')", "risk_type": "safety" }
+    ]
+  },
+  {
+    "id": "S08",
+    "title": "Das sichtbare Zeichen",
+    "category": "Social Risk",
+    "description": "Mitten in der Leidenschaft will dein:e Partner:in dir einen sichtbaren Knutschfleck oder Biss am Hals verpassen. Morgen hast du einen Termin/Arbeit.",
+    "options": [
+      { "id": "A", "label": "Ja, markier mich! (Stolz/Besitz)", "risk_type": "active" },
+      { "id": "B", "label": "Ja, aber an verdeckter Stelle", "risk_type": "conditional" },
+      { "id": "C", "label": "Nein, auf gar keinen Fall sichtbar", "risk_type": "boundary" },
+      { "id": "D", "label": "Verhandeln (Wie lange bleibt das?)", "risk_type": "negotiation" }
+    ]
+  },
+  {
+    "id": "S09",
+    "title": "Das ferngesteuerte Toy",
+    "category": "Public/Control",
+    "description": "Ihr geht essen. Dein:e Partner:in schlägt vor, dass du ein ferngesteuertes Toy (Vibrator/Plug) trägst und er/sie die Fernbedienung hat. Niemand sonst weiß es.",
+    "options": [
+      { "id": "A", "label": "Ja, der Nervenkitzel reizt mich", "risk_type": "active" },
+      { "id": "B", "label": "Nur wenn ich auch eine Not-Aus-Option habe", "risk_type": "safety" },
+      { "id": "C", "label": "Nein, zu viel Angst entdeckt zu werden", "risk_type": "boundary" },
+      { "id": "D", "label": "Erst zuhause üben, nicht gleich Restaurant", "risk_type": "conditional" }
+    ]
+  },
+  {
+    "id": "S10",
+    "title": "Aftercare-Konflikt",
+    "category": "Emotion/Aftercare",
+    "description": "Nach einer intensiven Session bricht einer von euch emotional zusammen (weint, zittert - 'Sub Drop'). Der andere ist aber erschöpft und will eigentlich nur schlafen oder Ruhe.",
+    "options": [
+      { "id": "A", "label": "Bedürfnis nach Nähe erzwingen/einfordern", "risk_type": "active" },
+      { "id": "B", "label": "Sich zurückziehen und allein klarkommen", "risk_type": "passive" },
+      { "id": "C", "label": "Partner:in wachrütteln/konfrontieren", "risk_type": "boundary" },
+      { "id": "D", "label": "Kompromiss: 'Halten, aber nicht reden'", "risk_type": "negotiation" }
+    ]
+  },
+  {
+    "id": "S11",
+    "title": "Die Überraschung",
+    "category": "Consent/Surprise",
+    "description": "Du kommst nach Hause. Dein:e Partner:in hat bereits alles für eine Kinky-Session vorbereitet (Seile, Kerzen, Outfit) und erwartet dich in einer Rolle. Ihr hattet das heute nicht verabredet.",
+    "options": [
+      { "id": "A", "label": "Sofort einsteigen (Freude über Initiative)", "risk_type": "active" },
+      { "id": "B", "label": "Mitmachen, aber erst langsam ankommen", "risk_type": "hesitant" },
+      { "id": "C", "label": "Stoppen (Ich brauche Vorwarnung)", "risk_type": "boundary" },
+      { "id": "D", "label": "Code-Wort Check ('Welche Farbe haben wir?')", "risk_type": "safety" }
+    ]
+  },
+  {
+    "id": "S12",
+    "title": "Dirty Talk & Tabus",
+    "category": "Verbal/Taboo",
+    "description": "Im Eifer des Gefechts nutzt dein:e Partner:in ein Schimpfwort oder einen Begriff für dich, den ihr noch nie benutzt habt und der gesellschaftlich sehr tabuisiert ist.",
+    "options": [
+      { "id": "A", "label": "Das turnt mich extrem an (Degradierung)", "risk_type": "active" },
+      { "id": "B", "label": "Ich ignoriere es, solange es gut ist", "risk_type": "passive" },
+      { "id": "C", "label": "Sofort Stop (Das geht zu weit)", "risk_type": "boundary" },
+      { "id": "D", "label": "Später ansprechen ('Wie meintest du das?')", "risk_type": "checkin" }
+    ]
+  },
+  {
+    "id": "S13",
+    "title": "Körperflüssigkeiten",
+    "category": "Sensation/Taboo",
+    "description": "Es wird wilder. Dein:e Partner:in deutet an, dir ins Gesicht zu spucken oder Ejakulat im Gesicht zu verteilen. Es passiert gleich, wenn du nichts tust.",
+    "options": [
+      { "id": "A", "label": "Mund auf / Hinhalten (Will es)", "risk_type": "active" },
+      { "id": "B", "label": "Geschehen lassen (Ertragen für den anderen)", "risk_type": "passive" },
+      { "id": "C", "label": "Wegdrehen / Hand davor", "risk_type": "boundary" },
+      { "id": "D", "label": "Handzeichen für 'Körper ja, Gesicht nein'", "risk_type": "negotiation" }
+    ]
+  },
+  {
+    "id": "S14",
+    "title": "Der Spiegel",
+    "category": "Body Image",
+    "description": "Ihr habt Sex. Dein:e Partner:in dreht dich so, dass du dich selbst dabei im großen Spiegel sehen musst, inklusive aller 'Problemzonen'. Er/Sie kommentiert, wie geil das aussieht.",
+    "options": [
+      { "id": "A", "label": "Hinschauen und sich geil finden", "risk_type": "active" },
+      { "id": "B", "label": "Augen schließen (Scham verdrängen)", "risk_type": "hesitant" },
+      { "id": "C", "label": "Wegdrehen / Spiegel abdecken", "risk_type": "boundary" },
+      { "id": "D", "label": "Fokus auf das Gefühl, nicht das Bild", "risk_type": "passive" }
+    ]
+  },
+  {
+    "id": "S15",
+    "title": "Bezahlte Dienste (Rollenspiel)",
+    "category": "Roleplay/Power",
+    "description": "Ein Rollenspiel-Vorschlag: Einer bezahlt den anderen für Sex (Spielgeld oder echtes Geld/Geschenke). Es geht um das Gefühl, 'gekauft' und 'benutzt' zu sein.",
+    "options": [
+      { "id": "A", "label": "Heiß (Objektifizierung / Macht)", "risk_type": "active" },
+      { "id": "B", "label": "Okay, solange es klar Spiel ist", "risk_type": "conditional" },
+      { "id": "C", "label": "Nein, das fühlt sich falsch an", "risk_type": "boundary" },
+      { "id": "D", "label": "Klären: Wer hat die Macht dabei?", "risk_type": "negotiation" }
+    ]
+  }
+]

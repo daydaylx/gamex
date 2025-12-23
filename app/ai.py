@@ -23,8 +23,9 @@ def _build_prompt(compare_result: Dict[str, Any]) -> str:
         "2) Explore (VIELLEICHT beteiligt) inkl. Bedingungen beider und einem vorsichtigen Einstieg je Thema.\n"
         "3) Grenzenliste (mind. ein NEIN) ohne Diskussion.\n"
         "4) Risiko-Flags erklären (Diskrepanzen, niedriger Komfort bei hohem Interesse, High-Risk).\n"
-        "5) 4-Wochen-Plan: 3 Experimente + Debrief-Fragen.\n"
-        "Ausgabe: Überschriften + Bulletpoints, konkret, nicht grafisch explizit.\n\n"
+        "5) Szenarien-Check: Prüfe Diskrepanzen in den 'Szenarien' (Schema 'scenario'). Wenn einer 'A' (Machen) und der andere 'D' (Klären) oder 'C' (Gehen) wählt, thematisiere das als konkreten Gesprächsbedarf.\n"
+        "6) 4-Wochen-Plan: 3 Experimente + Debrief-Fragen.\n"
+        "Ausgabe: Überschriften + Bulletpoints, konkret, nicht explizit pornografisch.\n\n"
         "Eingabedaten (Vergleichsergebnis als JSON):\n"
         f"{json.dumps(compare_result, ensure_ascii=False)}"
     )
@@ -112,5 +113,6 @@ def list_ai_reports(session_id: str, password: str, salt: bytes):
             "text": payload.get("text",""),
         })
     return out
+
 
 
