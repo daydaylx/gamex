@@ -13,7 +13,7 @@ def _get(resp: Dict[str, Any], qid: str) -> Dict[str, Any]:
 
 def _status_pair(a: str, b: str) -> str:
     # boundaries override everything
-    if a == "NO" or b == "NO":
+    if a in ("NO", "HARD_LIMIT") or b in ("NO", "HARD_LIMIT"):
         return "BOUNDARY"
     if a == "YES" and b == "YES":
         return "MATCH"
@@ -40,11 +40,52 @@ def _safe_int(v: Any) -> Optional[int]:
     except Exception:
         return None
 
+def _generate_action_plan(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    # Filter for MATCH items of type consent_rating
+    matches = [
+        it for it in items 
+        if it["pair_status"] == "MATCH" 
+        and it.get("schema") == "consent_rating"
+    ]
+    
+    # Calculate score (avg interest + avg comfort)
+    scored = []
+    for m in matches:
+        ia = _safe_int(m["a"].get("interest")) or 0
+        ib = _safe_int(m["b"].get("interest")) or 0
+        ca = _safe_int(m["a"].get("comfort")) or 0
+        cb = _safe_int(m["b"].get("comfort")) or 0
+        score = (ia + ib) + (ca + cb) # Higher is better
+        scored.append((score, m))
+        
+    # Sort descending
+    scored.sort(key=lambda x: x[0], reverse=True)
+    
+    # Pick top 3 unique modules if possible
+    plan = []
+    used_modules = set()
+    
+    # First pass: try to get different modules
+    for score, m in scored:
+        if len(plan) >= 3: break
+        if m["module_id"] not in used_modules:
+            plan.append(m)
+            used_modules.add(m["module_id"])
+            
+    # Second pass: fill if needed
+    if len(plan) < 3:
+        for score, m in scored:
+            if len(plan) >= 3: break
+            if m not in plan:
+                plan.append(m)
+                
+    return plan
+
 def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, Any]) -> Dict[str, Any]:
     items: List[Dict[str, Any]] = []
     summary = {
         "counts": {"MATCH": 0, "EXPLORE": 0, "BOUNDARY": 0},
-        "flags": {"low_comfort_high_interest": 0, "big_delta": 0, "high_risk": 0},
+        "flags": {"low_comfort_high_interest": 0, "big_delta": 0, "high_risk": 0, "hard_limit_violation": 0},
         "generated_at": _utcnow()
     }
 
@@ -86,6 +127,12 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
                     pair_status = _status_pair(sa, sb)
                 else:
                     pair_status = "EXPLORE"  # incomplete treated as explore
+
+                # Check for Hard Limit Violations (One wants it, other has hard limit)
+                wants_it = ["YES", "MAYBE"]
+                if (sa == "HARD_LIMIT" and sb in wants_it) or (sb == "HARD_LIMIT" and sa in wants_it):
+                    flags.append("hard_limit_violation")
+                    summary["flags"]["hard_limit_violation"] += 1
 
                 ia = _safe_int(a.get("interest"))
                 ib = _safe_int(b.get("interest"))
@@ -148,7 +195,7 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
     order = {"BOUNDARY": 0, "EXPLORE": 1, "MATCH": 2}
     items.sort(key=lambda r: (order.get(r["pair_status"], 9), 0 if r.get("risk_level") == "C" else 1, r.get("module_name",""), r.get("question_id","")))
 
+    action_plan = _generate_action_plan(items)
+
     meta = {"template_id": template.get("id"), "template_name": template.get("name"), "template_version": template.get("version")}
-    return {"meta": meta, "summary": summary, "items": items}
-
-
+    return {"meta": meta, "summary": summary, "items": items, "action_plan": action_plan}

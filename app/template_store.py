@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 from app.db import db
 from app.models import TemplateListItem
 
-DEFAULT_TEMPLATE_ID = "default_v1"
+DEFAULT_TEMPLATE_ID = "unified_v1"
 
 def _utcnow() -> str:
     return datetime.now(timezone.utc).isoformat()

@@ -147,7 +147,8 @@ function renderConsentRating(q, existing = {}) {
         <select data-k="status" aria-label="Status für ${escapeHtml(q.id)}">
           <option value="YES">JA</option>
           <option value="MAYBE">VIELLEICHT</option>
-          <option value="NO">NEIN</option>
+          <option value="NO">NEIN (Soft Limit)</option>
+          <option value="HARD_LIMIT">HARD LIMIT (Niemals)</option>
         </select>
       </label>
       <label style="min-width:160px">Interesse (0–4)
@@ -169,8 +170,10 @@ function renderConsentRating(q, existing = {}) {
 
   const sel = wrap.querySelector('select[data-k="status"]');
   sel.value = status;
-  wrap.querySelector('input[data-k="interest"]').value = interest;
-  wrap.querySelector('input[data-k="comfort"]').value = comfort;
+  const inpInterest = wrap.querySelector('input[data-k="interest"]');
+  inpInterest.value = interest;
+  const inpComfort = wrap.querySelector('input[data-k="comfort"]');
+  inpComfort.value = comfort;
   wrap.querySelector('textarea[data-k="conditions"]').value = conditions;
   wrap.querySelector('textarea[data-k="notes"]').value = notes;
 
@@ -178,8 +181,16 @@ function renderConsentRating(q, existing = {}) {
   const inputs = wrap.querySelectorAll('select[data-k="status"], input[data-k="interest"], input[data-k="comfort"], textarea[data-k="conditions"]');
   inputs.forEach(input => {
     input.addEventListener('change', () => {
+      // Auto-reset interest/comfort for negative answers
+      if (input === sel) {
+        if (sel.value === "NO" || sel.value === "HARD_LIMIT") {
+          inpInterest.value = 0;
+          inpComfort.value = 0;
+        }
+      }
       state.hasUnsavedChanges = true;
       state.formResponses = collectForm();
+      updateVisibility();
       validateAndShowHints();
       updateProgress();
       scheduleAutoSave();
@@ -380,6 +391,7 @@ function buildForm(template, responses) {
     host.appendChild(section);
   }
 
+  updateVisibility();
   validateAndShowHints();
 }
 
@@ -689,6 +701,49 @@ function scrollToQuestion(qid) {
       block.style.animation = '';
     }, 1000);
   }
+}
+
+function updateVisibility() {
+  const host = $("formHost");
+  if (!state.currentTemplate) return;
+  
+  // We need current values. collectForm reads from DOM, which is fine.
+  const responses = collectForm();
+
+  // Build map of questions for easy lookup
+  const qMap = {};
+  state.currentTemplate.modules.forEach(m => m.questions.forEach(q => qMap[q.id] = q));
+
+  state.currentTemplate.modules.forEach(mod => {
+    mod.questions.forEach(q => {
+      if (q.depends_on) {
+        const targetId = q.depends_on.id;
+        const allowedValues = q.depends_on.values || [];
+        
+        const targetResp = responses[targetId];
+        let isVisible = false;
+
+        if (targetResp) {
+          // Check 'status' (consent_rating) or 'value' (enum/scale)
+          // For now, we mainly use this for consent_rating logic
+          const val = targetResp.status || targetResp.value;
+          if (allowedValues.includes(val)) {
+            isVisible = true;
+          }
+        }
+
+        const el = host.querySelector(`.item[data-qid="${q.id}"]`);
+        if (el) {
+          if (isVisible) {
+            el.classList.remove("hidden");
+            // If it becomes visible, we might want to highlight it? No.
+          } else {
+            el.classList.add("hidden");
+          }
+        }
+      }
+    });
+  });
 }
 
 function validateAndShowHints() {
@@ -1009,6 +1064,34 @@ function renderCompare(result) {
     </div>
   `;
   host.appendChild(top);
+
+  // Action Plan
+  if (result.action_plan && result.action_plan.length > 0) {
+    const planDiv = document.createElement("div");
+    planDiv.className = "item";
+    planDiv.style.marginTop = "12px";
+    planDiv.style.borderLeft = "4px solid var(--accent)";
+    
+    let planHtml = `
+      <div class="title">Fokus der nächsten Wochen (Vorschlag)</div>
+      <div class="hint">Basierend auf euren Matches mit höchstem gemeinsamen Interesse & Komfort.</div>
+      <div style="margin-top: 12px; display: grid; gap: 10px;">
+    `;
+    
+    result.action_plan.forEach((item, idx) => {
+      planHtml += `
+        <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
+          <div style="font-weight: bold; color: var(--accent);">Woche ${idx + 1}: ${escapeHtml(item.module_name)}</div>
+          <div style="margin-top: 4px;">${escapeHtml(item.label)}</div>
+          <div class="hint" style="margin-top: 4px;">${escapeHtml(item.help)}</div>
+        </div>
+      `;
+    });
+    
+    planHtml += `</div>`;
+    planDiv.innerHTML = planHtml;
+    host.appendChild(planDiv);
+  }
 
   // Filter controls
   const filterDiv = document.createElement("div");

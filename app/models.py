@@ -60,6 +60,7 @@ class CompareResult(BaseModel):
     meta: Dict[str, Any]
     summary: Dict[str, Any]
     items: List[Dict[str, Any]]
+    action_plan: Optional[List[Dict[str, Any]]] = None
 
 class AIReport(BaseModel):
     id: str

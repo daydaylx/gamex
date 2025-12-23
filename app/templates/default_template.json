@@ -1,8 +1,8 @@
 {
-  "id": "default_v1",
-  "name": "Basis + Rollen/Kontrolle + Optional High-Risk + Review (v1)",
-  "version": 1,
-  "description": "Local-first Fragebogen mit Fokus auf Konsens, Bedingungen und sichere Kommunikation. High-Risk Themen sind als eigene Karten gedacht: keine Anleitungen, nur Abgleich + Rahmen.",
+  "id": "default_v2",
+  "name": "Intimität & Grenzen (v2 - Optimiert)",
+  "version": 2,
+  "description": "Erweiterter Fragebogen mit Fokus auf Rahmenbedingungen, granularen Abstufungen bei High-Risk Themen und Sicherheitshinweisen.",
   "modules": [
     {
       "id": "base",
@@ -15,7 +15,7 @@
           "risk_level": "A",
           "tags": ["satisfaction"],
           "label": "Wie zufrieden bist du aktuell insgesamt mit eurem Sexleben?",
-          "help": "0 = gar nicht, 10 = sehr."
+          "help": "0 = gar nicht, 10 = sehr. Ein Stimmungsbild, keine Kritik."
         },
         {
           "id": "Q02",
@@ -23,7 +23,7 @@
           "risk_level": "A",
           "tags": ["communication"],
           "label": "Wie leicht fällt es dir, Wünsche auszusprechen?",
-          "help": "0 = sehr schwer, 10 = sehr leicht."
+          "help": "0 = sehr schwer (Scham/Angst), 10 = sehr leicht (offenes Buch)."
         },
         {
           "id": "Q03",
@@ -31,15 +31,15 @@
           "risk_level": "A",
           "tags": ["boundaries"],
           "label": "Wie leicht fällt es dir, 'Nein' zu sagen?",
-          "help": "0 = sehr schwer, 10 = sehr leicht."
+          "help": "0 = sehr schwer (Angst vor Ablehnung), 10 = sehr leicht."
         },
         {
           "id": "Q04",
           "schema": "enum",
           "risk_level": "A",
           "tags": ["aftercare"],
-          "label": "Was brauchst du nach intensiveren Momenten eher?",
-          "help": "Wähle das, was am häufigsten stimmt.",
+          "label": "Was brauchst du nach intensiveren Momenten (Aftercare) eher?",
+          "help": "Wichtig, um emotional wieder zu landen.",
           "options": ["Nähe/Kuscheln", "Reden/Feedback", "Ruhe/Schlaf", "Space/Allein sein", "Kommt drauf an"]
         },
         {
@@ -48,15 +48,48 @@
           "risk_level": "A",
           "tags": ["safety"],
           "label": "Stop-Regel: Was soll ein Stop bedeuten?",
-          "help": "Ein Stop sollte eindeutig sein und nicht diskutiert werden.",
-          "options": ["Sofort beenden", "Pause & Check-in", "Thema wechseln & soft weitermachen", "Weiß ich noch nicht"]
+          "help": "Sicherheit geht vor. Ein Stop muss sofort respektiert werden.",
+          "options": ["Sofort beenden", "Pause & Check-in", "Thema wechseln & soft weitermachen", "Ampelsystem (Rot/Gelb/Grün)"]
+        }
+      ]
+    },
+    {
+      "id": "logistics",
+      "name": "Rahmen, Zeit & Logistik",
+      "description": "Bevor es zur Sache geht: Stressfaktoren, Zeitfenster und Privatsphäre klären.",
+      "questions": [
+        {
+          "id": "L01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["time", "stress"],
+          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
+          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung."
+        },
+        {
+          "id": "L02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["coping"],
+          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
+          "options": ["Sex zur Entspannung hilft", "Lieber nur Kuscheln/Massage", "Komplette Ruhe/Absage", "Reden statt Tun", "Kommt drauf an"]
+        },
+        {
+          "id": "L03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["privacy", "digital"],
+          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
+          "options": ["Nichts digital speichern", "Verschlüsselt/Hidden Folder ok", "Nur auf einem Gerät (Offline)", "Alles ok (Cloud etc.)", "Kommt drauf an"]
         }
       ]
     },
     {
       "id": "roles",
       "name": "Rollen & Kontrolle",
-      "description": "Dominant/Devot/Switch, führen/geführt werden, Regeln.",
+      "description": "Machtgefälle, Führung und Hingabe. Erfordert hohes Vertrauen.",
       "questions": [
         {
           "id": "Q10",
@@ -64,104 +97,32 @@
           "risk_level": "A",
           "tags": ["roles"],
           "label": "Welche Rolle fühlt sich für dich am natürlichsten an?",
-          "help": "Das ist eine Tendenz, kein Vertrag.",
-          "options": ["Dominant", "Devot", "Switch", "Neutral", "Kommt drauf an"]
+          "help": "Tendenz. Switch = Wechselt je nach Stimmung.",
+          "options": ["Dominant (Führend)", "Devot (Empfangend)", "Switch (Beides)", "Egal / Augenhöhe", "Kommt drauf an"]
         },
         {
           "id": "Q11",
           "schema": "consent_rating",
           "risk_level": "A",
           "tags": ["control", "lead"],
-          "label": "Ich mag es, klar zu führen (Tempo/Ablauf/Entscheidungen).",
-          "help": "Bewerte Interesse + Komfort und setze Ja/Vielleicht/Nein."
+          "label": "Aktives Führen: Ich mag es, Entscheidungen zu treffen und das Tempo zu bestimmen.",
+          "help": "Verantwortung übernehmen, nicht 'Bossy' sein (außer gewünscht)."
         },
         {
           "id": "Q12",
           "schema": "consent_rating",
           "risk_level": "A",
           "tags": ["control", "follow"],
-          "label": "Ich mag es, geführt zu werden (Loslassen/Annehmen).",
-          "help": "Bewerte Interesse + Komfort und setze Ja/Vielleicht/Nein."
+          "label": "Hingabe: Ich mag es, Verantwortung abzugeben und mich führen zu lassen.",
+          "help": "Loslassen können. Erfordert Sicherheit, dass der andere achtsam ist."
         },
         {
           "id": "Q13",
           "schema": "consent_rating",
           "risk_level": "A",
           "tags": ["rules"],
-          "label": "Regeln/Rituale (klarer Start/Stop, Signale) finde ich reizvoll.",
-          "help": "Nur wenn es sich sicher und freiwillig anfühlt."
-        },
-        {
-          "id": "Q14",
-          "schema": "consent_rating",
-          "risk_level": "A",
-          "tags": ["communication_style"],
-          "label": "Klare Ansagen/Feedback im Moment sind okay für mich.",
-          "help": "Ohne Druck, ohne Erniedrigung, wenn das nicht gewollt ist."
-        }
-      ]
-    },
-    {
-      "id": "observe",
-      "name": "Beobachten / Beobachtet werden (optional)",
-      "description": "Voyeur/Exhibition als Fantasie oder unter Bedingungen. Kein öffentlicher Quatsch ohne Zustimmung.",
-      "questions": [
-        {
-          "id": "Q20",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "tags": ["voyeurism"],
-          "label": "Der Gedanke, andere zu beobachten, reizt mich.",
-          "help": "Fantasie und Realität können getrennt bewertet werden (Bedingungen ins Feld)."
-        },
-        {
-          "id": "Q21",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "tags": ["exhibition"],
-          "label": "Der Gedanke, beobachtet zu werden, reizt mich.",
-          "help": "Wenn 'Vielleicht': unbedingt Bedingungen ergänzen."
-        },
-        {
-          "id": "Q22",
-          "schema": "enum",
-          "risk_level": "B",
-          "tags": ["privacy"],
-          "label": "Fotos/Videos grundsätzlich?",
-          "help": "Privatsphäre ist hier kein Detail, sondern die Hauptsache.",
-          "options": ["Nie", "Nur ohne Gesicht", "Nur privat auf eigenem Gerät", "Nur mit extra Consent jedes Mal", "Kommt drauf an"]
-        }
-      ]
-    },
-    {
-      "id": "third",
-      "name": "Dritte Personen / Öffnung (optional)",
-      "description": "Nur als Abgleich, nicht als Push. Emotional oft riskanter als es klingt.",
-      "questions": [
-        {
-          "id": "Q30",
-          "schema": "consent_rating",
-          "risk_level": "C",
-          "tags": ["third_person"],
-          "label": "Fantasie über eine dritte Person ist für mich okay.",
-          "help": "Fantasie ≠ Umsetzung."
-        },
-        {
-          "id": "Q31",
-          "schema": "consent_rating",
-          "risk_level": "C",
-          "tags": ["third_person"],
-          "label": "Umsetzung mit einer dritten Person wäre (unter Bedingungen) denkbar.",
-          "help": "Wenn 'Vielleicht': Bedingungen sehr klar formulieren, sonst lieber Nein."
-        },
-        {
-          "id": "Q32",
-          "schema": "multi",
-          "risk_level": "C",
-          "tags": ["emotional_risk"],
-          "label": "Welche emotionalen Risiken siehst du hier am ehesten?",
-          "help": "Mehrere Auswahl möglich.",
-          "options": ["Eifersucht", "Vergleich/Unsicherheit", "Bindung/Verliebtheit", "Kontrollverlust", "Scham", "Konflikte danach", "Keins davon", "Anderes"]
+          "label": "Regeln & Rituale (z.B. Belohnung, Kleiderordnung, Haltung).",
+          "help": "Strukturiert die Interaktion. Nur bei vollem Konsens spaßig."
         }
       ]
     },
@@ -176,7 +137,7 @@
           "risk_level": "A",
           "tags": ["sensual", "massage"],
           "label": "Ausführliche Massagen / Sinnliche Berührungen (Ganzkörper).",
-          "help": "Fokus auf Entspannung und Sinnlichkeit, nicht zwingend Orgasmus."
+          "help": "Fokus auf Entspannung und Körpergefühl, kein Leistungsdruck."
         },
         {
           "id": "T02",
@@ -208,7 +169,7 @@
           "risk_level": "B",
           "tags": ["roughness"],
           "label": "Etwas härtere Gangart (z.B. festes Zupacken, Haare ziehen).",
-          "help": "Nur im Konsens und wenn es sich gut anfühlt."
+          "help": "Grenze zu Schmerz beachten. 'Fest' ist subjektiv – vorher kalibrieren!"
         }
       ]
     },
@@ -222,7 +183,7 @@
           "schema": "consent_rating",
           "risk_level": "A",
           "tags": ["toys", "vibrator"],
-          "label": "Einsatz von Vibratoren / Sextoys während des Sex.",
+          "label": "Einsatz von Vibratoren / Sextoys.",
           "help": "Zur gemeinsamen Stimulation."
         },
         {
@@ -231,7 +192,7 @@
           "risk_level": "B",
           "tags": ["bondage", "soft"],
           "label": "Leichte Fesselungen / Fixierung (Soft Bondage).",
-          "help": "Z.B. Festhalten, Seidentücher, Handschellen. Jederzeit lösbar."
+          "help": "Seile, Tücher, Handschellen. WICHTIG: Niemals Blut abschnüren, Nervenbahnen schützen."
         },
         {
           "id": "Y03",
@@ -239,7 +200,40 @@
           "risk_level": "B",
           "tags": ["sensory", "blindfold"],
           "label": "Augen verbinden / Sinnesentzug.",
-          "help": "Fokus auf das Fühlen verstärken."
+          "help": "Verstärkt das Fühlen, erfordert aber mehr verbale Kommunikation."
+        }
+      ]
+    },
+    {
+      "id": "anal_advanced",
+      "name": "Analbereich (Granular)",
+      "description": "Abstufung von Massage bis Penetration. Hygiene & Vorbereitung sind Pflicht.",
+      "questions": [
+        {
+          "id": "AN01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["anal", "rimming", "massage"],
+          "label": "Anale Stimulation außen / Massage / Rimming.",
+          "help": "Keine Penetration. Fokus auf Entspannung und Gefühl."
+        },
+        {
+          "id": "AN02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "depends_on": { "id": "AN01", "values": ["YES", "MAYBE"] },
+          "tags": ["anal", "toys", "plug"],
+          "label": "Anale Spielzeuge (Plugs, kleine Dildos).",
+          "help": "Nur mit Stop-Base (Sicherheitsrückholer)! Viel Gleitgel."
+        },
+        {
+          "id": "AN03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "depends_on": { "id": "AN02", "values": ["YES", "MAYBE"] },
+          "tags": ["anal", "penetration"],
+          "label": "Anale Penetration (Penis).",
+          "help": "Erfordert viel Zeit, Vorbereitung und Entspannung. Kein 'Einfach rein'."
         }
       ]
     },
@@ -254,7 +248,7 @@
           "risk_level": "B",
           "tags": ["spanking", "impact"],
           "label": "Spanking / Hauen (Hand oder Toys).",
-          "help": "Lustschmerz auf dem Hintern oder anderen Stellen."
+          "help": "Zonen beachten (Po ist sicher, Nieren/Rücken sind tabu). Safe-Word vereinbaren!"
         },
         {
           "id": "S02",
@@ -262,93 +256,70 @@
           "risk_level": "B",
           "tags": ["marking", "biting"],
           "label": "Beißen, Kratzen oder 'Markieren' (Knutschflecken).",
-          "help": "Spuren hinterlassen, die evtl. Tage sichtbar bleiben."
+          "help": "Soziale Folgen bedenken (sichtbare Flecken am Hals?)."
         },
         {
           "id": "S03",
           "schema": "consent_rating",
           "risk_level": "B",
           "tags": ["temperature"],
-          "label": "Temperaturspiele (Eiswürfel, warmes Öl/Wachs).",
-          "help": "Reiz durch Kälte oder Hitze."
+          "label": "Temperaturspiele (Eiswürfel, warmes Öl).",
+          "help": "Vorsicht vor Verbrennungen (Wachs) oder Kältebrand."
         },
         {
           "id": "S04",
           "schema": "consent_rating",
           "risk_level": "C",
-          "tags": ["breathplay", "choking"],
+          "tags": ["breathplay", "risk"],
           "label": "Breathplay Light (Hand am Hals / Würgen).",
-          "help": "HIGH RISK: Nur andeuten oder sehr kontrolliert. Sofortiges Stop-Signal muss klar sein."
+          "help": "HIGH RISK: NIEMALS den Kehlkopf drücken. Nur seitlich. Sofortiges, non-verbales Stop-Signal (z.B. Klopfen) vereinbaren."
         }
       ]
     },
     {
-      "id": "mind_roles",
-      "name": "Kopfkino, Rollen & Psych",
-      "description": "Psychologische Spielarten, Dirty Talk und Rollenspiele.",
+      "id": "observe",
+      "name": "Beobachten / Dritte (Optional)",
+      "description": "Fantasie vs. Realität. Emotional oft anspruchsvoll.",
       "questions": [
         {
-          "id": "M01",
-          "schema": "consent_rating",
-          "risk_level": "A",
-          "tags": ["dirty_talk"],
-          "label": "Dirty Talk (Schmutziges Reden währenddessen).",
-          "help": "Worte, die anturnen. Ggf. in Notizen Beispiele schreiben."
-        },
-        {
-          "id": "M02",
+          "id": "Q20",
           "schema": "consent_rating",
           "risk_level": "B",
-          "tags": ["degradation"],
-          "label": "Erniedrigung / Degradation (Worte oder Handlungen).",
-          "help": "Beleidigungen, Objektifizierung (nur im Spiel!)."
+          "tags": ["voyeurism"],
+          "label": "Der Gedanke, andere zu beobachten / beim Sex gesehen zu werden.",
+          "help": "Unterscheide Fantasie (Kopfkino) vs. Realität (Club, Party)."
         },
         {
-          "id": "M03",
+          "id": "Q30",
           "schema": "consent_rating",
-          "risk_level": "B",
-          "tags": ["petplay", "roleplay"],
-          "label": "Petplay (Tierrollenspiel, z.B. Puppy/Kitten) oder andere Rollenspiele.",
-          "help": "In eine andere Rolle schlüpfen (Haustier, Arzt, Lehrer etc.)."
-        },
-        {
-          "id": "M04",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "tags": ["control", "orgasm_control"],
-          "label": "Orgasmuskontrolle / Edging (Hinauszögern oder Verwehren).",
-          "help": "Kontrolle über den Höhepunkt abgeben/übernehmen."
+          "risk_level": "C",
+          "tags": ["threesome", "group"],
+          "label": "Sex mit weiteren Personen (Dreier etc.).",
+          "help": "Großes emotionales Risiko (Eifersucht, Ausschluss). Nur bei sehr stabiler Basis. Fantasie ist safe."
         }
       ]
     },
     {
-      "id": "fetish_advanced",
-      "name": "Fetische, High-Risk & Hardcore",
-      "description": "Spezielle Vorlieben und körperlich intensive Praktiken. Hier ist Kommunikation essenziell.",
+      "id": "fetish_special",
+      "name": "Spezielle Fetische & High-Risk",
+      "description": "Nischeninteressen. Kommunikation ist hier alles.",
       "questions": [
-        {
-          "id": "F01",
-          "schema": "consent_rating",
-          "risk_level": "B",
-          "tags": ["anal", "plug"],
-          "label": "Analverkehr / Analspielzeug (Plugs, Beads).",
-          "help": "Vorbereitung und Gleitgel sind Pflicht."
-        },
         {
           "id": "F02",
           "schema": "consent_rating",
           "risk_level": "C",
+          "depends_on": { "id": "AN03", "values": ["YES", "MAYBE"] },
           "tags": ["fisting", "intense"],
-          "label": "Fisting (Vaginal oder Anal).",
-          "help": "Extreme Dehnung. Erfordert viel Erfahrung, Vorbereitung und Vertrauen."
+          "label": "Fisting / Extreme Dehnung.",
+          "help": "HIGH RISK: Erfordert Profi-Wissen, viel Zeit und Hygiene. Verletzungsgefahr."
         },
         {
           "id": "F03",
           "schema": "consent_rating",
           "risk_level": "C",
           "tags": ["watersports", "fluids"],
-          "label": "Natursekt (Watersports) / Body Fluids.",
-          "help": "Urinspiele. Hygiene, Ort und Ausmaß (nur auf Körper, in Mund etc.) klären."
+          "label": "Natursekt (Watersports) / Körperflüssigkeiten.",
+          "help": "Hygiene beachten. Ort (Dusche?) und Kontakt (Haut/Mund?) klären."
         },
         {
           "id": "F04",
@@ -356,7 +327,7 @@
           "risk_level": "B",
           "tags": ["feet", "bodyparts"],
           "label": "Fußfetisch / Körperteil-Worship.",
-          "help": "Fokus auf bestimmte Körperteile (Füße, Hände, Achseln)."
+          "help": "Fokus auf Füße, Hände etc."
         },
         {
           "id": "F05",
@@ -364,34 +335,48 @@
           "risk_level": "B",
           "tags": ["gear", "material"],
           "label": "Material-Fetisch (Latex, Leder, Lack, Nylon).",
-          "help": "Bestimmte Kleidung oder Materialien tragen/fühlen."
+          "help": "Tragen von bestimmten Materialien."
         }
       ]
     },
     {
       "id": "review",
-      "name": "Bereits erlebt: Review",
-      "description": "Für Dinge, die schon passiert sind. Consent gilt jedes Mal neu.",
+      "name": "Review & Ausblick",
+      "description": "Was lernen wir aus der Vergangenheit? Was soll die Zukunft bringen?",
       "questions": [
         {
           "id": "R01",
           "schema": "consent_rating",
           "risk_level": "C",
-          "tags": ["review", "experienced"],
-          "label": "Bereits erlebt: Intensive Praktik (z.B. Fisting bei ihm) nochmals (unter Bedingungen) denkbar.",
-          "help": "Hier unbedingt Komfort, Bedingungen und ggf. Nachwirkungen in Notizen festhalten."
+          "tags": ["review", "repeat"],
+          "label": "Bereits erlebt: Intensive Praktik wiederholen?",
+          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen?"
+        },
+        {
+          "id": "R03",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["review", "less"],
+          "label": "Drop-List: Was möchtest du aktuell WENIGER machen / pausieren?",
+          "help": "Ohne Rechtfertigung. Einfach 'Pause bei X'."
+        },
+        {
+          "id": "R04",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["review", "highlight"],
+          "label": "Highlight: Was war besonders schön und sollte öfter passieren?",
+          "help": "Positives Feedback bestärkt."
         },
         {
           "id": "R02",
           "schema": "text",
-          "risk_level": "C",
+          "risk_level": "A",
           "tags": ["review", "notes"],
-          "label": "Review-Notizen: Was war gut, was war zu viel, was muss beim nächsten Mal anders laufen?",
-          "help": "Kurz und ehrlich. Kein Roman nötig."
+          "label": "Generelle Notizen / Wünsche an uns.",
+          "help": "Platz für alles, was sonst nirgends hinpasste."
         }
       ]
     }
   ]
 }
-
-
