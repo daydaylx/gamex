@@ -195,9 +195,48 @@ function renderModuleInfoCard(mod) {
 
 // --- Render Logic ---
 
+function renderRatingSelector(key, value, max, labels = []) {
+    const container = document.createElement("div");
+    container.className = "rating-selector-container";
+    
+    const labelRow = document.createElement("div");
+    labelRow.className = "rating-labels";
+    if (labels[0]) labelRow.innerHTML += `<span class="rating-label-min">${labels[0]}</span>`;
+    if (labels[1]) labelRow.innerHTML += `<span class="rating-label-max">${labels[1]}</span>`;
+    
+    const btnGroup = document.createElement("div");
+    btnGroup.className = "rating-btn-group";
+    
+    const hiddenInput = document.createElement("input");
+    hiddenInput.type = "hidden";
+    hiddenInput.dataset.k = key;
+    hiddenInput.value = value;
+    
+    for (let i = 0; i <= max; i++) {
+        const btn = document.createElement("button");
+        btn.className = `rating-btn ${i == value ? 'selected' : ''}`;
+        btn.textContent = i;
+        btn.onclick = (e) => {
+            e.preventDefault(); // Prevent form submission or scrolling
+            hiddenInput.value = i;
+            // Update UI
+            btnGroup.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            // Trigger change for autosave
+            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+        btnGroup.appendChild(btn);
+    }
+    
+    container.appendChild(labelRow);
+    container.appendChild(btnGroup);
+    container.appendChild(hiddenInput);
+    return container;
+}
+
 function renderConsentRating(q, existing = {}) {
     const wrap = document.createElement("div");
-    wrap.className = "item";
+    wrap.className = "item consent-item";
     const status = existing.status || "MAYBE";
     const interest = existing.interest ?? 2;
     const comfort = existing.comfort ?? 2;
@@ -206,32 +245,6 @@ function renderConsentRating(q, existing = {}) {
     const hasDomSub = q.has_dom_sub || false;
     const riskClass = `risk-badge-${q.risk_level || "A"}`;
     const tagsHtml = (q.tags || []).map(t => `<span class="badge tag-badge">${escapeHtml(t)}</span>`).join("");
-
-    let content = "";
-    if (hasDomSub) {
-      content = `
-        <div class="grid2" style="margin-top:16px">
-          <div style="background:rgba(0,0,0,0.2);padding:12px;border-radius:8px;">
-            <div style="font-weight:bold;color:var(--primary);margin-bottom:8px;">Dominant</div>
-            <select data-k="dom_status"><option value="YES">JA</option><option value="MAYBE">VIELLEICHT</option><option value="NO">NEIN</option><option value="HARD_LIMIT">HARD LIMIT</option></select>
-            <div class="grid2" style="gap:8px;margin-top:8px"><input data-k="dom_interest" type="number" min="0" max="4" placeholder="Int"><input data-k="dom_comfort" type="number" min="0" max="4" placeholder="Comf"></div>
-          </div>
-          <div style="background:rgba(0,0,0,0.2);padding:12px;border-radius:8px;">
-            <div style="font-weight:bold;color:var(--primary);margin-bottom:8px;">Submissiv</div>
-            <select data-k="sub_status"><option value="YES">JA</option><option value="MAYBE">VIELLEICHT</option><option value="NO">NEIN</option><option value="HARD_LIMIT">HARD LIMIT</option></select>
-            <div class="grid2" style="gap:8px;margin-top:8px"><input data-k="sub_interest" type="number" min="0" max="4" placeholder="Int"><input data-k="sub_comfort" type="number" min="0" max="4" placeholder="Comf"></div>
-          </div>
-        </div>
-      `;
-    } else {
-      content = `
-        <div class="row" style="margin-top:10px;">
-          <select data-k="status" style="flex:2"><option value="YES">JA</option><option value="MAYBE">VIELLEICHT</option><option value="NO">NEIN</option><option value="HARD_LIMIT">HARD LIMIT</option></select>
-          <input data-k="interest" type="number" min="0" max="4" style="flex:1" placeholder="Int">
-          <input data-k="comfort" type="number" min="0" max="4" style="flex:1" placeholder="Comf">
-        </div>
-      `;
-    }
 
     // Info Button Logic
     let infoBtn = "";
@@ -259,44 +272,123 @@ function renderConsentRating(q, existing = {}) {
       </div>
     ` : "";
 
+    // Header Construction
     wrap.innerHTML = `
-      <div class="title">
-        <span class="badge" style="opacity:0.5">${q.id}</span> 
-        <span class="badge ${riskClass}">Risk ${q.risk_level||"A"}</span> 
-        ${tagsHtml}
-      </div>
-      <div style="margin-top:8px;font-weight:bold; display:flex; align-items:center;">
-        ${escapeHtml(q.label)}
-        ${infoBtn}
+      <div class="title-row">
+        <div class="title-text">
+            <span class="badge ${riskClass}">Risk ${q.risk_level||"A"}</span> 
+            <span class="question-label">${escapeHtml(q.label)}</span>
+            ${infoBtn}
+        </div>
+        <div class="tags-container">${tagsHtml}</div>
       </div>
       ${infoBox}
       ${riskWarning}
-      ${q.help && q.risk_level !== "C" ? `<div class="hint" style="margin-top:4px">${escapeHtml(q.help)}</div>` : ""}
-      ${content}
-      <div class="space-y" style="margin-top:12px">
-        <textarea data-k="conditions" placeholder="Bedingungen..." style="min-height:50px"></textarea>
-        <textarea data-k="notes" placeholder="Notizen..." style="min-height:50px"></textarea>
+      ${q.help && q.risk_level !== "C" ? `<div class="hint question-help">${escapeHtml(q.help)}</div>` : ""}
+      
+      <div class="consent-controls">
+        ${hasDomSub ? `
+            <div class="role-block">
+                <div class="role-title">Dominante Rolle</div>
+                <div class="control-group">
+                    <label>Status</label>
+                    <select data-k="dom_status" class="status-select">
+                        <option value="YES">JA (Generell)</option>
+                        <option value="MAYBE">VIELLEICHT (Diskutieren)</option>
+                        <option value="NO">NEIN (Eher nicht)</option>
+                        <option value="HARD_LIMIT">HARD LIMIT (Auf keinen Fall)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Interesse (0=Keins, 4=Hoch)</label>
+                    <div id="dom_int_host"></div>
+                </div>
+                <div class="control-group">
+                    <label>Komfort (0=Unwohl, 4=Super)</label>
+                    <div id="dom_comf_host"></div>
+                </div>
+            </div>
+            
+            <div class="role-block">
+                <div class="role-title">Submissive Rolle</div>
+                <div class="control-group">
+                    <label>Status</label>
+                    <select data-k="sub_status" class="status-select">
+                        <option value="YES">JA (Generell)</option>
+                        <option value="MAYBE">VIELLEICHT (Diskutieren)</option>
+                        <option value="NO">NEIN (Eher nicht)</option>
+                        <option value="HARD_LIMIT">HARD LIMIT (Auf keinen Fall)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Interesse (0=Keins, 4=Hoch)</label>
+                    <div id="sub_int_host"></div>
+                </div>
+                <div class="control-group">
+                    <label>Komfort (0=Unwohl, 4=Super)</label>
+                    <div id="sub_comf_host"></div>
+                </div>
+            </div>
+        ` : `
+            <div class="control-group full-width">
+                <label>Status</label>
+                <select data-k="status" class="status-select">
+                    <option value="YES">JA (Generell)</option>
+                    <option value="MAYBE">VIELLEICHT (Diskutieren)</option>
+                    <option value="NO">NEIN (Eher nicht)</option>
+                    <option value="HARD_LIMIT">HARD LIMIT (Auf keinen Fall)</option>
+                </select>
+            </div>
+            <div class="split-controls">
+                <div class="control-group">
+                    <label>Interesse</label>
+                    <div id="int_host"></div>
+                </div>
+                <div class="control-group">
+                    <label>Komfort</label>
+                    <div id="comf_host"></div>
+                </div>
+            </div>
+        `}
+      </div>
+
+      <div class="space-y text-inputs">
+        <textarea data-k="conditions" placeholder="Bedingungen / Wichtige Details..." rows="2"></textarea>
+        <textarea data-k="notes" placeholder="Private Notizen..." rows="2"></textarea>
       </div>
     `;
     
-    // Set values logic
+    // Inject Rating Selectors
+    const labelsInt = ["0 (Keins)", "4 (Hoch)"];
+    const labelsComf = ["0 (Unwohl)", "4 (Super)"];
+
     if(hasDomSub) {
+      wrap.querySelector('#dom_int_host').appendChild(renderRatingSelector('dom_interest', existing.dom_interest ?? interest, 4, labelsInt));
+      wrap.querySelector('#dom_comf_host').appendChild(renderRatingSelector('dom_comfort', existing.dom_comfort ?? comfort, 4, labelsComf));
+      wrap.querySelector('#sub_int_host').appendChild(renderRatingSelector('sub_interest', existing.sub_interest ?? interest, 4, labelsInt));
+      wrap.querySelector('#sub_comf_host').appendChild(renderRatingSelector('sub_comfort', existing.sub_comfort ?? comfort, 4, labelsComf));
+      
       wrap.querySelector('[data-k="dom_status"]').value = existing.dom_status || status;
       wrap.querySelector('[data-k="sub_status"]').value = existing.sub_status || status;
-      wrap.querySelector('[data-k="dom_interest"]').value = existing.dom_interest ?? interest;
-      wrap.querySelector('[data-k="dom_comfort"]').value = existing.dom_comfort ?? comfort;
-      wrap.querySelector('[data-k="sub_interest"]').value = existing.sub_interest ?? interest;
-      wrap.querySelector('[data-k="sub_comfort"]').value = existing.sub_comfort ?? comfort;
     } else {
+      wrap.querySelector('#int_host').appendChild(renderRatingSelector('interest', existing.interest ?? interest, 4, labelsInt));
+      wrap.querySelector('#comf_host').appendChild(renderRatingSelector('comfort', existing.comfort ?? comfort, 4, labelsComf));
       wrap.querySelector('[data-k="status"]').value = existing.status || status;
-      wrap.querySelector('[data-k="interest"]').value = existing.interest ?? interest;
-      wrap.querySelector('[data-k="comfort"]').value = existing.comfort ?? comfort;
     }
+    
     wrap.querySelector('[data-k="conditions"]').value = conditions;
     wrap.querySelector('[data-k="notes"]').value = notes;
 
-    wrap.querySelectorAll('input,select,textarea').forEach(e => {
-        e.addEventListener('change', () => { state.hasUnsavedChanges = true; scheduleAutoSave(); updateProgress(); });
+    // Change Events
+    wrap.addEventListener('change', (e) => { 
+        // Only trigger if it's an input/select element
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+            state.hasUnsavedChanges = true; 
+            scheduleAutoSave(); 
+            updateProgress(); 
+        }
+    });
+    wrap.querySelectorAll('textarea').forEach(e => {
         e.addEventListener('input', () => { state.hasUnsavedChanges = true; scheduleAutoSave(); });
     });
 
@@ -305,9 +397,30 @@ function renderConsentRating(q, existing = {}) {
 
 function renderScale(q, existing={}) {
     const d = document.createElement("div");
-    d.className="item";
-    d.innerHTML = `<div class="title">${q.label}</div><input data-k="value" type="number" min="0" max="10" value="${existing.value??5}">`;
-    d.querySelector('input').onchange = () => { state.hasUnsavedChanges=true; scheduleAutoSave(); };
+    d.className="item scale-item";
+    const val = existing.value ?? 5;
+    
+    d.innerHTML = `
+        <div class="title">${q.label}</div>
+        <div class="range-container">
+            <div class="range-labels">
+                <span>0 (Niedrig/Nein)</span>
+                <span id="val_display_${q.id}" class="range-value-display">${val}</span>
+                <span>10 (Hoch/Ja)</span>
+            </div>
+            <input data-k="value" type="range" min="0" max="10" value="${val}" class="range-slider">
+        </div>
+    `;
+    
+    const input = d.querySelector('input');
+    const display = d.querySelector(`#val_display_${q.id}`);
+    
+    input.oninput = (e) => {
+        display.textContent = e.target.value;
+        state.hasUnsavedChanges=true; 
+        scheduleAutoSave();
+    };
+    
     return d;
 }
 function renderEnum(q, existing={}) {

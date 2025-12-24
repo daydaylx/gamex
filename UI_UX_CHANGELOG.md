@@ -27,3 +27,16 @@ Datum: 23. Dezember 2025
 ## 📱 Mobile
 - Die gesamte UI ist voll responsive (Grid bricht um, Padding passt sich an).
 - Touch-Targets für Buttons und Checkboxen wurden vergrößert.
+
+Datum: 24. Dezember 2025
+
+## 📱 Mobile Usability & Clarity Upgrade
+- **Interaktive Ratings:**
+  - Zahleneingaben durch **Touch-freundliche Segmented Buttons** (0-4) ersetzt.
+  - **Slider** mit Werteanzeige für 0-10 Skalen eingeführt.
+- **Klarere Skalen:**
+  - Explizite Labels hinzugefügt (z.B. "0 (Keins)" bis "4 (Hoch)", "0 (Unwohl)" bis "4 (Super)").
+- **Mobile Layout:**
+  - **Vertical Stacking:** Bedienelemente werden auf kleinen Screens untereinander angeordnet.
+  - **Größere Touch-Targets:** Buttons und Slider sind leichter mit dem Daumen bedienbar.
+  - Optimierte Abstände für bessere Lesbarkeit auf Smartphones.
