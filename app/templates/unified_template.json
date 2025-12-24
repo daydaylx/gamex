@@ -5,6 +5,87 @@
   "description": "Der moderne Standard. Startet sanft (Rahmen, Kommunikation) und steigert sich modular zu Kink & BDSM. Fokus auf Konsens und psychologische Sicherheit.",
   "modules": [
     {
+      "id": "logistics",
+      "name": "Rahmen, Zeit & Logistik",
+      "description": "Bevor es zur Sache geht: Stressfaktoren, Zeitfenster und Privatsphäre klären.",
+      "questions": [
+        {
+          "id": "L01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": [
+            "time",
+            "stress"
+          ],
+          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
+          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung."
+        },
+        {
+          "id": "L02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "coping"
+          ],
+          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
+          "options": [
+            "Sex zur Entspannung hilft",
+            "Lieber nur Kuscheln/Massage",
+            "Komplette Ruhe/Absage",
+            "Reden statt Tun",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": [
+            "privacy",
+            "digital"
+          ],
+          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
+          "options": [
+            "Nichts digital speichern",
+            "Verschlüsselt/Hidden Folder ok",
+            "Nur auf einem Gerät (Offline)",
+            "Alles ok (Cloud etc.)",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "time"
+          ],
+          "label": "Minimale Zeit für Quality Time?",
+          "help": "Wie viel Zeit brauchen wir mindestens?",
+          "options": [
+            "30 Minuten",
+            "1 Stunde",
+            "2 Stunden",
+            "Open End",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L05",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "privacy",
+            "boundaries"
+          ],
+          "label": "Privatsphäre: Wer darf was wissen?",
+          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos)."
+        }
+      ]
+    },
+    {
       "id": "intro",
       "name": "01. Das Fundament: Wir & Rahmen",
       "description": "Bevor wir über Praktiken reden: Wie wollen wir miteinander umgehen? Was ist unsere emotionale Basis?",
@@ -15,7 +96,10 @@
           "risk_level": "A",
           "label": "Intention & Vibe",
           "help": "Warum machen wir das? (z.B. Neugier, Grenzen klären, Neues entdecken, Vertrauen vertiefen)",
-          "tags": ["meta", "level1"],
+          "tags": [
+            "meta",
+            "level1"
+          ],
           "info_details": "Es hilft extrem, das 'Warum' zu kennen. Geht es um Spaß? Um tiefe Verbindung? Um Grenzaustestung? Wenn einer nur Spaß will und der andere eine spirituelle Erfahrung sucht, gibt es Missverständnisse."
         },
         {
@@ -30,7 +114,11 @@
             "Besonderes Wort (z.B. 'Flugzeug')",
             "Non-verbal (2x Klopfen)"
           ],
-          "tags": ["safety", "essential", "level1"]
+          "tags": [
+            "safety",
+            "essential",
+            "level1"
+          ]
         },
         {
           "id": "SAF02",
@@ -45,7 +133,10 @@
             "Essen/Trinken & Erdung",
             "Unterschiedlich / Kommt drauf an"
           ],
-          "tags": ["aftercare", "level1"],
+          "tags": [
+            "aftercare",
+            "level1"
+          ],
           "info_details": "Aftercare ist kein 'Bonus', sondern physiologisch notwendig. Nach intensivem Sex oder BDSM fällt der Hormonspiegel (Adrenalin/Endorphine) rapid ab ('Sub Drop'). Das kann zu Weinen, Zittern oder Traurigkeit führen. Wichtig: Auch Dom Drop ist real - Tops erleben Schuldgefühle, Erschöpfung, Sorge um die:den Sub. Forschung zeigt: 68% der BDSM-Community schätzen offene Kommunikation + Aftercare als zentral. Aftercare hat 3 Dimensionen: Physisch (Wasser, Wärme), Emotional (Nähe/Space), Temporal (Minuten bis Tage)."
         },
         {
@@ -54,7 +145,11 @@
           "risk_level": "A",
           "label": "Gesundheitliche 'Red Flags'",
           "help": "Gibt es etwas, das ich wissen MUSS, um dich nicht zu verletzen? (Asthma, Gelenke, Herz, Medikamente, Allergien)",
-          "tags": ["health", "safety", "level1"]
+          "tags": [
+            "health",
+            "safety",
+            "level1"
+          ]
         }
       ]
     },
@@ -69,7 +164,10 @@
           "risk_level": "A",
           "label": "Dirty Talk (Worte während Sex)",
           "help": "Magst du es, wenn gesprochen wird? Welche Art von Worten?",
-          "tags": ["communication", "level1"]
+          "tags": [
+            "communication",
+            "level1"
+          ]
         },
         {
           "id": "COM02",
@@ -77,7 +175,10 @@
           "risk_level": "A",
           "label": "Anleitung & Feedback (in the moment)",
           "help": "Darf ich sagen 'Mach das schneller' oder 'Fass mich da an'?",
-          "tags": ["communication", "level1"]
+          "tags": [
+            "communication",
+            "level1"
+          ]
         },
         {
           "id": "COM03",
@@ -85,7 +186,11 @@
           "risk_level": "B",
           "label": "Lob & Bestätigung (Praising)",
           "help": "'Gutes Mädchen', 'Braver Junge', 'Du machst das toll'.",
-          "tags": ["communication", "kink_light", "level2"]
+          "tags": [
+            "communication",
+            "kink_light",
+            "level2"
+          ]
         },
         {
           "id": "COM04",
@@ -93,7 +198,11 @@
           "risk_level": "B",
           "label": "Erniedrigung / Degradierung (Verbal)",
           "help": "Beleidigungen, Objektifizierung (natürlich nur im konsensuellen Rahmen).",
-          "tags": ["communication", "kink", "level2"],
+          "tags": [
+            "communication",
+            "kink",
+            "level2"
+          ],
           "info_details": "Psychologie: Für viele ist es befreiend, 'wertlos' zu sein, weil damit auch jede Verantwortung abfällt. Es ist oft eine Flucht vor dem Leistungsdruck des Alltags. Scham-Processing: Paradoxerweise kann das Aussprechen von Scham ('Du bist eine Schlampe') Scham reduzieren - weil sie kontrolliert & konsensuell erlebt wird. Das Tabu verliert Macht. ABER: Bei internalisierter Scham kann es Trigger sein. Wichtig: Immer zwischen Rolle und Mensch trennen. Aftercare mit Reassurance ('Das war nur Spiel, du bist wertvoll')."
         }
       ]
@@ -108,14 +217,21 @@
           "schema": "consent_rating",
           "risk_level": "A",
           "label": "Sinnliche Massage (Öl, Federn)",
-          "tags": ["sensory", "soft", "level1"]
+          "tags": [
+            "sensory",
+            "soft",
+            "level1"
+          ]
         },
         {
           "id": "SEN02",
           "schema": "consent_rating",
           "risk_level": "A",
           "label": "Gehalten werden / Festhalten",
-          "tags": ["intimacy", "level1"]
+          "tags": [
+            "intimacy",
+            "level1"
+          ]
         },
         {
           "id": "SEN03",
@@ -123,7 +239,10 @@
           "risk_level": "A",
           "label": "Kratzen / Nägel spüren",
           "help": "Leichtes Kratzen am Rücken oder Po.",
-          "tags": ["sensation", "level1"]
+          "tags": [
+            "sensation",
+            "level1"
+          ]
         },
         {
           "id": "SEN04",
@@ -131,7 +250,11 @@
           "risk_level": "B",
           "label": "Temperaturspiele (Eis / Warmes Wachs)",
           "help": "Der Reiz von heiß/kalt auf der Haut. (Wachs nur Niedrigtemperatur!)",
-          "tags": ["sensation", "kink", "level2"]
+          "tags": [
+            "sensation",
+            "kink",
+            "level2"
+          ]
         },
         {
           "id": "SEN05",
@@ -139,7 +262,10 @@
           "risk_level": "A",
           "label": "Augen verbinden (Blindfold)",
           "help": "Kontrolle über das Sehen abgeben. Verstärkt andere Sinne.",
-          "tags": ["sensory", "level1"],
+          "tags": [
+            "sensory",
+            "level1"
+          ],
           "info_details": "Einfachste Form des Kontrollverlusts. Erfordert mehr verbale Kommunikation, da Körpersprache nicht gesehen wird."
         }
       ]
@@ -155,21 +281,35 @@
           "risk_level": "A",
           "label": "Oralsex (Geben)",
           "has_active_passive": false,
-          "tags": ["sex", "oral", "give", "level1"]
+          "tags": [
+            "sex",
+            "oral",
+            "give",
+            "level1"
+          ]
         },
         {
           "id": "SEX02",
           "schema": "consent_rating",
           "risk_level": "A",
           "label": "Oralsex (Empfangen)",
-          "tags": ["sex", "oral", "receive", "level1"]
+          "tags": [
+            "sex",
+            "oral",
+            "receive",
+            "level1"
+          ]
         },
         {
           "id": "SEX03",
           "schema": "consent_rating",
           "risk_level": "A",
           "label": "Vaginale Penetration",
-          "tags": ["sex", "penetration", "level1"]
+          "tags": [
+            "sex",
+            "penetration",
+            "level1"
+          ]
         },
         {
           "id": "SEX04",
@@ -177,23 +317,62 @@
           "risk_level": "B",
           "label": "Anale Stimulation (Finger/Zunge/Toy)",
           "help": "Vorsichtiges Tasten, Lecken oder Spielen am Eingang.",
-          "tags": ["sex", "anal", "level2"]
+          "tags": [
+            "sex",
+            "anal",
+            "level2"
+          ]
+        },
+        {
+          "id": "SEX04B",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Anale Spielzeuge (kleine Plugs / Dildos)",
+          "help": "Nur mit Stop-Base, viel Gleitgel, langsam steigern.",
+          "tags": [
+            "sex",
+            "anal",
+            "toys",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "SEX04",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "SEX05",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Anale Penetration (Sex)",
+          "label": "Anale Penetration (Penis / größere Toys)",
           "help": "Erfordert Vorbereitung, Gleitgel und Entspannung.",
-          "tags": ["sex", "anal", "hard", "level2"],
-          "depends_on": { "id": "SEX04", "values": ["YES", "MAYBE"] }
+          "tags": [
+            "sex",
+            "anal",
+            "hard",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "SEX04B",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "SEX06",
           "schema": "consent_rating",
           "risk_level": "B",
           "label": "Toys einbeziehen (Vibratoren, Dildos)",
-          "tags": ["sex", "toys", "level1"]
+          "tags": [
+            "sex",
+            "toys",
+            "level1"
+          ]
         }
       ]
     },
@@ -209,7 +388,11 @@
           "risk_level": "A",
           "label": "Führen & Geführt werden (Generell)",
           "help": "Magst du es, die Kontrolle zu haben (Dom) oder abzugeben (Sub)?",
-          "tags": ["ds", "core", "level2"],
+          "tags": [
+            "ds",
+            "core",
+            "level2"
+          ],
           "info_details": "Psychologie: Machtabgabe (Submission) ist oft ein Akt der Stärke ('Ich vertraue dir so sehr, dass ich loslasse'). Dominanz ist Dienstleistung ('Ich übernehme die Verantwortung für unser Erlebnis'). 2024-Forschung zeigt: BDSM ist primär über Machtdynamiken, weniger über Schmerz. Attachment-Korrelation: Sichere & vermeidende Bindung → Dominanz; Submissive → höhere Trennungsangst (60,5% weibliche Subs). Konsens & Safewords unterscheiden BDSM klar von Gewalt."
         },
         {
@@ -218,10 +401,20 @@
           "risk_level": "B",
           "label": "Gehorsam & Dienen (Service)",
           "help": "Getränke bringen, Aufgaben erfüllen, 'zu Diensten sein'.",
-          "tags": ["ds", "service", "level2"],
-          "depends_on": { "id": "DS01", "conditions": [
-             {"operator": "!=", "value": "NO"} 
-          ]}
+          "tags": [
+            "ds",
+            "service",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "DS01",
+            "conditions": [
+              {
+                "operator": "!=",
+                "value": "NO"
+              }
+            ]
+          }
         },
         {
           "id": "DS03",
@@ -229,7 +422,11 @@
           "risk_level": "B",
           "label": "Disziplinierung / Bestrafung",
           "help": "Wenn Regeln gebrochen werden, folgt eine Konsequenz (abgesprochen!).",
-          "tags": ["ds", "punishment", "level2"]
+          "tags": [
+            "ds",
+            "punishment",
+            "level2"
+          ]
         },
         {
           "id": "DS04",
@@ -237,7 +434,11 @@
           "risk_level": "B",
           "label": "Orgasmuskontrolle / Verweigern",
           "help": "Du entscheidest, wann (und ob) der andere kommen darf.",
-          "tags": ["ds", "control", "level2"],
+          "tags": [
+            "ds",
+            "control",
+            "level2"
+          ],
           "info_details": "Erzeugt immense Spannung und Frustration, die sich in intensiverer Lust entladen kann. Erfordert viel Vertrauen, da es tief in die körperliche Autonomie eingreift."
         }
       ]
@@ -253,7 +454,11 @@
           "risk_level": "A",
           "label": "Spanking: Spaß & Lustvoll",
           "help": "Leichtes Hauen auf den Po, während dem Sex oder zum Flirten.",
-          "tags": ["impact", "fun", "level1"]
+          "tags": [
+            "impact",
+            "fun",
+            "level1"
+          ]
         },
         {
           "id": "IMP02",
@@ -261,7 +466,11 @@
           "risk_level": "B",
           "label": "Spanking: Ernst & Strafe",
           "help": "Methodisches Hauen, um Schmerz zu erzeugen oder Dominanz zu zeigen.",
-          "tags": ["impact", "punishment", "level2"],
+          "tags": [
+            "impact",
+            "punishment",
+            "level2"
+          ],
           "info_details": "Schmerz setzt Endorphine frei (körpereigene Drogen). Das kann zu einem rauschähnlichen Zustand ('Subspace') führen. Neuroscience: 2016-Studie zeigt 'transiente Hypofrontalität' - reduzierte Aktivität im präfrontalen Kortex während Subspace (ähnlich Meditation). Neurochemie: Adrenalin, Cortisol, Endorphine, Dopamin, Oxytocin, Endocannabinoide involviert. Drei Subspace-Typen: Endorphin-, Noradrenalin-, Serotonin-mediiert. Wichtig: Unterscheide 'guten Schmerz' (dumpf, Po) von 'schlechtem Schmerz' (Gelenke, Organe)."
         },
         {
@@ -270,8 +479,18 @@
           "risk_level": "B",
           "label": "Tools: Gerten, Paddles, Peitschen",
           "help": "Einsatz von Hilfsmitteln statt nur der Hand.",
-          "tags": ["impact", "toys", "level2"],
-          "depends_on": { "id": "IMP02", "values": ["YES", "MAYBE"] }
+          "tags": [
+            "impact",
+            "toys",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "IMP02",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "IMP04",
@@ -279,7 +498,11 @@
           "risk_level": "B",
           "label": "Andere Zonen (Brüste, Oberschenkel)",
           "help": "Po ist Standard. Darf es woanders hin?",
-          "tags": ["impact", "zones", "level2"]
+          "tags": [
+            "impact",
+            "zones",
+            "level2"
+          ]
         }
       ]
     },
@@ -294,7 +517,11 @@
           "risk_level": "A",
           "label": "Leichte Fixierung (Soft Bondage)",
           "help": "Festhalten, Tücher, Krawatten. Man kann sich theoretisch befreien.",
-          "tags": ["bondage", "soft", "level1"]
+          "tags": [
+            "bondage",
+            "soft",
+            "level1"
+          ]
         },
         {
           "id": "BND02",
@@ -302,7 +529,11 @@
           "risk_level": "B",
           "label": "Feste Fesseln (Handschellen, Seile)",
           "help": "Man ist wirklich fixiert und hilflos.",
-          "tags": ["bondage", "hard", "level2"],
+          "tags": [
+            "bondage",
+            "hard",
+            "level2"
+          ],
           "info_details": "Gefühl der völligen Auslieferung. Kann sehr entspannend wirken, weil man 'nichts mehr tun muss'. Attachment Theory: Fesseln erzeugt extreme Vulnerabilität - funktioniert nur mit sicherem Bindungsstil oder sehr hohem Vertrauen. Ängstlich gebundene können in Panik geraten (Trigger: Hilflosigkeit). Psychologie: Paradox der Freiheit durch Einschränkung. Sicherheit: Niemals allein lassen. Schere bereit halten. Auf Nervenbahnen achten (taube Finger = sofort lösen!)."
         },
         {
@@ -311,7 +542,11 @@
           "risk_level": "B",
           "label": "Knebel (Gags)",
           "help": "Den Mund verschließen. (Atmung muss immer frei sein!)",
-          "tags": ["bondage", "gag", "level2"]
+          "tags": [
+            "bondage",
+            "gag",
+            "level2"
+          ]
         }
       ]
     },
@@ -321,21 +556,86 @@
       "description": "Dinge, die besondere Vorsicht erfordern.",
       "questions": [
         {
+          "id": "RSK01A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Hand am Hals (nur Berührung, kein Druck)",
+          "help": "Nur Kontakt, niemals auf den Kehlkopf.",
+          "tags": [
+            "risk",
+            "breath",
+            "level2"
+          ]
+        },
+        {
+          "id": "RSK01B",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Leichter Druck seitlich (kurz, nie Kehlkopf)",
+          "help": "Nur seitlich an den Halsschlagadern, sofort stoppen bei Unsicherheit.",
+          "tags": [
+            "risk",
+            "breath",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "RSK01A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
           "id": "RSK01",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Atemspiele / Breathplay",
+          "label": "Breathplay mit Druck / Choking",
           "help": "WARNUNG: Extrem hohes Risiko! Niemals allein. Niemals Kehlkopf.",
-          "tags": ["risk", "breath", "level3"],
-          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Panic-Hormone Cascade: Adrenalin-Spike → Cortisol-Anstieg → bei Freigabe: Endorphin-Flood + Dopamin-Rush = extreme Euphorie. ABER: Physisch EXTREM gefährlich - Hirnschäden möglich bei 30+ Sekunden Sauerstoffmangel, Herzstillstand-Risiko, Tod möglich. Nur Carotiden (seitlich), NIEMALS Kehlkopf. Nur für Expert:innen mit medizinischem Wissen. Safeword muss non-verbal sein (Klopfen)."
+          "tags": [
+            "risk",
+            "breath",
+            "level3"
+          ],
+          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Panic-Hormone Cascade: Adrenalin-Spike → Cortisol-Anstieg → bei Freigabe: Endorphin-Flood + Dopamin-Rush = extreme Euphorie. ABER: Physisch EXTREM gefährlich - Hirnschäden möglich bei 30+ Sekunden Sauerstoffmangel, Herzstillstand-Risiko, Tod möglich. Nur Carotiden (seitlich), NIEMALS Kehlkopf. Nur für Expert:innen mit medizinischem Wissen. Safeword muss non-verbal sein (Klopfen).",
+          "depends_on": {
+            "id": "RSK01B",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "RSK02A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Nadeln (oberflächlich, steril)",
+          "help": "Nur sterile Einweg-Needles, Desinfektion, keine tiefen Stiche.",
+          "tags": [
+            "risk",
+            "blood",
+            "level2"
+          ]
         },
         {
           "id": "RSK02",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Nadeln / Blut / Cutting",
+          "label": "Cutting / Blut / tiefe Nadeln",
           "help": "WARNUNG: Infektionsrisiko. Nur mit Fachwissen.",
-          "tags": ["risk", "blood", "level3"]
+          "tags": [
+            "risk",
+            "blood",
+            "level3"
+          ],
+          "depends_on": {
+            "id": "RSK02A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "RSK03",
@@ -343,7 +643,11 @@
           "risk_level": "B",
           "label": "Andere Personen (Dreier / Gruppen)",
           "help": "Hohes emotionales Risiko. Klare Regeln nötig.",
-          "tags": ["risk", "group", "level2"]
+          "tags": [
+            "risk",
+            "group",
+            "level2"
+          ]
         }
       ]
     },
@@ -353,13 +657,35 @@
       "description": "Für Fortgeschrittene.",
       "questions": [
         {
+          "id": "EXT01A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Fisting Vorbereitung (3-4 Finger / Handrücken)",
+          "help": "Langsam dehnen, viel Gleitgel, Pausen einplanen.",
+          "tags": [
+            "extreme",
+            "fisting",
+            "prep"
+          ]
+        },
+        {
           "id": "EXT01",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Fisting (Vaginal/Anal)",
+          "label": "Fisting (ganze Hand, vaginal/anal)",
           "help": "Einführen der ganzen Hand.",
-          "tags": ["extreme", "fisting"],
-          "info_details": "Psychologie: Die ultimative Öffnung und das 'Füllen' der Leere. Erfordert extremes Vertrauen und Loslassen. Physisch ein sehr langsamer Prozess des Dehnens (Stunden!). Führt oft in einen tiefen Trance-Zustand (Subspace). Neuroscience: Transiente Hypofrontalität - präfrontaler Kortex schaltet ab, nur noch Körpergefühl bleibt. Endorphin-Flood + Depersonalisation. Wichtig: Niemals erzwingen, immer Gleitgel (auf Wasserbasis), langsame Dekompression nach dem Entfernen."
+          "tags": [
+            "extreme",
+            "fisting"
+          ],
+          "info_details": "Psychologie: Die ultimative Öffnung und das 'Füllen' der Leere. Erfordert extremes Vertrauen und Loslassen. Physisch ein sehr langsamer Prozess des Dehnens (Stunden!). Führt oft in einen tiefen Trance-Zustand (Subspace). Neuroscience: Transiente Hypofrontalität - präfrontaler Kortex schaltet ab, nur noch Körpergefühl bleibt. Endorphin-Flood + Depersonalisation. Wichtig: Niemals erzwingen, immer Gleitgel (auf Wasserbasis), langsame Dekompression nach dem Entfernen.",
+          "depends_on": {
+            "id": "EXT01A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT02",
@@ -367,8 +693,84 @@
           "risk_level": "B",
           "label": "Petplay (Hund/Pony)",
           "help": "Rollenspiel als Tier.",
-          "tags": ["roleplay", "petplay"],
+          "tags": [
+            "roleplay",
+            "petplay"
+          ],
           "info_details": "Psychologie: 'Headspace'. Urlaub vom Menschsein. Keine Worte, keine komplexen Gedanken, nur Instinkt und Gehorsam. Sehr meditativ und befreiend von Alltagssorgen."
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "name": "Review & Ausblick",
+      "description": "Was lernen wir aus der Vergangenheit? Was soll die Zukunft bringen?",
+      "questions": [
+        {
+          "id": "REV001",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": [
+            "review",
+            "repeat"
+          ],
+          "label": "Bereits erlebt: Intensive Praktik wiederholen?",
+          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen?"
+        },
+        {
+          "id": "REV002",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "less"
+          ],
+          "label": "Was wollen wir weniger machen?",
+          "help": "Praktiken oder Dynamiken, die wir reduzieren oder pausieren möchten."
+        },
+        {
+          "id": "REV003",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "highlight"
+          ],
+          "label": "Was war ein Highlight, das wir wiederholen sollten?",
+          "help": "Besonders positive Erfahrungen, die wir gerne wiederholen möchten."
+        },
+        {
+          "id": "REV004",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "friction"
+          ],
+          "label": "Was hat nicht funktioniert?",
+          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt?"
+        },
+        {
+          "id": "REV005",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "debrief"
+          ],
+          "label": "Debrief-Log: Letzte 4 Experimente",
+          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht?"
+        },
+        {
+          "id": "REV006",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "notes"
+          ],
+          "label": "Generelle Notizen / Wünsche an uns.",
+          "help": "Platz für alles, was sonst nirgends hinpasst."
         }
       ]
     }

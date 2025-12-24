@@ -5,6 +5,87 @@
   "description": "Detaillierte Erfassung von spezifischen Fetischen, Praktiken, Materialien und psychologischen Dynamiken. Fokus auf das 'Was' und 'Womit'.",
   "modules": [
     {
+      "id": "logistics",
+      "name": "Rahmen, Zeit & Logistik",
+      "description": "Bevor es zur Sache geht: Stressfaktoren, Zeitfenster und Privatsphäre klären.",
+      "questions": [
+        {
+          "id": "L01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": [
+            "time",
+            "stress"
+          ],
+          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
+          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung."
+        },
+        {
+          "id": "L02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "coping"
+          ],
+          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
+          "options": [
+            "Sex zur Entspannung hilft",
+            "Lieber nur Kuscheln/Massage",
+            "Komplette Ruhe/Absage",
+            "Reden statt Tun",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": [
+            "privacy",
+            "digital"
+          ],
+          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
+          "options": [
+            "Nichts digital speichern",
+            "Verschlüsselt/Hidden Folder ok",
+            "Nur auf einem Gerät (Offline)",
+            "Alles ok (Cloud etc.)",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "time"
+          ],
+          "label": "Minimale Zeit für Quality Time?",
+          "help": "Wie viel Zeit brauchen wir mindestens?",
+          "options": [
+            "30 Minuten",
+            "1 Stunde",
+            "2 Stunden",
+            "Open End",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L05",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "privacy",
+            "boundaries"
+          ],
+          "label": "Privatsphäre: Wer darf was wissen?",
+          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos)."
+        }
+      ]
+    },
+    {
       "id": "dynamics_trust",
       "name": "Dynamik & Vertrauen",
       "description": "Die psychologische Basis: Macht, Kontrolle und Hingabe.",
@@ -281,6 +362,79 @@
           "help": "Spielen mit Altersunterschieden (Little/Caregiver).",
           "schema": "consent_rating",
           "risk_level": "C"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "name": "Review & Ausblick",
+      "description": "Was lernen wir aus der Vergangenheit? Was soll die Zukunft bringen?",
+      "questions": [
+        {
+          "id": "REV001",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": [
+            "review",
+            "repeat"
+          ],
+          "label": "Bereits erlebt: Intensive Praktik wiederholen?",
+          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen?"
+        },
+        {
+          "id": "REV002",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "less"
+          ],
+          "label": "Was wollen wir weniger machen?",
+          "help": "Praktiken oder Dynamiken, die wir reduzieren oder pausieren möchten."
+        },
+        {
+          "id": "REV003",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "highlight"
+          ],
+          "label": "Was war ein Highlight, das wir wiederholen sollten?",
+          "help": "Besonders positive Erfahrungen, die wir gerne wiederholen möchten."
+        },
+        {
+          "id": "REV004",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "friction"
+          ],
+          "label": "Was hat nicht funktioniert?",
+          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt?"
+        },
+        {
+          "id": "REV005",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "debrief"
+          ],
+          "label": "Debrief-Log: Letzte 4 Experimente",
+          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht?"
+        },
+        {
+          "id": "REV006",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "notes"
+          ],
+          "label": "Generelle Notizen / Wünsche an uns.",
+          "help": "Platz für alles, was sonst nirgends hinpasst."
         }
       ]
     }

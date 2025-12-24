@@ -13,7 +13,10 @@
           "id": "L01",
           "schema": "scale_0_10",
           "risk_level": "A",
-          "tags": ["time", "stress"],
+          "tags": [
+            "time",
+            "stress"
+          ],
           "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
           "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung."
         },
@@ -21,28 +24,64 @@
           "id": "L02",
           "schema": "enum",
           "risk_level": "A",
-          "tags": ["coping"],
+          "tags": [
+            "coping"
+          ],
           "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
           "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
-          "options": ["Sex zur Entspannung hilft", "Lieber nur Kuscheln/Massage", "Komplette Ruhe/Absage", "Reden statt Tun", "Kommt drauf an"]
+          "options": [
+            "Sex zur Entspannung hilft",
+            "Lieber nur Kuscheln/Massage",
+            "Komplette Ruhe/Absage",
+            "Reden statt Tun",
+            "Kommt drauf an"
+          ]
         },
         {
           "id": "L03",
           "schema": "enum",
           "risk_level": "B",
-          "tags": ["privacy", "digital"],
+          "tags": [
+            "privacy",
+            "digital"
+          ],
           "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
           "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
-          "options": ["Nichts digital speichern", "Verschlüsselt/Hidden Folder ok", "Nur auf einem Gerät (Offline)", "Alles ok (Cloud etc.)", "Kommt drauf an"]
+          "options": [
+            "Nichts digital speichern",
+            "Verschlüsselt/Hidden Folder ok",
+            "Nur auf einem Gerät (Offline)",
+            "Alles ok (Cloud etc.)",
+            "Kommt drauf an"
+          ]
         },
         {
           "id": "L04",
           "schema": "enum",
           "risk_level": "A",
-          "tags": ["time"],
+          "tags": [
+            "time"
+          ],
           "label": "Minimale Zeit für Quality Time?",
           "help": "Wie viel Zeit brauchen wir mindestens?",
-          "options": ["30 Minuten", "1 Stunde", "2 Stunden", "Open End", "Kommt drauf an"]
+          "options": [
+            "30 Minuten",
+            "1 Stunde",
+            "2 Stunden",
+            "Open End",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L05",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "privacy",
+            "boundaries"
+          ],
+          "label": "Privatsphäre: Wer darf was wissen?",
+          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos)."
         }
       ]
     },
@@ -5725,13 +5764,13 @@
         {
           "id": "BDS010",
           "schema": "consent_rating",
-          "risk_level": "C",
+          "risk_level": "B",
           "tags": [
             "sensation",
             "bdsm"
           ],
-          "label": "Nadelspiele",
-          "help": "Kategorie: Nadelspiele:",
+          "label": "Nadelspiele (oberflächlich)",
+          "help": "Einstieg: sterile Einweg-Needles, nur oberflächlich.",
           "has_dom_sub": true
         },
         {
@@ -5742,9 +5781,16 @@
             "sensation",
             "bdsm"
           ],
-          "label": "Nadeln",
-          "help": "Kategorie: Nadelspiele:",
-          "has_dom_sub": true
+          "label": "Nadeln (tiefer / intensiver)",
+          "help": "Fortgeschritten: tiefer/mehr Nadeln, sterile Technik.",
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BDS010",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         }
       ]
     },
@@ -6470,7 +6516,14 @@
           ],
           "label": "Atemkontrolle",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE002",
@@ -6483,7 +6536,14 @@
           ],
           "label": "Breathplay",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE003",
@@ -6496,7 +6556,14 @@
           ],
           "label": "Choking",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE004",
@@ -6509,19 +6576,26 @@
           ],
           "label": "Würgen",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE005",
           "schema": "consent_rating",
-          "risk_level": "C",
+          "risk_level": "B",
           "tags": [
             "high-risk",
             "bdsm",
             "breathplay"
           ],
-          "label": "Hände am Hals",
-          "help": "**⚠️ EXTREME WARNUNG ⚠️**",
+          "label": "Hände am Hals (nur Berührung)",
+          "help": "Kein Druck, niemals auf den Kehlkopf.",
           "has_dom_sub": true
         },
         {
@@ -6535,12 +6609,19 @@
           ],
           "label": "Würgen mit Gegenstand",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE007",
           "schema": "consent_rating",
-          "risk_level": "C",
+          "risk_level": "B",
           "tags": [
             "high-risk",
             "bdsm",
@@ -6548,7 +6629,7 @@
             "oral"
           ],
           "label": "Hand über Mund",
-          "help": "**⚠️ EXTREME WARNUNG ⚠️**",
+          "help": "Nur kurz und kontrolliert, genug Luft durch die Nase lassen.",
           "has_dom_sub": true
         },
         {
@@ -6563,7 +6644,14 @@
           ],
           "label": "Hand über Nase",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE009",
@@ -6577,7 +6665,14 @@
           ],
           "label": "Wasser (Waterboarding)",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE010",
@@ -6591,7 +6686,14 @@
           ],
           "label": "Tüten/Plastik",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE011",
@@ -6605,7 +6707,14 @@
           ],
           "label": "Strangulation",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE012",
@@ -6619,26 +6728,40 @@
           ],
           "label": "Ohnmacht/Blackout",
           "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE013",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE013",
           "schema": "consent_rating",
-          "risk_level": "C",
+          "risk_level": "B",
           "tags": [
             "high-risk",
             "bdsm",
             "breathplay",
             "oral"
           ],
-          "label": "Breathplay Light (Hand am Hals / Würgen)",
-          "help": "**⚠️ EXTREME WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "label": "Breathplay Light (leichter Druck seitlich, kurz)",
+          "help": "Nur seitlich, kurze Dauer, klare Stop-Signale.",
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "BRE005",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "BRE014",
           "schema": "consent_rating",
-          "risk_level": "C",
+          "risk_level": "B",
           "tags": [
             "high-risk",
             "bdsm",
@@ -6646,13 +6769,13 @@
             "oral"
           ],
           "label": "Husten",
-          "help": "**⚠️ EXTREME WARNUNG ⚠️**",
+          "help": "Hustenreiz ernst nehmen und sofort stoppen, wenn es unangenehm wird.",
           "has_dom_sub": true
         },
         {
           "id": "BRE015",
           "schema": "consent_rating",
-          "risk_level": "C",
+          "risk_level": "B",
           "tags": [
             "high-risk",
             "bdsm",
@@ -6660,7 +6783,7 @@
             "oral"
           ],
           "label": "Gagging",
-          "help": "**⚠️ EXTREME WARNUNG ⚠️**",
+          "help": "Nur kurz, klare Stop-Signale, Atmung beobachten.",
           "has_dom_sub": true
         }
       ]
@@ -7005,13 +7128,13 @@
         {
           "id": "EXT001",
           "schema": "consent_rating",
-          "risk_level": "C",
+          "risk_level": "B",
           "tags": [
             "high-risk",
             "extreme"
           ],
-          "label": "Blut",
-          "help": "**⚠️ WARNUNG ⚠️**",
+          "label": "Blut (oberflächlich / sehen)",
+          "help": "Einstieg: sterile Umgebung, nur oberflächlich.",
           "has_dom_sub": true
         },
         {
@@ -7024,7 +7147,14 @@
           ],
           "label": "Nadeln",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT001",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT003",
@@ -7036,7 +7166,14 @@
           ],
           "label": "Branding",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT001",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT004",
@@ -7048,7 +7185,14 @@
           ],
           "label": "Cutting",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT001",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT005",
@@ -7060,7 +7204,14 @@
           ],
           "label": "Natursekt",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT009",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT006",
@@ -7073,7 +7224,14 @@
           ],
           "label": "Natursekt (Watersports) / Körperflüssigkeiten",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT009",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT007",
@@ -7088,7 +7246,14 @@
           "label": "Natursekt aktiv (geben)",
           "help": "**⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT009",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT008",
@@ -7104,12 +7269,19 @@
           "label": "Natursekt passiv (empfangen)",
           "help": "**⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT009",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT009",
           "schema": "consent_rating",
-          "risk_level": "C",
+          "risk_level": "B",
           "tags": [
             "active",
             "anal",
@@ -7118,7 +7290,7 @@
             "extreme"
           ],
           "label": "Natursekt auf Körper",
-          "help": "**⚠️ WARNUNG ⚠️**",
+          "help": "Einstieg: auf Körper/Kleidung, klare Hygiene-Regeln.",
           "has_dom_sub": true
         },
         {
@@ -7135,7 +7307,14 @@
           ],
           "label": "Natursekt in Mund",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT009",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT011",
@@ -7151,7 +7330,14 @@
           ],
           "label": "Natursekt auf Gesicht",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT009",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT012",
@@ -7167,7 +7353,14 @@
           ],
           "label": "Kaviar",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT010",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT013",
@@ -7202,6 +7395,19 @@
           "has_dom_sub": true
         },
         {
+          "id": "EXT015A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": [
+            "high-risk",
+            "extreme",
+            "fisting"
+          ],
+          "label": "Fisting Vorbereitung (3-4 Finger / Handrücken)",
+          "help": "Langsam dehnen, viel Gleitgel, Pausen einplanen.",
+          "has_dom_sub": true
+        },
+        {
           "id": "EXT015",
           "schema": "consent_rating",
           "risk_level": "C",
@@ -7215,7 +7421,14 @@
           ],
           "label": "Fisting",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT015A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT016",
@@ -7232,7 +7445,14 @@
           ],
           "label": "Fisting vaginal",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT015A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT017",
@@ -7249,7 +7469,14 @@
           ],
           "label": "Fisting anal",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT015A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT018",
@@ -7266,7 +7493,14 @@
           ],
           "label": "Fisting / Extreme Dehnung",
           "help": "**⚠️ WARNUNG ⚠️**",
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT015A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT019",
@@ -7284,7 +7518,14 @@
           "label": "Fisting aktiv geben (bei ihr)",
           "help": "**⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT015A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT020",
@@ -7302,7 +7543,14 @@
           "label": "Fisting passiv empfangen (bei ihr)",
           "help": "**⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT015A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT021",
@@ -7320,7 +7568,14 @@
           "label": "Fisting aktiv geben (bei ihm)",
           "help": "**⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT015A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT022",
@@ -7338,7 +7593,14 @@
           "label": "Fisting passiv empfangen (bei ihm)",
           "help": "**⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
-          "has_dom_sub": true
+          "has_dom_sub": true,
+          "depends_on": {
+            "id": "EXT015A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         }
       ]
     },
@@ -7874,7 +8136,10 @@
           "id": "REV002",
           "schema": "text",
           "risk_level": "A",
-          "tags": ["review", "less"],
+          "tags": [
+            "review",
+            "less"
+          ],
           "label": "Was wollen wir weniger machen?",
           "help": "Praktiken, die nicht so gut funktioniert haben oder die wir reduzieren möchten."
         },
@@ -7882,15 +8147,32 @@
           "id": "REV003",
           "schema": "text",
           "risk_level": "A",
-          "tags": ["review", "highlight"],
+          "tags": [
+            "review",
+            "highlight"
+          ],
           "label": "Was war ein Highlight, das wir wiederholen sollten?",
           "help": "Besonders positive Erfahrungen, die wir gerne wiederholen möchten."
+        },
+        {
+          "id": "REV005",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "friction"
+          ],
+          "label": "Was hat nicht funktioniert?",
+          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt?"
         },
         {
           "id": "REV004",
           "schema": "text",
           "risk_level": "A",
-          "tags": ["review", "debrief"],
+          "tags": [
+            "review",
+            "debrief"
+          ],
           "label": "Debrief-Log: Letzte 4 Experimente",
           "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht?"
         }

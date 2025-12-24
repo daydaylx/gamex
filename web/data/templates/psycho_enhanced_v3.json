@@ -5,6 +5,87 @@
   "description": "Erweitert um wissenschaftlich fundierte psychologische Tiefe: Bindung, Subspace, Scham, Power Dynamics, Aftercare, Regulation. Kombiniert alle 9 Basis-Module mit 6 psychologischen Vertiefungs-Modulen.",
   "modules": [
     {
+      "id": "logistics",
+      "name": "Rahmen, Zeit & Logistik",
+      "description": "Bevor es zur Sache geht: Stressfaktoren, Zeitfenster und Privatsphäre klären.",
+      "questions": [
+        {
+          "id": "L01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": [
+            "time",
+            "stress"
+          ],
+          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
+          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung."
+        },
+        {
+          "id": "L02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "coping"
+          ],
+          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
+          "options": [
+            "Sex zur Entspannung hilft",
+            "Lieber nur Kuscheln/Massage",
+            "Komplette Ruhe/Absage",
+            "Reden statt Tun",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": [
+            "privacy",
+            "digital"
+          ],
+          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
+          "options": [
+            "Nichts digital speichern",
+            "Verschlüsselt/Hidden Folder ok",
+            "Nur auf einem Gerät (Offline)",
+            "Alles ok (Cloud etc.)",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "time"
+          ],
+          "label": "Minimale Zeit für Quality Time?",
+          "help": "Wie viel Zeit brauchen wir mindestens?",
+          "options": [
+            "30 Minuten",
+            "1 Stunde",
+            "2 Stunden",
+            "Open End",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L05",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "privacy",
+            "boundaries"
+          ],
+          "label": "Privatsphäre: Wer darf was wissen?",
+          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos)."
+        }
+      ]
+    },
+    {
       "id": "intro",
       "name": "01. Das Fundament: Wir & Rahmen",
       "description": "Bevor wir über Praktiken reden: Wie wollen wir miteinander umgehen? Was ist unsere emotionale Basis?",
@@ -243,10 +324,30 @@
           ]
         },
         {
+          "id": "SEX04B",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Anale Spielzeuge (kleine Plugs / Dildos)",
+          "help": "Nur mit Stop-Base, viel Gleitgel, langsam steigern.",
+          "tags": [
+            "sex",
+            "anal",
+            "toys",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "SEX04",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
           "id": "SEX05",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Anale Penetration (Sex)",
+          "label": "Anale Penetration (Penis / größere Toys)",
           "help": "Erfordert Vorbereitung, Gleitgel und Entspannung.",
           "tags": [
             "sex",
@@ -255,7 +356,7 @@
             "level2"
           ],
           "depends_on": {
-            "id": "SEX04",
+            "id": "SEX04B",
             "values": [
               "YES",
               "MAYBE"
@@ -455,29 +556,86 @@
       "description": "Dinge, die besondere Vorsicht erfordern.",
       "questions": [
         {
+          "id": "RSK01A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Hand am Hals (nur Berührung, kein Druck)",
+          "help": "Nur Kontakt, niemals auf den Kehlkopf.",
+          "tags": [
+            "risk",
+            "breath",
+            "level2"
+          ]
+        },
+        {
+          "id": "RSK01B",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Leichter Druck seitlich (kurz, nie Kehlkopf)",
+          "help": "Nur seitlich an den Halsschlagadern, sofort stoppen bei Unsicherheit.",
+          "tags": [
+            "risk",
+            "breath",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "RSK01A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
           "id": "RSK01",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Atemspiele / Breathplay",
+          "label": "Breathplay mit Druck / Choking",
           "help": "WARNUNG: Extrem hohes Risiko! Niemals allein. Niemals Kehlkopf.",
           "tags": [
             "risk",
             "breath",
             "level3"
           ],
-          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Panic-Hormone Cascade: Adrenalin-Spike → Cortisol-Anstieg → bei Freigabe: Endorphin-Flood + Dopamin-Rush = extreme Euphorie. ABER: Physisch EXTREM gefährlich - Hirnschäden möglich bei 30+ Sekunden Sauerstoffmangel, Herzstillstand-Risiko, Tod möglich. Nur Carotiden (seitlich), NIEMALS Kehlkopf. Nur für Expert:innen mit medizinischem Wissen. Safeword muss non-verbal sein (Klopfen)."
+          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Panic-Hormone Cascade: Adrenalin-Spike → Cortisol-Anstieg → bei Freigabe: Endorphin-Flood + Dopamin-Rush = extreme Euphorie. ABER: Physisch EXTREM gefährlich - Hirnschäden möglich bei 30+ Sekunden Sauerstoffmangel, Herzstillstand-Risiko, Tod möglich. Nur Carotiden (seitlich), NIEMALS Kehlkopf. Nur für Expert:innen mit medizinischem Wissen. Safeword muss non-verbal sein (Klopfen).",
+          "depends_on": {
+            "id": "RSK01B",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "RSK02A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Nadeln (oberflächlich, steril)",
+          "help": "Nur sterile Einweg-Needles, Desinfektion, keine tiefen Stiche.",
+          "tags": [
+            "risk",
+            "blood",
+            "level2"
+          ]
         },
         {
           "id": "RSK02",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Nadeln / Blut / Cutting",
+          "label": "Cutting / Blut / tiefe Nadeln",
           "help": "WARNUNG: Infektionsrisiko. Nur mit Fachwissen.",
           "tags": [
             "risk",
             "blood",
             "level3"
-          ]
+          ],
+          "depends_on": {
+            "id": "RSK02A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "RSK03",
@@ -499,16 +657,35 @@
       "description": "Für Fortgeschrittene.",
       "questions": [
         {
+          "id": "EXT01A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Fisting Vorbereitung (3-4 Finger / Handrücken)",
+          "help": "Langsam dehnen, viel Gleitgel, Pausen einplanen.",
+          "tags": [
+            "extreme",
+            "fisting",
+            "prep"
+          ]
+        },
+        {
           "id": "EXT01",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Fisting (Vaginal/Anal)",
+          "label": "Fisting (ganze Hand, vaginal/anal)",
           "help": "Einführen der ganzen Hand.",
           "tags": [
             "extreme",
             "fisting"
           ],
-          "info_details": "Psychologie: Die ultimative Öffnung und das 'Füllen' der Leere. Erfordert extremes Vertrauen und Loslassen. Physisch ein sehr langsamer Prozess des Dehnens (Stunden!). Führt oft in einen tiefen Trance-Zustand (Subspace). Neuroscience: Transiente Hypofrontalität - präfrontaler Kortex schaltet ab, nur noch Körpergefühl bleibt. Endorphin-Flood + Depersonalisation. Wichtig: Niemals erzwingen, immer Gleitgel (auf Wasserbasis), langsame Dekompression nach dem Entfernen."
+          "info_details": "Psychologie: Die ultimative Öffnung und das 'Füllen' der Leere. Erfordert extremes Vertrauen und Loslassen. Physisch ein sehr langsamer Prozess des Dehnens (Stunden!). Führt oft in einen tiefen Trance-Zustand (Subspace). Neuroscience: Transiente Hypofrontalität - präfrontaler Kortex schaltet ab, nur noch Körpergefühl bleibt. Endorphin-Flood + Depersonalisation. Wichtig: Niemals erzwingen, immer Gleitgel (auf Wasserbasis), langsame Dekompression nach dem Entfernen.",
+          "depends_on": {
+            "id": "EXT01A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
         },
         {
           "id": "EXT02",
@@ -1479,6 +1656,79 @@
             "ethics"
           ],
           "info_details": "Service-Top-Konzept: Dominanz ist Arbeit für das Vergnügen/Wachstum des Sub. 'Selfish Dom' (nur eigene Lust) vs. 'Service Dom' (Sub's Bedürfnisse im Zentrum). Community-Weisheit: 'The sub has the power' - weil Sub durch Consent & Safeword die Meta-Kontrolle behält. Ethische Dominanz: 1) Sub's Grenzen respektieren, 2) Aftercare priorisieren, 3) Ego-Check ('Tue ich das für mich oder für uns?'), 4) Consent nie als selbstverständlich sehen."
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "name": "Review & Ausblick",
+      "description": "Was lernen wir aus der Vergangenheit? Was soll die Zukunft bringen?",
+      "questions": [
+        {
+          "id": "REV001",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": [
+            "review",
+            "repeat"
+          ],
+          "label": "Bereits erlebt: Intensive Praktik wiederholen?",
+          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen?"
+        },
+        {
+          "id": "REV002",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "less"
+          ],
+          "label": "Was wollen wir weniger machen?",
+          "help": "Praktiken oder Dynamiken, die wir reduzieren oder pausieren möchten."
+        },
+        {
+          "id": "REV003",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "highlight"
+          ],
+          "label": "Was war ein Highlight, das wir wiederholen sollten?",
+          "help": "Besonders positive Erfahrungen, die wir gerne wiederholen möchten."
+        },
+        {
+          "id": "REV004",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "friction"
+          ],
+          "label": "Was hat nicht funktioniert?",
+          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt?"
+        },
+        {
+          "id": "REV005",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "debrief"
+          ],
+          "label": "Debrief-Log: Letzte 4 Experimente",
+          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht?"
+        },
+        {
+          "id": "REV006",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "notes"
+          ],
+          "label": "Generelle Notizen / Wünsche an uns.",
+          "help": "Platz für alles, was sonst nirgends hinpasst."
         }
       ]
     }
