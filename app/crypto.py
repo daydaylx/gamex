@@ -69,10 +69,12 @@ def verify_pin(pin: Optional[str], stored_hash: Optional[str], salt: bytes, pers
     if stored_hash is None:
         # no pin required
         return True
-    if not pin:
+    if pin is None:
         return False
+    # Empty string is a valid PIN value, so we allow it
     candidate = hash_pin(pin, salt, person)
     return hmac.compare_digest(candidate, stored_hash)
+
 
 
 

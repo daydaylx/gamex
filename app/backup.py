@@ -154,6 +154,8 @@ def restore_backup(encrypted_backup_b64: str, salt_b64: str, password: str, new_
     
     with db() as conn:
         # Insert session with new ID
+        # Decode salt from base64 to bytes (database expects BLOB)
+        original_salt_bytes = base64.b64decode(session_data["salt"])
         conn.execute(
             """INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) 
                VALUES (?,?,?,?,?,?,?,?)""",
@@ -162,7 +164,7 @@ def restore_backup(encrypted_backup_b64: str, salt_b64: str, password: str, new_
                 session_name,
                 session_data["template_id"],
                 datetime.now(timezone.utc).isoformat(),
-                session_data["salt"],
+                original_salt_bytes,
                 session_data["pw_verifier"],
                 session_data["pin_a_hash"],
                 session_data["pin_b_hash"]
@@ -171,17 +173,17 @@ def restore_backup(encrypted_backup_b64: str, salt_b64: str, password: str, new_
         
         # Restore responses
         responses = backup_data.get("responses", {})
-        original_salt = base64.b64decode(session_data["salt"])
+        # original_salt_bytes already decoded above (line 165)
         
         if responses.get("A"):
-            encrypted_a = encrypt_json(password, original_salt, json.dumps(responses["A"], ensure_ascii=False))
+            encrypted_a = encrypt_json(password, original_salt_bytes, json.dumps(responses["A"], ensure_ascii=False))
             conn.execute(
                 "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?)",
                 (new_session_id, "A", encrypted_a, datetime.now(timezone.utc).isoformat())
             )
         
         if responses.get("B"):
-            encrypted_b = encrypt_json(password, original_salt, json.dumps(responses["B"], ensure_ascii=False))
+            encrypted_b = encrypt_json(password, original_salt_bytes, json.dumps(responses["B"], ensure_ascii=False))
             conn.execute(
                 "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?)",
                 (new_session_id, "B", encrypted_b, datetime.now(timezone.utc).isoformat())

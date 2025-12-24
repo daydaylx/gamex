@@ -171,10 +171,31 @@ class TestOpenrouterAnalyze:
     """Tests for openrouter_analyze function."""
     
     @pytest.mark.asyncio
-    async def test_openrouter_analyze_success(self, test_db, test_password):
+    async def test_openrouter_analyze_success(self, test_db, test_password, test_client, sample_template):
         """Test successful openrouter_analyze call."""
         import os
-        salt = os.urandom(16)
+        from app.template_store import save_template
+        from app.crypto import create_key_material
+        from app.db import db
+        from datetime import datetime, timezone
+        
+        # Create template and session
+        save_template(
+            sample_template["id"],
+            sample_template["name"],
+            sample_template["version"],
+            sample_template
+        )
+        
+        session_id = "test_session"
+        km = create_key_material(test_password)
+        with db() as conn:
+            conn.execute(
+                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) VALUES (?,?,?,?,?,?,?,?)",
+                (session_id, "Test Session", sample_template["id"], datetime.now(timezone.utc).isoformat(), km.salt, km.verifier, None, None)
+            )
+        
+        salt = km.salt
         
         compare_result = {
             "meta": {"template_id": "test"},
@@ -224,12 +245,31 @@ class TestOpenrouterAnalyze:
             assert call_args[1]["headers"]["Authorization"] == "Bearer test_api_key"
             
     @pytest.mark.asyncio
-    async def test_openrouter_analyze_encrypts_result(self, test_db, test_password):
+    async def test_openrouter_analyze_encrypts_result(self, test_db, test_password, test_client, sample_template):
         """Test that openrouter_analyze encrypts and stores the result."""
         import os
-        from app.crypto import decrypt_json
+        from app.crypto import decrypt_json, create_key_material
+        from app.template_store import save_template
+        from app.db import db
+        from datetime import datetime, timezone
         
-        salt = os.urandom(16)
+        # Create template and session
+        save_template(
+            sample_template["id"],
+            sample_template["name"],
+            sample_template["version"],
+            sample_template
+        )
+        
+        session_id = "test_session"
+        km = create_key_material(test_password)
+        with db() as conn:
+            conn.execute(
+                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) VALUES (?,?,?,?,?,?,?,?)",
+                (session_id, "Test Session", sample_template["id"], datetime.now(timezone.utc).isoformat(), km.salt, km.verifier, None, None)
+            )
+        
+        salt = km.salt
         
         compare_result = {"meta": {}, "summary": {}, "items": []}
         
@@ -279,10 +319,31 @@ class TestOpenrouterAnalyze:
                 assert payload["text"] == "Encrypted analysis"
                 
     @pytest.mark.asyncio
-    async def test_openrouter_analyze_handles_error_response(self, test_db, test_password):
+    async def test_openrouter_analyze_handles_error_response(self, test_db, test_password, test_client, sample_template):
         """Test that openrouter_analyze handles error responses gracefully."""
         import os
-        salt = os.urandom(16)
+        from app.crypto import create_key_material
+        from app.template_store import save_template
+        from app.db import db
+        from datetime import datetime, timezone
+        
+        # Create template and session
+        save_template(
+            sample_template["id"],
+            sample_template["name"],
+            sample_template["version"],
+            sample_template
+        )
+        
+        session_id = "test_session"
+        km = create_key_material(test_password)
+        with db() as conn:
+            conn.execute(
+                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) VALUES (?,?,?,?,?,?,?,?)",
+                (session_id, "Test Session", sample_template["id"], datetime.now(timezone.utc).isoformat(), km.salt, km.verifier, None, None)
+            )
+        
+        salt = km.salt
         
         compare_result = {"meta": {}, "summary": {}, "items": []}
         
@@ -327,15 +388,33 @@ class TestListAiReports:
         
         assert reports == []
         
-    def test_list_ai_reports_multiple(self, test_db, test_password):
+    def test_list_ai_reports_multiple(self, test_db, test_password, test_client, sample_template):
         """Test listing multiple AI reports."""
         import os
         import uuid
         from app.db import db
-        from app.crypto import encrypt_json
+        from app.crypto import encrypt_json, create_key_material
+        from app.template_store import save_template
+        from datetime import datetime, timezone
+        
+        # Create template and session
+        save_template(
+            sample_template["id"],
+            sample_template["name"],
+            sample_template["version"],
+            sample_template
+        )
         
         salt = os.urandom(16)
         session_id = str(uuid.uuid4())
+        km = create_key_material(test_password, salt=salt)
+        
+        # Create session first
+        with db() as conn:
+            conn.execute(
+                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) VALUES (?,?,?,?,?,?,?,?)",
+                (session_id, "Test Session", sample_template["id"], datetime.now(timezone.utc).isoformat(), km.salt, km.verifier, None, None)
+            )
         
         # Create some reports
         with db() as conn:
@@ -355,18 +434,35 @@ class TestListAiReports:
         assert all("text" in r for r in reports)
         assert all(r["provider"] == "openrouter" for r in reports)
         
-    def test_list_ai_reports_decrypts(self, test_db, test_password):
+    def test_list_ai_reports_decrypts(self, test_db, test_password, test_client, sample_template):
         """Test that list_ai_reports decrypts the stored reports."""
         import os
         import uuid
         from app.db import db
-        from app.crypto import encrypt_json
+        from app.crypto import encrypt_json, create_key_material
+        from app.template_store import save_template
+        from datetime import datetime, timezone
+        
+        # Create template and session
+        save_template(
+            sample_template["id"],
+            sample_template["name"],
+            sample_template["version"],
+            sample_template
+        )
         
         salt = os.urandom(16)
         session_id = str(uuid.uuid4())
+        km = create_key_material(test_password, salt=salt)
         report_text = "This is a secret report"
         
+        # Create session first
         with db() as conn:
+            conn.execute(
+                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) VALUES (?,?,?,?,?,?,?,?)",
+                (session_id, "Test Session", sample_template["id"], datetime.now(timezone.utc).isoformat(), km.salt, km.verifier, None, None)
+            )
+            
             report_id = str(uuid.uuid4())
             blob = encrypt_json(test_password, salt, json.dumps({"text": report_text}))
             conn.execute(
@@ -379,17 +475,34 @@ class TestListAiReports:
         assert len(reports) == 1
         assert reports[0]["text"] == report_text
         
-    def test_list_ai_reports_sorted(self, test_db, test_password):
+    def test_list_ai_reports_sorted(self, test_db, test_password, test_client, sample_template):
         """Test that reports are sorted by created_at DESC."""
         import os
         import uuid
         from app.db import db
-        from app.crypto import encrypt_json
+        from app.crypto import encrypt_json, create_key_material
+        from app.template_store import save_template
+        from datetime import datetime, timezone
+        
+        # Create template and session
+        save_template(
+            sample_template["id"],
+            sample_template["name"],
+            sample_template["version"],
+            sample_template
+        )
         
         salt = os.urandom(16)
         session_id = str(uuid.uuid4())
+        km = create_key_material(test_password, salt=salt)
         
+        # Create session first
         with db() as conn:
+            conn.execute(
+                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) VALUES (?,?,?,?,?,?,?,?)",
+                (session_id, "Test Session", sample_template["id"], datetime.now(timezone.utc).isoformat(), km.salt, km.verifier, None, None)
+            )
+            
             for i in range(3):
                 report_id = str(uuid.uuid4())
                 text = f"Report {i}"
@@ -408,6 +521,7 @@ class TestListAiReports:
         # Check that timestamps are in descending order
         timestamps = [r["created_at"] for r in reports]
         assert timestamps == sorted(timestamps, reverse=True)
+
 
 
 

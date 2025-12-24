@@ -18,7 +18,14 @@ def _load_scenarios() -> List[Dict[str, Any]]:
         if not os.path.exists(path):
             return []
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
+            # Handle both list and dict formats
+            if isinstance(data, list):
+                return data
+            elif isinstance(data, dict) and "scenarios" in data:
+                return data["scenarios"]
+            else:
+                return []
     except Exception:
         return []
 
@@ -36,8 +43,13 @@ def _status_pair(a: str, b: str) -> str:
 
 def _flag_low_comfort_high_interest(entry: Dict[str, Any]) -> bool:
     try:
-        i = int(entry.get("interest", -1))
-        c = int(entry.get("comfort", -1))
+        interest = entry.get("interest")
+        comfort = entry.get("comfort")
+        # Return False if either value is missing
+        if interest is None or comfort is None:
+            return False
+        i = int(interest)
+        c = int(comfort)
         return i >= 3 and c <= 2
     except Exception:
         return False

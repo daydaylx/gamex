@@ -49,7 +49,7 @@ class ExportRequest(BaseModel):
 
 class AIAnalyzeRequest(BaseModel):
     password: str = Field(min_length=6, max_length=200)
-    provider: Literal["openrouter"] = "openrouter"
+    provider: str = Field(default="openrouter")
     api_key: str = Field(min_length=10, max_length=500)
     model: str = Field(min_length=1, max_length=200)
     base_url: str = Field(default="https://openrouter.ai/api/v1")
@@ -77,6 +77,7 @@ class RestoreRequest(BaseModel):
     salt: str = Field(min_length=1)
     password: str = Field(min_length=6, max_length=200)
     new_name: Optional[str] = Field(default=None, max_length=100)
+
 
 
 

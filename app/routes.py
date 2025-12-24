@@ -510,7 +510,14 @@ def get_scenarios():
     if not os.path.exists(path):
         return []
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+        # Handle both list and dict formats
+        if isinstance(data, list):
+            return data
+        elif isinstance(data, dict) and "scenarios" in data:
+            return data["scenarios"]
+        else:
+            return []
 
 @api_router.post("/sessions/{session_id}/ai/analyze")
 async def ai_analyze(session_id: str, req: AIAnalyzeRequest):
