@@ -1,0 +1,386 @@
+{
+  "id": "default_v2",
+  "name": "Intimität & Grenzen (v2 - Optimiert)",
+  "version": 2,
+  "description": "Erweiterter Fragebogen mit Fokus auf Rahmenbedingungen, granularen Abstufungen bei High-Risk Themen und Sicherheitshinweisen.",
+  "modules": [
+    {
+      "id": "base",
+      "name": "Basis & Kommunikation",
+      "description": "Bestandsaufnahme, Kommunikation, Aftercare, Stop-Regel.",
+      "questions": [
+        {
+          "id": "Q01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["satisfaction"],
+          "label": "Wie zufrieden bist du aktuell insgesamt mit eurem Sexleben?",
+          "help": "0 = gar nicht, 10 = sehr. Ein Stimmungsbild, keine Kritik."
+        },
+        {
+          "id": "Q02",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["communication"],
+          "label": "Wie leicht fällt es dir, Wünsche auszusprechen?",
+          "help": "0 = sehr schwer (Scham/Angst), 10 = sehr leicht (offenes Buch)."
+        },
+        {
+          "id": "Q03",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["boundaries"],
+          "label": "Wie leicht fällt es dir, 'Nein' zu sagen?",
+          "help": "0 = sehr schwer (Angst vor Ablehnung), 10 = sehr leicht."
+        },
+        {
+          "id": "Q04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["aftercare"],
+          "label": "Was brauchst du nach intensiveren Momenten (Aftercare) eher?",
+          "help": "Wichtig, um emotional wieder zu landen.",
+          "options": ["Nähe/Kuscheln", "Reden/Feedback", "Ruhe/Schlaf", "Space/Allein sein", "Kommt drauf an"]
+        },
+        {
+          "id": "Q05",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["safety"],
+          "label": "Stop-Regel: Was soll ein Stop bedeuten?",
+          "help": "Sicherheit geht vor. Ein Stop muss sofort respektiert werden.",
+          "options": ["Sofort beenden", "Pause & Check-in", "Thema wechseln & soft weitermachen", "Ampelsystem (Rot/Gelb/Grün)"]
+        }
+      ]
+    },
+    {
+      "id": "logistics",
+      "name": "Rahmen, Zeit & Logistik",
+      "description": "Bevor es zur Sache geht: Stressfaktoren, Zeitfenster und Privatsphäre klären.",
+      "questions": [
+        {
+          "id": "L01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["time", "stress"],
+          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
+          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung."
+        },
+        {
+          "id": "L02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["coping"],
+          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
+          "options": ["Sex zur Entspannung hilft", "Lieber nur Kuscheln/Massage", "Komplette Ruhe/Absage", "Reden statt Tun", "Kommt drauf an"]
+        },
+        {
+          "id": "L03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["privacy", "digital"],
+          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
+          "options": ["Nichts digital speichern", "Verschlüsselt/Hidden Folder ok", "Nur auf einem Gerät (Offline)", "Alles ok (Cloud etc.)", "Kommt drauf an"]
+        }
+      ]
+    },
+    {
+      "id": "roles",
+      "name": "Rollen & Kontrolle",
+      "description": "Machtgefälle, Führung und Hingabe. Erfordert hohes Vertrauen.",
+      "questions": [
+        {
+          "id": "Q10",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["roles"],
+          "label": "Welche Rolle fühlt sich für dich am natürlichsten an?",
+          "help": "Tendenz. Switch = Wechselt je nach Stimmung.",
+          "options": ["Dominant (Führend)", "Devot (Empfangend)", "Switch (Beides)", "Egal / Augenhöhe", "Kommt drauf an"]
+        },
+        {
+          "id": "Q11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["control", "lead"],
+          "label": "Aktives Führen: Ich mag es, Entscheidungen zu treffen und das Tempo zu bestimmen.",
+          "help": "Verantwortung übernehmen, nicht 'Bossy' sein (außer gewünscht)."
+        },
+        {
+          "id": "Q12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["control", "follow"],
+          "label": "Hingabe: Ich mag es, Verantwortung abzugeben und mich führen zu lassen.",
+          "help": "Loslassen können. Erfordert Sicherheit, dass der andere achtsam ist."
+        },
+        {
+          "id": "Q13",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["rules"],
+          "label": "Regeln & Rituale (z.B. Belohnung, Kleiderordnung, Haltung).",
+          "help": "Strukturiert die Interaktion. Nur bei vollem Konsens spaßig."
+        }
+      ]
+    },
+    {
+      "id": "touch",
+      "name": "Körperlichkeit & Intimität",
+      "description": "Konkrete physische Praktiken und Berührungen.",
+      "questions": [
+        {
+          "id": "T01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensual", "massage"],
+          "label": "Ausführliche Massagen / Sinnliche Berührungen (Ganzkörper).",
+          "help": "Fokus auf Entspannung und Körpergefühl, kein Leistungsdruck."
+        },
+        {
+          "id": "T02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["oral", "give"],
+          "label": "Oralsex aktiv geben (dich verwöhnen).",
+          "help": "Bewerte, wie gerne du das tust."
+        },
+        {
+          "id": "T03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["oral", "receive"],
+          "label": "Oralsex empfangen (verwöhnt werden).",
+          "help": "Bewerte, wie sehr du das genießt."
+        },
+        {
+          "id": "T04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["manual"],
+          "label": "Manuelle Stimulation (Handjob / Fingern).",
+          "help": "Mit den Händen zum Höhepunkt bringen/gebracht werden."
+        },
+        {
+          "id": "T05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["roughness"],
+          "label": "Etwas härtere Gangart (z.B. festes Zupacken, Haare ziehen).",
+          "help": "Grenze zu Schmerz beachten. 'Fest' ist subjektiv – vorher kalibrieren!"
+        }
+      ]
+    },
+    {
+      "id": "toys",
+      "name": "Toys & Hilfsmittel",
+      "description": "Einsatz von Spielzeug und Zubehör.",
+      "questions": [
+        {
+          "id": "Y01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "vibrator"],
+          "label": "Einsatz von Vibratoren / Sextoys.",
+          "help": "Zur gemeinsamen Stimulation."
+        },
+        {
+          "id": "Y02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bondage", "soft"],
+          "label": "Leichte Fesselungen / Fixierung (Soft Bondage).",
+          "help": "Seile, Tücher, Handschellen. WICHTIG: Niemals Blut abschnüren, Nervenbahnen schützen."
+        },
+        {
+          "id": "Y03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["sensory", "blindfold"],
+          "label": "Augen verbinden / Sinnesentzug.",
+          "help": "Verstärkt das Fühlen, erfordert aber mehr verbale Kommunikation."
+        }
+      ]
+    },
+    {
+      "id": "anal_advanced",
+      "name": "Analbereich (Granular)",
+      "description": "Abstufung von Massage bis Penetration. Hygiene & Vorbereitung sind Pflicht.",
+      "questions": [
+        {
+          "id": "AN01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["anal", "rimming", "massage"],
+          "label": "Anale Stimulation außen / Massage / Rimming.",
+          "help": "Keine Penetration. Fokus auf Entspannung und Gefühl."
+        },
+        {
+          "id": "AN02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "depends_on": { "id": "AN01", "values": ["YES", "MAYBE"] },
+          "tags": ["anal", "toys", "plug"],
+          "label": "Anale Spielzeuge (Plugs, kleine Dildos).",
+          "help": "Nur mit Stop-Base (Sicherheitsrückholer)! Viel Gleitgel."
+        },
+        {
+          "id": "AN03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "depends_on": { "id": "AN02", "values": ["YES", "MAYBE"] },
+          "tags": ["anal", "penetration"],
+          "label": "Anale Penetration (Penis).",
+          "help": "Erfordert viel Zeit, Vorbereitung und Entspannung. Kein 'Einfach rein'."
+        }
+      ]
+    },
+    {
+      "id": "sensation",
+      "name": "Sensation Play & Impact",
+      "description": "Lustschmerz, Reize und körperliche Intensität.",
+      "questions": [
+        {
+          "id": "S01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["spanking", "impact"],
+          "label": "Spanking / Hauen (Hand oder Toys).",
+          "help": "Zonen beachten (Po ist sicher, Nieren/Rücken sind tabu). Safe-Word vereinbaren!"
+        },
+        {
+          "id": "S02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["marking", "biting"],
+          "label": "Beißen, Kratzen oder 'Markieren' (Knutschflecken).",
+          "help": "Soziale Folgen bedenken (sichtbare Flecken am Hals?)."
+        },
+        {
+          "id": "S03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["temperature"],
+          "label": "Temperaturspiele (Eiswürfel, warmes Öl).",
+          "help": "Vorsicht vor Verbrennungen (Wachs) oder Kältebrand."
+        },
+        {
+          "id": "S04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["breathplay", "risk"],
+          "label": "Breathplay Light (Hand am Hals / Würgen).",
+          "help": "HIGH RISK: NIEMALS den Kehlkopf drücken. Nur seitlich. Sofortiges, non-verbales Stop-Signal (z.B. Klopfen) vereinbaren."
+        }
+      ]
+    },
+    {
+      "id": "observe",
+      "name": "Beobachten / Dritte (Optional)",
+      "description": "Fantasie vs. Realität. Emotional oft anspruchsvoll.",
+      "questions": [
+        {
+          "id": "Q20",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["voyeurism"],
+          "label": "Der Gedanke, andere zu beobachten / beim Sex gesehen zu werden.",
+          "help": "Unterscheide Fantasie (Kopfkino) vs. Realität (Club, Party)."
+        },
+        {
+          "id": "Q30",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["threesome", "group"],
+          "label": "Sex mit weiteren Personen (Dreier etc.).",
+          "help": "Großes emotionales Risiko (Eifersucht, Ausschluss). Nur bei sehr stabiler Basis. Fantasie ist safe."
+        }
+      ]
+    },
+    {
+      "id": "fetish_special",
+      "name": "Spezielle Fetische & High-Risk",
+      "description": "Nischeninteressen. Kommunikation ist hier alles.",
+      "questions": [
+        {
+          "id": "F02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "depends_on": { "id": "AN03", "values": ["YES", "MAYBE"] },
+          "tags": ["fisting", "intense"],
+          "label": "Fisting / Extreme Dehnung.",
+          "help": "HIGH RISK: Erfordert Profi-Wissen, viel Zeit und Hygiene. Verletzungsgefahr."
+        },
+        {
+          "id": "F03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["watersports", "fluids"],
+          "label": "Natursekt (Watersports) / Körperflüssigkeiten.",
+          "help": "Hygiene beachten. Ort (Dusche?) und Kontakt (Haut/Mund?) klären."
+        },
+        {
+          "id": "F04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["feet", "bodyparts"],
+          "label": "Fußfetisch / Körperteil-Worship.",
+          "help": "Fokus auf Füße, Hände etc."
+        },
+        {
+          "id": "F05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["gear", "material"],
+          "label": "Material-Fetisch (Latex, Leder, Lack, Nylon).",
+          "help": "Tragen von bestimmten Materialien."
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "name": "Review & Ausblick",
+      "description": "Was lernen wir aus der Vergangenheit? Was soll die Zukunft bringen?",
+      "questions": [
+        {
+          "id": "R01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["review", "repeat"],
+          "label": "Bereits erlebt: Intensive Praktik wiederholen?",
+          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen?"
+        },
+        {
+          "id": "R03",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["review", "less"],
+          "label": "Drop-List: Was möchtest du aktuell WENIGER machen / pausieren?",
+          "help": "Ohne Rechtfertigung. Einfach 'Pause bei X'."
+        },
+        {
+          "id": "R04",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["review", "highlight"],
+          "label": "Highlight: Was war besonders schön und sollte öfter passieren?",
+          "help": "Positives Feedback bestärkt."
+        },
+        {
+          "id": "R02",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["review", "notes"],
+          "label": "Generelle Notizen / Wünsche an uns.",
+          "help": "Platz für alles, was sonst nirgends hinpasste."
+        }
+      ]
+    }
+  ]
+}
+
+
+
+

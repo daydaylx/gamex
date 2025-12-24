@@ -1,0 +1,104 @@
+{
+  "id": "psycho_power",
+  "name": "Power Dynamics & Machtaustausch",
+  "description": "Die Psychologie von Kontrolle, Hingabe und Macht in intimen Beziehungen",
+  "questions": [
+    {
+      "id": "POW001",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Warum reizt mich Machtabgabe/Submission?",
+      "help": "Optional: Was ist das Appeal von 'Kontrolle abgeben'? (z.B. Kopf ausschalten, Vertrauen, Befreiung)",
+      "tags": ["power", "submission", "psychology"],
+      "info_details": "2024-Forschung zeigt: BDSM ist primär über Machtdynamiken, weniger über Schmerz. Submission-Appeal: 1) Kognitive Entlastung ('Kopf aus'), 2) Paradoxe Kontrolle (Du wählst, Kontrolle abzugeben = Du kontrollierst), 3) Vertrauens-Intimität (Vulnerabilität schafft Nähe), 4) Befreiung von Verantwortung. Attachment-Forschung: Submissive korreliert mit höherer Trennungsangst (60,5% weibliche Subs). Wichtig: Submission ist NICHT Schwäche - es ist aktive Wahl und erfordert Mut."
+    },
+    {
+      "id": "POW002",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Warum reizt mich Kontrolle/Dominanz?",
+      "help": "Optional: Was ist das Appeal von 'Macht haben'? (z.B. Verantwortung, Führung, Partner:in zum Vergnügen bringen)",
+      "tags": ["power", "dominance", "psychology"],
+      "info_details": "Dominanz-Appeal: 1) Service-Orientierung ('Ich gebe dir, was du brauchst'), 2) Ästhetische Kontrolle (Jemanden 'in die richtige Form bringen'), 3) Emotionale Arbeit (Verantwortung für Safety), 4) Macht als Geschenk (Partner:in vertraut dir). Attachment-Forschung: Sichere & vermeidende Bindungsstile korrelieren mit Dominanz-Präferenz. Wichtig: Ethische Dominanz = Consent-basiert, nicht Exploitation. Macht ist Dienstleistung, keine Tyrannei."
+    },
+    {
+      "id": "POW003",
+      "schema": "scale_0_10",
+      "risk_level": "A",
+      "label": "Mein Control-Spektrum: Wie viel Kontrolle will ich abgeben/haben?",
+      "help": "0 = Ich will absolute Kontrolle abgeben (Total Submission), 10 = Ich will absolute Kontrolle haben (Total Dominance)",
+      "tags": ["power", "control", "spectrum"],
+      "info_details": "Control-Spektrum ist fluide, nicht binär. Manche switchen je nach Partner:in, Stimmung, Kontext. 'Power Bottom' (submissive, aber führend) vs. 'Service Top' (dominant, aber dienend) zeigen Komplexität. Wichtig: Spektrum ≠ Identität - du musst nicht 'nur Dom' oder 'nur Sub' sein. Viele Menschen sind 'switch' oder haben nuancierte Präferenzen (z.B. 'dominant im Alltag, submissiv im Bett')."
+    },
+    {
+      "id": "POW004",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Protokolle & Rituale (z.B. Kniend begrüßen, Anrede-Regeln, Positionierung)",
+      "help": "Strukturierte Power-Symbole im Alltag/Sex",
+      "tags": ["power", "protocols", "rituals"],
+      "info_details": "Protokolle = strukturierte Verhaltensweisen, die Machtdynamik sichtbar machen. Psychologie: Rituale schaffen 'containment' (sichere Grenzen für Power Exchange). Beispiele: Anrede ('Sir', 'Mistress'), Körperhaltung (knien), Ask-Permission ('Darf ich kommen?'). Wichtig: Protokolle sind verhandelbar - nicht jede:r mag sie. Können bei manchen befreiend wirken ('Ich weiß, was erwartet wird'), bei anderen einengend ('Zu viele Regeln')."
+    },
+    {
+      "id": "POW005",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Power Exchange in meinem Alltag: Wie weit geht es?",
+      "help": "Wo endet/beginnt die Machtdynamik?",
+      "options": [
+        "Nur in sexuellen Momenten (Bedroom only)",
+        "In intimen Situationen, aber nicht im Alltag",
+        "Im gemeinsamen Alltag (z.B. Entscheidungen, Planung)",
+        "Fast 24/7, aber mit Pausen/Safewords",
+        "Totale Power Exchange (TPE 24/7)",
+        "Weiß noch nicht / Situationsabhängig"
+      ],
+      "tags": ["power", "lifestyle", "24/7"],
+      "info_details": "Lifestyle vs. Bedroom BDSM: Manche praktizieren nur im Sex, andere integrieren es in Alltag. Spectrum: 'Scenes' (zeitlich begrenzt) → 'Lifestyle' (immer aktiv, aber Pausen) → 'TPE' (keine Pausen, außer Notfall). Wichtig: 24/7 ist NICHT 'echter' oder 'besser' als Bedroom-Only. Jede Form hat eigene Herausforderungen & Rewards."
+    },
+    {
+      "id": "POW006",
+      "schema": "consent_rating",
+      "risk_level": "C",
+      "label": "24/7 Total Power Exchange (TPE): Absolute Machtabgabe in allen Lebensbereichen",
+      "help": "WARNUNG: Extrem fortgeschritten, erfordert tiefes Vertrauen, Exit-Strategie, rechtliche Absicherung",
+      "tags": ["power", "TPE", "extreme", "24/7"],
+      "info_details": "TPE = Submissive gibt Kontrolle über ALLE Bereiche ab (Finanzen, Kleidung, Entscheidungen, Körper). Psychologie: Kann befreiend sein ('Ich muss nichts entscheiden'), ABER Risiko für Missbrauch ist hoch. WARNUNG: TPE ohne Exit-Plan ist gefährlich. Essentials: 1) Safeword bleibt IMMER gültig, 2) Rechtliche Grenzen (kein Vertrag macht illegale Handlungen legal), 3) Regelmäßige Check-ins ('Ist das noch gut für dich?'), 4) Exit-Strategie (finanzielle Unabhängigkeit, Support-Netzwerk). Viele 'TPE'-Beziehungen sind faktisch '23/7' mit Pausenmöglichkeiten."
+    },
+    {
+      "id": "POW007",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Macht in meiner Beziehung: Wer entscheidet über Sex?",
+      "help": "Wie wird sexuelle Macht verteilt?",
+      "options": [
+        "Gemeinsam & gleichberechtigt (Switch/Egalitarian)",
+        "Ich entscheide meistens (Dominant/Top)",
+        "Partner:in entscheidet meistens (Submissive/Bottom)",
+        "Situationsabhängig / Fließend",
+        "Wir verhandeln jedes Mal neu (Consent-basiert)",
+        "Noch keine Partnerschaft / Weiß nicht"
+      ],
+      "tags": ["power", "decision_making", "consent"],
+      "info_details": "Forschung: In gesunden BDSM-Beziehungen ist Macht verhandelt, nicht erzwungen. 'Consensual Non-Consent' (CNC) = Paradox der 'erzwungenen' Szenarien mit vorherigem Consent. Wichtig: Auch in D/s-Dynamik sollte Sub bei Meta-Entscheidungen Mitsprache haben ('Wollen wir diese Dynamik?', 'Sind die Grenzen okay?'). Unterschied: In-Scene-Macht vs. Meta-Ebene-Gleichberechtigung."
+    },
+    {
+      "id": "POW008",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Meine größte Angst bei Machtabgabe/Machtausübung",
+      "help": "Optional: Was beunruhigt dich? (z.B. Missbrauch, Verantwortung, Verlust von Selbst, zu weit gehen)",
+      "tags": ["power", "fear", "boundaries"],
+      "info_details": "Häufige Ängste bei Submission: 1) Missbrauch ('Was, wenn sie:er zu weit geht?'), 2) Selbstverlust ('Verliere ich mich?'), 3) Verlassenheit ('Was, wenn sie:er mich danach verachtet?'). Häufige Ängste bei Dominanz: 1) Zu weit gehen ('Was, wenn ich verletze?'), 2) Ablehnung ('Was, wenn sie:er mich für Monster hält?'), 3) Verantwortung ('Ich muss alles richtig machen'). Heilung: Kommunikation, Safewords, Check-ins, Aftercare mit Reassurance."
+    },
+    {
+      "id": "POW009",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Macht als 'Service' verstehen (Dom dient den Bedürfnissen des Sub)",
+      "help": "Sehe ich Dominanz als Dienstleistung, nicht als Egotrip?",
+      "tags": ["power", "service", "ethics"],
+      "info_details": "Service-Top-Konzept: Dominanz ist Arbeit für das Vergnügen/Wachstum des Sub. 'Selfish Dom' (nur eigene Lust) vs. 'Service Dom' (Sub's Bedürfnisse im Zentrum). Community-Weisheit: 'The sub has the power' - weil Sub durch Consent & Safeword die Meta-Kontrolle behält. Ethische Dominanz: 1) Sub's Grenzen respektieren, 2) Aftercare priorisieren, 3) Ego-Check ('Tue ich das für mich oder für uns?'), 4) Consent nie als selbstverständlich sehen."
+    }
+  ]
+}

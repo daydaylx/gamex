@@ -1,0 +1,118 @@
+{
+  "id": "psycho_attachment",
+  "name": "Bindung & Emotionale Basis",
+  "description": "Wie dein Bindungsstil deine Intimität beeinflusst (basiert auf Attachment Theory)",
+  "questions": [
+    {
+      "id": "ATT001",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Mein dominanter Bindungsstil in intimen Beziehungen",
+      "help": "Kein Richtig/Falsch - nur Selbsterkenntnis",
+      "options": [
+        "Sicher: Ich bin komfortabel mit Nähe und Autonomie",
+        "Ängstlich: Ich sorge mich oft, verlassen zu werden",
+        "Vermeidend: Ich halte emotionale Distanz, um unabhängig zu bleiben",
+        "Desorganisiert/Gemischt: Wechselt je nach Situation",
+        "Weiß nicht / Kann nicht einschätzen"
+      ],
+      "tags": ["psychology", "attachment", "foundation"],
+      "info_details": "Attachment Theory (Bowlby/Ainsworth): Dein Bindungsstil aus Kindheit prägt, wie du mit Nähe/Distanz in Erwachsenenbeziehungen umgehst. Sicher gebundene fühlen sich wohl mit Intimität UND Autonomie. Ängstlich gebundene fürchten Verlassenwerden und suchen konstante Nähe. Vermeidend gebundene schützen Autonomie durch emotionale Distanz. Forschung zeigt: Vermeidender Bindungsstil korreliert negativ mit Intimität und Beziehungszufriedenheit."
+    },
+    {
+      "id": "ATT002",
+      "schema": "scale_0_10",
+      "risk_level": "A",
+      "label": "Nach intensivem Sex: Wie wichtig ist dir physische Nähe/Kuscheln?",
+      "help": "0 = Brauche Space, 10 = Brauche intensive Nähe",
+      "tags": ["aftercare", "attachment", "closeness"],
+      "info_details": "Ängstlich gebundene brauchen oft mehr Rückversicherung nach Sex (Kuscheln = 'Du bist noch da, ich bin nicht allein'). Vermeidend gebundene brauchen Raum zur Selbstregulation ('Ich brauche meine Autonomie zurück'). Weder noch ist falsch - aber Partnermismatch kann Sub Drop verstärken. Wichtig: Bedürfnisse explizit kommunizieren."
+    },
+    {
+      "id": "ATT003",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Reassurance während Sex (z.B. 'Du bist schön', 'Ich will nur dich')",
+      "help": "Verbale Bestätigung gegen Verlustangst",
+      "tags": ["communication", "attachment", "reassurance"],
+      "info_details": "Ängstlich gebundene profitieren stark von Reassurance-Kommunikation. Sätze wie 'Du bist genug', 'Ich bin bei dir' reduzieren Trennungsangst während vulnerabler Momente. Sicher gebundene brauchen es weniger, schätzen es aber. Vermeidend gebundene können es als 'zu viel' empfinden. Kommunikation: 'Magst du, wenn ich dir sage, dass...?'"
+    },
+    {
+      "id": "ATT004",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Wenn ich mich nach Sex emotional zurückziehe, ist das weil...",
+      "help": "Optional: Was triggert deinen Rückzug? (z.B. Überwältigung, Scham, Autonomie-Bedürfnis)",
+      "tags": ["attachment", "boundaries", "reflection"],
+      "info_details": "Rückzug kann viele Gründe haben: Vermeidend gebundene brauchen Space ('Deactivating strategy'). Ängstlich gebundene ziehen sich aus Scham zurück ('Ich war zu viel'). Trauma-Überlebende dissoziieren manchmal post-sex. Wichtig: Partner:in vorher erklären, DASS du dich zurückziehst (nicht warum im Moment). Reduziert Missverständnisse."
+    },
+    {
+      "id": "ATT005",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Bedürfnis nach 'Check-ins' am nächsten Tag (SMS/Anruf)",
+      "help": "Brauche ich Bestätigung, dass 'wir okay sind'?",
+      "tags": ["attachment", "aftercare", "communication"],
+      "info_details": "Ängstlich gebundene zeigen höheres Bedürfnis nach post-sex Kontakt. Forschung: 60,5% submissive Frauen zeigten höchste Trennungsangst-Werte. Vermeidend gebundene empfinden Check-ins als Klammerung. Wichtig: Bedürfnisse vorher kommunizieren ('Ich brauche ein kurzes \\\"Hey, wie geht's dir?\\\" am nächsten Tag'), nicht erwarten."
+    },
+    {
+      "id": "ATT006",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Wenn mein:e Partner:in nach Sex Space braucht, fühle ich...",
+      "help": "Wie reagierst du auf Rückzug?",
+      "options": [
+        "Entspannt - Jede:r braucht mal Space",
+        "Leicht unsicher - Aber ich verstehe es",
+        "Ängstlich - 'Hab ich was falsch gemacht?'",
+        "Verletzt - Fühlt sich an wie Ablehnung",
+        "Erleichtert - Ich brauche auch Space"
+      ],
+      "tags": ["attachment", "anxiety", "rejection"],
+      "info_details": "Ängstlich gebundene interpretieren Space als Ablehnung (Rejection Sensitivity). Vermeidend gebundene fühlen sich erleichtert (Autonomie wiederhergestellt). Sicher gebundene können beides akzeptieren. Wichtig: Partner:in sollte Space kommunizieren ('Ich brauch 20min für mich, dann bin ich wieder da') statt einfach zu verschwinden. Reduziert Angst."
+    },
+    {
+      "id": "ATT007",
+      "schema": "scale_0_10",
+      "risk_level": "B",
+      "label": "Eifersucht/Besitzdenken: Wie stark ist das bei mir?",
+      "help": "0 = Gar nicht eifersüchtig, 10 = Sehr eifersüchtig",
+      "tags": ["attachment", "jealousy", "monogamy"],
+      "info_details": "Eifersucht korreliert mit ängstlichem Bindungsstil (Verlustangst). Vermeidend gebundene zeigen weniger Eifersucht (emotionale Distanz schützt). Sicher gebundene haben gesundes Maß. Wichtig: Eifersucht ist nicht 'toxisch', sondern ein Signal für Unsicherheit. Bei hoher Eifersucht: Offene Beziehungen/Non-Monogamie können herausfordernd sein."
+    },
+    {
+      "id": "ATT008",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Über Bindungs-Unsicherheiten sprechen",
+      "help": "Kann ich sagen 'Ich bin ängstlich, dass du mich verlässt'?",
+      "tags": ["vulnerability", "attachment", "communication"],
+      "info_details": "Earned Security: Auch ängstlich oder vermeidend gebundene können 'sicherer' werden durch: 1) Selbstreflexion (Bindungsstil kennen), 2) Kommunikation (Bedürfnisse aussprechen), 3) Partner:in, die konsistent reagiert. Forschung zeigt: Offene Kommunikation über Attachment-Ängste reduziert Beziehungsprobleme."
+    },
+    {
+      "id": "ATT009",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Emotionale Intimität vs. Körperliche Intimität: Was fällt mir schwerer?",
+      "help": "Wo sind deine Herausforderungen?",
+      "options": [
+        "Emotionale Intimität (Gefühle zeigen, Verletzlichkeit)",
+        "Körperliche Intimität (Berührung, Sex)",
+        "Beides gleich schwer",
+        "Beides gleich leicht",
+        "Situationsabhängig"
+      ],
+      "tags": ["attachment", "intimacy", "vulnerability"],
+      "info_details": "Vermeidend gebundene finden emotionale Intimität oft schwerer als körperliche ('Sex ist okay, aber über Gefühle reden ist too much'). Ängstlich gebundene wollen emotionale Intimität, haben aber Angst vor Ablehnung. Sicher gebundene können beides integrieren. Wichtig: Mit Partner:in teilen, wo deine Herausforderung liegt."
+    },
+    {
+      "id": "ATT010",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Meine größte Angst in intimer Nähe",
+      "help": "Optional: Was ist dein tiefster Fear? (z.B. 'Verlassen werden', 'Zu viel zu sein', 'Autonomie zu verlieren')",
+      "tags": ["attachment", "fear", "vulnerability"],
+      "info_details": "Core Wounds: Ängstlich gebundene fürchten Abandonment ('Ich werde verlassen'). Vermeidend gebundene fürchten Engulfment ('Ich verliere mich selbst'). Desorganisiert gebundene fürchten beides. Diese Ängste zu benennen ist der erste Schritt zur Heilung. Partner:in kann dann gezielt Sicherheit geben ('Ich gehe nicht weg' oder 'Du darfst eigenständig sein')."
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "id": "psycho_aftercare",
+  "name": "Aftercare-Profile & Drop-Physiologie",
+  "description": "Was dein Körper & Geist nach intensiven Erfahrungen braucht",
+  "questions": [
+    {
+      "id": "AFC001",
+      "schema": "multi",
+      "risk_level": "A",
+      "label": "Meine physischen Aftercare-Bedürfnisse",
+      "help": "Was braucht dein Körper nach intensivem Sex/BDSM?",
+      "options": [
+        "Wasser / Snacks (Blutzucker stabilisieren)",
+        "Decke / Wärme",
+        "Kühle / Frische Luft",
+        "Shower / Baden",
+        "Wundversorgung / Erste Hilfe",
+        "Nichts Physisches nötig"
+      ],
+      "tags": ["aftercare", "physical", "needs"],
+      "info_details": "Aftercare hat 3 Dimensionen: Physisch, Emotional, Temporal. Physiologie: Nach BDSM plummern Adrenalin, Dopamin, Endorphine. Das kann Zittern, Kälte, Hunger auslösen. Blutzucker fällt (daher das Schokolade-Cliché). Wasser ist wichtig, da intensive Aktivität dehydriert."
+    },
+    {
+      "id": "AFC002",
+      "schema": "multi",
+      "risk_level": "A",
+      "label": "Meine emotionalen Aftercare-Bedürfnisse",
+      "help": "Was brauchst du emotional, um wieder 'zu landen'?",
+      "options": [
+        "Kuscheln / Körperkontakt (Hold me)",
+        "Verbal Reassurance ('Ich liebe dich', 'Du warst toll')",
+        "Aktives Gespräch / Debrief über die Session",
+        "Stille Präsenz (keine Worte, nur da sein)",
+        "Raum & Alleinsein (Space, no touch)",
+        "Humor / Leichtigkeit bringen"
+      ],
+      "tags": ["aftercare", "emotional", "needs"],
+      "info_details": "Attachment Style beeinflusst Aftercare: Ängstlich gebundene brauchen Reassurance + Nähe ('Du bist noch da'). Vermeidend gebundene brauchen Space zur Selbstregulation. Sub Drop verstärkt sich bei Mismatch (Sub will Nähe, Dom will Space). Forschung zeigt: 68% der BDSM-Community schätzen offene Kommunikation + Aftercare als zentral."
+    },
+    {
+      "id": "AFC003",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Zeitliche Dimension: Wie lange brauche ich Aftercare?",
+      "help": "Jeder Mensch braucht unterschiedlich lange",
+      "options": [
+        "5-10 Minuten reichen",
+        "30 Minuten bis 1 Stunde",
+        "Mehrere Stunden (z.B. bis zum Einschlafen)",
+        "Nächste Tage (Check-ins nötig)",
+        "Sehr individuell / Situationsabhängig"
+      ],
+      "tags": ["aftercare", "temporal", "duration"],
+      "info_details": "Sub Drop kann Stunden bis TAGE dauern (sehr individuell). Forschung: 46% Frauen, 41% Männer berichten mindestens einmal post-koitale Dysphorie (Traurigkeit/Scham nach Sex). Bei BDSM ist der Drop durch Hormon-Crash intensiver. Dom Drop ist auch real: Schuldgefühle, Traurigkeit, Überwältigung. Aftercare eliminiert Drop nicht, reduziert nur Intensität."
+    },
+    {
+      "id": "AFC004",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Meine Warnzeichen für Sub/Dom Drop",
+      "help": "Optional: Wie erkenne ich (oder mein:e Partner:in), dass ich droppe? (z.B. Weinen, Rückzug, Gereiztheit, Stille)",
+      "tags": ["aftercare", "drop", "warning_signs"],
+      "info_details": "Typische Sub Drop Symptome: Weinen ohne Traurigkeit, Zittern, Schüttelfrost, emotionaler Rückzug, Selbstzweifel, Scham. Dom Drop Symptome: Schuldgefühle ('Hab ich zu viel gemacht?'), Traurigkeit, Erschöpfung, Sorge um die:den Sub. Wichtig: Partner:in vorher darüber informieren, damit sie:er die Zeichen erkennt."
+    },
+    {
+      "id": "AFC005",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Partner:in gibt mir Aftercare, obwohl ich 'nein danke' sage",
+      "help": "Darf mein:e Partner:in meine 'Ich brauch nichts'-Aussage überstimmen?",
+      "tags": ["aftercare", "consent", "override"],
+      "info_details": "Komplexe Frage: In Subspace ist Urteilsvermögen eingeschränkt (ähnlich Alkohol). Manche Tops überstimmen 'Ich brauch nichts', weil sie wissen, dass Drop in 1h kommt. Wichtig: Vorherige Vereinbarung nötig ('Wenn du X sagst, ignoriere ich das und gebe dir Y'). Ohne Absprache ist Override grenzüberschreitend. Empfehlung: Aftercare-Plan VOR der Session besprechen."
+    },
+    {
+      "id": "AFC006",
+      "schema": "scale_0_10",
+      "risk_level": "A",
+      "label": "Nach intensivem Sex/BDSM: Wie wichtig ist mir Aftercare?",
+      "help": "0 = Brauche ich nicht, 10 = Absolut essentiell für mich",
+      "tags": ["aftercare", "importance", "priority"],
+      "info_details": "Manche Menschen brauchen kein Aftercare und fühlen sich sogar eingeengt davon. Andere kollabieren ohne. Beides ist okay. Wichtig: Partner:in muss dein Bedürfnis-Level kennen. Bei großem Mismatch (9 vs. 2) ist Kompromiss oder Vorbereitung nötig (z.B. Decke/Snacks bereitstellen, wenn Partner:in nicht kuscheln mag)."
+    },
+    {
+      "id": "AFC007",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "Check-in am nächsten Tag (SMS/Anruf nach Session)",
+      "help": "Brauche ich Bestätigung, dass 'wir okay sind'?",
+      "tags": ["aftercare", "followup", "communication"],
+      "info_details": "Temporal Aftercare: Manche brauchen Next-Day Check-in ('Wie geht's dir heute?'). Ängstlich gebundene zeigen höheres Bedürfnis nach post-sex Kontakt. Vermeidend gebundene empfinden das als Klammerung. Wichtig: Bedürfnisse offen kommunizieren, nicht erwarten. Sub Drop kann verzögert auftreten (24-48h später)."
+    },
+    {
+      "id": "AFC008",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Wenn ich droppe: Was hilft MIR am meisten?",
+      "help": "Aus deiner Erfahrung: Was hat in der Vergangenheit geholfen?",
+      "options": [
+        "Physische Nähe & Kuscheln",
+        "Gespräch & Reassurance",
+        "Ablenkung (Film, Essen, Spaziergang)",
+        "Zeit & Ruhe allein",
+        "Schlafen",
+        "Noch nie Drop erlebt / Weiß nicht"
+      ],
+      "tags": ["aftercare", "drop", "recovery"],
+      "info_details": "Drop-Recovery ist individuell. Manche brauchen oxytocin-boost durch Kuscheln. Andere brauchen Cortisol-Abbau durch Ruhe. Wieder andere brauchen Ablenkung, um aus der Grübel-Spirale rauszukommen. Wichtig: Mit Partner:in teilen, BEVOR es passiert. Im Drop selbst ist Kommunikation schwer."
+    },
+    {
+      "id": "AFC009",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Mein idealer Aftercare-Ablauf (Beschreibung)",
+      "help": "Optional: Beschreibe deinen Perfect-Scenario Aftercare (z.B. '10min Kuscheln, dann Wasser, dann Dusche zusammen, dann reden')",
+      "tags": ["aftercare", "profile", "planning"],
+      "info_details": "Aftercare-Profil erstellen: Hilft, Partner:in konkrete Anleitung zu geben. Beispiel: '1. Decke über mich legen, 2. Wasser reichen, 3. Neben mir sitzen (kein Reden), 4. Nach 15min fragen ob ich reden will.' Je spezifischer, desto besser kann Partner:in deine Needs erfüllen."
+    },
+    {
+      "id": "AFC010",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Als Dom/Top: Ich brauche auch Aftercare",
+      "help": "Auch die führende Person kann emotionale Erschöpfung erleben",
+      "tags": ["aftercare", "dom_drop", "top_care"],
+      "info_details": "Dom Drop ist real aber oft unsichtbar. Tops fühlen sich manchmal schuldig für Intensität ('War das okay?') oder erschöpft von der Verantwortung. Forschung zeigt: Dominants erleben auch Hormon-Schwankungen. Wichtig: Subs sollten auch Tops Aftercare geben (Reassurance, Dankbarkeit, physische Nähe falls gewünscht). Macht ist Dienstleistung - Dienstleister:innen brauchen Anerkennung."
+    }
+  ]
+}

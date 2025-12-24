@@ -1,0 +1,141 @@
+{
+  "id": "psycho_shame",
+  "name": "Scham, Tabus & Innere Konflikte",
+  "description": "Wie Scham deine Sexualität beeinflusst (und wie man damit umgeht)",
+  "questions": [
+    {
+      "id": "SHA001",
+      "schema": "scale_0_10",
+      "risk_level": "A",
+      "label": "Wie viel sexuelle Scham trage ich in mir?",
+      "help": "0 = Keine Scham, 10 = Extreme Scham bei meinen Fantasien/Wünschen",
+      "tags": ["shame", "psychology", "self_assessment"],
+      "info_details": "Sexual Shame = gelernte negative Emotion um sexuelle Gefühle/Handlungen. Entsteht durch: kulturelle Botschaften, religiöse Erziehung, Körperscham, sexuelles Trauma. Scham hemmt die natürliche Erregungsantwort des Körpers - du gehst in 'closed state'. Forschung zeigt: Scham reduziert Arousal, Desire und Orgasmusfähigkeit. Wichtig: Du bist NICHT mit Scham geboren - sie wurde dir beigebracht."
+    },
+    {
+      "id": "SHA002",
+      "schema": "multi",
+      "risk_level": "B",
+      "label": "Wo kommt meine sexuelle Scham her? (Mehrfachauswahl)",
+      "help": "Versuch zu identifizieren, woher deine Scham stammt",
+      "options": [
+        "Religiöse Erziehung / Moralvorstellungen",
+        "Kulturelle Tabus / Familie",
+        "Körperscham / Body Image",
+        "Frühere negative sexuelle Erfahrungen / Trauma",
+        "Gesellschaftliche Normen (Queerness, Kink, Geschlechterrollen)",
+        "Medien / Pornografie-Vergleiche",
+        "Keine spezifische Quelle / Weiß nicht",
+        "Trifft nicht zu / Habe keine Scham"
+      ],
+      "tags": ["shame", "origins", "reflection"],
+      "info_details": "Drei Formen von Scham (Forschung): 1) Internalisierte Scham ('Ich bin schlecht'), 2) Relationale Scham ('Andere würden mich ablehnen'), 3) Sexual Inferiority ('Ich bin sexuell minderwertig'). Quellen zu identifizieren ist erster Schritt zur Heilung - du kannst Scham nicht bekämpfen, die du nicht verstehst."
+    },
+    {
+      "id": "SHA003",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Eine Fantasie, für die ich mich schäme (aber die mich trotzdem erregt)",
+      "help": "Optional & vertraulich. Nur wenn du möchtest. Muss nicht spezifisch sein ('Submission' reicht z.B.).",
+      "tags": ["shame", "fantasy", "taboo"],
+      "info_details": "Fantasie ≠ Wunsch ≠ Identität. Du kannst von etwas erregt sein, das du niemals tun würdest. Das ist NORMAL. Forschung: Die meisten Menschen haben Fantasien, die sie niemals ausleben würden. Scham entsteht, wenn Moralemotionen (Schuld, Ekel) auf Erregung treffen. Wichtig: Akzeptanz der Fantasie reduziert Scham, nicht das Unterdrücken."
+    },
+    {
+      "id": "SHA004",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Über meine 'verbotenen' Fantasien sprechen",
+      "help": "Kann ich sie aussprechen, ohne zu implodieren?",
+      "tags": ["communication", "shame", "vulnerability"],
+      "info_details": "Scham lebt vom Schweigen. Das Aussprechen (in sicherem Rahmen) bricht ihre Macht. Partner:innen-Reaktion ist kritisch: Urteil verstärkt Scham ('Das ist eklig'), Akzeptanz löst sie auf ('Ich urteile dich nicht', 'Danke fürs Vertrauen'). Wichtig: Wähle den richtigen Moment & Partner:in, die nicht schockiert reagiert."
+    },
+    {
+      "id": "SHA005",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Nach dem Sex: Schämst du dich manchmal für das, was passiert ist?",
+      "help": "Der 'Klarheitsmoment' danach",
+      "options": [
+        "Nie - fühle mich frei und gut",
+        "Selten - nur bei sehr intensiven Dingen",
+        "Manchmal - der 'Klarheitsmoment' danach fühlt sich weird an",
+        "Oft - Post-Sex-Schuld ist ein Muster bei mir",
+        "Immer - kämpfe mit post-koitaler Dysphorie"
+      ],
+      "tags": ["shame", "aftercare", "post_sex"],
+      "info_details": "Post-koitale Dysphorie: 46% Frauen, 41% Männer berichten mindestens einmal Traurigkeit/Scham nach Sex (Journal of Sexual Medicine). Kann mit Scham-Internalisierung oder hormonal (Dopamin-Crash) zusammenhängen. Ist nicht deine Schuld. Bei chronischer post-sex Scham: Therapie erwägen. Aftercare mit Reassurance ('Das war schön', 'Ich schätze dich') hilft."
+    },
+    {
+      "id": "SHA006",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Meine Scham ist am stärksten bei...",
+      "help": "In welchem Kontext fühlst du die meiste Scham?",
+      "options": [
+        "Fantasien (Dinge, die ich mir vorstelle)",
+        "Masturbation (Selbstbefriedigung)",
+        "Mit Partner:in (Sex mit anderen)",
+        "Körper (Wie ich aussehe / Genitalien)",
+        "Kink/BDSM (Meine 'perversen' Wünsche)",
+        "Queerness (LGBTQ+ Identität)",
+        "Überall gleich",
+        "Keine Scham"
+      ],
+      "tags": ["shame", "context", "reflection"],
+      "info_details": "Scham-Kontext identifizieren hilft bei gezielter Arbeit. Fantasie-Scham = internalisiert ('Ich bin schlecht für meine Gedanken'). Körper-Scham = Medien/Vergleiche. Kink-Scham = gesellschaftliche Stigma. Queerness-Scham = Diskriminierung. Jeder Kontext braucht eigenen Heilungsansatz (Therapie, Community, Akzeptanz)."
+    },
+    {
+      "id": "SHA007",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Scham als Teil des Spiels (Consensual Humiliation)",
+      "help": "Kann kontrollierte Scham (z.B. Degradierung) befreiend sein?",
+      "tags": ["shame", "kink", "catharsis"],
+      "info_details": "Paradox: Manche nutzen BDSM, um Scham zu 'entmachten'. Consensual Humiliation = Du wählst, beschämt zu werden → Du kontrollierst die Scham → Scham verliert Macht. Aber: Bei tief internalisierter Scham kann es Trigger sein. Wichtig: Nur mit Partner:in, die zwischen Rolle und Mensch trennt. Aftercare mit Reassurance ('Das war nur Spiel, du bist wertvoll') ist ESSENTIELL."
+    },
+    {
+      "id": "SHA008",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Wenn jemand meine Fantasien/Wünsche ablehnt, fühle ich...",
+      "help": "Wie reagierst du auf Ablehnung deiner sexuellen Seite?",
+      "options": [
+        "Entspannt - Nicht jede:r muss alles mögen",
+        "Leicht verletzt - Aber ich verstehe es",
+        "Tief verletzt - Fühlt sich an wie Ablehnung meiner Person",
+        "Beschämt - 'Ich bin falsch/pervers'",
+        "Erleichtert - Muss es nicht outen",
+        "Noch nie passiert / Weiß nicht"
+      ],
+      "tags": ["shame", "rejection", "vulnerability"],
+      "info_details": "Rejection Sensitivity (Ablehnung-Sensibilität) ist höher bei Menschen mit Scham-Hintergrund. Wichtig zu verstehen: 'Ich mag das nicht' ≠ 'Du bist falsch'. Sexuelle Inkompatibilität ist okay. Aber: Wenn Partner:in dich für deine Fantasien verurteilt ('Das ist eklig'), ist das grenzüberschreitend. Du hast Recht auf kink-positive Partner:innen."
+    },
+    {
+      "id": "SHA009",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Mein größter Moral-Konflikt in meiner Sexualität",
+      "help": "Optional: 'Ich will X, aber ich glaube, dass X falsch/schlecht/sündig ist'",
+      "tags": ["shame", "moral", "conflict"],
+      "info_details": "Kognitive Dissonanz: 'Ich will das' vs. 'Das ist falsch' = psychischer Stress. Quellen: Religion ('Sex ist Sünde'), Feminismus ('BDSM ist anti-feministisch'), Queerness ('Ich sollte nicht hetero-imitieren'). Heilung: 1) Erkenne, dass Moral subjektiv ist, 2) Suche Bestätigung in deiner Community, 3) Therapie bei tiefem Konflikt."
+    },
+    {
+      "id": "SHA010",
+      "schema": "scale_0_10",
+      "risk_level": "B",
+      "label": "Wie sehr beeinflusst Scham mein sexuelles Erleben negativ?",
+      "help": "0 = Gar nicht, 10 = Blockiert mich komplett",
+      "tags": ["shame", "impact", "sex"],
+      "info_details": "Scham-Impact-Assessment: Bei 7+: Professionelle Hilfe erwägen (Sexualtherapeut:in). Scham kann Arousal blockieren, Orgasmus verhindern, Beziehungen sabotieren. Aber: Scham ist heilbar. Therapie, sichere Partner:innen, Community-Support, Selbstakzeptanz - alles hilft. Du musst nicht für immer mit Scham leben."
+    },
+    {
+      "id": "SHA011",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "An meiner Scham arbeiten (Therapie, Selbstreflexion, Gespräche)",
+      "help": "Bin ich bereit, meine Scham anzuschauen und zu heilen?",
+      "tags": ["shame", "healing", "growth"],
+      "info_details": "Scham-Arbeit ist mutig. Es bedeutet: 1) Scham benennen ('Ich schäme mich für X'), 2) Externalisieren ('Die Scham ist nicht ICH'), 3) Sichere Räume suchen (Therapie, vertrauensvolle Partner:in, Kink-Community), 4) Akzeptanz üben ('Ich habe diese Seite, und das ist okay'). Wichtig: Du musst Scham nicht 'lieben' - Akzeptanz reicht. Siehe: PSYCHOLOGIE_LEITFADEN.md Kapitel 3."
+    }
+  ]
+}

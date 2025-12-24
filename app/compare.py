@@ -368,7 +368,7 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
 
     # Sort for presentation: boundaries first, then explore, then matches; high risk within groups
     order = {"BOUNDARY": 0, "EXPLORE": 1, "MATCH": 2}
-    items.sort(key=lambda r: (order.get(r["pair_status"], 9), 0 if r.get("risk_level") == "C" else 1, r.get("module_name","), r.get("question_id", ")))
+    items.sort(key=lambda r: (order.get(r["pair_status"], 9), 0 if r.get("risk_level") == "C" else 1, r.get("module_name", ""), r.get("question_id", "")))
 
     action_plan = _generate_action_plan(items)
 

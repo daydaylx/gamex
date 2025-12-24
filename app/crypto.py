@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import hmac
 import os
 from dataclasses import dataclass
 from typing import Optional
@@ -36,7 +37,7 @@ def create_key_material(password: str, salt: Optional[bytes] = None) -> KeyMater
 def verify_password(password: str, salt: bytes, expected_verifier: str) -> bool:
     raw = _derive_raw(password, salt)
     verifier = hashlib.sha256(raw + b"::verifier").hexdigest()
-    return hashlib.compare_digest(verifier, expected_verifier)
+    return hmac.compare_digest(verifier, expected_verifier)
 
 def encrypt_json(password: str, salt: bytes, plaintext_json: str) -> bytes:
     km = create_key_material(password, salt=salt)
@@ -71,7 +72,11 @@ def verify_pin(pin: Optional[str], stored_hash: Optional[str], salt: bytes, pers
     if not pin:
         return False
     candidate = hash_pin(pin, salt, person)
-    return hashlib.compare_digest(candidate, stored_hash)
+    return hmac.compare_digest(candidate, stored_hash)
+
+
+
+
 
 
 

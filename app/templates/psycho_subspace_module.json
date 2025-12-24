@@ -1,0 +1,121 @@
+{
+  "id": "psycho_subspace",
+  "name": "Subspace, Trance & Neurologische Zustände",
+  "description": "Wie dein Gehirn auf intensive Erfahrungen reagiert (Endorphine, Trance, Flow)",
+  "questions": [
+    {
+      "id": "SUB001",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Habe ich schon mal 'Subspace' oder tranceähnliche Zustände erlebt?",
+      "help": "Subspace = Rauschzustand während/nach BDSM oder intensivem Sex",
+      "options": [
+        "Ja, mehrfach - kenne das Gefühl gut",
+        "Einmal - war intensiv/beängstigend",
+        "Vielleicht? Bin mir nicht sicher",
+        "Nein, noch nie bewusst",
+        "Weiß nicht, was das ist"
+      ],
+      "tags": ["subspace", "psychology", "altered_states"],
+      "info_details": "Subspace ist ein neurochemischer Zustand: Sympathisches Nervensystem aktiviert sich (Adrenalin, Cortisol), dann kommen Endorphine, Oxytocin, Dopamin. 2016-Studie zeigt 'transiente Hypofrontalität' - reduzierte Aktivität im präfrontalen Kortex (wie bei Meditation). Kann zu Depersonalisation/Derealisation führen (in diesem Kontext positiv erlebt). Endocannabinoide ändern sich ebenfalls, Belohnungssystem involviert."
+    },
+    {
+      "id": "SUB002",
+      "schema": "multi",
+      "risk_level": "B",
+      "label": "Welche dieser Subspace-Symptome habe ich erlebt?",
+      "help": "Mehrfachauswahl möglich",
+      "options": [
+        "Zeitverzerrung (Stunden fühlen sich wie Minuten an)",
+        "Schwebegefühl / Out-of-Body",
+        "Taubheit / Schmerzunempfindlichkeit",
+        "Sprachschwierigkeiten / Nonverbal",
+        "Tunnel vision / Fokus nur auf eine Person",
+        "Euphorie / Lachanfall danach",
+        "Weinen ohne Traurigkeit",
+        "Zittern / Schüttelfrost",
+        "Nichts davon / Noch nie"
+      ],
+      "tags": ["subspace", "physiology", "symptoms"],
+      "info_details": "Diese Symptome entstehen durch Neurochemie-Shifts. Zeitverzerrung = Dopamin-Effekt. Schmerzunempfindlichkeit = Endorphine (natürliche Opioide). Sprachschwierigkeiten = Hypofrontalität (Sprachzentrum teilweise offline). Weinen ohne Traurigkeit = Hormon-Release, emotionale Katharsis. Alle Symptome sind normal und verschwinden nach Minuten bis Stunden."
+    },
+    {
+      "id": "SUB003",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Absichtlich in Trance/Flow-Zustände gehen (z.B. durch Schmerz, Wiederholung)",
+      "help": "Das 'Loslassen' des bewussten Denkens",
+      "tags": ["subspace", "trance", "control"],
+      "info_details": "Verschiedene Subspace-Wege: Endorphin-Subspace (Impact, Schmerz), Noradrenalin-Subspace (Adrenalin/Angst z.B. Breathplay), Serotonin-Subspace (meditative Wiederholung z.B. Petplay). Alle involvieren das Belohnungssystem (Dopamin, Endocannabinoide). Absichtlich Trance induzieren = fortgeschrittene Technik, erfordert Körperbewusstsein."
+    },
+    {
+      "id": "SUB004",
+      "schema": "scale_0_10",
+      "risk_level": "B",
+      "label": "Wie gut kann ich in Subspace kommunizieren / Safeword sagen?",
+      "help": "0 = Komplett nonverbal, 10 = Voll bei Bewusstsein",
+      "tags": ["safety", "subspace", "communication"],
+      "info_details": "WICHTIG: In tiefem Subspace ist Einwilligungsfähigkeit eingeschränkt (ähnlich Alkohol-Rausch). Hypofrontalität = präfrontaler Kortex (Entscheidung, Sprache) reduziert. Partner:in muss auf non-verbale Signale achten: Körperhaltung, Atemmuster, Gesichtsausdruck. Vorab Check-in: 'Wie erkenne ich, dass du zu weit weg bist?' Falls nonverbal: Non-verbales Safeword (Klopfen, Ball fallen lassen)."
+    },
+    {
+      "id": "SUB005",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Meine Strategien, um aus Subspace zurückzukommen",
+      "help": "Optional: Was hilft dir zu 'landen'? (z.B. Wasser trinken, Decke, sprechen, Realität checken)",
+      "tags": ["aftercare", "subspace", "recovery"],
+      "info_details": "Grounding-Techniken: 5-4-3-2-1 Methode (5 Dinge sehen, 4 hören, 3 berühren, 2 riechen, 1 schmecken). Physische Erdung: Kaltes Wasser, fester Boden, Decke (Gewicht = Realität). Kognitive Erdung: Datum sagen, eigenen Namen sagen, einfache Mathe. Wichtig: Nicht zu schnell 'hochziehen' - sanfter Übergang reduziert Drop-Risiko."
+    },
+    {
+      "id": "SUB006",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Subspace ist für mich...",
+      "help": "Wie erlebst du diesen Zustand emotional?",
+      "options": [
+        "Befreiend & euphorisch - ich liebe es",
+        "Intensiv aber manchmal beängstigend",
+        "Unangenehm - mag Kontrollverlust nicht",
+        "Neutral - passiert einfach",
+        "Noch nie erlebt / Kann nicht beurteilen"
+      ],
+      "tags": ["subspace", "emotion", "preference"],
+      "info_details": "Subspace ist nicht für alle positiv. Manche Menschen (besonders vermeidend gebundene oder Trauma-Überlebende) erleben Kontrollverlust als Panik-Trigger. Das ist völlig okay. Man MUSS nicht in Subspace gehen, um 'gutes BDSM' zu haben. Wichtig: Partner:in über deine Präferenz informieren."
+    },
+    {
+      "id": "SUB007",
+      "schema": "consent_rating",
+      "risk_level": "C",
+      "label": "In tiefem Subspace weitermachen (wenn ich nonverbal bin)",
+      "help": "Darf Partner:in weitermachen, auch wenn ich nicht mehr antworten kann?",
+      "tags": ["subspace", "consent", "risk"],
+      "info_details": "EXTREM kontrovers & risikoreich. Consent-Perspektive: Wenn du nonverbal bist, kannst du NICHT mehr einwilligen zu neuen Dingen. Pragmatische Perspektive: Manche möchten genau das ('Nimm mich, auch wenn ich weg bin'). Kompromiss: Vorab klare Vereinbarung ('Wenn ich in Subspace gehe, darfst du X machen, aber NICHT Y'). Partner:in muss extrem auf Körpersprache achten. WICHTIG: Im Zweifel STOPPEN."
+    },
+    {
+      "id": "SUB008",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Nach tiefem Subspace: Wie fühle ich mich meist?",
+      "help": "Was passiert, wenn du wieder 'hochkommst'?",
+      "options": [
+        "Glücklich & entspannt",
+        "Verwirrt / Desorientiert",
+        "Traurig / Weinerlich (Drop)",
+        "Energetisiert / High",
+        "Erschöpft / Need Sleep",
+        "Noch nie in tiefem Subspace gewesen"
+      ],
+      "tags": ["subspace", "aftercare", "drop"],
+      "info_details": "Post-Subspace-Zustand ist individuell. Glücklich = Oxytocin + Dopamin noch aktiv. Traurig = Hormon-Crash (Sub Drop). Erschöpft = Cortisol-Abbau + körperliche Anstrengung. Wichtig: Partner:in sollte wissen, was bei DIR typisch ist, um entsprechende Aftercare zu geben."
+    },
+    {
+      "id": "SUB009",
+      "schema": "text",
+      "risk_level": "B",
+      "label": "Mein 'Point of No Return' in Subspace",
+      "help": "Optional: Woran erkenne ich (oder mein:e Partner:in), dass ich 'zu tief' gehe? (z.B. glasige Augen, keine Reaktion mehr, bestimmte Körperhaltung)",
+      "tags": ["subspace", "safety", "awareness"],
+      "info_details": "Wichtig für Partner:in: Deine individuellen Warnzeichen kennen. Typische Signs: Pupillen erweitert, Blick 'leer', keine verbale Reaktion, Körper komplett entspannt oder steif, Atmung sehr flach oder sehr tief. Wenn Partner:in diese Signs sieht: Check-in ('Welche Farbe?' oder physischer Touch-Check). Bei keiner Reaktion: Session beenden, Aftercare starten."
+    }
+  ]
+}
