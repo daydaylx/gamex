@@ -5,11 +5,7 @@
   "bundledWebRuntime": false,
   "version": "1.0.0",
   "server": {
-    "url": "http://127.0.0.1:8000",
-    "cleartext": true,
-    "allowNavigation": [
-      "*"
-    ]
+    "cleartext": true
   },
   "android": {
     "buildOptions": {

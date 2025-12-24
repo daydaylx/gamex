@@ -69,5 +69,14 @@ class AIReport(BaseModel):
     model: str
     text: str
 
+class BackupRequest(BaseModel):
+    password: str = Field(min_length=6, max_length=200)
+
+class RestoreRequest(BaseModel):
+    encrypted_data: str = Field(min_length=1)
+    salt: str = Field(min_length=1)
+    password: str = Field(min_length=6, max_length=200)
+    new_name: Optional[str] = Field(default=None, max_length=100)
+
 
 

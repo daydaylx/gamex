@@ -153,3 +153,7 @@ Das Template wurde automatisch aus `fragebogen-umfassend.md` konvertiert mit:
 - Integration von Sicherheitshinweisen
 - Erkennung von Dom/Sub und Aktiv/Passiv Varianten
 
+
+
+
+

@@ -46,7 +46,7 @@
             "Unterschiedlich / Kommt drauf an"
           ],
           "tags": ["aftercare", "level1"],
-          "info_details": "Aftercare ist kein 'Bonus', sondern physiologisch notwendig. Nach intensivem Sex oder BDSM fällt der Hormonspiegel (Adrenalin/Endorphine) rapid ab ('Sub Drop'). Das kann zu Weinen, Zittern oder Traurigkeit führen. Aftercare fängt das auf."
+          "info_details": "Aftercare ist kein 'Bonus', sondern physiologisch notwendig. Nach intensivem Sex oder BDSM fällt der Hormonspiegel (Adrenalin/Endorphine) rapid ab ('Sub Drop'). Das kann zu Weinen, Zittern oder Traurigkeit führen. Wichtig: Auch Dom Drop ist real - Tops erleben Schuldgefühle, Erschöpfung, Sorge um die:den Sub. Forschung zeigt: 68% der BDSM-Community schätzen offene Kommunikation + Aftercare als zentral. Aftercare hat 3 Dimensionen: Physisch (Wasser, Wärme), Emotional (Nähe/Space), Temporal (Minuten bis Tage)."
         },
         {
           "id": "H01",
@@ -94,7 +94,7 @@
           "label": "Erniedrigung / Degradierung (Verbal)",
           "help": "Beleidigungen, Objektifizierung (natürlich nur im konsensuellen Rahmen).",
           "tags": ["communication", "kink", "level2"],
-          "info_details": "Psychologie: Für viele ist es befreiend, 'wertlos' zu sein, weil damit auch jede Verantwortung abfällt. Es ist oft eine Flucht vor dem Leistungsdruck des Alltags. Wichtig: Immer zwischen Rolle und Mensch trennen."
+          "info_details": "Psychologie: Für viele ist es befreiend, 'wertlos' zu sein, weil damit auch jede Verantwortung abfällt. Es ist oft eine Flucht vor dem Leistungsdruck des Alltags. Scham-Processing: Paradoxerweise kann das Aussprechen von Scham ('Du bist eine Schlampe') Scham reduzieren - weil sie kontrolliert & konsensuell erlebt wird. Das Tabu verliert Macht. ABER: Bei internalisierter Scham kann es Trigger sein. Wichtig: Immer zwischen Rolle und Mensch trennen. Aftercare mit Reassurance ('Das war nur Spiel, du bist wertvoll')."
         }
       ]
     },
@@ -210,7 +210,7 @@
           "label": "Führen & Geführt werden (Generell)",
           "help": "Magst du es, die Kontrolle zu haben (Dom) oder abzugeben (Sub)?",
           "tags": ["ds", "core", "level2"],
-          "info_details": "Psychologie: Machtabgabe (Submission) ist oft ein Akt der Stärke ('Ich vertraue dir so sehr, dass ich loslasse'). Dominanz ist Dienstleistung ('Ich übernehme die Verantwortung für unser Erlebnis')."
+          "info_details": "Psychologie: Machtabgabe (Submission) ist oft ein Akt der Stärke ('Ich vertraue dir so sehr, dass ich loslasse'). Dominanz ist Dienstleistung ('Ich übernehme die Verantwortung für unser Erlebnis'). 2024-Forschung zeigt: BDSM ist primär über Machtdynamiken, weniger über Schmerz. Attachment-Korrelation: Sichere & vermeidende Bindung → Dominanz; Submissive → höhere Trennungsangst (60,5% weibliche Subs). Konsens & Safewords unterscheiden BDSM klar von Gewalt."
         },
         {
           "id": "DS02",
@@ -262,7 +262,7 @@
           "label": "Spanking: Ernst & Strafe",
           "help": "Methodisches Hauen, um Schmerz zu erzeugen oder Dominanz zu zeigen.",
           "tags": ["impact", "punishment", "level2"],
-          "info_details": "Schmerz setzt Endorphine frei (körpereigene Drogen). Das kann zu einem rauschähnlichen Zustand ('Subspace') führen. Wichtig: Unterscheide 'guten Schmerz' (dumpf, Po) von 'schlechtem Schmerz' (Gelenke, Organe)."
+          "info_details": "Schmerz setzt Endorphine frei (körpereigene Drogen). Das kann zu einem rauschähnlichen Zustand ('Subspace') führen. Neuroscience: 2016-Studie zeigt 'transiente Hypofrontalität' - reduzierte Aktivität im präfrontalen Kortex während Subspace (ähnlich Meditation). Neurochemie: Adrenalin, Cortisol, Endorphine, Dopamin, Oxytocin, Endocannabinoide involviert. Drei Subspace-Typen: Endorphin-, Noradrenalin-, Serotonin-mediiert. Wichtig: Unterscheide 'guten Schmerz' (dumpf, Po) von 'schlechtem Schmerz' (Gelenke, Organe)."
         },
         {
           "id": "IMP03",
@@ -303,7 +303,7 @@
           "label": "Feste Fesseln (Handschellen, Seile)",
           "help": "Man ist wirklich fixiert und hilflos.",
           "tags": ["bondage", "hard", "level2"],
-          "info_details": "Gefühl der völligen Auslieferung. Kann sehr entspannend wirken, weil man 'nichts mehr tun muss'. Sicherheit: Niemals allein lassen. Schere bereit halten. Auf Nervenbahnen achten (taube Finger = sofort lösen!)."
+          "info_details": "Gefühl der völligen Auslieferung. Kann sehr entspannend wirken, weil man 'nichts mehr tun muss'. Attachment Theory: Fesseln erzeugt extreme Vulnerabilität - funktioniert nur mit sicherem Bindungsstil oder sehr hohem Vertrauen. Ängstlich gebundene können in Panik geraten (Trigger: Hilflosigkeit). Psychologie: Paradox der Freiheit durch Einschränkung. Sicherheit: Niemals allein lassen. Schere bereit halten. Auf Nervenbahnen achten (taube Finger = sofort lösen!)."
         },
         {
           "id": "BND03",
@@ -327,7 +327,7 @@
           "label": "Atemspiele / Breathplay",
           "help": "WARNUNG: Extrem hohes Risiko! Niemals allein. Niemals Kehlkopf.",
           "tags": ["risk", "breath", "level3"],
-          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Das Hirn schüttet Panik-Hormone aus, gefolgt von Euphorie. Physisch EXTREM gefährlich. Nur Carotiden (seitlich) und nur Sekunden."
+          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Panic-Hormone Cascade: Adrenalin-Spike → Cortisol-Anstieg → bei Freigabe: Endorphin-Flood + Dopamin-Rush = extreme Euphorie. ABER: Physisch EXTREM gefährlich - Hirnschäden möglich bei 30+ Sekunden Sauerstoffmangel, Herzstillstand-Risiko, Tod möglich. Nur Carotiden (seitlich), NIEMALS Kehlkopf. Nur für Expert:innen mit medizinischem Wissen. Safeword muss non-verbal sein (Klopfen)."
         },
         {
           "id": "RSK02",
@@ -359,7 +359,7 @@
           "label": "Fisting (Vaginal/Anal)",
           "help": "Einführen der ganzen Hand.",
           "tags": ["extreme", "fisting"],
-          "info_details": "Psychologie: Die ultimative Öffnung und das 'Füllen' der Leere. Erfordert extremes Vertrauen und Loslassen. Physisch ein sehr langsamer Prozess des Dehnens. Führt oft in einen tiefen Trance-Zustand (Subspace)."
+          "info_details": "Psychologie: Die ultimative Öffnung und das 'Füllen' der Leere. Erfordert extremes Vertrauen und Loslassen. Physisch ein sehr langsamer Prozess des Dehnens (Stunden!). Führt oft in einen tiefen Trance-Zustand (Subspace). Neuroscience: Transiente Hypofrontalität - präfrontaler Kortex schaltet ab, nur noch Körpergefühl bleibt. Endorphin-Flood + Depersonalisation. Wichtig: Niemals erzwingen, immer Gleitgel (auf Wasserbasis), langsame Dekompression nach dem Entfernen."
         },
         {
           "id": "EXT02",

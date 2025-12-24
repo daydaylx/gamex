@@ -291,3 +291,7 @@ class TestTemplateStoreIntegration:
         assert loaded["modules"][0]["questions"][0]["tags"] == ["tag1", "tag2"]
         assert loaded["modules"][0]["questions"][0]["options"] == ["opt1", "opt2"]
 
+
+
+
+

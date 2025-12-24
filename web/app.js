@@ -26,6 +26,9 @@ const state = {
 };
 
 async function api(path, opts = {}) {
+  if (window.LocalApi && window.LocalApi.enabled) {
+    return window.LocalApi.request(path, opts);
+  }
   const res = await fetch(path, {
     headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
     ...opts,
@@ -135,9 +138,12 @@ function backHome() {
   state.currentSession = null;
   state.currentTemplate = null;
   state.hasUnsavedChanges = false;
-  if (autoSaveTimeout) {
-    clearTimeout(autoSaveTimeout);
-    autoSaveTimeout = null;
+  if (state.autoSaveTimer) {
+    clearTimeout(state.autoSaveTimer);
+    state.autoSaveTimer = null;
+  }
+  if (window.LocalApi && typeof window.LocalApi.clearCache === "function") {
+    window.LocalApi.clearCache();
   }
   show($("sessionView"), false);
   show($("scenarioView"), false);
@@ -395,62 +401,105 @@ async function loadScenarios() {
 function renderScenarios() {
   const host = $("scenarioHost");
   host.innerHTML = "";
+  // Reset grid layout for scenarios to be a single column centered stream
+  host.className = ""; 
+  
   if (state.scenarios.length === 0) {
-    host.innerHTML = "Keine Szenarien gefunden.";
+    host.innerHTML = "<div style='text-align:center; padding:40px;'>Keine Szenarien gefunden.</div>";
     return;
   }
   const getSaved = (id) => { const key = `SCENARIO_${id}`; return state.formResponses[key]?.choice; };
 
   state.scenarios.forEach(scen => {
     const card = document.createElement("div");
-    card.className = "card";
-    card.style.display = "flex"; card.style.flexDirection = "column"; card.style.gap = "12px";
+    card.className = "scenario-card";
     
-    card.innerHTML = `
-      <div class="row space">
-        <div style="font-weight:bold; color:var(--primary);">${escapeHtml(scen.category)}</div>
-        <div style="font-size:0.8rem; opacity:0.7;">${escapeHtml(scen.id)}</div>
-      </div>
-      <h3>${escapeHtml(scen.title)}</h3>
-      <p style="flex:1; line-height:1.5;">${escapeHtml(scen.description)}</p>
-      <div class="divider"></div>
-      <div class="options-grid" style="display:grid; gap:8px;"></div>
-      <div class="feedback hidden" style="margin-top:10px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.05);"></div>
+    // Header
+    const header = document.createElement("div");
+    header.className = "scenario-header";
+    header.innerHTML = `
+      <div class="scenario-title">${escapeHtml(scen.title)}</div>
+      <div class="scenario-category">${escapeHtml(scen.category)}</div>
     `;
-    const optsGrid = card.querySelector(".options-grid");
-    const feed = card.querySelector(".feedback");
-    const savedChoice = getSaved(scen.id);
     
-    const updateVisuals = (choiceId, riskType) => {
-      optsGrid.querySelectorAll(".btn").forEach(b => {
-        b.style.borderColor = "var(--card-border)"; b.style.background = "var(--btn)";
-        if(b.dataset.id === choiceId) { b.style.borderColor = "var(--primary)"; b.style.background = "rgba(99, 102, 241, 0.2)"; }
-      });
-      feed.classList.remove("hidden");
-      let color = "var(--text)";
-      if (riskType === "boundary") color = "var(--danger)";
-      if (riskType === "safety" || riskType === "checkin" || riskType === "hesitant" || riskType === "negotiation") color = "var(--warning)";
-      if (riskType === "active" || riskType === "explore" || riskType === "playful" || riskType === "submission") color = "var(--success)";
-      
-      feed.style.borderLeft = `3px solid ${color}`;
-      feed.innerHTML = `<div style="font-size:0.85rem; font-weight:bold; color:${color}; margin-bottom:4px;">Typ: ${riskType}</div>
-        <div style="font-size:0.9rem;">Auswahl gespeichert.</div>`;
-    };
+    // Narrative Text
+    const text = document.createElement("div");
+    text.className = "scenario-text";
+    text.innerHTML = escapeHtml(scen.description);
 
+    // Options Container
+    const optsDiv = document.createElement("div");
+    optsDiv.className = "scenario-options";
+
+    // Feedback Area
+    const feedback = document.createElement("div");
+    feedback.className = "msg hidden";
+    feedback.style.marginTop = "16px";
+
+    const savedChoice = getSaved(scen.id);
+
+    // Render Options
     scen.options.forEach(opt => {
       const btn = document.createElement("button");
-      btn.className = "btn"; btn.dataset.id = opt.id; btn.style.textAlign = "left";
-      btn.innerHTML = `<strong>${opt.id}:</strong> ${escapeHtml(opt.label)}`;
-      if (savedChoice === opt.id) setTimeout(() => updateVisuals(opt.id, opt.risk_type), 0);
+      btn.className = "scenario-btn";
+      if (savedChoice === opt.id) btn.classList.add("selected");
+      
+      btn.innerHTML = `
+        <span class="scenario-btn-key">${opt.id}</span>
+        <div class="scenario-btn-content">
+          <span class="scenario-btn-label">${escapeHtml(opt.label)}</span>
+        </div>
+      `;
+
       btn.onclick = () => {
+        // Save
         const key = `SCENARIO_${scen.id}`;
         state.formResponses[key] = { choice: opt.id, risk_type: opt.risk_type, label: opt.label };
         state.hasUnsavedChanges = true;
-        updateVisuals(opt.id, opt.risk_type);
         scheduleAutoSave();
+
+        // UI Update
+        optsDiv.querySelectorAll(".scenario-btn").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+
+        // Feedback Logic
+        feedback.classList.remove("hidden");
+        let colorClass = "";
+        let msgText = "Auswahl gespeichert.";
+        
+        if (opt.risk_type === "boundary") {
+          colorClass = "err";
+          msgText = "Grenze gesetzt. (Gespeichert)";
+        } else if (["negotiation", "hesitant", "checkin", "safety", "conditional"].includes(opt.risk_type)) {
+          colorClass = "warn"; // We'll style this if needed, or use default msg color
+          msgText = "Bedingung / Check-in notiert. (Gespeichert)";
+        } else {
+          colorClass = "ok";
+          msgText = "Interesse notiert. (Gespeichert)";
+        }
+        
+        msg(feedback, msgText, colorClass);
       };
-      optsGrid.appendChild(btn);
+      
+      optsDiv.appendChild(btn);
     });
+
+    card.appendChild(header);
+    card.appendChild(text);
+    card.appendChild(optsDiv);
+    card.appendChild(feedback);
+    
+    // Restore feedback state if loaded
+    if(savedChoice) {
+       const opt = scen.options.find(o => o.id === savedChoice);
+       if(opt) {
+          feedback.classList.remove("hidden");
+          if(opt.risk_type === "boundary") msg(feedback, "Grenze gesetzt.", "err");
+          else if(["active", "explore", "submission"].includes(opt.risk_type)) msg(feedback, "Interesse notiert.", "ok");
+          else msg(feedback, "Bedingung notiert.", "");
+       }
+    }
+
     host.appendChild(card);
   });
 }

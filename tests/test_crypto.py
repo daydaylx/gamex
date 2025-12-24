@@ -295,3 +295,7 @@ class TestVerifyPin:
         assert verify_pin(pin, stored_hash, salt, person) is True
         assert verify_pin("wrong", stored_hash, salt, person) is False
 
+
+
+
+

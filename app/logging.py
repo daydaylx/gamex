@@ -36,3 +36,7 @@ def log_performance(operation: str, duration_ms: float, **kwargs):
 def log_api_call(endpoint: str, method: str, status_code: int, duration_ms: float):
     api_logger.info(f"{method} {endpoint} - {status_code} - {duration_ms:.2f}ms")
 
+
+
+
+

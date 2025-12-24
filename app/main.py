@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.db import init_db
-from app.template_store import ensure_default_template, ensure_comprehensive_template
+from app.template_store import ensure_default_template, ensure_comprehensive_template, ensure_psycho_enhanced_template
 from app.routes import api_router
 
 APP_TITLE = "Intimacy Tool (Local-first)"
@@ -14,6 +14,7 @@ def create_app() -> FastAPI:
     init_db()
     ensure_default_template()
     ensure_comprehensive_template()
+    ensure_psycho_enhanced_template()
 
     app.include_router(api_router, prefix="/api")
 

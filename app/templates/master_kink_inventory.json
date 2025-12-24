@@ -1,0 +1,288 @@
+{
+  "id": "master_inventory_v1",
+  "name": "Master Kink Inventar (Umfassend)",
+  "version": "1.0",
+  "description": "Detaillierte Erfassung von spezifischen Fetischen, Praktiken, Materialien und psychologischen Dynamiken. Fokus auf das 'Was' und 'Womit'.",
+  "modules": [
+    {
+      "id": "dynamics_trust",
+      "name": "Dynamik & Vertrauen",
+      "description": "Die psychologische Basis: Macht, Kontrolle und Hingabe.",
+      "questions": [
+        {
+          "id": "dyn_dom",
+          "label": "Dominanz (Führung übernehmen)",
+          "help": "Den Ablauf bestimmen, Regeln setzen, den anderen führen.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "dyn_sub",
+          "label": "Submission (Führung abgeben)",
+          "help": "Sich fallen lassen, Kontrolle an den Partner übergeben.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "dyn_restraint",
+          "label": "Fesseln / Immobilisierung",
+          "help": "Physische Hilflosigkeit durch Seile, Handschellen oder Tape.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "dyn_sensory",
+          "label": "Sinnesentzug (Blindfolds/Hoods)",
+          "help": "Augen verbinden oder Gehörschutz für Fokus und Vertrauen.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "dyn_discipline",
+          "label": "Erziehung & Disziplinierung",
+          "help": "Bestrafung für 'Fehlverhalten' (Rollenspiel) oder Belohnung.",
+          "schema": "consent_rating",
+          "risk_level": "C"
+        },
+        {
+          "id": "dyn_worship",
+          "label": "Body Worship / Verehrung",
+          "help": "Den Körper des Partners wie einen Altar behandeln (anbeten, küssen).",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "dyn_service",
+          "label": "Service / Dienen",
+          "help": "Bedürfnisse des anderen erfüllen (z.B. Kellnern, Bedienen, Pflegen).",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        }
+      ]
+    },
+    {
+      "id": "voyeur_exhib",
+      "name": "Sehen & Gesehen werden",
+      "description": "Voyeurismus, Exhibitionismus und visuelle Reize.",
+      "questions": [
+        {
+          "id": "vis_watch_partner",
+          "label": "Voyeurismus (Partner zusehen)",
+          "help": "Dem Partner bei der Selbstbefriedigung oder Sex mit anderen zusehen.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "vis_be_watched_partner",
+          "label": "Exhibitionismus (Vom Partner gesehen werden)",
+          "help": "Sich bewusst dem Blick des Partners aussetzen/präsentieren.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "vis_public_risk",
+          "label": "Sex in der Öffentlichkeit (Riskant)",
+          "help": "Sex an Orten, wo man entdeckt werden KÖNNTE (Auto, Wald).",
+          "schema": "consent_rating",
+          "risk_level": "C"
+        },
+        {
+          "id": "vis_mirrors",
+          "label": "Spiegel / Visuelle Kontrolle",
+          "help": "Sex vor großen Spiegeln, um sich selbst dabei zu sehen.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "vis_photos_private",
+          "label": "Fotos/Videos (Nur privat)",
+          "help": "Aufnahmen machen, die sicher verschlüsselt nur für euch sind.",
+          "schema": "consent_rating",
+          "risk_level": "C"
+        },
+        {
+          "id": "vis_facetime",
+          "label": "Digitaler Sex (Cam/Call)",
+          "help": "Sexuelle Interaktion über Videoanruf.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        }
+      ]
+    },
+    {
+      "id": "materials_style",
+      "name": "Material & Kleidung",
+      "description": "Fetische rund um Stoffe und Outfits.",
+      "questions": [
+        {
+          "id": "mat_lingerie",
+          "label": "Reizwäsche / Dessous",
+          "help": "Klassische Spitze, Strapshalter, High Heels.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "mat_leather",
+          "label": "Leder",
+          "help": "Der Geruch und das Gefühl von echtem Leder.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "mat_latex",
+          "label": "Latex / Gummi",
+          "help": "Eng anliegendes Material, Glanz, Geruch.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "mat_spandex",
+          "label": "Spandex / Lycra / Nylon",
+          "help": "Sportliche, glatte Stoffe, Strumpfhosen.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "mat_uniform",
+          "label": "Uniformen / Berufskleidung",
+          "help": "Anzüge, Arzt, Polizei, Schule, Handwerker.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        }
+      ]
+    },
+    {
+      "id": "toys_tools",
+      "name": "Spielzeug & Werkzeuge",
+      "description": "Objekte zur Steigerung von Lust oder Intensität.",
+      "questions": [
+        {
+          "id": "toy_vibrate",
+          "label": "Vibratoren / Wand",
+          "help": "Klassische Stimulation.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "toy_anal",
+          "label": "Anal Toys (Plugs/Beads)",
+          "help": "Objekte für anale Dehnung oder Stimulation.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "toy_impact",
+          "label": "Schlagwerkzeuge (Peitsche/Gerte)",
+          "help": "Flogger, Paddles, Gerten für Spanking.",
+          "schema": "consent_rating",
+          "risk_level": "C"
+        },
+        {
+          "id": "toy_clamps",
+          "label": "Klemmen (Nippel/Genital)",
+          "help": "Wäscheklammern oder spezielle Klemmen für Schmerzreiz.",
+          "schema": "consent_rating",
+          "risk_level": "C"
+        },
+        {
+          "id": "toy_strap",
+          "label": "Strap-On / Dildos",
+          "help": "Penetration mit Hilfsmitteln (Pegging oder Lesbisch).",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "toy_electro",
+          "label": "Reizstrom (E-Stim)",
+          "help": "Elektrische Stimulation der Muskeln/Nerven.",
+          "schema": "consent_rating",
+          "risk_level": "C"
+        }
+      ]
+    },
+    {
+      "id": "body_sensation",
+      "name": "Körper & Sensorik",
+      "description": "Spezifische Körperzonen und Reize.",
+      "questions": [
+        {
+          "id": "sens_temp",
+          "label": "Temperaturspiele (Eis/Wachs)",
+          "help": "Kälte durch Eiswürfel oder Hitze durch Kerzenwachs.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "sens_biting",
+          "label": "Beißen / Kratzen",
+          "help": "Markierungen hinterlassen, primal play.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "sens_spanking",
+          "label": "Spanking (Hand)",
+          "help": "Klassisches Versohlen mit der flachen Hand.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "sens_feet",
+          "label": "Fußfetisch",
+          "help": "Füße massieren, küssen, lecken.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "sens_oral",
+          "label": "Oralverkehr (Gebend/Nehmend)",
+          "help": "Detaillierte Präferenzen hierzu.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "sens_choking",
+          "label": "Breathplay (Würgen/Atemkontrolle)",
+          "help": "Hände am Hals oder Atmen einschränken. HIGH RISK.",
+          "schema": "consent_rating",
+          "risk_level": "C"
+        }
+      ]
+    },
+    {
+      "id": "roleplay_specific",
+      "name": "Rollenspiele",
+      "description": "In andere Charaktere schlüpfen.",
+      "questions": [
+        {
+          "id": "rp_stranger",
+          "label": "Fremde spielen",
+          "help": "So tun, als würde man sich in einer Bar neu kennenlernen.",
+          "schema": "consent_rating",
+          "risk_level": "A"
+        },
+        {
+          "id": "rp_authority",
+          "label": "Autoritätsfiguren (Lehrer/Boss/Polizei)",
+          "help": "Machtgefälle aufgrund von Status.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "rp_petplay",
+          "label": "Petplay (Hund/Katze)",
+          "help": "Tierisches Verhalten, Halsband, Leine, Napf.",
+          "schema": "consent_rating",
+          "risk_level": "B"
+        },
+        {
+          "id": "rp_ageplay",
+          "label": "Ageplay / DDLG",
+          "help": "Spielen mit Altersunterschieden (Little/Caregiver).",
+          "schema": "consent_rating",
+          "risk_level": "C"
+        }
+      ]
+    }
+  ]
+}

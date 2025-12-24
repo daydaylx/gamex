@@ -19,7 +19,10 @@ from app.models import (
     CompareResult,
     ExportRequest,
     AIAnalyzeRequest,
+    BackupRequest,
+    RestoreRequest,
 )
+from app.backup import create_backup, restore_backup
 from app.template_store import list_templates, load_template
 from app.crypto import create_key_material, verify_password, verify_pin, encrypt_json, decrypt_json, hash_pin
 from app.compare import compare
@@ -537,4 +540,32 @@ def ai_list(session_id: str, req: CompareRequest):
     salt = _require_password(srow, req.password)
     return {"reports": list_ai_reports(session_id, req.password, salt)}
 
+@api_router.post("/sessions/{session_id}/backup")
+def backup_session(session_id: str, req: BackupRequest):
+    """Create an encrypted backup of a session."""
+    try:
+        backup_data = create_backup(session_id, req.password)
+        return backup_data
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Backup failed: {str(e)}")
 
+@api_router.post("/sessions/restore")
+def restore_session(req: RestoreRequest):
+    """Restore a session from an encrypted backup."""
+    try:
+        new_session_id = restore_backup(
+            req.encrypted_data,
+            req.salt,
+            req.password,
+            req.new_name
+        )
+        return {
+            "session_id": new_session_id,
+            "message": "Session restored successfully"
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")

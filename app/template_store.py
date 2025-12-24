@@ -8,6 +8,7 @@ from app.models import TemplateListItem
 
 DEFAULT_TEMPLATE_ID = "unified_v1"
 COMPREHENSIVE_TEMPLATE_ID = "comprehensive_v1"
+PSYCHO_ENHANCED_TEMPLATE_ID = "psycho_enhanced_v3"
 
 def _utcnow() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -38,6 +39,20 @@ def ensure_comprehensive_template() -> None:
         with open(path, "r", encoding="utf-8") as f:
             tpl = json.load(f)
         save_template(COMPREHENSIVE_TEMPLATE_ID, tpl["name"], tpl["version"], tpl)
+
+def ensure_psycho_enhanced_template() -> None:
+    """Ensure psychologically enhanced template v3 is loaded."""
+    with db() as conn:
+        row = conn.execute("SELECT id FROM templates WHERE id = ?", (PSYCHO_ENHANCED_TEMPLATE_ID,)).fetchone()
+        if row:
+            return
+
+    here = os.path.dirname(__file__)
+    path = os.path.join(here, "templates", "psycho_enhanced_v3.json")
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            tpl = json.load(f)
+        save_template(PSYCHO_ENHANCED_TEMPLATE_ID, tpl["name"], tpl["version"], tpl)
 
 def save_template(template_id: str, name: str, version: int, tpl_json: Dict[str, Any]) -> None:
     with db() as conn:

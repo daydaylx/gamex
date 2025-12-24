@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+_Ök54^#!/usr/bin/env python3
 """
 Converter script to convert fragebogen-umfassend.md to JSON template format.
 """
