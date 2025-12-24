@@ -22,6 +22,17 @@ const state = {
   hasUnsavedChanges: false,
   lastSaveTime: null,
   autoSaveTimer: null,
+  visibilityTimer: null,
+  validationTimer: null,
+  validationEnabled: false,
+  questionIndex: [],
+  navItems: new Map(),
+  moduleIndex: [],
+  navOpen: false,
+  compareData: null,
+  compareFilters: { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" },
+  scenarioFilters: { category: "ALL", status: "ALL", gateOnly: false },
+  scenarioActiveIds: [],
   scenarios: [],
   scenarioDecks: [],
   activeDeck: null,
@@ -44,6 +55,17 @@ async function api(path, opts = {}) {
   return await res.blob();
 }
 
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+}
+
 function show(el, yes) {
   if (yes) {
     el.classList.remove("hidden");
@@ -62,6 +84,27 @@ function msg(el, text, kind = "") {
   el.className = "msg" + (kind ? ` ${kind}` : "");
 }
 
+function showError(el, error, prefix = "Fehler") {
+  if (!el) return;
+  const detail = error?.message || String(error || "");
+  const text = detail ? `${prefix}: ${detail}` : prefix;
+  msg(el, text, "err");
+}
+
+function setSaveStatus(text, kind = "") {
+  const el = $("saveStatus");
+  if (!el) return;
+  el.textContent = text || "";
+  el.className = "save-status" + (kind ? ` ${kind}` : "");
+}
+
+function setValidationSummary(text, kind = "") {
+  const el = $("validationSummary");
+  if (!el) return;
+  el.textContent = text || "";
+  el.className = "validation-summary" + (kind ? ` ${kind}` : "");
+}
+
 async function loadTemplates() {
   state.templates = await api("/api/templates");
   const sel = $("newTemplate");
@@ -75,10 +118,15 @@ async function loadTemplates() {
 }
 
 async function loadSessions() {
-  state.sessions = await api("/api/sessions");
   const host = $("sessionsList");
   host.innerHTML = "";
   host.className = "list"; 
+  try {
+    state.sessions = await api("/api/sessions");
+  } catch (e) {
+    host.innerHTML = `<div class="item" style="grid-column: 1/-1; text-align: center; color: var(--danger);">Fehler beim Laden der Sessions: ${escapeHtml(e.message)}</div>`;
+    return;
+  }
 
   if (state.sessions.length === 0) {
     host.innerHTML = `<div class="item" style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Keine Sessions gefunden. Erstelle eine neue!</div>`;
@@ -89,6 +137,9 @@ async function loadSessions() {
     const div = document.createElement("div");
     div.className = "item";
     const dateStr = new Date(s.created_at).toLocaleDateString('de-DE', { month: 'short', year: 'numeric', day: 'numeric' });
+    const completed = (s.has_a ? 1 : 0) + (s.has_b ? 1 : 0);
+    const pct = Math.round((completed / 2) * 100);
+    const ctaLabel = completed === 0 ? "Starten" : (completed === 2 ? "Vergleich" : "Weiter");
     div.innerHTML = `
       <div class="row space" style="margin-bottom: 12px;">
         <div class="title" style="font-size: 1.1rem;">${escapeHtml(s.name)}</div>
@@ -98,9 +149,15 @@ async function loadSessions() {
         <span class="badge ${s.has_a ? 'risk-badge-A' : ''}">Person A ${s.has_a ? '✓' : '—'}</span>
         <span class="badge ${s.has_b ? 'risk-badge-A' : ''}">Person B ${s.has_b ? '✓' : '—'}</span>
       </div>
+      <div class="session-progress">
+        <div class="session-progress-bar">
+          <div class="session-progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="session-progress-text">${completed}/2 Antworten</div>
+      </div>
       <div class="hint" style="margin-bottom: 16px; font-family: monospace; opacity: 0.7;">ID: ${escapeHtml(s.id).substring(0,8)}...</div>
       <button class="btn primary" style="width: 100%; justify-content: center; gap: 8px;" data-open="${escapeHtml(s.id)}">
-        ${Icons.play} Öffnen
+        ${Icons.play} ${ctaLabel}
       </button>
     `;
     div.querySelector("button").addEventListener("click", () => openSession(s.id));
@@ -129,6 +186,14 @@ async function openSession(sessionId) {
   show($("panelCompare"), false);
   show($("panelAI"), false);
   msg($("sessionMsg"), "");
+  msg($("saveMsg"), "");
+  setSaveStatus("");
+  setValidationSummary("");
+  state.validationEnabled = false;
+  state.compareData = null;
+  state.compareFilters = { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" };
+  state.scenarioActiveIds = [];
+  setNavOpen(false);
   
   $("authPassword").value = "";
   $("authPin").value = "";
@@ -139,10 +204,30 @@ function backHome() {
   stopSaveStatusUpdates();
   state.currentSession = null;
   state.currentTemplate = null;
+  state.currentPerson = null;
   state.hasUnsavedChanges = false;
+  state.formResponses = {};
+  state.questionIndex = [];
+  state.moduleIndex = [];
+  state.navItems = new Map();
+  state.navOpen = false;
+  state.validationEnabled = false;
+  state.compareData = null;
+  state.compareFilters = { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" };
+  setSaveStatus("");
+  setValidationSummary("");
+  setNavOpen(false);
   if (state.autoSaveTimer) {
     clearTimeout(state.autoSaveTimer);
     state.autoSaveTimer = null;
+  }
+  if (state.visibilityTimer) {
+    clearTimeout(state.visibilityTimer);
+    state.visibilityTimer = null;
+  }
+  if (state.validationTimer) {
+    clearTimeout(state.validationTimer);
+    state.validationTimer = null;
   }
   if (window.LocalApi && typeof window.LocalApi.clearCache === "function") {
     window.LocalApi.clearCache();
@@ -159,6 +244,30 @@ function escapeHtml(str) {
   return String(str || "").replace(/[&<>"']/g, (m) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   }[m]));
+}
+
+function safeDomId(value) {
+  return String(value || "").replace(/[^a-zA-Z0-9_-]/g, "-");
+}
+
+function markAnswered(el) {
+  if (el && el.dataset) {
+    el.dataset.answered = "true";
+  }
+}
+
+function isQuestionAnswered(el) {
+  return el?.dataset?.answered === "true";
+}
+
+function handleFormChange(itemEl) {
+  markAnswered(itemEl);
+  state.hasUnsavedChanges = true;
+  setSaveStatus("Änderungen nicht gespeichert", "warn");
+  scheduleAutoSave();
+  scheduleVisibilityUpdate();
+  scheduleValidation();
+  updateProgress();
 }
 
 function getAuth() {
@@ -193,6 +302,79 @@ function renderModuleInfoCard(mod) {
   return card;
 }
 
+function toggleModule(section, expanded = null) {
+  if (!section) return;
+  const shouldExpand = expanded === null ? section.classList.contains("collapsed") : expanded;
+  section.classList.toggle("collapsed", !shouldExpand);
+  const header = section.querySelector(".collapsible-header");
+  if (header) header.setAttribute("aria-expanded", shouldExpand ? "true" : "false");
+  const content = section.querySelector(".collapsible-content");
+  if (content) content.setAttribute("aria-hidden", shouldExpand ? "false" : "true");
+}
+
+function setNavOpen(open) {
+  state.navOpen = !!open;
+  const nav = $("questionNav");
+  const backdrop = $("navBackdrop");
+  const toggleBtn = $("btnToggleNav");
+  if (nav) nav.classList.toggle("is-open", state.navOpen);
+  if (backdrop) {
+    backdrop.classList.toggle("hidden", !state.navOpen);
+    backdrop.setAttribute("aria-hidden", state.navOpen ? "false" : "true");
+  }
+  if (toggleBtn) toggleBtn.setAttribute("aria-expanded", state.navOpen ? "true" : "false");
+  document.body.classList.toggle("nav-open", state.navOpen);
+}
+
+function scrollToQuestion(qid) {
+  const el = document.querySelector(`.item[data-qid="${qid}"]`);
+  if (!el) return;
+  const section = el.closest(".collapsible-section");
+  if (section && section.classList.contains("collapsed")) toggleModule(section, true);
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  el.classList.add("highlight");
+  setTimeout(() => el.classList.remove("highlight"), 900);
+}
+
+function buildQuestionNav() {
+  const nav = $("questionNav");
+  if (!nav) return;
+  nav.innerHTML = "";
+  state.navItems = new Map();
+
+  state.moduleIndex.forEach((mod) => {
+    const section = document.createElement("div");
+    section.className = "nav-section";
+
+    const title = document.createElement("div");
+    title.className = "nav-section-title";
+    title.textContent = mod.name || "Modul";
+    const progress = document.createElement("span");
+    progress.className = "nav-section-progress";
+    progress.dataset.moduleId = mod.key || safeDomId(mod.id);
+    progress.textContent = "0/0";
+    title.appendChild(progress);
+    section.appendChild(title);
+
+    mod.questions.forEach((q) => {
+      const link = document.createElement("a");
+      link.className = "nav-question-link";
+      link.href = `#q-${safeDomId(q.id)}`;
+      link.textContent = q.label || q.id;
+      link.dataset.qid = q.id;
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        scrollToQuestion(q.id);
+        if (state.navOpen) setNavOpen(false);
+      });
+      section.appendChild(link);
+      state.navItems.set(q.id, link);
+    });
+
+    nav.appendChild(section);
+  });
+}
+
 // --- Render Logic ---
 
 function renderRatingSelector(key, value, max, labels = []) {
@@ -215,6 +397,7 @@ function renderRatingSelector(key, value, max, labels = []) {
     for (let i = 0; i <= max; i++) {
         const btn = document.createElement("button");
         btn.className = `rating-btn ${i == value ? 'selected' : ''}`;
+        btn.type = "button";
         btn.textContent = i;
         btn.onclick = (e) => {
             e.preventDefault(); // Prevent form submission or scrolling
@@ -245,6 +428,11 @@ function renderConsentRating(q, existing = {}) {
     const hasDomSub = q.has_dom_sub || false;
     const riskClass = `risk-badge-${q.risk_level || "A"}`;
     const tagsHtml = (q.tags || []).map(t => `<span class="badge tag-badge">${escapeHtml(t)}</span>`).join("");
+    const hasDetailsContent = !!conditions.trim() || !!notes.trim();
+    const maybeStatus = hasDomSub
+      ? [existing.dom_status || status, existing.sub_status || status].includes("MAYBE")
+      : (existing.status || status) === "MAYBE";
+    const detailsOpen = q.risk_level === "C" || hasDetailsContent || maybeStatus;
 
     // Info Button Logic
     let infoBtn = "";
@@ -352,10 +540,13 @@ function renderConsentRating(q, existing = {}) {
         `}
       </div>
 
-      <div class="space-y text-inputs">
-        <textarea data-k="conditions" placeholder="Bedingungen / Wichtige Details..." rows="2"></textarea>
-        <textarea data-k="notes" placeholder="Private Notizen..." rows="2"></textarea>
-      </div>
+      <details class="notes-toggle" ${detailsOpen ? "open" : ""}>
+        <summary>Bedingungen & Notizen</summary>
+        <div class="space-y text-inputs">
+          <textarea data-k="conditions" placeholder="Bedingungen / Wichtige Details..." rows="2"></textarea>
+          <textarea data-k="notes" placeholder="Private Notizen..." rows="2"></textarea>
+        </div>
+      </details>
     `;
     
     // Inject Rating Selectors
@@ -380,16 +571,27 @@ function renderConsentRating(q, existing = {}) {
     wrap.querySelector('[data-k="notes"]').value = notes;
 
     // Change Events
+    const detailsEl = wrap.querySelector(".notes-toggle");
+    const shouldOpenDetailsNow = () => {
+      const condVal = wrap.querySelector('[data-k="conditions"]')?.value.trim();
+      const noteVal = wrap.querySelector('[data-k="notes"]')?.value.trim();
+      const statusValues = hasDomSub
+        ? [wrap.querySelector('[data-k="dom_status"]').value, wrap.querySelector('[data-k="sub_status"]').value]
+        : [wrap.querySelector('[data-k="status"]').value];
+      return q.risk_level === "C" || !!condVal || !!noteVal || statusValues.includes("MAYBE");
+    };
+
     wrap.addEventListener('change', (e) => { 
-        // Only trigger if it's an input/select element
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
-            state.hasUnsavedChanges = true; 
-            scheduleAutoSave(); 
-            updateProgress(); 
+            handleFormChange(wrap);
+            if (detailsEl && shouldOpenDetailsNow()) detailsEl.open = true;
         }
     });
     wrap.querySelectorAll('textarea').forEach(e => {
-        e.addEventListener('input', () => { state.hasUnsavedChanges = true; scheduleAutoSave(); });
+        e.addEventListener('input', () => {
+          handleFormChange(wrap);
+          if (detailsEl && shouldOpenDetailsNow()) detailsEl.open = true;
+        });
     });
 
     return wrap;
@@ -417,8 +619,7 @@ function renderScale(q, existing={}) {
     
     input.oninput = (e) => {
         display.textContent = e.target.value;
-        state.hasUnsavedChanges=true; 
-        scheduleAutoSave();
+        handleFormChange(d);
     };
     
     return d;
@@ -428,35 +629,79 @@ function renderEnum(q, existing={}) {
     d.className="item";
     d.innerHTML = `<div class="title">${q.label}</div><select data-k="value">${(q.options||[]).map(o=>`<option>${o}</option>`).join("")}</select>`;
     d.querySelector('select').value = existing.value || q.options?.[0];
-    d.querySelector('select').onchange = () => { state.hasUnsavedChanges=true; scheduleAutoSave(); };
+    d.querySelector('select').onchange = () => handleFormChange(d);
     return d;
 }
 function renderText(q, existing={}) {
     const d = document.createElement("div");
     d.className="item";
     d.innerHTML = `<div class="title">${q.label}</div><textarea data-k="text">${existing.text||""}</textarea>`;
-    d.querySelector('textarea').oninput = () => { state.hasUnsavedChanges=true; scheduleAutoSave(); };
+    d.querySelector('textarea').oninput = () => handleFormChange(d);
     return d;
 }
 
 function buildForm(template, responses) {
   const host = $("formHost");
   host.innerHTML = "";
-  state.formResponses = responses;
-  updateProgress();
+  state.formResponses = responses || {};
+  state.questionIndex = [];
+  state.moduleIndex = [];
+  state.navItems = new Map();
+  state.hasUnsavedChanges = false;
+  state.validationEnabled = false;
+  if (state.visibilityTimer) {
+    clearTimeout(state.visibilityTimer);
+    state.visibilityTimer = null;
+  }
+  if (state.validationTimer) {
+    clearTimeout(state.validationTimer);
+    state.validationTimer = null;
+  }
+  setSaveStatus("Bereit");
+  setValidationSummary("");
+  if (typeof clearValidationDisplays === "function") clearValidationDisplays();
 
   for (const mod of template.modules || []) {
+    const moduleKey = safeDomId(mod.id);
     host.appendChild(renderModuleInfoCard(mod));
     
     const section = document.createElement("div");
     section.className = "panel collapsible-section";
+    section.dataset.moduleId = moduleKey;
     const header = document.createElement("div");
     header.className = "collapsible-header";
-    header.innerHTML = `<h4>${escapeHtml(mod.name)}</h4>`;
-    header.onclick = () => section.classList.toggle('collapsed');
+    header.innerHTML = `
+      <div class="module-title">
+        <h4>${escapeHtml(mod.name)}</h4>
+        <span class="module-progress" data-module-id="${moduleKey}">0/0</span>
+      </div>
+    `;
+    header.onclick = () => toggleModule(section);
     
     const content = document.createElement("div");
     content.className = "collapsible-content";
+    content.id = `module-content-${moduleKey}`;
+    content.setAttribute("aria-hidden", "false");
+    header.setAttribute("role", "button");
+    header.setAttribute("tabindex", "0");
+    header.setAttribute("aria-controls", content.id);
+    header.setAttribute("aria-expanded", "true");
+    header.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleModule(section);
+      }
+    });
+
+    const moduleEntry = {
+      id: mod.id,
+      key: moduleKey,
+      name: mod.name,
+      section,
+      header,
+      questions: []
+    };
+    state.moduleIndex.push(moduleEntry);
 
     for (const q of mod.questions || []) {
       const existing = responses[q.id] || {};
@@ -468,13 +713,21 @@ function buildForm(template, responses) {
 
       el.dataset.qid = q.id;
       el.dataset.schema = q.schema;
+      el.dataset.moduleId = moduleKey;
+      el.dataset.answered = responses[q.id] ? "true" : "false";
+      el.id = `q-${safeDomId(q.id)}`;
+      moduleEntry.questions.push({ id: q.id, label: q.label });
+      state.questionIndex.push({ id: q.id, label: q.label, moduleId: mod.id });
       content.appendChild(el);
     }
     section.appendChild(header);
     section.appendChild(content);
     host.appendChild(section);
   }
+  buildQuestionNav();
   updateVisibility();
+  updateProgress();
+  setNavOpen(false);
 }
 
 function collectForm() {
@@ -492,6 +745,8 @@ function collectForm() {
                     sub_status: b.querySelector('[data-k="sub_status"]').value,
                     dom_interest: Number(b.querySelector('[data-k="dom_interest"]').value),
                     sub_interest: Number(b.querySelector('[data-k="sub_interest"]').value),
+                    dom_comfort: Number(b.querySelector('[data-k="dom_comfort"]').value),
+                    sub_comfort: Number(b.querySelector('[data-k="sub_comfort"]').value),
                     conditions: c, notes: n
                 };
             } else {
@@ -516,6 +771,7 @@ function collectForm() {
 // Scenarios
 async function loadScenarios() {
   try {
+    msg($("scenarioMsg"), "");
     const data = await api("/api/scenarios");
     // Handle both old format (array) and new format (object with decks)
     if (Array.isArray(data)) {
@@ -529,13 +785,14 @@ async function loadScenarios() {
         state.activeDeck = state.scenarioDecks[0].id;
       }
     }
+    state.scenarioFilters = { category: "ALL", status: "ALL", gateOnly: false };
     renderScenarios();
     show($("home"), false);
     show($("create"), false);
     show($("extras"), false);
     show($("scenarioView"), true);
   } catch(e) {
-    alert("Fehler beim Laden der Szenarien: " + e.message);
+    showError($("scenarioMsg"), e, "Szenarien konnten nicht geladen werden");
   }
 }
 
@@ -545,13 +802,14 @@ function renderScenarios() {
   // Reset grid layout for scenarios to be a single column centered stream
   host.className = ""; 
   
-  // Render deck navigation if decks exist
+  let activeDeckData = null;
   if (state.scenarioDecks.length > 0) {
+    const decks = [...state.scenarioDecks].sort((a, b) => (a.order || 0) - (b.order || 0));
     const deckNav = document.createElement("div");
     deckNav.className = "scenario-deck-nav";
-    deckNav.style.cssText = "display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; padding: 16px; background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--card-border);";
+    deckNav.style.cssText = "display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; padding: 16px; background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--card-border);";
     
-    state.scenarioDecks.forEach(deck => {
+    decks.forEach(deck => {
       const btn = document.createElement("button");
       btn.className = `btn ${state.activeDeck === deck.id ? 'primary' : ''}`;
       btn.textContent = deck.name;
@@ -564,47 +822,140 @@ function renderScenarios() {
     });
     
     host.appendChild(deckNav);
+    activeDeckData = decks.find(d => d.id === state.activeDeck) || null;
   }
   
-  // Filter scenarios by active deck
   let scenariosToShow = state.scenarios;
-  if (state.activeDeck && state.scenarioDecks.length > 0) {
-    const activeDeckData = state.scenarioDecks.find(d => d.id === state.activeDeck);
-    if (activeDeckData) {
-      scenariosToShow = state.scenarios.filter(s => activeDeckData.scenarios.includes(s.id));
-    }
+  if (activeDeckData) {
+    scenariosToShow = state.scenarios.filter(s => activeDeckData.scenarios.includes(s.id));
   }
+  state.scenarioActiveIds = scenariosToShow.map(s => s.id);
   
-  if (scenariosToShow.length === 0) {
+  const getSaved = (id) => { const key = `SCENARIO_${id}`; return state.formResponses[key]?.choice; };
+
+  if (activeDeckData) {
+    const deckInfo = document.createElement("div");
+    deckInfo.className = "scenario-deck-info";
+    deckInfo.innerHTML = `
+      <div class="scenario-deck-title">${escapeHtml(activeDeckData.name)}</div>
+      <div class="scenario-deck-desc">${escapeHtml(activeDeckData.description || "")}</div>
+      ${activeDeckData.requires_safety_gate ? `<div class="badge risk-badge-C">Sicherheits-Gate empfohlen</div>` : ""}
+    `;
+    host.appendChild(deckInfo);
+  }
+
+  const totalCount = scenariosToShow.length;
+  const answeredCount = scenariosToShow.filter(s => getSaved(s.id)).length;
+  const pct = totalCount ? Math.round((answeredCount / totalCount) * 100) : 0;
+
+  const metaBar = document.createElement("div");
+  metaBar.className = "scenario-meta";
+  const progress = document.createElement("div");
+  progress.className = "scenario-progress";
+  progress.innerHTML = `
+    <div class="scenario-progress-text">${answeredCount}/${totalCount} beantwortet</div>
+    <div class="scenario-progress-bar">
+      <div class="scenario-progress-fill" style="width:${pct}%"></div>
+    </div>
+  `;
+  metaBar.appendChild(progress);
+
+  const filters = document.createElement("div");
+  filters.className = "scenario-filters";
+  const categories = Array.from(new Set(scenariosToShow.map(s => s.category).filter(Boolean))).sort();
+  if (!categories.includes(state.scenarioFilters.category)) {
+    state.scenarioFilters.category = "ALL";
+  }
+  const categorySelect = document.createElement("select");
+  categorySelect.className = "scenario-filter";
+  const allCat = document.createElement("option");
+  allCat.value = "ALL";
+  allCat.textContent = "Alle Kategorien";
+  categorySelect.appendChild(allCat);
+  categories.forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat;
+    categorySelect.appendChild(opt);
+  });
+  categorySelect.value = state.scenarioFilters.category || "ALL";
+  categorySelect.onchange = () => {
+    state.scenarioFilters.category = categorySelect.value;
+    renderScenarios();
+  };
+
+  const statusSelect = document.createElement("select");
+  statusSelect.className = "scenario-filter";
+  const allowedStatus = ["ALL", "ANSWERED", "OPEN"];
+  if (!allowedStatus.includes(state.scenarioFilters.status)) {
+    state.scenarioFilters.status = "ALL";
+  }
+  const statusOptions = [
+    { value: "ALL", label: "Alle Status" },
+    { value: "ANSWERED", label: "Beantwortet" },
+    { value: "OPEN", label: "Offen" }
+  ];
+  statusOptions.forEach(opt => {
+    const o = document.createElement("option");
+    o.value = opt.value;
+    o.textContent = opt.label;
+    statusSelect.appendChild(o);
+  });
+  statusSelect.value = state.scenarioFilters.status || "ALL";
+  statusSelect.onchange = () => {
+    state.scenarioFilters.status = statusSelect.value;
+    renderScenarios();
+  };
+
+  const gateToggle = document.createElement("label");
+  gateToggle.className = "scenario-filter-toggle";
+  const gateInput = document.createElement("input");
+  gateInput.type = "checkbox";
+  gateInput.checked = !!state.scenarioFilters.gateOnly;
+  gateInput.onchange = () => {
+    state.scenarioFilters.gateOnly = gateInput.checked;
+    renderScenarios();
+  };
+  gateToggle.appendChild(gateInput);
+  gateToggle.appendChild(document.createTextNode("Nur mit Sicherheits-Gate"));
+
+  filters.appendChild(categorySelect);
+  filters.appendChild(statusSelect);
+  filters.appendChild(gateToggle);
+  metaBar.appendChild(filters);
+  host.appendChild(metaBar);
+
+  const filteredScenarios = scenariosToShow.filter(scen => {
+    if (state.scenarioFilters.category !== "ALL" && scen.category !== state.scenarioFilters.category) return false;
+    const answered = !!getSaved(scen.id);
+    if (state.scenarioFilters.status === "ANSWERED" && !answered) return false;
+    if (state.scenarioFilters.status === "OPEN" && answered) return false;
+    if (state.scenarioFilters.gateOnly) {
+      const hasGate = !!scen.info_card?.safety_gate || !!activeDeckData?.requires_safety_gate;
+      if (!hasGate) return false;
+    }
+    return true;
+  });
+
+  if (filteredScenarios.length === 0) {
     host.innerHTML += "<div style='text-align:center; padding:40px;'>Keine Szenarien gefunden.</div>";
     return;
   }
-  const getSaved = (id) => { const key = `SCENARIO_${id}`; return state.formResponses[key]?.choice; };
 
-  scenariosToShow.forEach(scen => {
-    // Check safety gate
-    let gatePassed = true;
-    let gateMessage = "";
-    if (scen.safety_gate) {
-      // For now, we'll check if safeword is mentioned in responses (simplified check)
-      // In a real implementation, this would check actual session data
-      gatePassed = false; // Default to showing warning
-      gateMessage = scen.safety_gate.message || "Sicherheits-Gate nicht erfüllt";
-    }
-    
+  filteredScenarios.forEach(scen => {
     const card = document.createElement("div");
     card.className = "scenario-card";
-    if (!gatePassed && scen.safety_gate) {
-      card.style.opacity = "0.7";
-      card.style.border = "2px solid var(--danger-border)";
-    }
     
-    // Safety Gate Warning
-    const safetyGateWarning = !gatePassed && scen.safety_gate ? `
+    const gateText = scen.info_card?.safety_gate;
+    const deckGate = !!activeDeckData?.requires_safety_gate;
+    const showGate = !!gateText || deckGate;
+    const gateMessage = gateText || (deckGate ? "Dieses Deck setzt ein vereinbartes Sicherheits-Gate voraus." : "");
+    
+    const safetyGateWarning = showGate ? `
       <div class="safety-gate-warning">
         <div class="safety-gate-header">
           <span class="safety-gate-icon">🔒</span>
-          <strong>Sicherheits-Gate erforderlich</strong>
+          <strong>Sicherheits-Gate</strong>
         </div>
         <div class="safety-gate-content">
           ${escapeHtml(gateMessage)}
@@ -612,7 +963,6 @@ function renderScenarios() {
       </div>
     ` : "";
     
-    // Header
     const header = document.createElement("div");
     header.className = "scenario-header";
     header.innerHTML = `
@@ -620,7 +970,21 @@ function renderScenarios() {
       <div class="scenario-category">${escapeHtml(scen.category)}</div>
     `;
     
-    // Info Card
+    const badges = document.createElement("div");
+    badges.className = "scenario-badges";
+    if (activeDeckData) {
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = activeDeckData.name;
+      badges.appendChild(badge);
+    }
+    if (showGate) {
+      const badge = document.createElement("span");
+      badge.className = "badge risk-badge-C";
+      badge.textContent = "Gate";
+      badges.appendChild(badge);
+    }
+    
     const infoCard = scen.info_card ? `
       <div class="scenario-info-card">
         <div class="scenario-info-section">
@@ -631,30 +995,28 @@ function renderScenarios() {
           <div class="scenario-info-label">⚠️ Typische Risiken:</div>
           <div class="scenario-info-text">${escapeHtml(scen.info_card.typical_risks)}</div>
         </div>
+        ${scen.info_card.safety_gate ? `
         <div class="scenario-info-section">
           <div class="scenario-info-label">🔒 Sicherheits-Gate:</div>
           <div class="scenario-info-text">${escapeHtml(scen.info_card.safety_gate)}</div>
         </div>
+        ` : ""}
       </div>
     ` : "";
     
-    // Narrative Text
     const text = document.createElement("div");
     text.className = "scenario-text";
     text.innerHTML = escapeHtml(scen.description);
 
-    // Options Container
     const optsDiv = document.createElement("div");
     optsDiv.className = "scenario-options";
 
-    // Feedback Area
     const feedback = document.createElement("div");
     feedback.className = "msg hidden";
     feedback.style.marginTop = "16px";
 
     const savedChoice = getSaved(scen.id);
 
-    // Render Options
     scen.options.forEach(opt => {
       const btn = document.createElement("button");
       btn.className = "scenario-btn";
@@ -668,17 +1030,14 @@ function renderScenarios() {
       `;
 
       btn.onclick = () => {
-        // Save
         const key = `SCENARIO_${scen.id}`;
         state.formResponses[key] = { choice: opt.id, risk_type: opt.risk_type, label: opt.label };
         state.hasUnsavedChanges = true;
         scheduleAutoSave();
 
-        // UI Update
         optsDiv.querySelectorAll(".scenario-btn").forEach(b => b.classList.remove("selected"));
         btn.classList.add("selected");
 
-        // Feedback Logic
         feedback.classList.remove("hidden");
         let colorClass = "";
         let msgText = "Auswahl gespeichert.";
@@ -687,7 +1046,7 @@ function renderScenarios() {
           colorClass = "err";
           msgText = "Grenze gesetzt. (Gespeichert)";
         } else if (["negotiation", "hesitant", "checkin", "safety", "conditional"].includes(opt.risk_type)) {
-          colorClass = "warn"; // We'll style this if needed, or use default msg color
+          colorClass = "warn";
           msgText = "Bedingung / Check-in notiert. (Gespeichert)";
         } else {
           colorClass = "ok";
@@ -695,12 +1054,14 @@ function renderScenarios() {
         }
         
         msg(feedback, msgText, colorClass);
+        updateScenarioProgress();
       };
       
       optsDiv.appendChild(btn);
     });
 
     card.appendChild(header);
+    if (badges.childNodes.length) card.appendChild(badges);
     if (safetyGateWarning) {
       const gateDiv = document.createElement("div");
       gateDiv.innerHTML = safetyGateWarning;
@@ -715,7 +1076,6 @@ function renderScenarios() {
     card.appendChild(optsDiv);
     card.appendChild(feedback);
     
-    // Restore feedback state if loaded
     if(savedChoice) {
        const opt = scen.options.find(o => o.id === savedChoice);
        if(opt) {
@@ -730,22 +1090,40 @@ function renderScenarios() {
   });
 }
 
+function updateScenarioProgress() {
+  const total = state.scenarioActiveIds.length;
+  const answered = state.scenarioActiveIds.filter(id => state.formResponses[`SCENARIO_${id}`]?.choice).length;
+  const pct = total ? Math.round((answered / total) * 100) : 0;
+  const textEl = document.querySelector(".scenario-progress-text");
+  const fillEl = document.querySelector(".scenario-progress-fill");
+  if (textEl) textEl.textContent = `${answered}/${total} beantwortet`;
+  if (fillEl) fillEl.style.width = `${pct}%`;
+}
+
 // Helpers (Dependencies, Visibility)
-let visibilityCache = null;
-function updateVisibility() {
+function updateVisibility(responses = null) {
   if (!state.currentTemplate) return;
-  const responses = collectFormCached();
+  const data = responses || collectForm();
   const host = $("formHost");
   state.currentTemplate.modules.forEach(m => m.questions.forEach(q => {
     if (q.depends_on) {
-       const visible = evaluateDependency(q.depends_on, responses);
+       const visible = evaluateDependency(q.depends_on, data);
        const el = host.querySelector(`.item[data-qid="${q.id}"]`);
-       if (el) {
-         if (visible) el.classList.remove("hidden");
-         else el.classList.add("hidden");
-       }
+       if (el) el.classList.toggle("hidden", !visible);
     }
   }));
+  updateProgress();
+}
+
+function scheduleVisibilityUpdate() {
+  if (state.visibilityTimer) clearTimeout(state.visibilityTimer);
+  state.visibilityTimer = setTimeout(() => updateVisibility(), 120);
+}
+
+function scheduleValidation() {
+  if (!state.validationEnabled) return;
+  if (state.validationTimer) clearTimeout(state.validationTimer);
+  state.validationTimer = setTimeout(() => validateAndShowHints(), 400);
 }
 function evaluateDependency(dep, responses) {
   const t = responses[dep.id];
@@ -790,25 +1168,420 @@ function evaluateDependency(dep, responses) {
 }
 
 // Autosave
-let collectFormCache = null;
 function scheduleAutoSave() { if(state.autoSaveTimer) clearTimeout(state.autoSaveTimer); state.autoSaveTimer = setTimeout(autoSave, 1000); }
-function collectFormCached() { if(!collectFormCache) collectFormCache = collectForm(); return collectFormCache; }
 async function autoSave() {
     if(!state.currentSession || !state.currentPerson) return;
     try {
+        if (!state.hasUnsavedChanges) return;
         const {password, pin} = getAuth();
+        const { errors } = validateForm();
+        if (errors.length) {
+            state.validationEnabled = true;
+            validateAndShowHints();
+            setSaveStatus(`Auto-Save pausiert (${errors.length} Fehler)`, "warn");
+            return;
+        }
         await api(`/api/sessions/${state.currentSession.id}/responses/${state.currentPerson}/save`, {
             method: "POST", body: JSON.stringify({password, pin, responses: collectForm()})
         });
-        msg($("saveMsg"), "Auto-Saved", "ok");
-    } catch(e) {}
+        state.hasUnsavedChanges = false;
+        state.lastSaveTime = Date.now();
+        msg($("saveMsg"), "Auto-gespeichert", "ok");
+        setSaveStatus(`Auto-Save um ${new Date(state.lastSaveTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`, "ok");
+    } catch(e) {
+        setSaveStatus("Auto-Save fehlgeschlagen", "err");
+    }
 }
 function handleBeforeUnload(e) { if (state.hasUnsavedChanges) { e.preventDefault(); e.returnValue = ''; } }
 function startSaveStatusUpdates() {}
 function stopSaveStatusUpdates() {}
-function validateForm() { return {errors:[], warnings:[]}; } 
-function updateProgress() {} 
-function validateAndShowHints() {} 
+function validateForm() {
+  if (!state.currentTemplate || typeof validateResponses !== "function") {
+    return { errors: [], warnings: [] };
+  }
+  const responses = collectForm();
+  document.querySelectorAll('.item.hidden[data-qid]').forEach((el) => {
+    delete responses[el.dataset.qid];
+  });
+  return validateResponses(state.currentTemplate, responses);
+}
+
+function updateProgress() {
+  const items = Array.from(document.querySelectorAll(".item[data-qid]"));
+  const progressText = $("progressText");
+  const progressPct = $("progressPct");
+  const progressFill = $("progressFill");
+  let total = 0;
+  let answered = 0;
+  const moduleCounts = new Map();
+
+  items.forEach((el) => {
+    const visible = !el.classList.contains("hidden");
+    if (!visible) return;
+    total += 1;
+    if (isQuestionAnswered(el)) answered += 1;
+    const moduleId = el.dataset.moduleId || "default";
+    const counts = moduleCounts.get(moduleId) || { answered: 0, total: 0 };
+    counts.total += 1;
+    if (isQuestionAnswered(el)) counts.answered += 1;
+    moduleCounts.set(moduleId, counts);
+  });
+
+  const pct = total ? Math.round((answered / total) * 100) : 0;
+  if (progressText) progressText.textContent = `${answered}/${total} beantwortet`;
+  if (progressPct) progressPct.textContent = `${pct}%`;
+  if (progressFill) progressFill.style.width = `${pct}%`;
+
+  state.navItems.forEach((link, qid) => {
+    const el = document.querySelector(`.item[data-qid="${qid}"]`);
+    if (!el) return;
+    const visible = !el.classList.contains("hidden");
+    link.classList.toggle("is-hidden", !visible);
+    link.classList.toggle("answered", isQuestionAnswered(el));
+  });
+
+  moduleCounts.forEach((counts, moduleId) => {
+    const navProgress = document.querySelector(`.nav-section-progress[data-module-id="${moduleId}"]`);
+    if (navProgress) navProgress.textContent = `${counts.answered}/${counts.total}`;
+    const headerProgress = document.querySelector(`.module-progress[data-module-id="${moduleId}"]`);
+    if (headerProgress) headerProgress.textContent = `${counts.answered}/${counts.total}`;
+  });
+}
+
+function validateAndShowHints({ scrollToError = false } = {}) {
+  if (typeof clearValidationDisplays === "function") clearValidationDisplays();
+  const { errors, warnings } = validateForm();
+  if (typeof displayValidationErrors === "function") {
+    displayValidationErrors(errors, warnings);
+  }
+
+  if (!errors.length && !warnings.length) {
+    setValidationSummary("Keine Probleme gefunden.", "ok");
+  } else if (errors.length) {
+    setValidationSummary(`${errors.length} Fehler, ${warnings.length} Warnungen gefunden.`, "err");
+  } else {
+    setValidationSummary(`${warnings.length} Warnungen gefunden.`, "warn");
+  }
+
+  if (scrollToError && errors.length) {
+    scrollToQuestion(errors[0].question_id);
+  }
+
+  return { errors, warnings };
+}
+
+function expandAllModules(expanded) {
+  document.querySelectorAll(".collapsible-section").forEach((section) => {
+    toggleModule(section, expanded);
+  });
+}
+
+function goToNextOpenQuestion() {
+  const items = Array.from(document.querySelectorAll(".item[data-qid]")).filter(
+    (el) => !el.classList.contains("hidden")
+  );
+  const target = items.find((el) => !isQuestionAnswered(el));
+  if (!target) {
+    msg($("saveMsg"), "Alles beantwortet.", "ok");
+    return;
+  }
+  scrollToQuestion(target.dataset.qid);
+}
+
+function applyCompareFilters(items) {
+  const { status, riskOnly, flaggedOnly, query } = state.compareFilters;
+  const q = (query || "").toLowerCase();
+  return items.filter((it) => {
+    if (status !== "ALL" && it.pair_status !== status) return false;
+    if (riskOnly && it.risk_level !== "C") return false;
+    if (flaggedOnly && !(it.flags && it.flags.length)) return false;
+    if (q) {
+      const hay = [
+        it.label,
+        it.module_name,
+        it.question_id,
+        ...(it.tags || [])
+      ].join(" ").toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function renderCompareAnswerLines(answer = {}, schema = "") {
+  if (answer === null || answer === undefined) return ["—"];
+  if (typeof answer !== "object") return [String(answer)];
+  const lines = [];
+  if (schema === "consent_rating") {
+    if (answer.dom_status || answer.sub_status) {
+      const dom = `Dom: ${answer.dom_status || "—"} | I ${answer.dom_interest ?? "—"} | K ${answer.dom_comfort ?? "—"}`;
+      const sub = `Sub: ${answer.sub_status || "—"} | I ${answer.sub_interest ?? "—"} | K ${answer.sub_comfort ?? "—"}`;
+      lines.push(dom, sub);
+    } else if (answer.active_status || answer.passive_status) {
+      const act = `Aktiv: ${answer.active_status || "—"} | I ${answer.active_interest ?? "—"} | K ${answer.active_comfort ?? "—"}`;
+      const pas = `Passiv: ${answer.passive_status || "—"} | I ${answer.passive_interest ?? "—"} | K ${answer.passive_comfort ?? "—"}`;
+      lines.push(act, pas);
+    } else {
+      lines.push(`Status: ${answer.status || "—"} | Interesse ${answer.interest ?? "—"} | Komfort ${answer.comfort ?? "—"}`);
+    }
+    if (answer.conditions) lines.push(`Bedingungen: ${answer.conditions}`);
+  } else if (schema === "scale_0_10") {
+    lines.push(`Wert: ${answer.value ?? "—"}`);
+  } else if (schema === "enum" || schema === "multi") {
+    const value = Array.isArray(answer.value) ? answer.value.join(", ") : answer.value;
+    lines.push(`Auswahl: ${value || "—"}`);
+  } else if (answer.text) {
+    const text = String(answer.text);
+    const trimmed = text.length > 140 ? `${text.slice(0, 140)}…` : text;
+    lines.push(trimmed);
+  } else if (answer.value !== undefined) {
+    lines.push(String(answer.value));
+  } else {
+    lines.push("—");
+  }
+  return lines;
+}
+
+function renderCompareItem(it) {
+  const card = document.createElement("div");
+  card.className = "compare-item-card";
+  const statusClass = it.pair_status ? `status-${it.pair_status.toLowerCase()}` : "";
+  if (statusClass) card.classList.add(statusClass);
+
+  const header = document.createElement("div");
+  header.className = "compare-item-header";
+  header.innerHTML = `
+    <div class="compare-item-title">${escapeHtml(it.label || it.question_id || "")}</div>
+    <span class="status-badge ${statusClass}">${escapeHtml(it.pair_status || "")}</span>
+  `;
+
+  const meta = document.createElement("div");
+  meta.className = "compare-item-meta";
+  const riskBadge = document.createElement("span");
+  riskBadge.className = `badge risk-badge-${it.risk_level || "A"}`;
+  riskBadge.textContent = `Risk ${it.risk_level || "A"}`;
+  meta.appendChild(riskBadge);
+
+  const moduleBadge = document.createElement("span");
+  moduleBadge.className = "badge";
+  moduleBadge.textContent = it.module_name || "Modul";
+  meta.appendChild(moduleBadge);
+
+  const idBadge = document.createElement("span");
+  idBadge.className = "badge";
+  idBadge.textContent = it.question_id || "";
+  meta.appendChild(idBadge);
+
+  if (it.delta_interest !== undefined && it.delta_interest !== null) {
+    const delta = document.createElement("span");
+    delta.className = "badge";
+    delta.textContent = `ΔI ${it.delta_interest}`;
+    meta.appendChild(delta);
+  }
+  if (it.delta_comfort !== undefined && it.delta_comfort !== null) {
+    const delta = document.createElement("span");
+    delta.className = "badge";
+    delta.textContent = `ΔK ${it.delta_comfort}`;
+    meta.appendChild(delta);
+  }
+
+  (it.tags || []).forEach((tag) => {
+    const tagEl = document.createElement("span");
+    tagEl.className = "badge tag-badge";
+    tagEl.textContent = tag;
+    meta.appendChild(tagEl);
+  });
+
+  if (it.flags && it.flags.length) {
+    it.flags.forEach((flag) => {
+      const flagEl = document.createElement("span");
+      flagEl.className = "badge flag-badge";
+      flagEl.textContent = flag.replace(/_/g, " ");
+      meta.appendChild(flagEl);
+    });
+  }
+
+  const help = document.createElement("div");
+  help.className = "compare-help";
+  help.textContent = it.help || "";
+  if (!it.help) help.classList.add("hidden");
+
+  const answers = document.createElement("div");
+  answers.className = "compare-answers";
+  const aBlock = document.createElement("div");
+  aBlock.className = "compare-answer-block";
+  aBlock.innerHTML = `
+    <div class="compare-answer-title">A</div>
+    <div class="compare-answer-body">${renderCompareAnswerLines(it.a, it.schema).map(l => `<div>${escapeHtml(l)}</div>`).join("")}</div>
+  `;
+  const bBlock = document.createElement("div");
+  bBlock.className = "compare-answer-block";
+  bBlock.innerHTML = `
+    <div class="compare-answer-title">B</div>
+    <div class="compare-answer-body">${renderCompareAnswerLines(it.b, it.schema).map(l => `<div>${escapeHtml(l)}</div>`).join("")}</div>
+  `;
+  answers.appendChild(aBlock);
+  answers.appendChild(bBlock);
+
+  card.appendChild(header);
+  card.appendChild(meta);
+  card.appendChild(help);
+  card.appendChild(answers);
+  return card;
+}
+
+function renderCompareItems(listHost, items) {
+  listHost.innerHTML = "";
+  const filtered = applyCompareFilters(items || []);
+  if (!filtered.length) {
+    listHost.innerHTML = `<div class="compare-empty">Keine Treffer für die aktuellen Filter.</div>`;
+    return;
+  }
+
+  const grouped = new Map();
+  filtered.forEach((it) => {
+    const key = it.module_name || "Ohne Modul";
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(it);
+  });
+
+  grouped.forEach((groupItems, moduleName) => {
+    const group = document.createElement("div");
+    group.className = "compare-group";
+    const title = document.createElement("div");
+    title.className = "compare-group-title";
+    title.textContent = moduleName;
+    group.appendChild(title);
+    groupItems.forEach((it) => group.appendChild(renderCompareItem(it)));
+    listHost.appendChild(group);
+  });
+}
+
+function renderCompareView(result) {
+  const host = $("compareHost");
+  host.innerHTML = "";
+  state.compareData = result;
+  state.compareFilters = { ...state.compareFilters };
+
+  const summary = result.summary || {};
+  const counts = summary.counts || {};
+  const flags = summary.flags || {};
+
+  const summaryGrid = document.createElement("div");
+  summaryGrid.className = "compare-summary";
+  const summaryCards = [
+    { label: "MATCH", value: counts.MATCH || 0, cls: "status-match" },
+    { label: "EXPLORE", value: counts.EXPLORE || 0, cls: "status-explore" },
+    { label: "BOUNDARY", value: counts.BOUNDARY || 0, cls: "status-boundary" }
+  ];
+  summaryCards.forEach((c) => {
+    const card = document.createElement("div");
+    card.className = `summary-card ${c.cls}`;
+    card.innerHTML = `<div class="summary-label">${c.label}</div><div class="summary-value">${c.value}</div>`;
+    summaryGrid.appendChild(card);
+  });
+  const flagCard = document.createElement("div");
+  flagCard.className = "summary-card";
+  flagCard.innerHTML = `
+    <div class="summary-label">Flags</div>
+    <div class="summary-value">${Object.values(flags).reduce((a, b) => a + b, 0)}</div>
+    <div class="summary-sub">${Object.entries(flags).map(([k, v]) => `${k.replace(/_/g, " ")}: ${v}`).join(" · ")}</div>
+  `;
+  summaryGrid.appendChild(flagCard);
+  host.appendChild(summaryGrid);
+
+  if (result.action_plan && result.action_plan.length) {
+    const plan = document.createElement("div");
+    plan.className = "action-plan";
+    plan.innerHTML = `<div class="action-plan-title">Action Plan</div>`;
+    const grid = document.createElement("div");
+    grid.className = "action-plan-grid";
+    result.action_plan.forEach((it) => {
+      const card = document.createElement("div");
+      card.className = "action-plan-card";
+      const tags = (it.tags || []).slice(0, 3);
+      card.innerHTML = `
+        <div class="action-plan-label">${escapeHtml(it.label || it.question_id || "")}</div>
+        <div class="action-plan-meta">
+          <span class="badge risk-badge-${it.risk_level || "A"}">Risk ${it.risk_level || "A"}</span>
+          <span class="badge">${escapeHtml(it.module_name || "Modul")}</span>
+        </div>
+        ${tags.length ? `<div class="action-plan-tags">${tags.map(t => `<span class="badge tag-badge">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
+      `;
+      grid.appendChild(card);
+    });
+    plan.appendChild(grid);
+    host.appendChild(plan);
+  }
+
+  const filters = document.createElement("div");
+  filters.className = "compare-filters";
+  const statusGroup = document.createElement("div");
+  statusGroup.className = "compare-filter-group";
+  ["ALL", "MATCH", "EXPLORE", "BOUNDARY"].forEach((status) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.status = status;
+    btn.className = `btn compare-filter-btn ${state.compareFilters.status === status ? "primary" : ""}`;
+    btn.textContent = status === "ALL" ? "Alle" : status;
+    btn.onclick = () => {
+      state.compareFilters.status = status;
+      filters.querySelectorAll('[data-status]').forEach(b => b.classList.remove("primary"));
+      btn.classList.add("primary");
+      renderCompareItems($("compareList"), result.items || []);
+    };
+    statusGroup.appendChild(btn);
+  });
+  filters.appendChild(statusGroup);
+
+  const toggles = document.createElement("div");
+  toggles.className = "compare-filter-group";
+  const riskToggle = document.createElement("label");
+  riskToggle.className = "compare-filter-toggle";
+  const riskInput = document.createElement("input");
+  riskInput.type = "checkbox";
+  riskInput.checked = !!state.compareFilters.riskOnly;
+  riskInput.onchange = () => {
+    state.compareFilters.riskOnly = riskInput.checked;
+    renderCompareItems($("compareList"), result.items || []);
+  };
+  riskToggle.appendChild(riskInput);
+  riskToggle.appendChild(document.createTextNode("Nur Risk C"));
+  const flagToggle = document.createElement("label");
+  flagToggle.className = "compare-filter-toggle";
+  const flagInput = document.createElement("input");
+  flagInput.type = "checkbox";
+  flagInput.checked = !!state.compareFilters.flaggedOnly;
+  flagInput.onchange = () => {
+    state.compareFilters.flaggedOnly = flagInput.checked;
+    renderCompareItems($("compareList"), result.items || []);
+  };
+  flagToggle.appendChild(flagInput);
+  flagToggle.appendChild(document.createTextNode("Nur Flags"));
+  toggles.appendChild(riskToggle);
+  toggles.appendChild(flagToggle);
+  filters.appendChild(toggles);
+
+  const searchWrap = document.createElement("div");
+  searchWrap.className = "compare-search";
+  const searchInput = document.createElement("input");
+  searchInput.type = "search";
+  searchInput.placeholder = "Suchen (Label, Modul, Tag)...";
+  searchInput.value = state.compareFilters.query || "";
+  searchInput.oninput = () => {
+    state.compareFilters.query = searchInput.value.trim();
+    renderCompareItems($("compareList"), result.items || []);
+  };
+  searchWrap.appendChild(searchInput);
+  filters.appendChild(searchWrap);
+  host.appendChild(filters);
+
+  const listHost = document.createElement("div");
+  listHost.className = "compare-list";
+  listHost.id = "compareList";
+  host.appendChild(listHost);
+  renderCompareItems(listHost, result.items || []);
+}
 
 // Actions
 async function startFill(person) {
@@ -819,29 +1592,82 @@ async function startFill(person) {
     });
     buildForm(state.currentTemplate, res.responses||{});
     show($("panelForm"), true);
+    show($("panelCompare"), false);
+    msg($("saveMsg"), "");
+    setSaveStatus("Bereit");
+    window.addEventListener('beforeunload', handleBeforeUnload);
 }
 async function saveFill() {
     const {password, pin} = getAuth();
+    state.validationEnabled = true;
+    const { errors } = validateAndShowHints({ scrollToError: true });
+    if (errors.length) {
+        msg($("saveMsg"), "Bitte erst die Fehler korrigieren.", "err");
+        setSaveStatus("Speichern blockiert (Fehler)", "err");
+        return;
+    }
     await api(`/api/sessions/${state.currentSession.id}/responses/${state.currentPerson}/save`, {
         method: "POST", body: JSON.stringify({password, pin, responses: collectForm()})
     });
+    state.hasUnsavedChanges = false;
+    state.lastSaveTime = Date.now();
     msg($("saveMsg"), "Gespeichert", "ok");
+    setSaveStatus(`Gespeichert um ${new Date(state.lastSaveTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`, "ok");
 }
 async function doCompare() {
+    msg($("sessionMsg"), "");
     const {password} = getAuth();
     const res = await api(`/api/sessions/${state.currentSession.id}/compare`, {
         method: "POST", body: JSON.stringify({password})
     });
-    const host = $("compareHost");
-    host.innerHTML = "";
-    res.items.forEach(it => {
-        const d = document.createElement("div");
-        d.className = `item ${it.pair_status.toLowerCase()}-highlight`;
-        d.innerHTML = `<b>${it.label}</b>: ${it.pair_status}<br>A: ${JSON.stringify(it.a)}<br>B: ${JSON.stringify(it.b)}`;
-        host.appendChild(d);
-    });
+    state.compareFilters = { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" };
+    renderCompareView(res);
     show($("panelCompare"), true);
     show($("panelForm"), false);
+}
+
+async function exportSession(format) {
+    if (!state.currentSession) throw new Error("Keine Session aktiv");
+    if (window.LocalApi && window.LocalApi.enabled) {
+        throw new Error("Export ist im Offline-Modus derzeit nicht verfügbar");
+    }
+    const { password } = getAuth();
+    const kind = format === "markdown" ? "markdown" : "json";
+    const blob = await api(`/api/sessions/${state.currentSession.id}/export/${kind}`, {
+        method: "POST",
+        body: JSON.stringify({ password })
+    });
+    const ext = kind === "markdown" ? "md" : "json";
+    downloadBlob(blob, `intimacy_export_${state.currentSession.id}.${ext}`);
+    msg($("sessionMsg"), "Export erstellt.", "ok");
+}
+
+async function runAIAnalysis() {
+    if (!state.currentSession) throw new Error("Keine Session aktiv");
+    if (window.LocalApi && window.LocalApi.enabled) {
+        throw new Error("KI-Analyse nur im Server-Modus verfügbar");
+    }
+    const { password } = getAuth();
+    const apiKey = $("aiKey").value.trim();
+    const model = $("aiModel").value.trim();
+    const redact = $("aiRedact").value === "true";
+    const maxTokens = Number($("aiMaxTokens").value) || 800;
+    if (!apiKey || !model) throw new Error("API Key und Model sind erforderlich");
+    const payload = {
+        password,
+        provider: "openrouter",
+        api_key: apiKey,
+        model,
+        base_url: "https://openrouter.ai/api/v1",
+        redact_free_text: redact,
+        max_tokens: maxTokens
+    };
+    const report = await api(`/api/sessions/${state.currentSession.id}/ai/analyze`, {
+        method: "POST",
+        body: JSON.stringify(payload)
+    });
+    $("aiOut").textContent = report?.text || JSON.stringify(report, null, 2);
+    msg($("sessionMsg"), "KI-Analyse abgeschlossen.", "ok");
 }
 
 // Init
@@ -859,18 +1685,37 @@ $("btnCreate").onclick = async () => {
             })
         });
         loadSessions();
-    } catch(e) { alert(e); }
+        msg($("createMsg"), "Session erstellt.", "ok");
+    } catch(e) { showError($("createMsg"), e, "Session konnte nicht erstellt werden"); }
 };
 $("btnBack").onclick = backHome;
-$("btnFillA").onclick = () => startFill("A").catch(alert);
-$("btnFillB").onclick = () => startFill("B").catch(alert);
-$("btnSaveForm").onclick = () => saveFill().catch(alert);
-$("btnCloseForm").onclick = () => show($("panelForm"), false);
-$("btnCompare").onclick = () => doCompare().catch(alert);
+$("btnFillA").onclick = () => startFill("A").catch((e) => showError($("sessionMsg"), e));
+$("btnFillB").onclick = () => startFill("B").catch((e) => showError($("sessionMsg"), e));
+$("btnSaveForm").onclick = () => saveFill().catch((e) => showError($("saveMsg"), e, "Speichern fehlgeschlagen"));
+$("btnCloseForm").onclick = () => {
+    show($("panelForm"), false);
+    setNavOpen(false);
+};
+$("btnCompare").onclick = () => doCompare().catch((e) => showError($("sessionMsg"), e, "Vergleich fehlgeschlagen"));
 $("btnCloseCompare").onclick = () => show($("panelCompare"), false);
-$("btnScenarios").onclick = loadScenarios;
+$("btnScenarios").onclick = () => loadScenarios();
 $("btnScenarios").innerHTML = `${Icons.cards} Szenarien-Modus`;
 $("btnCloseScenarios").onclick = backHome;
+$("btnValidate").onclick = () => {
+    state.validationEnabled = true;
+    validateAndShowHints({ scrollToError: true });
+};
+$("btnExpandAll").onclick = () => expandAllModules(true);
+$("btnCollapseAll").onclick = () => expandAllModules(false);
+$("btnNextOpen").onclick = () => goToNextOpenQuestion();
+$("btnToggleNav").onclick = () => setNavOpen(!state.navOpen);
+$("navBackdrop").onclick = () => setNavOpen(false);
+$("btnExportJson").onclick = () => exportSession("json").catch((e) => showError($("sessionMsg"), e, "Export fehlgeschlagen"));
+$("btnExportMd").onclick = () => exportSession("markdown").catch((e) => showError($("sessionMsg"), e, "Export fehlgeschlagen"));
+$("btnRunAI").onclick = () => runAIAnalysis().catch((e) => showError($("sessionMsg"), e, "KI-Analyse fehlgeschlagen"));
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && state.navOpen) setNavOpen(false);
+});
 
 // Boot
 (async () => {

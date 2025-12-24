@@ -75,6 +75,7 @@
         <button class="btn" id="btnCloseScenarios">Schließen</button>
       </div>
       <p class="sub">Diskutiert diese Situationen. Was würdet ihr tun?</p>
+      <div id="scenarioMsg" class="msg"></div>
       <div id="scenarioHost" class="grid2" style="margin-top:20px"></div>
     </section>
 
@@ -113,14 +114,43 @@
       </div>
 
       <div id="panelForm" class="panel hidden" role="region" aria-labelledby="formTitle">
-        <div class="row space">
+        <div class="row space form-header">
           <h3 id="formTitle">Fragebogen</h3>
-          <button class="btn" id="btnCloseForm" aria-label="Formular schließen">Schließen</button>
+          <div class="row">
+            <button class="btn" id="btnValidate" aria-label="Antworten prüfen">Antworten prüfen</button>
+            <button class="btn" id="btnCloseForm" aria-label="Formular schließen">Schließen</button>
+          </div>
         </div>
-        <div id="formHost" role="form" aria-label="Fragebogen Formular"></div>
-        <div class="row">
+
+        <div id="formTools" class="form-tools">
+          <div id="progressBar" class="progress-bar" role="status" aria-live="polite">
+            <div class="progress-info">
+              <span id="progressText">0/0 beantwortet</span>
+              <span id="progressPct">0%</span>
+            </div>
+            <div class="progress-track">
+              <div id="progressFill" class="progress-fill" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="form-tool-row">
+            <button class="btn" id="btnExpandAll" aria-label="Alle Module öffnen">Alle öffnen</button>
+            <button class="btn" id="btnCollapseAll" aria-label="Alle Module schließen">Alle schließen</button>
+            <button class="btn" id="btnNextOpen" aria-label="Nächste offene Frage">Nächste offene Frage</button>
+            <button class="btn mobile-nav-toggle" id="btnToggleNav" aria-label="Fragenübersicht öffnen" aria-controls="questionNav" aria-expanded="false">Fragenübersicht</button>
+          </div>
+          <div id="validationSummary" class="validation-summary" aria-live="polite"></div>
+        </div>
+
+        <div class="form-layout">
+          <nav id="questionNav" class="question-nav" aria-label="Fragenübersicht"></nav>
+          <div id="formHost" role="form" aria-label="Fragebogen Formular"></div>
+        </div>
+        <div id="navBackdrop" class="nav-backdrop hidden" aria-hidden="true"></div>
+
+        <div class="row form-footer">
           <button class="btn primary" id="btnSaveForm" aria-label="Antworten speichern">Speichern</button>
           <span id="saveMsg" class="msg" role="status" aria-live="polite"></span>
+          <span id="saveStatus" class="save-status" role="status" aria-live="polite"></span>
         </div>
       </div>
 
@@ -164,4 +194,3 @@
   <script src="/app.js"></script>
 </body>
 </html>
-

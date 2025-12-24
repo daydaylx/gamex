@@ -239,10 +239,9 @@ function displayValidationErrors(errors, warnings) {
         if (questionEl) {
             const errorDiv = document.createElement('div');
             errorDiv.className = 'validation-error';
-            errorDiv.style.cssText = 'background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; padding: 8px; margin-top: 8px; font-size: 0.85rem; color: #ef4444;';
             errorDiv.innerHTML = `<strong>Fehler:</strong> ${escapeHtml(err.message)}`;
             questionEl.appendChild(errorDiv);
-            questionEl.style.borderColor = '#ef4444';
+            questionEl.classList.add('has-error');
         }
     });
     
@@ -252,9 +251,9 @@ function displayValidationErrors(errors, warnings) {
         if (questionEl) {
             const warnDiv = document.createElement('div');
             warnDiv.className = 'validation-warning';
-            warnDiv.style.cssText = 'background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; padding: 8px; margin-top: 8px; font-size: 0.85rem; color: #f59e0b;';
             warnDiv.innerHTML = `<strong>Warnung:</strong> ${escapeHtml(warn.message)}`;
             questionEl.appendChild(warnDiv);
+            questionEl.classList.add('has-warning');
         }
     });
 }
@@ -264,9 +263,8 @@ function displayValidationErrors(errors, warnings) {
  */
 function clearValidationDisplays() {
     document.querySelectorAll('.validation-error, .validation-warning').forEach(el => el.remove());
-    document.querySelectorAll('.item[style*="border-color"]').forEach(el => {
-        el.style.borderColor = '';
-    });
+    document.querySelectorAll('.item.has-error').forEach(el => el.classList.remove('has-error'));
+    document.querySelectorAll('.item.has-warning').forEach(el => el.classList.remove('has-warning'));
 }
 
 /**
