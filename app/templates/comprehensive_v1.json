@@ -5,6 +5,48 @@
   "description": "Kombiniert aus GentleDom, QueerTopia und Gamex Fragebogen. ~200+ Fragen zu Sexualität, BDSM, Grenzen und Kommunikation.",
   "modules": [
     {
+      "id": "logistics",
+      "name": "Rahmen, Zeit & Logistik",
+      "description": "Bevor es zur Sache geht: Stressfaktoren, Zeitfenster und Privatsphäre klären.",
+      "questions": [
+        {
+          "id": "L01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": ["time", "stress"],
+          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
+          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung."
+        },
+        {
+          "id": "L02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["coping"],
+          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
+          "options": ["Sex zur Entspannung hilft", "Lieber nur Kuscheln/Massage", "Komplette Ruhe/Absage", "Reden statt Tun", "Kommt drauf an"]
+        },
+        {
+          "id": "L03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["privacy", "digital"],
+          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
+          "options": ["Nichts digital speichern", "Verschlüsselt/Hidden Folder ok", "Nur auf einem Gerät (Offline)", "Alles ok (Cloud etc.)", "Kommt drauf an"]
+        },
+        {
+          "id": "L04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["time"],
+          "label": "Minimale Zeit für Quality Time?",
+          "help": "Wie viel Zeit brauchen wir mindestens?",
+          "options": ["30 Minuten", "1 Stunde", "2 Stunden", "Open End", "Kommt drauf an"]
+        }
+      ]
+    },
+    {
       "id": "frame",
       "name": "Rahmen, Kommunikation & Gesundheit",
       "description": "Persönliche Werte, Kommunikation, Beziehungsformen, digitale Privatsphäre.",
@@ -7827,6 +7869,30 @@
           "label": "Bereits erlebt: Intensive Praktik wiederholen?",
           "help": "Kategorie: Wiederholungswünsche:",
           "has_dom_sub": true
+        },
+        {
+          "id": "REV002",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["review", "less"],
+          "label": "Was wollen wir weniger machen?",
+          "help": "Praktiken, die nicht so gut funktioniert haben oder die wir reduzieren möchten."
+        },
+        {
+          "id": "REV003",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["review", "highlight"],
+          "label": "Was war ein Highlight, das wir wiederholen sollten?",
+          "help": "Besonders positive Erfahrungen, die wir gerne wiederholen möchten."
+        },
+        {
+          "id": "REV004",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["review", "debrief"],
+          "label": "Debrief-Log: Letzte 4 Experimente",
+          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht?"
         }
       ]
     }

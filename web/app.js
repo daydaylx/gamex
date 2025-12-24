@@ -23,6 +23,8 @@ const state = {
   lastSaveTime: null,
   autoSaveTimer: null,
   scenarios: [],
+  scenarioDecks: [],
+  activeDeck: null,
 };
 
 async function api(path, opts = {}) {
@@ -244,6 +246,19 @@ function renderConsentRating(q, existing = {}) {
       `;
     }
 
+    // Risk C Warning Banner
+    const riskWarning = q.risk_level === "C" ? `
+      <div class="risk-c-warning">
+        <div class="risk-c-header">
+          <span class="risk-c-icon">⚠️</span>
+          <strong>SICHERHEITSHINWEIS</strong>
+        </div>
+        <div class="risk-c-content">
+          ${q.help ? escapeHtml(q.help) : "Diese Praktik erfordert besondere Vorsicht."}
+        </div>
+      </div>
+    ` : "";
+
     wrap.innerHTML = `
       <div class="title">
         <span class="badge" style="opacity:0.5">${q.id}</span> 
@@ -255,7 +270,8 @@ function renderConsentRating(q, existing = {}) {
         ${infoBtn}
       </div>
       ${infoBox}
-      ${q.help ? `<div class="hint" style="margin-top:4px">${escapeHtml(q.help)}</div>` : ""}
+      ${riskWarning}
+      ${q.help && q.risk_level !== "C" ? `<div class="hint" style="margin-top:4px">${escapeHtml(q.help)}</div>` : ""}
       ${content}
       <div class="space-y" style="margin-top:12px">
         <textarea data-k="conditions" placeholder="Bedingungen..." style="min-height:50px"></textarea>
@@ -387,7 +403,19 @@ function collectForm() {
 // Scenarios
 async function loadScenarios() {
   try {
-    state.scenarios = await api("/api/scenarios");
+    const data = await api("/api/scenarios");
+    // Handle both old format (array) and new format (object with decks)
+    if (Array.isArray(data)) {
+      state.scenarios = data;
+      state.scenarioDecks = [];
+    } else {
+      state.scenarios = data.scenarios || [];
+      state.scenarioDecks = data.decks || [];
+      // Set first deck as active if no deck selected
+      if (state.scenarioDecks.length > 0 && !state.activeDeck) {
+        state.activeDeck = state.scenarioDecks[0].id;
+      }
+    }
     renderScenarios();
     show($("home"), false);
     show($("create"), false);
@@ -404,15 +432,72 @@ function renderScenarios() {
   // Reset grid layout for scenarios to be a single column centered stream
   host.className = ""; 
   
-  if (state.scenarios.length === 0) {
-    host.innerHTML = "<div style='text-align:center; padding:40px;'>Keine Szenarien gefunden.</div>";
+  // Render deck navigation if decks exist
+  if (state.scenarioDecks.length > 0) {
+    const deckNav = document.createElement("div");
+    deckNav.className = "scenario-deck-nav";
+    deckNav.style.cssText = "display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; padding: 16px; background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--card-border);";
+    
+    state.scenarioDecks.forEach(deck => {
+      const btn = document.createElement("button");
+      btn.className = `btn ${state.activeDeck === deck.id ? 'primary' : ''}`;
+      btn.textContent = deck.name;
+      btn.title = deck.description;
+      btn.onclick = () => {
+        state.activeDeck = deck.id;
+        renderScenarios();
+      };
+      deckNav.appendChild(btn);
+    });
+    
+    host.appendChild(deckNav);
+  }
+  
+  // Filter scenarios by active deck
+  let scenariosToShow = state.scenarios;
+  if (state.activeDeck && state.scenarioDecks.length > 0) {
+    const activeDeckData = state.scenarioDecks.find(d => d.id === state.activeDeck);
+    if (activeDeckData) {
+      scenariosToShow = state.scenarios.filter(s => activeDeckData.scenarios.includes(s.id));
+    }
+  }
+  
+  if (scenariosToShow.length === 0) {
+    host.innerHTML += "<div style='text-align:center; padding:40px;'>Keine Szenarien gefunden.</div>";
     return;
   }
   const getSaved = (id) => { const key = `SCENARIO_${id}`; return state.formResponses[key]?.choice; };
 
-  state.scenarios.forEach(scen => {
+  scenariosToShow.forEach(scen => {
+    // Check safety gate
+    let gatePassed = true;
+    let gateMessage = "";
+    if (scen.safety_gate) {
+      // For now, we'll check if safeword is mentioned in responses (simplified check)
+      // In a real implementation, this would check actual session data
+      gatePassed = false; // Default to showing warning
+      gateMessage = scen.safety_gate.message || "Sicherheits-Gate nicht erfüllt";
+    }
+    
     const card = document.createElement("div");
     card.className = "scenario-card";
+    if (!gatePassed && scen.safety_gate) {
+      card.style.opacity = "0.7";
+      card.style.border = "2px solid var(--danger-border)";
+    }
+    
+    // Safety Gate Warning
+    const safetyGateWarning = !gatePassed && scen.safety_gate ? `
+      <div class="safety-gate-warning">
+        <div class="safety-gate-header">
+          <span class="safety-gate-icon">🔒</span>
+          <strong>Sicherheits-Gate erforderlich</strong>
+        </div>
+        <div class="safety-gate-content">
+          ${escapeHtml(gateMessage)}
+        </div>
+      </div>
+    ` : "";
     
     // Header
     const header = document.createElement("div");
@@ -421,6 +506,24 @@ function renderScenarios() {
       <div class="scenario-title">${escapeHtml(scen.title)}</div>
       <div class="scenario-category">${escapeHtml(scen.category)}</div>
     `;
+    
+    // Info Card
+    const infoCard = scen.info_card ? `
+      <div class="scenario-info-card">
+        <div class="scenario-info-section">
+          <div class="scenario-info-label">ℹ️ Emotionaler Kontext:</div>
+          <div class="scenario-info-text">${escapeHtml(scen.info_card.emotional_context)}</div>
+        </div>
+        <div class="scenario-info-section">
+          <div class="scenario-info-label">⚠️ Typische Risiken:</div>
+          <div class="scenario-info-text">${escapeHtml(scen.info_card.typical_risks)}</div>
+        </div>
+        <div class="scenario-info-section">
+          <div class="scenario-info-label">🔒 Sicherheits-Gate:</div>
+          <div class="scenario-info-text">${escapeHtml(scen.info_card.safety_gate)}</div>
+        </div>
+      </div>
+    ` : "";
     
     // Narrative Text
     const text = document.createElement("div");
@@ -485,6 +588,16 @@ function renderScenarios() {
     });
 
     card.appendChild(header);
+    if (safetyGateWarning) {
+      const gateDiv = document.createElement("div");
+      gateDiv.innerHTML = safetyGateWarning;
+      card.appendChild(gateDiv.firstElementChild);
+    }
+    if (scen.info_card) {
+      const infoCardDiv = document.createElement("div");
+      infoCardDiv.innerHTML = infoCard;
+      card.appendChild(infoCardDiv.firstElementChild);
+    }
     card.appendChild(text);
     card.appendChild(optsDiv);
     card.appendChild(feedback);
@@ -524,15 +637,42 @@ function updateVisibility() {
 function evaluateDependency(dep, responses) {
   const t = responses[dep.id];
   if (!t) return false;
-  const val = t.value || t.status || t.dom_status || t.active_status;
-  if (dep.values && Array.isArray(dep.values)) return dep.values.includes(val);
-  if (dep.conditions) {
-      // Simplified condition check
-      return dep.conditions.every(c => {
-          if(c.operator === "!=" && c.value === val) return false;
-          return true; 
-      });
+  
+  // Bestehende Logik für values
+  if (dep.values && Array.isArray(dep.values)) {
+    const val = t.value || t.status || t.dom_status || t.active_status;
+    return dep.values.includes(val);
   }
+  
+  // Neue Logik für scale_0_10 Bedingungen
+  if (dep.condition) {
+    const value = t.value;
+    if (value === undefined || value === null) return false;
+    
+    // Parse condition: "scale_0_10 >= 5" oder ">= 5"
+    const match = dep.condition.match(/(>=|<=|>|<|==)\s*(\d+)/);
+    if (match) {
+      const operator = match[1];
+      const threshold = parseInt(match[2]);
+      switch(operator) {
+        case ">=": return value >= threshold;
+        case "<=": return value <= threshold;
+        case ">": return value > threshold;
+        case "<": return value < threshold;
+        case "==": return value == threshold;
+      }
+    }
+  }
+  
+  // Bestehende conditions Logik
+  if (dep.conditions) {
+    const val = t.value || t.status || t.dom_status || t.active_status;
+    return dep.conditions.every(c => {
+        if(c.operator === "!=" && c.value === val) return false;
+        return true; 
+    });
+  }
+  
   return false;
 }
 
