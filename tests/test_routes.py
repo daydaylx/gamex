@@ -603,6 +603,42 @@ class TestAIAnalyze:
         assert response.status_code == 200
         data = response.json()
         assert data["reports"] == []
+        
+    def test_ai_analyze_invalid_provider(self, test_client, sample_template, session_data):
+        """Test AI analyze with invalid provider."""
+        responses_a = {"Q1": {"status": "YES", "interest": 3, "comfort": 4}}
+        responses_b = {"Q1": {"status": "YES", "interest": 4, "comfort": 3}}
+        
+        test_client.post(
+            f"/api/sessions/{session_data['session_id']}/responses/A/save",
+            json={
+                "password": session_data["password"],
+                "pin": session_data["pin_a"],
+                "responses": responses_a
+            }
+        )
+        
+        test_client.post(
+            f"/api/sessions/{session_data['session_id']}/responses/B/save",
+            json={
+                "password": session_data["password"],
+                "pin": session_data["pin_b"],
+                "responses": responses_b
+            }
+        )
+        
+        response = test_client.post(
+            f"/api/sessions/{session_data['session_id']}/ai/analyze",
+            json={
+                "password": session_data["password"],
+                "provider": "invalid_provider",
+                "api_key": "test_key",
+                "model": "test-model"
+            }
+        )
+        
+        assert response.status_code == 400
+
 
 
 
