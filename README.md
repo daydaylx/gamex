@@ -8,6 +8,53 @@ und einen Report zu erzeugen: Matches / Explore / Grenzen / Risiko-Flags.
 - "VIELLEICHT" gilt nur unter Bedingungen.
 - Fantasie ≠ Wunsch ≠ Identität.
 
+## Features
+
+- **Verschlüsselte Sessions:** Alle Antworten werden passwortgeschützt gespeichert
+- **Getrennte Antworten:** Person A und B füllen unabhängig voneinander aus
+- **Intelligenter Vergleich:** Automatische Kategorisierung in Matches, Explore-Themen und Grenzen
+- **Risiko-Flags:** Identifizierung von Themen mit hohem Interesse aber niedrigem Komfort
+- **Action Plan:** Vorschläge für die nächsten Experimente basierend auf Matches
+- **Szenarien-Karten:** 20 interaktive Szenarien mit 4-Optionen-System (A/B/C/D)
+- **Export:** Ergebnisse als JSON oder Markdown exportieren
+- **Backup & Restore:** Verschlüsselte Backups erstellen und wiederherstellen
+- **Optional KI-Analyse:** OpenRouter-Integration für vertiefte Analysen (opt-in)
+- **Android App:** Native Android-App via Capacitor (siehe [APK Build Guide](APK_BUILD_GUIDE.md))
+
+## Verfügbare Templates
+
+Das Tool bietet mehrere Fragebogen-Templates:
+
+### 1. Intimität & Grenzen (v2 - Optimiert) - `default_v2`
+**Empfohlen für:** Einsteiger und Paare, die einen ausgewogenen Überblick wollen
+
+- 9 Basis-Module: Rahmen & Logistik, Basis & Kommunikation, Rollen & Kontrolle, Sensorik, Oral, Penetration, High-Risk, Bereits erlebt, Review
+- Fokus auf granulare Abstufungen bei High-Risk Themen
+- Sicherheitshinweise prominent bei Risk-Level C
+- ~80-100 Fragen
+
+### 2. Umfassender Intimität & BDSM Fragebogen - `comprehensive_v1`
+**Empfohlen für:** Erfahrene Nutzer, die eine sehr detaillierte Abfrage wünschen
+
+- Kombiniert aus GentleDom, QueerTopia und Gamex Fragebogen
+- ~200+ Fragen zu Sexualität, BDSM, Grenzen und Kommunikation
+- Sehr detaillierte Abfrage aller Bereiche
+
+### 3. Intimacy & Kink v3 (Psychologisch vertieft) - `psycho_enhanced_v3`
+**Empfohlen für:** Paare, die psychologische Tiefe und wissenschaftliche Fundierung suchen
+
+- Alle 9 Basis-Module + 6 psychologische Vertiefungs-Module
+- Wissenschaftlich fundiert (peer-reviewed Forschung 2024-aktuell)
+- Fokus auf: Bindung, Subspace, Scham, Power Dynamics, Aftercare, Regulation
+- ~150+ Fragen
+
+### 4. Intimacy & Kink (v2 - Polished) - `unified_v2`
+**Empfohlen für:** Moderne, ausgewogene Abfrage mit Fokus auf Konsens
+
+- Startet sanft (Rahmen, Kommunikation) und steigert sich modular
+- Fokus auf Konsens und psychologische Sicherheit
+- ~100-120 Fragen
+
 ## Psychologische Vertiefung (v3)
 
 Das **Intimacy & Kink v3 Template** (`psycho_enhanced_v3`) erweitert den Fragebogen um wissenschaftlich fundierte psychologische Tiefe in 6 Bereichen:
@@ -51,15 +98,61 @@ Alle psychologischen Module basieren auf peer-reviewed Forschung (2024-aktuell):
 Das Tool ist keine medizinische Beratung. Bei Schmerzen/Blut/anhaltenden Beschwerden nach intensiven Praktiken:
 ärztlich abklären.
 
-## Start
+## Installation & Start
+
+### Web-Version (Lokal)
+
 ```bash
+# Python Virtual Environment erstellen
 python3 -m venv .venv
 source .venv/bin/activate
+
+# Abhängigkeiten installieren
 pip install -r requirements.txt
+
+# Server starten
 python -m app
 ```
 
-Dann: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+Dann im Browser öffnen: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+**Hinweis:** Die App ist auch im lokalen Netzwerk erreichbar, wenn die Firewall es erlaubt.
+
+### Android App
+
+Für die native Android-App siehe die detaillierte Anleitung: [APK_BUILD_GUIDE.md](APK_BUILD_GUIDE.md)
+
+**Kurzfassung:**
+```bash
+# Node.js Abhängigkeiten installieren
+npm install
+
+# Capacitor Android Projekt erstellen
+npx cap add android
+
+# Web-Dateien syncen
+npx cap sync android
+
+# Android Studio öffnen
+npx cap open android
+```
+
+## Dokumentation
+
+- **[APK Build Guide](APK_BUILD_GUIDE.md)** - Detaillierte Anleitung zum Erstellen einer Android APK
+- **[Psychologie Leitfaden](docs/PSYCHOLOGIE_LEITFADEN.md)** - Wissenschaftliche Grundlagen der psychologischen Module
+- **[Forschung & Zitate](docs/FORSCHUNG_ZITATE.md)** - Peer-reviewed Studien und Quellen
+- **[Aftercare Guide](docs/AFTERCARE_GUIDE.md)** - Tiefe Einführung zu Aftercare und Drop-Physiologie
+- **[Entwickler-Dokumentation](docs/DEVELOPMENT.md)** - Projektstruktur, API, Testing (für Entwickler)
+
+## Planungsdokumente
+
+- **[Analyse & Verbesserungsplan](ANALYSE_UND_VERBESSERUNGSPLAN.md)** - Umfassende Analyse und geplante Verbesserungen
+- **[Nächste Optimierungen](NEXT_OPTIMIZATIONS.md)** - Priorisierte Liste der nächsten Features
+- **[Verbesserungsplan (Kurz)](VERBESSERUNGSPLAN_KURZ.md)** - Executive Summary
+- **[Verbesserungsbeispiele](VERBESSERUNGSBEISPIELE.md)** - Vorher/Nachher Beispiele für geplante Änderungen
+
+
 
 
 
