@@ -147,13 +147,13 @@ def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
     
     # Return warnings but only block on errors
     if validation_errors:
-        raise HTTPException(
+        return JSONResponse(
             status_code=400,
-            detail=json.dumps({
+            content={
                 "message": "Validation errors",
                 "errors": validation_errors,
-                "warnings": validation_warnings
-            })
+                "warnings": validation_warnings,
+            },
         )
     now = _utcnow()
     storage.save_responses(session_id=session_id, person=person, responses=req.responses, updated_at=now)
