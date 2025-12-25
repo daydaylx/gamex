@@ -23,7 +23,8 @@ from app.models import (
     RestoreRequest,
 )
 from app.backup import create_backup, restore_backup
-from app.template_store import list_templates, load_template
+from app.template_store import list_templates
+from app.templates.loader import load_template
 from app.compare import compare
 from app.ai import openrouter_analyze, list_ai_reports
 from app.logging import log_api_call, log_performance

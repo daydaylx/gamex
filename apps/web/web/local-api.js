@@ -130,6 +130,10 @@
     if (!res.ok) throw new Error("Template not found");
     const tpl = await res.json();
     if (meta.override_id) tpl.id = meta.override_id;
+    if (window.TemplateNormalization && typeof window.TemplateNormalization.normalizeTemplate === "function") {
+      templateCache.set(templateId, window.TemplateNormalization.normalizeTemplate(tpl));
+      return templateCache.get(templateId);
+    }
     templateCache.set(templateId, tpl);
     return tpl;
   }
