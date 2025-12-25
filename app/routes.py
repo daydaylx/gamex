@@ -227,6 +227,71 @@ def validate_responses(template: Dict[str, Any], responses: Dict[str, Any]) -> t
                         "message": "High-Risk Frage: Bitte Bedingungen für Sicherheit notieren",
                         "type": "high_risk_missing_conditions"
                     })
+                
+                # Validate new optional fields if present
+                intensity = resp_data.get("intensity")
+                if intensity is not None:
+                    try:
+                        intensity_val = int(intensity)
+                        if intensity_val < 1 or intensity_val > 5:
+                            errors.append({
+                                "question_id": qid,
+                                "question_label": label,
+                                "field": "intensity",
+                                "message": "Intensität muss zwischen 1 und 5 liegen",
+                                "type": "range_error"
+                            })
+                    except (ValueError, TypeError):
+                        errors.append({
+                            "question_id": qid,
+                            "question_label": label,
+                            "field": "intensity",
+                            "message": "Intensität muss eine Zahl zwischen 1 und 5 sein",
+                            "type": "type_error"
+                        })
+                
+                confidence = resp_data.get("confidence")
+                if confidence is not None:
+                    try:
+                        confidence_val = int(confidence)
+                        if confidence_val < 1 or confidence_val > 5:
+                            errors.append({
+                                "question_id": qid,
+                                "question_label": label,
+                                "field": "confidence",
+                                "message": "Vertrauen muss zwischen 1 und 5 liegen",
+                                "type": "range_error"
+                            })
+                    except (ValueError, TypeError):
+                        errors.append({
+                            "question_id": qid,
+                            "question_label": label,
+                            "field": "confidence",
+                            "message": "Vertrauen muss eine Zahl zwischen 1 und 5 sein",
+                            "type": "type_error"
+                        })
+                
+                # Validate contextFlags if present (should be array)
+                context_flags = resp_data.get("contextFlags")
+                if context_flags is not None and not isinstance(context_flags, list):
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "contextFlags",
+                        "message": "contextFlags muss ein Array sein",
+                        "type": "type_error"
+                    })
+                
+                # hardNo is boolean, optional - no validation needed beyond type check
+                hard_no = resp_data.get("hardNo")
+                if hard_no is not None and not isinstance(hard_no, bool):
+                    errors.append({
+                        "question_id": qid,
+                        "question_label": label,
+                        "field": "hardNo",
+                        "message": "hardNo muss ein Boolean sein",
+                        "type": "type_error"
+                    })
         
         elif schema == "scale_0_10":
             value = resp_data.get("value")

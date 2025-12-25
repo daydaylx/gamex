@@ -29,16 +29,146 @@ def _load_scenarios() -> List[Dict[str, Any]]:
     except Exception:
         return []
 
+def normalize_answer(answer: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Normalisiert eine Antwort, um neue Felder mit Standardwerten zu füllen.
+    Rückwärtskompatibel: Alte Antworten funktionieren weiterhin.
+    
+    Neue Felder:
+    - intensity (1-5, default 3)
+    - hardNo (boolean, optional - wird aus status="NO" abgeleitet wenn nicht gesetzt)
+    - contextFlags (array, default [])
+    - confidence (1-5, optional, getrennt von comfort)
+    """
+    normalized = answer.copy() if isinstance(answer, dict) else {}
+    
+    # Für consent_rating Antworten
+    if "status" in normalized or "dom_status" in normalized or "sub_status" in normalized or "active_status" in normalized or "passive_status" in normalized:
+        # Setze intensity default auf 3, falls nicht vorhanden
+        if "intensity" not in normalized:
+            normalized["intensity"] = 3
+        elif normalized.get("intensity") is None:
+            normalized["intensity"] = 3
+        else:
+            # Stelle sicher, dass intensity im gültigen Bereich ist
+            try:
+                intensity = int(normalized["intensity"])
+                if intensity < 1:
+                    normalized["intensity"] = 1
+                elif intensity > 5:
+                    normalized["intensity"] = 5
+                else:
+                    normalized["intensity"] = intensity
+            except (ValueError, TypeError):
+                normalized["intensity"] = 3
+        
+        # Konvertiere alten status="NO" zu hardNo=true (nur wenn hardNo nicht explizit gesetzt ist)
+        if "hardNo" not in normalized:
+            status = normalized.get("status")
+            if status == "NO" or status == "HARD_LIMIT":
+                normalized["hardNo"] = True
+            else:
+                normalized["hardNo"] = False
+        
+        # Stelle sicher, dass contextFlags ein Array ist
+        if "contextFlags" not in normalized:
+            normalized["contextFlags"] = []
+        elif not isinstance(normalized.get("contextFlags"), list):
+            normalized["contextFlags"] = []
+        
+        # confidence (optional, getrennt von comfort)
+        if "confidence" in normalized and normalized.get("confidence") is not None:
+            try:
+                confidence = int(normalized["confidence"])
+                if confidence < 1:
+                    normalized["confidence"] = 1
+                elif confidence > 5:
+                    normalized["confidence"] = 5
+                else:
+                    normalized["confidence"] = confidence
+            except (ValueError, TypeError):
+                # Entferne ungültige confidence
+                normalized.pop("confidence", None)
+    
+    return normalized
+
 def _get(resp: Dict[str, Any], qid: str) -> Dict[str, Any]:
     v = resp.get(qid)
-    return v if isinstance(v, dict) else {}
+    answer = v if isinstance(v, dict) else {}
+    return normalize_answer(answer)
 
 def _status_pair(a: str, b: str) -> str:
     # boundaries override everything
     if a in ("NO", "HARD_LIMIT") or b in ("NO", "HARD_LIMIT"):
-        return "BOUNDARY"
+        return "MISMATCH"
     if a == "YES" and b == "YES":
         return "MATCH"
+    return "EXPLORE"
+
+def _classify_bucket(
+    pair_status: str,
+    schema: str,
+    a: Dict[str, Any],
+    b: Dict[str, Any],
+    risk_level: str
+) -> str:
+    """
+    Klassifiziert ein Item in einen Bucket basierend auf Antworten und Kontext.
+    
+    Buckets:
+    - DOABLE NOW: Beide YES, comfort >= 3, Low-Medium-Risiko
+    - EXPLORE: Beide YES/MAYBE, oder Interesse hoch aber Komfort niedrig
+    - TALK FIRST: MAYBE mit Bedingungen, oder High-Risk-Items
+    - MISMATCH: Einer YES/MAYBE, anderer NO/HARD_LIMIT
+    """
+    if pair_status == "MISMATCH":
+        return "MISMATCH"
+    
+    if schema != "consent_rating":
+        # Für non-consent_rating: MATCH -> DOABLE NOW, EXPLORE -> EXPLORE
+        if pair_status == "MATCH":
+            return "DOABLE NOW"
+        return "EXPLORE"
+    
+    # Für consent_rating: detailliertere Klassifizierung
+    status_a = a.get("status")
+    status_b = b.get("status")
+    comfort_a = _safe_int(a.get("comfort")) or 0
+    comfort_b = _safe_int(b.get("comfort")) or 0
+    interest_a = _safe_int(a.get("interest")) or 0
+    interest_b = _safe_int(b.get("interest")) or 0
+    conditions_a = a.get("conditions", "").strip()
+    conditions_b = b.get("conditions", "").strip()
+    
+    # MISMATCH: Einer will es, anderer nicht
+    if (status_a in ("YES", "MAYBE") and status_b in ("NO", "HARD_LIMIT")) or \
+       (status_b in ("YES", "MAYBE") and status_a in ("NO", "HARD_LIMIT")):
+        return "MISMATCH"
+    
+    # Beide YES
+    if status_a == "YES" and status_b == "YES":
+        # DOABLE NOW: beide comfort >= 3 und low-medium risk
+        if comfort_a >= 3 and comfort_b >= 3 and risk_level in ("A", "B"):
+            return "DOABLE NOW"
+        # Sonst EXPLORE (z.B. wenn comfort niedrig)
+        return "EXPLORE"
+    
+    # Beide MAYBE oder Mischung YES/MAYBE
+    if status_a in ("YES", "MAYBE") and status_b in ("YES", "MAYBE"):
+        # TALK FIRST: wenn MAYBE mit Bedingungen oder High-Risk
+        if risk_level == "C":
+            return "TALK FIRST"
+        if (status_a == "MAYBE" and conditions_a) or (status_b == "MAYBE" and conditions_b):
+            return "TALK FIRST"
+        # EXPLORE: wenn Interesse hoch aber Komfort niedrig
+        if (interest_a >= 3 and comfort_a <= 2) or (interest_b >= 3 and comfort_b <= 2):
+            return "EXPLORE"
+        # Sonst TALK FIRST bei MAYBE
+        if status_a == "MAYBE" or status_b == "MAYBE":
+            return "TALK FIRST"
+        return "EXPLORE"
+    
+    # Fallback
     return "EXPLORE"
 
 def _flag_low_comfort_high_interest(entry: Dict[str, Any]) -> bool:
@@ -67,11 +197,69 @@ def _safe_int(v: Any) -> Optional[int]:
     except Exception:
         return None
 
+def _generate_conversation_prompts(item: Dict[str, Any]) -> List[str]:
+    """
+    Generiert 2-3 Gesprächs-Prompts für ein Item basierend auf Bucket, Flags und Bedingungen.
+    Regelbasiert, nicht KI-generiert.
+    """
+    prompts = []
+    bucket = item.get("bucket", item.get("pair_status", "EXPLORE"))
+    schema = item.get("schema")
+    risk_level = item.get("risk_level", "A")
+    flags = item.get("flags", [])
+    a = item.get("a", {})
+    b = item.get("b", {})
+    label = item.get("label", "")
+    conditions_a = a.get("conditions", "").strip()
+    conditions_b = b.get("conditions", "").strip()
+    
+    if bucket == "DOABLE NOW":
+        prompts.append(f"Beide möchtet ihr '{label}'. Perfekt für den Einstieg!")
+        if risk_level == "B":
+            prompts.append("Da es mittleres Risiko ist, sprecht kurz über eure Erwartungen vorher.")
+        else:
+            prompts.append("Redet kurz über eure Erwartungen und genießt es!")
+    
+    elif bucket == "EXPLORE":
+        prompts.append(f"Beide seid ihr interessiert an '{label}', aber es gibt noch Klärungsbedarf.")
+        if "low_comfort_high_interest" in flags:
+            prompts.append("Ein*e von euch hat hohes Interesse aber niedrigen Komfort - sprecht darüber, wie ihr es sicherer machen könnt.")
+        else:
+            prompts.append("Sprecht über eure Erwartungen und wie ihr es gemeinsam erkunden könnt.")
+        if conditions_a or conditions_b:
+            conditions_text = f"{conditions_a} / {conditions_b}".strip(" /")
+            prompts.append(f"Bedingungen: {conditions_text}")
+    
+    elif bucket == "TALK FIRST":
+        prompts.append(f"'{label}' erfordert ein ausführliches Gespräch vorher.")
+        if risk_level == "C":
+            prompts.append("⚠️ HIGH RISK: Plant ausreichend Zeit für Sicherheits-Gespräch und Vorbereitung ein.")
+        if conditions_a or conditions_b:
+            conditions_text = f"{conditions_a} / {conditions_b}".strip(" /")
+            prompts.append(f"Besprecht eure Bedingungen: {conditions_text}")
+        else:
+            prompts.append("Besprecht genau, unter welchen Bedingungen es für euch beide ok wäre.")
+    
+    elif bucket == "MISMATCH":
+        prompts.append(f"Bei '{label}' gibt es eine Unstimmigkeit - einer möchte es, der/die andere nicht.")
+        if "hard_limit_violation" in flags:
+            prompts.append("⚠️ WICHTIG: Einer hat ein Hard Limit - respektiert das absolut.")
+        prompts.append("Das ist ok! Sprecht darüber, warum es nicht passt, ohne Druck auszuüben.")
+    
+    # Füge allgemeine Prompts hinzu wenn noch Platz
+    if len(prompts) < 2:
+        if risk_level == "C":
+            prompts.append("Erfordert viel Kommunikation und Sicherheits-Vorbereitung.")
+        if schema == "consent_rating":
+            prompts.append("Kommuniziert offen über eure Bedürfnisse und Grenzen.")
+    
+    return prompts[:3]  # Maximal 3 Prompts
+
 def _generate_action_plan(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    # Filter for MATCH items of type consent_rating
+    # Filter for DOABLE NOW items of type consent_rating
     matches = [
         it for it in items 
-        if it["pair_status"] == "MATCH" 
+        if it.get("bucket", it.get("pair_status")) == "DOABLE NOW"
         and it.get("schema") == "consent_rating"
     ]
     
@@ -154,7 +342,7 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
     start = time.time()
     items: List[Dict[str, Any]] = []
     summary = {
-        "counts": {"MATCH": 0, "EXPLORE": 0, "BOUNDARY": 0},
+        "counts": {"DOABLE NOW": 0, "EXPLORE": 0, "TALK FIRST": 0, "MISMATCH": 0},
         "flags": {"low_comfort_high_interest": 0, "big_delta": 0, "high_risk": 0, "hard_limit_violation": 0},
         "generated_at": _utcnow()
     }
@@ -326,10 +514,19 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
                 summary["flags"]["high_risk"] += 1
 
             row["pair_status"] = pair_status
+            
+            # Klassifiziere in neuen Bucket
+            bucket = _classify_bucket(pair_status, schema, a, b, risk)
+            row["bucket"] = bucket
+            
             row["flags"] = flags
+            
+            # Generiere Gesprächs-Prompts
+            row["conversationPrompts"] = _generate_conversation_prompts(row)
 
-            if pair_status in summary["counts"]:
-                summary["counts"][pair_status] += 1
+            # Aktualisiere Counts mit neuem Bucket
+            if bucket in summary["counts"]:
+                summary["counts"][bucket] += 1
 
             items.append(row)
 
@@ -358,10 +555,13 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
                     
                     if (risk_a in risky_types and risk_b in stop_types) or \
                        (risk_b in risky_types and risk_a in stop_types):
-                        p_status = "BOUNDARY"
+                        p_status = "MISMATCH"
             
-            if p_status in summary["counts"]:
-                summary["counts"][p_status] += 1
+            # Klassifiziere Szenario in Bucket
+            scenario_bucket = _classify_bucket(p_status, "scenario", sa if isinstance(sa, dict) else {}, sb if isinstance(sb, dict) else {}, "B")
+            
+            if scenario_bucket in summary["counts"]:
+                summary["counts"][scenario_bucket] += 1
                 
             items.append({
                 "question_id": sid,
@@ -375,14 +575,63 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
                 "a": sa,
                 "b": sb,
                 "pair_status": p_status,
-                "flags": ["scenario"]
+                "bucket": scenario_bucket,
+                "flags": ["scenario"],
+                "conversationPrompts": _generate_conversation_prompts({
+                    "bucket": scenario_bucket,
+                    "schema": "scenario",
+                    "risk_level": "B",
+                    "flags": ["scenario"],
+                    "a": sa,
+                    "b": sb,
+                    "label": scen.get("title", "")
+                })
             })
 
-    # Sort for presentation: boundaries first, then explore, then matches; high risk within groups
-    order = {"BOUNDARY": 0, "EXPLORE": 1, "MATCH": 2}
-    items.sort(key=lambda r: (order.get(r["pair_status"], 9), 0 if r.get("risk_level") == "C" else 1, r.get("module_name", ""), r.get("question_id", "")))
+    # Sort for presentation: mismatches first, then talk first, then explore, then doable now; high risk within groups
+    bucket_order = {"MISMATCH": 0, "TALK FIRST": 1, "EXPLORE": 2, "DOABLE NOW": 3}
+    items.sort(key=lambda r: (
+        bucket_order.get(r.get("bucket", r.get("pair_status", "EXPLORE")), 9),
+        0 if r.get("risk_level") == "C" else 1,
+        r.get("module_name", ""),
+        r.get("question_id", "")
+    ))
 
     action_plan = _generate_action_plan(items)
+    
+    # Generiere Kategorien-Zusammenfassungen (pro Modul)
+    category_summaries = {}
+    modules = template.get("modules", [])
+    for mod in modules:
+        mod_id = mod.get("id", "")
+        mod_name = mod.get("name", "")
+        mod_items = [it for it in items if it.get("module_id") == mod_id]
+        
+        bucket_counts = {"DOABLE NOW": 0, "EXPLORE": 0, "TALK FIRST": 0, "MISMATCH": 0}
+        for item in mod_items:
+            bucket = item.get("bucket", item.get("pair_status", "EXPLORE"))
+            if bucket in bucket_counts:
+                bucket_counts[bucket] += 1
+        
+        category_summaries[mod_id] = {
+            "name": mod_name,
+            "counts": bucket_counts,
+            "total": len(mod_items)
+        }
+    
+    # Füge auch Szenarien-Zusammenfassung hinzu
+    scenario_items = [it for it in items if it.get("module_id") == "scenarios"]
+    if scenario_items:
+        scenario_counts = {"DOABLE NOW": 0, "EXPLORE": 0, "TALK FIRST": 0, "MISMATCH": 0}
+        for item in scenario_items:
+            bucket = item.get("bucket", item.get("pair_status", "EXPLORE"))
+            if bucket in scenario_counts:
+                scenario_counts[bucket] += 1
+        category_summaries["scenarios"] = {
+            "name": "Szenarien",
+            "counts": scenario_counts,
+            "total": len(scenario_items)
+        }
 
     duration = (time.time() - start) * 1000
     log_performance("compare_operation", duration,
@@ -390,4 +639,11 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
                    item_count=len(items))
     
     meta = {"template_id": template.get("id"), "template_name": template.get("name"), "template_version": template.get("version")}
-    return {"meta": meta, "summary": summary, "items": items, "action_plan": action_plan}
+    return {
+        "meta": meta,
+        "summary": summary,
+        "items": items,
+        "action_plan": action_plan,
+        "conversationPrompts": {},  # Für Rückwärtskompatibilität, wird pro Item gespeichert
+        "categorySummaries": category_summaries
+    }

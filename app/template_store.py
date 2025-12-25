@@ -66,12 +66,53 @@ def list_templates() -> List[TemplateListItem]:
         rows = conn.execute("SELECT id, name, version FROM templates ORDER BY created_at DESC").fetchall()
     return [TemplateListItem(id=r["id"], name=r["name"], version=int(r["version"])) for r in rows]
 
+def normalize_template(tpl: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Normalisiert ein Template, um sicherzustellen, dass alle erforderlichen Felder vorhanden sind.
+    Füllt optionale Felder mit Standardwerten für Rückwärtskompatibilität.
+    """
+    # Stelle sicher, dass alle Module die erforderlichen Felder haben
+    modules = tpl.get("modules", [])
+    for mod in modules:
+        # Stelle sicher, dass jedes Modul id, name hat
+        if "id" not in mod:
+            mod["id"] = f"module_{modules.index(mod)}"
+        if "name" not in mod:
+            mod["name"] = "Unbenanntes Modul"
+        if "description" not in mod:
+            mod["description"] = ""
+        
+        questions = mod.get("questions", [])
+        for q in questions:
+            # Stelle sicher, dass jede Frage id, schema, label hat
+            if "id" not in q:
+                q["id"] = f"q_{questions.index(q)}"
+            if "schema" not in q:
+                q["schema"] = "text"
+            if "label" not in q:
+                q["label"] = "Unbenannte Frage"
+            if "risk_level" not in q:
+                q["risk_level"] = "A"
+            if "tags" not in q:
+                q["tags"] = []
+            if "help" not in q:
+                q["help"] = ""
+            
+            # Schema-spezifische Felder
+            if q["schema"] == "enum" and "options" not in q:
+                q["options"] = []
+            if q["schema"] == "multi" and "options" not in q:
+                q["options"] = []
+    
+    return tpl
+
 def load_template(template_id: str) -> Dict[str, Any]:
     with db() as conn:
         row = conn.execute("SELECT json FROM templates WHERE id = ?", (template_id,)).fetchone()
     if not row:
         raise KeyError(f"Template not found: {template_id}")
-    return json.loads(row["json"])
+    tpl = json.loads(row["json"])
+    return normalize_template(tpl)
 
 
 

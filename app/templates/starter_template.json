@@ -1,0 +1,542 @@
+{
+  "id": "starter_v1",
+  "name": "Starter - Schnelles Onboarding",
+  "version": 1,
+  "description": "Leichter Fragebogen für schnellen Einstieg. Fokus auf Grundlagen: Kommunikation, Grenzen, Basis-Praktiken.",
+  "modules": [
+    {
+      "id": "starter_basics",
+      "name": "Grundlagen",
+      "description": "Die wichtigsten Basics für den Start.",
+      "questions": [
+        {
+          "id": "ST01",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": [
+            "satisfaction"
+          ],
+          "label": "Wie zufrieden bist du aktuell mit eurem Sexleben?",
+          "help": "0 = gar nicht, 10 = sehr zufrieden."
+        },
+        {
+          "id": "ST02",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": [
+            "communication"
+          ],
+          "label": "Wie leicht fällt es dir, über Sex zu sprechen?",
+          "help": "0 = sehr schwer, 10 = sehr leicht."
+        },
+        {
+          "id": "ST03",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "boundaries",
+            "hard_limits"
+          ],
+          "label": "Meine absoluten Neins (Hard Limits):",
+          "help": "Was ist für dich komplett tabu?"
+        },
+        {
+          "id": "ST04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "roles"
+          ],
+          "label": "Welche Rolle fühlt sich für dich natürlich an?",
+          "options": [
+            "Dominant (Führend)",
+            "Devot (Empfangend)",
+            "Switch (Beides)",
+            "Egal / Augenhöhe"
+          ]
+        },
+        {
+          "id": "ST04B",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": [
+            "boundaries"
+          ],
+          "label": "Wie leicht fällt es dir, 'Nein' zu sagen?",
+          "help": "0 = sehr schwer, 10 = sehr leicht"
+        },
+        {
+          "id": "ST04C",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "boundaries",
+            "soft_limits"
+          ],
+          "label": "Soft Limits (vielleicht später, aber jetzt nicht):",
+          "help": "Dinge, die du dir vorstellen könntest, aber aktuell nicht willst"
+        }
+      ]
+    },
+    {
+      "id": "starter_communication",
+      "name": "Kommunikation",
+      "description": "Wie kommunizieren wir?",
+      "questions": [
+        {
+          "id": "ST05",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "feedback"
+          ],
+          "label": "Wie gibst du am liebsten Feedback?",
+          "options": [
+            "Direkt während/nach dem Sex",
+            "Am nächsten Tag",
+            "Schriftlich",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "ST06",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "initiation"
+          ],
+          "label": "Initiierung: Ich mag es, Sex zu starten.",
+          "help": "Wer macht den ersten Schritt?"
+        },
+        {
+          "id": "ST07",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "rejection"
+          ],
+          "label": "Ablehnung: Ich kann gut mit 'Nein' oder 'Nicht jetzt' umgehen.",
+          "help": "Wie sicher fühlst du dich bei Ablehnung?"
+        },
+        {
+          "id": "ST07B",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "dirty_talk"
+          ],
+          "label": "Dirty Talk / Erotische Sprache:",
+          "options": [
+            "Sehr wichtig",
+            "Gerne, aber nicht immer",
+            "Manchmal ok",
+            "Nicht so wichtig",
+            "Eher nicht"
+          ]
+        },
+        {
+          "id": "ST07C",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "check_in"
+          ],
+          "label": "Regelmäßige Check-ins über unsere Bedürfnisse.",
+          "help": "Strukturierte Gespräche über Sex"
+        }
+      ]
+    },
+    {
+      "id": "starter_activities",
+      "name": "Basis-Aktivitäten",
+      "description": "Was magst du?",
+      "questions": [
+        {
+          "id": "ST08",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "touch",
+            "kissing"
+          ],
+          "label": "Intensives Küssen.",
+          "help": "Zärtlichkeit und Leidenschaft."
+        },
+        {
+          "id": "ST09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "touch",
+            "oral"
+          ],
+          "label": "Oralsex geben / empfangen.",
+          "help": "Aktiv oder passiv."
+        },
+        {
+          "id": "ST10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "touch",
+            "penetration"
+          ],
+          "label": "Penetration (Vaginal oder Anal).",
+          "help": "Je nach Präferenz."
+        },
+        {
+          "id": "ST11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "touch",
+            "massage"
+          ],
+          "label": "Massagen / Sinnliche Berührungen.",
+          "help": "Entspannung und Körpergefühl."
+        },
+        {
+          "id": "ST12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "toys"
+          ],
+          "label": "Einsatz von Sextoys / Vibratoren.",
+          "help": "Zur Stimulation."
+        },
+        {
+          "id": "ST12B",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "touch",
+            "manual"
+          ],
+          "label": "Manuelle Stimulation (Handjob / Fingern).",
+          "help": "Mit den Händen stimulieren"
+        },
+        {
+          "id": "ST12C",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "touch",
+            "cuddling"
+          ],
+          "label": "Kuscheln / Innige Umarmungen (ohne Sex).",
+          "help": "Intimität ohne sexuellen Fokus"
+        },
+        {
+          "id": "ST12D",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": [
+            "touch",
+            "roughness"
+          ],
+          "label": "Etwas härtere Gangart (z.B. festes Zupacken).",
+          "help": "Leicht intensiver"
+        },
+        {
+          "id": "ST12E",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "activities",
+            "positions"
+          ],
+          "label": "Verschiedene Positionen ausprobieren.",
+          "help": "Experimentieren mit Stellungen"
+        },
+        {
+          "id": "ST12F",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "toys",
+            "bondage",
+            "soft"
+          ],
+          "label": "Leichte Fesselungen (Soft Bondage).",
+          "help": "Seile, Tücher - vorsichtig!"
+        },
+        {
+          "id": "ST12G",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "activities",
+            "quickie"
+          ],
+          "label": "Quickie / Schneller Sex.",
+          "help": "Spontan und schnell"
+        }
+      ]
+    },
+    {
+      "id": "starter_safety",
+      "name": "Sicherheit & Aftercare",
+      "description": "Was brauchst du für Sicherheit?",
+      "questions": [
+        {
+          "id": "ST13",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "safety",
+            "safer_sex"
+          ],
+          "label": "Safer Sex: Wie wichtig ist dir Schutz?",
+          "options": [
+            "Sehr wichtig",
+            "Wichtig",
+            "Mäßig",
+            "Nicht so wichtig"
+          ]
+        },
+        {
+          "id": "ST14",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "aftercare"
+          ],
+          "label": "Nach intensiven Momenten brauche ich:",
+          "options": [
+            "Nähe/Kuscheln",
+            "Reden",
+            "Ruhe",
+            "Space/Allein sein",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "ST15",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "aftercare",
+            "needs"
+          ],
+          "label": "Meine persönlichen Aftercare-Bedürfnisse:",
+          "help": "Was hilft dir nach intensiven Momenten?"
+        },
+        {
+          "id": "ST15B",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "safety",
+            "contraception"
+          ],
+          "label": "Verhütung: Wie regelt ihr das?",
+          "options": [
+            "Hormonell",
+            "Kondom",
+            "IUP/Spirale",
+            "Andere",
+            "Nicht relevant"
+          ]
+        },
+        {
+          "id": "ST15C",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "safety",
+            "hygiene"
+          ],
+          "label": "Hygiene: Ich lege Wert auf Sauberkeit.",
+          "help": "Duschen, Händewaschen, etc."
+        },
+        {
+          "id": "ST15D",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "safety",
+            "allergies"
+          ],
+          "label": "Allergien / Gesundheitshinweise:",
+          "help": "Was sollte dein*e Partner*in wissen?"
+        },
+        {
+          "id": "ST15E",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "triggers",
+            "safewords"
+          ],
+          "label": "Safewords / Stop-Signale:",
+          "help": "Wie stoppt ihr, wenn nötig?"
+        },
+        {
+          "id": "ST15F",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": [
+            "safety",
+            "pace"
+          ],
+          "label": "Tempo: Wie schnell darf es gehen?",
+          "help": "0 = sehr langsam, 10 = schnell/spontan"
+        }
+      ]
+    },
+    {
+      "id": "starter_exploration",
+      "name": "Exploration",
+      "description": "Was möchtest du erkunden?",
+      "questions": [
+        {
+          "id": "ST16",
+          "schema": "scale_0_10",
+          "risk_level": "A",
+          "tags": [
+            "exploration",
+            "novelty"
+          ],
+          "label": "Wie wichtig ist dir Abwechslung?",
+          "help": "0 = Routine ist perfekt, 10 = ich brauche ständig Neues"
+        },
+        {
+          "id": "ST17",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "exploration",
+            "fantasy"
+          ],
+          "label": "Fantasien, die ich gerne teilen würde:",
+          "help": "Was beschäftigt dich?"
+        },
+        {
+          "id": "ST18",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "exploration",
+            "wishes"
+          ],
+          "label": "Was möchtest du gerne einmal ausprobieren?",
+          "help": "Deine Wünsche und Neugier."
+        },
+        {
+          "id": "ST18B",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "exploration",
+            "experimentation"
+          ],
+          "label": "Experimentierfreude: Ich mag es, Neues auszuprobieren.",
+          "help": "Bereitschaft, Neues zu erkunden"
+        },
+        {
+          "id": "ST18C",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "exploration",
+            "curiosity"
+          ],
+          "label": "Wenn du an etwas Neues denkst:",
+          "options": [
+            "Ich will es wirklich probieren",
+            "Es ist eher Fantasie",
+            "Beides möglich"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "starter_roles",
+      "name": "Rollen & Dynamik",
+      "description": "Wie interagieren wir?",
+      "questions": [
+        {
+          "id": "ST20",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "roles",
+            "control",
+            "lead"
+          ],
+          "label": "Aktives Führen: Ich mag es, Entscheidungen zu treffen.",
+          "help": "Verantwortung übernehmen"
+        },
+        {
+          "id": "ST21",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "roles",
+            "control",
+            "follow"
+          ],
+          "label": "Hingabe: Ich mag es, mich führen zu lassen.",
+          "help": "Loslassen können"
+        },
+        {
+          "id": "ST22",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "environment",
+            "spontaneity"
+          ],
+          "label": "Spontaneität: Ich mag ungeplante Momente.",
+          "help": "Vs. geplant"
+        }
+      ]
+    },
+    {
+      "id": "starter_review",
+      "name": "Abschluss",
+      "description": "Noch etwas Wichtiges?",
+      "questions": [
+        {
+          "id": "ST19",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "notes"
+          ],
+          "label": "Weitere Notizen / Wünsche:",
+          "help": "Alles, was noch wichtig ist."
+        },
+        {
+          "id": "ST19B",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "highlight"
+          ],
+          "label": "Was war besonders schön und sollte öfter passieren?",
+          "help": "Positives Feedback"
+        },
+        {
+          "id": "ST19C",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "less"
+          ],
+          "label": "Was möchtest du aktuell WENIGER machen / pausieren?",
+          "help": "Ohne Rechtfertigung"
+        }
+      ]
+    }
+  ]
+}

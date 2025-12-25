@@ -30,7 +30,7 @@ const state = {
   moduleIndex: [],
   navOpen: false,
   compareData: null,
-  compareFilters: { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" },
+  compareFilters: { bucket: "ALL", riskOnly: false, flaggedOnly: false, query: "", moduleId: null },
   scenarioFilters: { category: "ALL", status: "ALL", gateOnly: false },
   scenarioActiveIds: [],
   scenarios: [],
@@ -191,7 +191,7 @@ async function openSession(sessionId) {
   setValidationSummary("");
   state.validationEnabled = false;
   state.compareData = null;
-  state.compareFilters = { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" };
+  state.compareFilters = { bucket: "ALL", riskOnly: false, flaggedOnly: false, query: "", moduleId: null };
   state.scenarioActiveIds = [];
   setNavOpen(false);
   
@@ -213,7 +213,7 @@ function backHome() {
   state.navOpen = false;
   state.validationEnabled = false;
   state.compareData = null;
-  state.compareFilters = { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" };
+  state.compareFilters = { bucket: "ALL", riskOnly: false, flaggedOnly: false, query: "", moduleId: null };
   setSaveStatus("");
   setValidationSummary("");
   setNavOpen(false);
@@ -482,7 +482,7 @@ function renderConsentRating(q, existing = {}) {
                     <label>Status</label>
                     <select data-k="dom_status" class="status-select">
                         <option value="YES">JA (Generell)</option>
-                        <option value="MAYBE">VIELLEICHT (Diskutieren)</option>
+                        <option value="MAYBE">Ja, aber nur wenn... (Bedingungen nötig)</option>
                         <option value="NO">NEIN (Eher nicht)</option>
                         <option value="HARD_LIMIT">HARD LIMIT (Auf keinen Fall)</option>
                     </select>
@@ -503,7 +503,7 @@ function renderConsentRating(q, existing = {}) {
                     <label>Status</label>
                     <select data-k="sub_status" class="status-select">
                         <option value="YES">JA (Generell)</option>
-                        <option value="MAYBE">VIELLEICHT (Diskutieren)</option>
+                        <option value="MAYBE">Ja, aber nur wenn... (Bedingungen nötig)</option>
                         <option value="NO">NEIN (Eher nicht)</option>
                         <option value="HARD_LIMIT">HARD LIMIT (Auf keinen Fall)</option>
                     </select>
@@ -661,7 +661,11 @@ function buildForm(template, responses) {
   setValidationSummary("");
   if (typeof clearValidationDisplays === "function") clearValidationDisplays();
 
+  const totalModules = (template.modules || []).length;
+  let moduleIndex = 0;
+  
   for (const mod of template.modules || []) {
+    moduleIndex++;
     const moduleKey = safeDomId(mod.id);
     host.appendChild(renderModuleInfoCard(mod));
     
@@ -672,7 +676,7 @@ function buildForm(template, responses) {
     header.className = "collapsible-header";
     header.innerHTML = `
       <div class="module-title">
-        <h4>${escapeHtml(mod.name)}</h4>
+        <h4>${escapeHtml(mod.name)} <span class="chapter-indicator">(Kapitel ${moduleIndex} von ${totalModules})</span></h4>
         <span class="module-progress" data-module-id="${moduleKey}">0/0</span>
       </div>
     `;
@@ -1289,10 +1293,13 @@ function goToNextOpenQuestion() {
 }
 
 function applyCompareFilters(items) {
-  const { status, riskOnly, flaggedOnly, query } = state.compareFilters;
+  const { bucket, riskOnly, flaggedOnly, query, moduleId } = state.compareFilters;
   const q = (query || "").toLowerCase();
   return items.filter((it) => {
-    if (status !== "ALL" && it.pair_status !== status) return false;
+    // Use bucket if available, fallback to pair_status for backwards compatibility
+    const itemBucket = it.bucket || it.pair_status;
+    if (bucket !== "ALL" && itemBucket !== bucket) return false;
+    if (moduleId && it.module_id !== moduleId) return false;
     if (riskOnly && it.risk_level !== "C") return false;
     if (flaggedOnly && !(it.flags && it.flags.length)) return false;
     if (q) {
@@ -1345,14 +1352,24 @@ function renderCompareAnswerLines(answer = {}, schema = "") {
 function renderCompareItem(it) {
   const card = document.createElement("div");
   card.className = "compare-item-card";
-  const statusClass = it.pair_status ? `status-${it.pair_status.toLowerCase()}` : "";
-  if (statusClass) card.classList.add(statusClass);
+  // Use bucket if available, fallback to pair_status for backwards compatibility
+  const bucket = it.bucket || it.pair_status || "EXPLORE";
+  const bucketClass = bucket ? `status-${bucket.toLowerCase().replace(/\s+/g, "-")}` : "";
+  if (bucketClass) card.classList.add(bucketClass);
 
   const header = document.createElement("div");
   header.className = "compare-item-header";
+  const bucketLabels = {
+    "DOABLE NOW": "Jetzt möglich",
+    "EXPLORE": "Erkunden",
+    "TALK FIRST": "Erst reden",
+    "MISMATCH": "Konflikt",
+    "MATCH": "Match",
+    "BOUNDARY": "Grenze"
+  };
   header.innerHTML = `
     <div class="compare-item-title">${escapeHtml(it.label || it.question_id || "")}</div>
-    <span class="status-badge ${statusClass}">${escapeHtml(it.pair_status || "")}</span>
+    <span class="status-badge ${bucketClass}">${escapeHtml(bucketLabels[bucket] || bucket)}</span>
   `;
 
   const meta = document.createElement("div");
@@ -1423,10 +1440,44 @@ function renderCompareItem(it) {
   answers.appendChild(aBlock);
   answers.appendChild(bBlock);
 
+  // Gesprächs-Prompts (expandierbar)
+  const prompts = it.conversationPrompts || [];
+  let promptsSection = null;
+  if (prompts && prompts.length > 0) {
+    promptsSection = document.createElement("div");
+    promptsSection.className = "compare-prompts";
+    const promptsToggle = document.createElement("button");
+    promptsToggle.type = "button";
+    promptsToggle.className = "compare-prompts-toggle";
+    promptsToggle.innerHTML = `<span class="compare-prompts-icon">💬</span> <span class="compare-prompts-label">Gesprächs-Ideen (${prompts.length})</span> <span class="compare-prompts-arrow">▼</span>`;
+    promptsToggle.setAttribute("aria-expanded", "false");
+    
+    const promptsList = document.createElement("div");
+    promptsList.className = "compare-prompts-list hidden";
+    prompts.forEach((prompt) => {
+      const promptItem = document.createElement("div");
+      promptItem.className = "compare-prompt-item";
+      promptItem.textContent = prompt;
+      promptsList.appendChild(promptItem);
+    });
+    
+    promptsToggle.onclick = () => {
+      const isExpanded = promptsToggle.getAttribute("aria-expanded") === "true";
+      promptsToggle.setAttribute("aria-expanded", !isExpanded);
+      promptsList.classList.toggle("hidden", isExpanded);
+      const arrow = promptsToggle.querySelector(".compare-prompts-arrow");
+      if (arrow) arrow.textContent = isExpanded ? "▼" : "▲";
+    };
+    
+    promptsSection.appendChild(promptsToggle);
+    promptsSection.appendChild(promptsList);
+  }
+
   card.appendChild(header);
   card.appendChild(meta);
   card.appendChild(help);
   card.appendChild(answers);
+  if (promptsSection) card.appendChild(promptsSection);
   return card;
 }
 
@@ -1441,18 +1492,20 @@ function renderCompareItems(listHost, items) {
   const grouped = new Map();
   filtered.forEach((it) => {
     const key = it.module_name || "Ohne Modul";
-    if (!grouped.has(key)) grouped.set(key, []);
-    grouped.get(key).push(it);
+    const moduleId = it.module_id || "";
+    if (!grouped.has(key)) grouped.set(key, { items: [], moduleId });
+    grouped.get(key).items.push(it);
   });
 
-  grouped.forEach((groupItems, moduleName) => {
+  grouped.forEach((groupData, moduleName) => {
     const group = document.createElement("div");
     group.className = "compare-group";
+    group.dataset.moduleId = groupData.moduleId || "";
     const title = document.createElement("div");
     title.className = "compare-group-title";
     title.textContent = moduleName;
     group.appendChild(title);
-    groupItems.forEach((it) => group.appendChild(renderCompareItem(it)));
+    groupData.items.forEach((it) => group.appendChild(renderCompareItem(it)));
     listHost.appendChild(group);
   });
 }
@@ -1470,9 +1523,10 @@ function renderCompareView(result) {
   const summaryGrid = document.createElement("div");
   summaryGrid.className = "compare-summary";
   const summaryCards = [
-    { label: "MATCH", value: counts.MATCH || 0, cls: "status-match" },
+    { label: "DOABLE NOW", value: counts["DOABLE NOW"] || 0, cls: "status-doable-now" },
     { label: "EXPLORE", value: counts.EXPLORE || 0, cls: "status-explore" },
-    { label: "BOUNDARY", value: counts.BOUNDARY || 0, cls: "status-boundary" }
+    { label: "TALK FIRST", value: counts["TALK FIRST"] || 0, cls: "status-talk-first" },
+    { label: "MISMATCH", value: counts.MISMATCH || 0, cls: "status-mismatch" }
   ];
   summaryCards.forEach((c) => {
     const card = document.createElement("div");
@@ -1489,6 +1543,67 @@ function renderCompareView(result) {
   `;
   summaryGrid.appendChild(flagCard);
   host.appendChild(summaryGrid);
+
+  // Kategorien-Zusammenfassungen (Mobile Heatmap)
+  const categorySummaries = result.categorySummaries || {};
+  if (Object.keys(categorySummaries).length > 0) {
+    const categorySection = document.createElement("div");
+    categorySection.className = "compare-categories";
+    const categoryTitle = document.createElement("div");
+    categoryTitle.className = "compare-categories-title";
+    categoryTitle.textContent = "Kategorien-Übersicht";
+    categorySection.appendChild(categoryTitle);
+    
+    const categoryList = document.createElement("div");
+    categoryList.className = "compare-categories-list";
+    
+    Object.entries(categorySummaries).forEach(([moduleId, summary]) => {
+      const categoryCard = document.createElement("button");
+      categoryCard.type = "button";
+      categoryCard.className = "compare-category-card";
+      categoryCard.dataset.moduleId = moduleId;
+      
+      const bucketCounts = summary.counts || {};
+      const total = summary.total || 0;
+      
+      const bucketBadges = [];
+      const bucketShortLabels = {
+        "DOABLE NOW": "Jetzt",
+        "EXPLORE": "Erkunden",
+        "TALK FIRST": "Reden",
+        "MISMATCH": "Konflikt"
+      };
+      ["DOABLE NOW", "EXPLORE", "TALK FIRST", "MISMATCH"].forEach((bucket) => {
+        const count = bucketCounts[bucket] || 0;
+        if (count > 0) {
+          const badge = `<span class="compare-category-badge status-${bucket.toLowerCase().replace(/\s+/g, "-")}">${bucketShortLabels[bucket] || bucket}: ${count}</span>`;
+          bucketBadges.push(badge);
+        }
+      });
+      
+      categoryCard.innerHTML = `
+        <div class="compare-category-name">${escapeHtml(summary.name || moduleId)}</div>
+        <div class="compare-category-badges">${bucketBadges.join("")}</div>
+        <div class="compare-category-total">${total} Fragen</div>
+      `;
+      
+      categoryCard.onclick = () => {
+        // Filter auf dieses Modul setzen (erweitern wir später)
+        state.compareFilters.moduleId = moduleId;
+        renderCompareItems($("compareList"), result.items || []);
+        // Scroll zu den Items dieses Moduls
+        const moduleItems = document.querySelectorAll(`[data-module-id="${moduleId}"]`);
+        if (moduleItems.length > 0) {
+          moduleItems[0].scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      };
+      
+      categoryList.appendChild(categoryCard);
+    });
+    
+    categorySection.appendChild(categoryList);
+    host.appendChild(categorySection);
+  }
 
   if (result.action_plan && result.action_plan.length) {
     const plan = document.createElement("div");
@@ -1516,23 +1631,30 @@ function renderCompareView(result) {
 
   const filters = document.createElement("div");
   filters.className = "compare-filters";
-  const statusGroup = document.createElement("div");
-  statusGroup.className = "compare-filter-group";
-  ["ALL", "MATCH", "EXPLORE", "BOUNDARY"].forEach((status) => {
+  const bucketGroup = document.createElement("div");
+  bucketGroup.className = "compare-filter-group";
+  const bucketLabels = {
+    "ALL": "Alle",
+    "DOABLE NOW": "Jetzt möglich",
+    "EXPLORE": "Erkunden",
+    "TALK FIRST": "Erst reden",
+    "MISMATCH": "Konflikt"
+  };
+  ["ALL", "DOABLE NOW", "EXPLORE", "TALK FIRST", "MISMATCH"].forEach((bucket) => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.dataset.status = status;
-    btn.className = `btn compare-filter-btn ${state.compareFilters.status === status ? "primary" : ""}`;
-    btn.textContent = status === "ALL" ? "Alle" : status;
+    btn.dataset.bucket = bucket;
+    btn.className = `btn compare-filter-btn ${state.compareFilters.bucket === bucket ? "primary" : ""}`;
+    btn.textContent = bucketLabels[bucket] || bucket;
     btn.onclick = () => {
-      state.compareFilters.status = status;
-      filters.querySelectorAll('[data-status]').forEach(b => b.classList.remove("primary"));
+      state.compareFilters.bucket = bucket;
+      filters.querySelectorAll('[data-bucket]').forEach(b => b.classList.remove("primary"));
       btn.classList.add("primary");
       renderCompareItems($("compareList"), result.items || []);
     };
-    statusGroup.appendChild(btn);
+    bucketGroup.appendChild(btn);
   });
-  filters.appendChild(statusGroup);
+  filters.appendChild(bucketGroup);
 
   const toggles = document.createElement("div");
   toggles.className = "compare-filter-group";
@@ -1620,7 +1742,7 @@ async function doCompare() {
     const res = await api(`/api/sessions/${state.currentSession.id}/compare`, {
         method: "POST", body: JSON.stringify({password})
     });
-    state.compareFilters = { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" };
+    state.compareFilters = { bucket: "ALL", riskOnly: false, flaggedOnly: false, query: "", moduleId: null };
     renderCompareView(res);
     show($("panelCompare"), true);
     show($("panelForm"), false);

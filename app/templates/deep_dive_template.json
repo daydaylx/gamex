@@ -1,8 +1,8 @@
 {
-  "id": "default_v2",
-  "name": "Intimität & Grenzen (v3 - Erweitert)",
-  "version": 3,
-  "description": "Ausgewogener Fragebogen mit umfassender Abdeckung: Intent & Grenzen, Kommunikation, Dynamiken, Aktivitäten, Exploration, Aftercare, Sicherheit, Umgebung und Trigger.",
+  "id": "deep_dive_v1",
+  "name": "Deep Dive - Umfassend",
+  "version": 1,
+  "description": "Umfassender Fragebogen mit detaillierter Abdeckung aller Themenbereiche. Für intensive Erkundung und detaillierte Kommunikation.",
   "modules": [
     {
       "id": "intent_boundaries",
@@ -101,6 +101,33 @@
           ],
           "label": "Was sind deine wichtigsten Werte in Bezug auf Intimität?",
           "help": "Was ist dir wichtig? (z.B. Respekt, Leidenschaft, Sicherheit, etc.)"
+        },
+        {
+          "id": "IB08",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "intent",
+            "negotiation"
+          ],
+          "label": "Wie gehst du mit Verhandlung über Grenzen um?",
+          "options": [
+            "Offen für Diskussion",
+            "Klar kommuniziert, aber flexibel",
+            "Starr - Grenzen sind Grenzen",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "IB09",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "intent",
+            "values"
+          ],
+          "label": "Deine wichtigsten Werte in Bezug auf Intimität:",
+          "help": "Was ist dir wichtig?"
         }
       ]
     },
@@ -213,6 +240,34 @@
             "Vorsichtig und behutsam",
             "Schriftlich ist leichter",
             "Vermeide sie lieber",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "COM09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "difficult_topics"
+          ],
+          "label": "Schwierige Themen: Ich kann auch über unangenehme Dinge sprechen.",
+          "help": "Komfort mit schwierigen Gesprächen"
+        },
+        {
+          "id": "COM10",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "timing"
+          ],
+          "label": "Wann sprichst du am liebsten über Sex?",
+          "options": [
+            "Während/nach dem Sex",
+            "In ruhigen Momenten",
+            "Geplant / strukturiert",
+            "Spontan",
             "Kommt drauf an"
           ]
         }
@@ -881,6 +936,28 @@
           ],
           "label": "Pet Play (sich wie ein Tier verhalten).",
           "help": "Kink-Dynamik mit Tier-Rolle."
+        },
+        {
+          "id": "ROL08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": [
+            "roles",
+            "protocol"
+          ],
+          "label": "Protocol / Etikette (formelle Regeln und Haltungen).",
+          "help": "Formelle BDSM-Dynamik"
+        },
+        {
+          "id": "ROL09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": [
+            "roles",
+            "collar"
+          ],
+          "label": "Collar / Halsband-Symbolik.",
+          "help": "Symbolische Bindung/Verpflichtung"
         }
       ]
     },
@@ -1021,6 +1098,28 @@
           ],
           "label": "Händchenhalten / Zärtliche Berührungen.",
           "help": "Sanfte, zärtliche Intimität."
+        },
+        {
+          "id": "T13",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "touch",
+            "nipple"
+          ],
+          "label": "Intensive Nippel-Stimulation.",
+          "help": "Berührung und Stimulation"
+        },
+        {
+          "id": "T14",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": [
+            "touch",
+            "clamps"
+          ],
+          "label": "Nippel-Clamps / Clips.",
+          "help": "Vorsichtig - nicht zu lange!"
         }
       ]
     },
@@ -1152,6 +1251,35 @@
           ],
           "label": "Anale Penetration (Penis).",
           "help": "Erfordert viel Zeit, Vorbereitung und Entspannung. Kein 'Einfach rein'."
+        },
+        {
+          "id": "AN04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "depends_on": {
+            "id": "AN03",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          },
+          "tags": [
+            "anal",
+            "fisting"
+          ],
+          "label": "Anal Fisting (erfordert viel Erfahrung).",
+          "help": "⚠️ HIGH RISK: Erfordert Profi-Wissen!"
+        },
+        {
+          "id": "AN05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": [
+            "anal",
+            "double"
+          ],
+          "label": "Doppelte Penetration (Anal + Vaginal).",
+          "help": "Erfordert viel Gleitgel und Entspannung"
         }
       ]
     },
@@ -1271,6 +1399,28 @@
           ],
           "label": "Choking (Hand am Hals, nur äußerlich, kein Druck auf Kehlkopf).",
           "help": "⚠️ RISK: Nur äußerlich, niemals auf Kehlkopf drücken!"
+        },
+        {
+          "id": "S07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": [
+            "sensation",
+            "wax"
+          ],
+          "label": "Wachs-Spiele (Kerzenwachs).",
+          "help": "Vorsicht vor Verbrennungen!"
+        },
+        {
+          "id": "S08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": [
+            "sensation",
+            "needles"
+          ],
+          "label": "Needle Play (Nadeln).",
+          "help": "⚠️ HIGH RISK: Erfordert sterile Bedingungen und Erfahrung!"
         }
       ]
     },
@@ -1611,6 +1761,74 @@
           ],
           "label": "Erzwungener Orgasmus (mit Konsens).",
           "help": "Partner*in kontrolliert, wann du kommst."
+        }
+      ]
+    },
+    {
+      "id": "communication_advanced",
+      "name": "Kommunikation - Erweitert",
+      "description": "Tiefere Aspekte der Kommunikation.",
+      "questions": [
+        {
+          "id": "COMM_ADV01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "body_language"
+          ],
+          "label": "Körpersprache: Ich lese non-verbale Signale gut.",
+          "help": "Aufmerksamkeit für non-verbale Kommunikation"
+        },
+        {
+          "id": "COMM_ADV02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "communication",
+            "conflict"
+          ],
+          "label": "Wie gehst du mit Konflikten über Sex um?",
+          "options": [
+            "Direkt und offen",
+            "Vorsichtig",
+            "Vermeide sie",
+            "Kommt drauf an"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "safety_advanced",
+      "name": "Sicherheit - Erweitert",
+      "description": "Detaillierte Sicherheits-Aspekte.",
+      "questions": [
+        {
+          "id": "SAF_ADV01",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "safety",
+            "medical"
+          ],
+          "label": "Medizinische Bedingungen / Einschränkungen:",
+          "help": "Was sollte dein*e Partner*in wissen?"
+        },
+        {
+          "id": "SAF_ADV02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "safety",
+            "safewords"
+          ],
+          "label": "Wie viele Safewords nutzt ihr?",
+          "options": [
+            "Eines (Stop)",
+            "Zwei (Stop/Slow)",
+            "Ampelsystem (Rot/Gelb/Grün)",
+            "Keine"
+          ]
         }
       ]
     },
