@@ -1570,4 +1570,17 @@ input[type=range]:focus { outline: none; box-shadow: none; }
   .fab {
     display: flex; /* Show on mobile */
   }
+  
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+  
+  .compare-filter-trigger {
+    width: 100%;
+    margin-bottom: 12px;
+  }
 }

@@ -1835,6 +1835,17 @@ function renderCompareView(result) {
   searchWrap.appendChild(searchInput);
   filters.appendChild(searchWrap);
   host.appendChild(filters);
+  
+  // Mobile Filter Button
+  const mobileFilterBtn = document.createElement("button");
+  mobileFilterBtn.type = "button";
+  mobileFilterBtn.className = "btn compare-filter-trigger mobile-only";
+  mobileFilterBtn.innerHTML = "🔍 Filter öffnen";
+  mobileFilterBtn.onclick = () => showFilterBottomSheet(result);
+  filters.insertBefore(mobileFilterBtn, filters.firstChild);
+  
+  // Store result for filter bottom sheet
+  state.lastCompareResult = result;
 
   const listHost = document.createElement("div");
   listHost.className = "compare-list";
