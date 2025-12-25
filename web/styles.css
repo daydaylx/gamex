@@ -654,6 +654,17 @@ textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
   color: var(--text);
   word-break: break-word;
 }
+.compare-item-actions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--card-border);
+  display: flex;
+  justify-content: flex-end;
+}
+.compare-edit-btn {
+  font-size: 0.85rem;
+  padding: 8px 16px;
+}
 .flag-badge {
   background: rgba(245, 158, 11, 0.12);
   border-color: rgba(245, 158, 11, 0.3);
