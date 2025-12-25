@@ -194,9 +194,6 @@ async function openSession(sessionId) {
   state.compareFilters = { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" };
   state.scenarioActiveIds = [];
   setNavOpen(false);
-  
-  $("authPassword").value = "";
-  $("authPin").value = "";
 }
 
 function backHome() {
@@ -268,13 +265,6 @@ function handleFormChange(itemEl) {
   scheduleVisibilityUpdate();
   scheduleValidation();
   updateProgress();
-}
-
-function getAuth() {
-  const password = $("authPassword").value.trim();
-  const pin = $("authPin").value.trim();
-  if (!password || password.length < 6) throw new Error("Passwort fehlt oder ist zu kurz.");
-  return { password, pin: pin || null };
 }
 
 function getModuleMindsetHint(moduleId) {
@@ -1173,7 +1163,6 @@ async function autoSave() {
     if(!state.currentSession || !state.currentPerson) return;
     try {
         if (!state.hasUnsavedChanges) return;
-        const {password, pin} = getAuth();
         const { errors } = validateForm();
         if (errors.length) {
             state.validationEnabled = true;
@@ -1182,7 +1171,7 @@ async function autoSave() {
             return;
         }
         await api(`/api/sessions/${state.currentSession.id}/responses/${state.currentPerson}/save`, {
-            method: "POST", body: JSON.stringify({password, pin, responses: collectForm()})
+            method: "POST", body: JSON.stringify({ responses: collectForm() })
         });
         state.hasUnsavedChanges = false;
         state.lastSaveTime = Date.now();
@@ -1585,10 +1574,9 @@ function renderCompareView(result) {
 
 // Actions
 async function startFill(person) {
-    const {password, pin} = getAuth();
     state.currentPerson = person;
     const res = await api(`/api/sessions/${state.currentSession.id}/responses/${person}/load`, {
-        method: "POST", body: JSON.stringify({password, pin})
+        method: "POST", body: JSON.stringify({})
     });
     buildForm(state.currentTemplate, res.responses||{});
     show($("panelForm"), true);
@@ -1598,7 +1586,6 @@ async function startFill(person) {
     window.addEventListener('beforeunload', handleBeforeUnload);
 }
 async function saveFill() {
-    const {password, pin} = getAuth();
     state.validationEnabled = true;
     const { errors } = validateAndShowHints({ scrollToError: true });
     if (errors.length) {
@@ -1607,7 +1594,7 @@ async function saveFill() {
         return;
     }
     await api(`/api/sessions/${state.currentSession.id}/responses/${state.currentPerson}/save`, {
-        method: "POST", body: JSON.stringify({password, pin, responses: collectForm()})
+        method: "POST", body: JSON.stringify({ responses: collectForm() })
     });
     state.hasUnsavedChanges = false;
     state.lastSaveTime = Date.now();
@@ -1616,9 +1603,8 @@ async function saveFill() {
 }
 async function doCompare() {
     msg($("sessionMsg"), "");
-    const {password} = getAuth();
     const res = await api(`/api/sessions/${state.currentSession.id}/compare`, {
-        method: "POST", body: JSON.stringify({password})
+        method: "POST", body: JSON.stringify({})
     });
     state.compareFilters = { status: "ALL", riskOnly: false, flaggedOnly: false, query: "" };
     renderCompareView(res);
@@ -1631,11 +1617,10 @@ async function exportSession(format) {
     if (window.LocalApi && window.LocalApi.enabled) {
         throw new Error("Export ist im Offline-Modus derzeit nicht verfügbar");
     }
-    const { password } = getAuth();
     const kind = format === "markdown" ? "markdown" : "json";
     const blob = await api(`/api/sessions/${state.currentSession.id}/export/${kind}`, {
         method: "POST",
-        body: JSON.stringify({ password })
+        body: JSON.stringify({})
     });
     const ext = kind === "markdown" ? "md" : "json";
     downloadBlob(blob, `intimacy_export_${state.currentSession.id}.${ext}`);
@@ -1647,14 +1632,12 @@ async function runAIAnalysis() {
     if (window.LocalApi && window.LocalApi.enabled) {
         throw new Error("KI-Analyse nur im Server-Modus verfügbar");
     }
-    const { password } = getAuth();
     const apiKey = $("aiKey").value.trim();
     const model = $("aiModel").value.trim();
     const redact = $("aiRedact").value === "true";
     const maxTokens = Number($("aiMaxTokens").value) || 800;
     if (!apiKey || !model) throw new Error("API Key und Model sind erforderlich");
     const payload = {
-        password,
         provider: "openrouter",
         api_key: apiKey,
         model,
@@ -1678,10 +1661,7 @@ $("btnCreate").onclick = async () => {
             method:"POST", 
             body: JSON.stringify({
                 name: $("newName").value, 
-                template_id: $("newTemplate").value, 
-                password: $("newPassword").value,
-                pin_a: $("newPinA").value,
-                pin_b: $("newPinB").value
+                template_id: $("newTemplate").value
             })
         });
         loadSessions();

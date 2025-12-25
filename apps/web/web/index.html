@@ -10,7 +10,7 @@
   <header class="topbar">
     <div class="wrap">
       <h1>Intimacy Tool</h1>
-      <p class="sub">Local-first. Verschlüsselt. Kein Overthinking, nur Struktur.</p>
+      <p class="sub">Local-first. Lokal gespeichert (Plaintext). Kein Overthinking, nur Struktur.</p>
     </div>
   </header>
 
@@ -38,26 +38,11 @@
           Template
           <select id="newTemplate"></select>
         </label>
-
-        <label>
-          Session-Passwort (für Verschlüsselung)
-          <input id="newPassword" type="password" placeholder="mind. 6 Zeichen" />
-        </label>
-
-        <label>
-          PIN A (optional)
-          <input id="newPinA" type="password" placeholder="optional" />
-        </label>
-
-        <label>
-          PIN B (optional)
-          <input id="newPinB" type="password" placeholder="optional" />
-        </label>
       </div>
 
       <div class="row">
         <button class="btn primary" id="btnCreate">Erstellen</button>
-        <span class="hint">Passwort nicht verlieren. Wirklich.</span>
+        <span class="hint">Hinweis: Daten liegen lokal im Klartext vor (Gerätezugriff = Datenzugriff).</span>
       </div>
       <div id="createMsg" class="msg"></div>
     </section>
@@ -97,21 +82,6 @@
       </div>
 
       <div class="divider"></div>
-
-      <div id="panelAuth" class="panel">
-        <h3>Zugang</h3>
-        <div class="grid2">
-          <label>
-            Passwort
-            <input id="authPassword" type="password" placeholder="Session-Passwort" aria-label="Session-Passwort eingeben" aria-required="true" />
-          </label>
-          <label>
-            PIN (nur fürs Ausfüllen, falls gesetzt)
-            <input id="authPin" type="password" placeholder="optional" aria-label="PIN eingeben (optional)" />
-          </label>
-        </div>
-        <p class="hint">Das Passwort wird nur im Browser gehalten. Kein Auto-Save auf Serverseite.</p>
-      </div>
 
       <div id="panelForm" class="panel hidden" role="region" aria-labelledby="formTitle">
         <div class="row space form-header">
