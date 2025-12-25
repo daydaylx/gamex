@@ -359,6 +359,32 @@ textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
   box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
   will-change: width; /* Performance optimization */
 }
+.progress-remaining {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+.progress-motivation {
+  font-size: 0.9rem;
+  color: var(--primary);
+  margin-top: 8px;
+  text-align: center;
+  font-weight: 500;
+  padding: 8px 12px;
+  background: rgba(236, 72, 153, 0.1);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(236, 72, 153, 0.2);
+}
+.progress-motivation.success {
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: var(--success-border);
+}
+.progress-motivation.hidden {
+  display: none;
+}
 
 /* --- Collapsible --- */
 .collapsible-section {

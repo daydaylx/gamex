@@ -1306,9 +1306,43 @@ function updateProgress() {
   });
 
   const pct = total ? Math.round((answered / total) * 100) : 0;
+  const remaining = total - answered;
+  
   if (progressText) progressText.textContent = `${answered}/${total} beantwortet`;
   if (progressPct) progressPct.textContent = `${pct}%`;
   if (progressFill) progressFill.style.width = `${pct}%`;
+  
+  // Fragen-übrig Counter
+  const remainingEl = $("progressRemaining");
+  if (remainingEl) {
+    remainingEl.textContent = remaining > 0 ? `${remaining} Fragen übrig` : "Alle beantwortet! 🎉";
+  }
+  
+  // Motivations-Messages (Snackbar-style)
+  const motivationEl = $("progressMotivation");
+  if (motivationEl && total > 0) {
+    let message = "";
+    if (pct === 100) {
+      message = "Perfekt! Alle Fragen beantwortet! 🎉";
+      motivationEl.className = "progress-motivation success";
+    } else if (pct >= 75) {
+      message = "Fast geschafft! Nur noch ein paar Fragen! 💪";
+      motivationEl.className = "progress-motivation";
+    } else if (pct >= 50) {
+      message = "Hälfte geschafft! Weiter so! ✨";
+      motivationEl.className = "progress-motivation";
+    } else if (pct >= 25) {
+      message = "Gut gemacht! Du schaffst das! 🌟";
+      motivationEl.className = "progress-motivation";
+    } else if (answered > 0) {
+      message = "Guter Start! Jede Antwort zählt! 💫";
+      motivationEl.className = "progress-motivation";
+    } else {
+      message = "";
+      motivationEl.className = "progress-motivation hidden";
+    }
+    motivationEl.textContent = message;
+  }
 
   state.navItems.forEach((link, qid) => {
     const el = document.querySelector(`.item[data-qid="${qid}"]`);
@@ -1514,6 +1548,25 @@ function renderCompareItem(it) {
   answers.appendChild(aBlock);
   answers.appendChild(bBlock);
 
+  // Quick-Edit Button (nur wenn Formular verfügbar ist)
+  const editButton = document.createElement("button");
+  editButton.type = "button";
+  editButton.className = "btn compare-edit-btn";
+  editButton.innerHTML = `${Icons.edit} Bearbeiten`;
+  editButton.onclick = () => {
+    if (state.currentSession && state.currentPerson) {
+      const questionId = it.question_id;
+      if (questionId) {
+        // Wechsle zum Formular und scrolle zur Frage
+        show($("panelForm"), true);
+        show($("panelCompare"), false);
+        setTimeout(() => {
+          scrollToQuestion(questionId);
+        }, 100);
+      }
+    }
+  };
+
   // Gesprächs-Prompts (expandierbar)
   const prompts = it.conversationPrompts || [];
   let promptsSection = null;
@@ -1552,6 +1605,13 @@ function renderCompareItem(it) {
   card.appendChild(help);
   card.appendChild(answers);
   if (promptsSection) card.appendChild(promptsSection);
+  
+  // Quick-Edit Button
+  const actionsDiv = document.createElement("div");
+  actionsDiv.className = "compare-item-actions";
+  actionsDiv.appendChild(editButton);
+  card.appendChild(actionsDiv);
+  
   return card;
 }
 
