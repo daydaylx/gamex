@@ -357,6 +357,7 @@ textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
   border-radius: 4px;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+  will-change: width; /* Performance optimization */
 }
 
 /* --- Collapsible --- */
@@ -1251,6 +1252,49 @@ textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
     background: var(--primary);
     color: white;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Advanced options and context flags */
+.advanced-toggle {
+    margin-top: 12px;
+    border-top: 1px solid var(--card-border);
+    padding-top: 12px;
+}
+.checkbox-label,
+.checkbox-label-large {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 0;
+    min-height: 44px; /* Mobile touch target */
+    touch-action: manipulation;
+}
+.checkbox-label-large {
+    padding: 14px 16px;
+    background: rgba(45, 26, 45, 0.3);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border);
+    margin-bottom: 8px;
+    transition: all 0.2s;
+}
+.checkbox-label-large:hover {
+    background: rgba(236, 72, 153, 0.1);
+    border-color: var(--primary);
+}
+.checkbox-label input[type="checkbox"],
+.checkbox-label-large input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+.context-flags {
+    display: grid;
+    gap: 8px;
+    margin-top: 8px;
 }
 
 /* Select Styling */

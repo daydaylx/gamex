@@ -423,8 +423,13 @@ function renderConsentRating(q, existing = {}) {
     const status = existing.status || "MAYBE";
     const interest = existing.interest ?? 2;
     const comfort = existing.comfort ?? 2;
+    const intensity = existing.intensity ?? 3;
+    const confidence = existing.confidence ?? existing.comfort ?? 3;
     const conditions = existing.conditions || "";
     const notes = existing.notes || "";
+    const hardNo = existing.hardNo || false;
+    const notNow = existing.notNow || false;
+    const contextFlags = existing.contextFlags || [];
     const hasDomSub = q.has_dom_sub || false;
     const riskClass = `risk-badge-${q.risk_level || "A"}`;
     const tagsHtml = (q.tags || []).map(t => `<span class="badge tag-badge">${escapeHtml(t)}</span>`).join("");
@@ -537,8 +542,57 @@ function renderConsentRating(q, existing = {}) {
                     <div id="comf_host"></div>
                 </div>
             </div>
+            <div class="split-controls">
+                <div class="control-group">
+                    <label>Intensität (1-5)</label>
+                    <div id="intensity_host"></div>
+                </div>
+                <div class="control-group">
+                    <label>Selbstvertrauen (1-5)</label>
+                    <div id="confidence_host"></div>
+                </div>
+            </div>
         `}
       </div>
+
+      <details class="advanced-toggle" ${detailsOpen || hardNo || notNow || contextFlags.length > 0 ? "open" : ""}>
+        <summary>Erweiterte Optionen</summary>
+        <div class="space-y">
+          <div class="control-group">
+            <label class="checkbox-label">
+              <input type="checkbox" data-k="hardNo" ${hardNo ? "checked" : ""}>
+              <span>Hard Limit (absolut nein, nicht verhandelbar)</span>
+            </label>
+          </div>
+          <div class="control-group">
+            <label class="checkbox-label">
+              <input type="checkbox" data-k="notNow" ${notNow ? "checked" : ""}>
+              <span>Nicht jetzt (später möglich, aber nicht aktuell)</span>
+            </label>
+          </div>
+          <div class="control-group">
+            <label>Kontext-Flags</label>
+            <div class="context-flags">
+              <label class="checkbox-label-large">
+                <input type="checkbox" data-flag="with_preparation" ${contextFlags.includes("with_preparation") ? "checked" : ""}>
+                <span>Nur mit Vorbereitung</span>
+              </label>
+              <label class="checkbox-label-large">
+                <input type="checkbox" data-flag="with_aftercare" ${contextFlags.includes("with_aftercare") ? "checked" : ""}>
+                <span>Nur mit Aftercare</span>
+              </label>
+              <label class="checkbox-label-large">
+                <input type="checkbox" data-flag="in_relationship" ${contextFlags.includes("in_relationship") ? "checked" : ""}>
+                <span>Nur in Beziehung</span>
+              </label>
+              <label class="checkbox-label-large">
+                <input type="checkbox" data-flag="with_safeword" ${contextFlags.includes("with_safeword") ? "checked" : ""}>
+                <span>Nur mit Safe-Word</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </details>
 
       <details class="notes-toggle" ${detailsOpen ? "open" : ""}>
         <summary>Bedingungen & Notizen</summary>
@@ -564,11 +618,20 @@ function renderConsentRating(q, existing = {}) {
     } else {
       wrap.querySelector('#int_host').appendChild(renderRatingSelector('interest', existing.interest ?? interest, 4, labelsInt));
       wrap.querySelector('#comf_host').appendChild(renderRatingSelector('comfort', existing.comfort ?? comfort, 4, labelsComf));
+      wrap.querySelector('#intensity_host').appendChild(renderRatingSelector('intensity', intensity, 5, ["1 (Sanft)", "5 (Intensiv)"]));
+      wrap.querySelector('#confidence_host').appendChild(renderRatingSelector('confidence', confidence, 5, ["1 (Unsicher)", "5 (Sicher)"]));
       wrap.querySelector('[data-k="status"]').value = existing.status || status;
     }
     
     wrap.querySelector('[data-k="conditions"]').value = conditions;
     wrap.querySelector('[data-k="notes"]').value = notes;
+    
+    // Context Flags Event Handler
+    wrap.querySelectorAll('[data-flag]').forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        handleFormChange(wrap);
+      });
+    });
 
     // Change Events
     const detailsEl = wrap.querySelector(".notes-toggle");
@@ -754,10 +817,21 @@ function collectForm() {
                     conditions: c, notes: n
                 };
             } else {
+                const intensityEl = b.querySelector('[data-k="intensity"]');
+                const confidenceEl = b.querySelector('[data-k="confidence"]');
+                const hardNoEl = b.querySelector('[data-k="hardNo"]');
+                const notNowEl = b.querySelector('[data-k="notNow"]');
+                const contextFlags = Array.from(b.querySelectorAll('[data-flag]:checked')).map(cb => cb.dataset.flag);
+                
                 out[qid] = {
                     status: b.querySelector('[data-k="status"]').value,
                     interest: Number(b.querySelector('[data-k="interest"]').value),
                     comfort: Number(b.querySelector('[data-k="comfort"]').value),
+                    intensity: intensityEl ? Number(intensityEl.value) : 3,
+                    confidence: confidenceEl ? Number(confidenceEl.value) : undefined,
+                    hardNo: hardNoEl ? hardNoEl.checked : false,
+                    notNow: notNowEl ? notNowEl.checked : false,
+                    contextFlags: contextFlags.length > 0 ? contextFlags : undefined,
                     conditions: c, notes: n
                 };
             }
@@ -1690,9 +1764,13 @@ function renderCompareView(result) {
   searchInput.type = "search";
   searchInput.placeholder = "Suchen (Label, Modul, Tag)...";
   searchInput.value = state.compareFilters.query || "";
+  let searchDebounceTimer = null;
   searchInput.oninput = () => {
-    state.compareFilters.query = searchInput.value.trim();
-    renderCompareItems($("compareList"), result.items || []);
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+      state.compareFilters.query = searchInput.value.trim();
+      renderCompareItems($("compareList"), result.items || []);
+    }, 300); // Debounce 300ms
   };
   searchWrap.appendChild(searchInput);
   filters.appendChild(searchWrap);
