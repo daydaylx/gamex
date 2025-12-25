@@ -2216,11 +2216,56 @@ function showFABMenu(actions = []) {
   // For now, just show a simple action
 }
 
+// Native Android Features (Capacitor)
+function initNativeFeatures() {
+  // Back Button Handling (Android)
+  if (window.Capacitor && window.Capacitor.Plugins) {
+    const { App } = window.Capacitor.Plugins;
+    if (App && App.addListener) {
+      App.addListener('backButton', ({ canGoBack }) => {
+        if (!canGoBack || state.navOpen) {
+          setNavOpen(false);
+          if (state.currentSession && !state.navOpen) {
+            backHome();
+          }
+        } else {
+          window.history.back();
+        }
+      });
+    }
+    
+    // StatusBar styling
+    const { StatusBar } = window.Capacitor.Plugins;
+    if (StatusBar) {
+      StatusBar.setStyle({ style: 'DARK' });
+      StatusBar.setBackgroundColor({ color: '#1a0a1a' });
+    }
+    
+    // Haptic Feedback (optional, via Capacitor)
+    if (window.Capacitor.Plugins.Haptics) {
+      window.hapticFeedback = {
+        light: () => window.Capacitor.Plugins.Haptics.impact({ style: 'LIGHT' }),
+        medium: () => window.Capacitor.Plugins.Haptics.impact({ style: 'MEDIUM' }),
+        heavy: () => window.Capacitor.Plugins.Haptics.impact({ style: 'HEAVY' })
+      };
+      
+      // Add haptic feedback to important actions
+      document.addEventListener('click', (e) => {
+        if (e.target.matches('.btn.primary, .fab, .mobile-nav-item')) {
+          window.hapticFeedback?.light();
+        }
+      });
+    }
+  }
+}
+
 // Boot
 (async () => {
     await loadTemplates();
     await loadSessions();
     initMobileNavigation();
+    initNativeFeatures();
+    updateOfflineIndicator();
     
     // Update nav on view changes
     const originalBackHome = backHome;
