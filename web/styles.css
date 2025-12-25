@@ -55,6 +55,28 @@ body {
 }
 body.nav-open { overflow: hidden; }
 
+/* Offline Indicator */
+.offline-indicator {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: var(--danger);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  z-index: 2000;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.offline-indicator.visible {
+  transform: translateX(-50%) translateY(0);
+}
+
 .wrap { max-width: 1024px; margin: 0 auto; padding: 24px 16px; }
 .skip-link {
   position: absolute;
