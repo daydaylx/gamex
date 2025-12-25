@@ -10,16 +10,16 @@ und einen Report zu erzeugen: Matches / Explore / Grenzen / Risiko-Flags.
 
 ## Features
 
-- **Verschlüsselte Sessions:** Alle Antworten werden passwortgeschützt gespeichert
+- **Lokale Sessions (Plaintext):** Antworten werden lokal im Klartext gespeichert
 - **Getrennte Antworten:** Person A und B füllen unabhängig voneinander aus
 - **Intelligenter Vergleich:** Automatische Kategorisierung in Matches, Explore-Themen und Grenzen
 - **Risiko-Flags:** Identifizierung von Themen mit hohem Interesse aber niedrigem Komfort
 - **Action Plan:** Vorschläge für die nächsten Experimente basierend auf Matches
 - **Szenarien-Karten:** 20 interaktive Szenarien mit 4-Optionen-System (A/B/C/D)
 - **Export:** Ergebnisse als JSON oder Markdown exportieren
-- **Backup & Restore:** Verschlüsselte Backups erstellen und wiederherstellen
+- **Backup & Restore:** Plaintext-Backups erstellen und wiederherstellen
 - **Optional KI-Analyse:** OpenRouter-Integration für vertiefte Analysen (opt-in)
-- **Android App:** Native Android-App via Capacitor (siehe [APK Build Guide](APK_BUILD_GUIDE.md))
+- **Android App:** Native Android-App via Capacitor (siehe [APK Build Guide](docs/APK_BUILD_GUIDE.md))
 
 ## Verfügbare Templates
 
@@ -90,9 +90,9 @@ Alle psychologischen Module basieren auf peer-reviewed Forschung (2024-aktuell):
 - **Telefonseelsorge:** 0800 111 0 111 (kostenlos, 24/7)
 
 ## Datenschutz
-- Antworten werden pro Session mit einem Passwort verschlüsselt gespeichert.
-- Wenn du das Passwort vergisst, sind die Daten nicht wiederherstellbar (Absicht).
-- KI-Analyse ist optional und standardmäßig nicht nötig. Wenn du sie nutzt: du sendest Daten an einen Provider.
+- Antworten werden lokal im Klartext gespeichert (Backend: SQLite-Datei im User-Data-Dir; Offline-Modus: IndexedDB im Browser/App-WebView).
+- **Wichtig:** Gerätezugriff = Datenzugriff. Es gibt keine Passwort-/Verschlüsselungsfunktion mehr.
+- KI-Analyse ist optional. Wenn du sie nutzt, sendest du Daten an einen Provider (z.B. OpenRouter).
 
 ## Medizinischer Hinweis
 Das Tool ist keine medizinische Beratung. Bei Schmerzen/Blut/anhaltenden Beschwerden nach intensiven Praktiken:
@@ -103,6 +103,8 @@ Das Tool ist keine medizinische Beratung. Bei Schmerzen/Blut/anhaltenden Beschwe
 ### Web-Version (Lokal)
 
 ```bash
+cd backend
+
 # Python Virtual Environment erstellen
 python3 -m venv .venv
 source .venv/bin/activate
@@ -111,7 +113,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # Server starten
-python -m app
+python3 -m app
 ```
 
 Dann im Browser öffnen: [http://127.0.0.1:8000](http://127.0.0.1:8000)
@@ -120,11 +122,13 @@ Dann im Browser öffnen: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ### Android App
 
-Für die native Android-App siehe die detaillierte Anleitung: [APK_BUILD_GUIDE.md](APK_BUILD_GUIDE.md)
+Für die native Android-App siehe die detaillierte Anleitung: [docs/APK_BUILD_GUIDE.md](docs/APK_BUILD_GUIDE.md)
 
 **Kurzfassung:**
 ```bash
-# Node.js Abhängigkeiten installieren
+cd apps/mobile
+
+# Node.js Abhängigkeiten installieren (Capacitor)
 npm install
 
 # Capacitor Android Projekt erstellen
@@ -139,7 +143,7 @@ npx cap open android
 
 ## Dokumentation
 
-- **[APK Build Guide](APK_BUILD_GUIDE.md)** - Detaillierte Anleitung zum Erstellen einer Android APK
+- **[APK Build Guide](docs/APK_BUILD_GUIDE.md)** - Detaillierte Anleitung zum Erstellen einer Android APK
 - **[Psychologie Leitfaden](docs/PSYCHOLOGIE_LEITFADEN.md)** - Wissenschaftliche Grundlagen der psychologischen Module
 - **[Forschung & Zitate](docs/FORSCHUNG_ZITATE.md)** - Peer-reviewed Studien und Quellen
 - **[Aftercare Guide](docs/AFTERCARE_GUIDE.md)** - Tiefe Einführung zu Aftercare und Drop-Physiologie
