@@ -1,7 +1,7 @@
 import os
 import sqlite3
 import pytest
-from app.db import init_db, db, get_conn, DB_PATH
+from app.db import init_db, db, get_conn, get_db_path
 
 
 class TestInitDb:
@@ -69,11 +69,8 @@ class TestInitDb:
             
             assert "id" in columns
             assert "template_id" in columns
-            assert "salt" in columns
-            assert columns["salt"] == "BLOB"
-            assert "pw_verifier" in columns
-            assert "pin_a_hash" in columns
-            assert "pin_b_hash" in columns
+            assert "name" in columns
+            assert "created_at" in columns
         finally:
             conn.close()
             
@@ -87,8 +84,8 @@ class TestInitDb:
             
             assert "session_id" in columns
             assert "person" in columns
-            assert "encrypted_blob" in columns
-            assert columns["encrypted_blob"] == "BLOB"
+            assert "json" in columns
+            assert columns["json"] == "TEXT"
             assert "updated_at" in columns
         finally:
             conn.close()
@@ -202,8 +199,8 @@ class TestForeignKeyConstraints:
         try:
             with pytest.raises(sqlite3.IntegrityError):
                 conn.execute(
-                    "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier) VALUES (?,?,?,?,?,?)",
-                    ("session_id", "Test Session", "non_existent_template", "2024-01-01T00:00:00Z", b"salt", "verifier")
+                    "INSERT INTO sessions(id, name, template_id, created_at) VALUES (?,?,?,?)",
+                    ("session_id", "Test Session", "non_existent_template", "2024-01-01T00:00:00Z")
                 )
                 conn.commit()
         finally:
@@ -218,8 +215,8 @@ class TestForeignKeyConstraints:
                 ("template_id", "Template", 1, "{}", "2024-01-01T00:00:00Z")
             )
             conn.execute(
-                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier) VALUES (?,?,?,?,?,?)",
-                ("session_id", "Session", "template_id", "2024-01-01T00:00:00Z", b"salt", "verifier")
+                "INSERT INTO sessions(id, name, template_id, created_at) VALUES (?,?,?,?)",
+                ("session_id", "Session", "template_id", "2024-01-01T00:00:00Z")
             )
         
         # Try to insert response with non-existent session
@@ -227,8 +224,8 @@ class TestForeignKeyConstraints:
         try:
             with pytest.raises(sqlite3.IntegrityError):
                 conn.execute(
-                    "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?)",
-                    ("non_existent_session", "A", b"blob", "2024-01-01T00:00:00Z")
+                    "INSERT INTO responses(session_id, person, json, updated_at) VALUES (?,?,?,?)",
+                    ("non_existent_session", "A", "{}", "2024-01-01T00:00:00Z")
                 )
                 conn.commit()
         finally:
@@ -243,12 +240,12 @@ class TestForeignKeyConstraints:
                 ("template_id", "Template", 1, "{}", "2024-01-01T00:00:00Z")
             )
             conn.execute(
-                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier) VALUES (?,?,?,?,?,?)",
-                ("session_id", "Session", "template_id", "2024-01-01T00:00:00Z", b"salt", "verifier")
+                "INSERT INTO sessions(id, name, template_id, created_at) VALUES (?,?,?,?)",
+                ("session_id", "Session", "template_id", "2024-01-01T00:00:00Z")
             )
             conn.execute(
-                "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?)",
-                ("session_id", "A", b"blob", "2024-01-01T00:00:00Z")
+                "INSERT INTO responses(session_id, person, json, updated_at) VALUES (?,?,?,?)",
+                ("session_id", "A", "{}", "2024-01-01T00:00:00Z")
             )
         
         # Delete session
@@ -275,16 +272,16 @@ class TestPersonConstraint:
                 ("template_id", "Template", 1, "{}", "2024-01-01T00:00:00Z")
             )
             conn.execute(
-                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier) VALUES (?,?,?,?,?,?)",
-                ("session_id", "Session", "template_id", "2024-01-01T00:00:00Z", b"salt", "verifier")
+                "INSERT INTO sessions(id, name, template_id, created_at) VALUES (?,?,?,?)",
+                ("session_id", "Session", "template_id", "2024-01-01T00:00:00Z")
             )
             conn.execute(
-                "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?)",
-                ("session_id", "A", b"blob", "2024-01-01T00:00:00Z")
+                "INSERT INTO responses(session_id, person, json, updated_at) VALUES (?,?,?,?)",
+                ("session_id", "A", "{}", "2024-01-01T00:00:00Z")
             )
             conn.execute(
-                "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?)",
-                ("session_id", "B", b"blob", "2024-01-01T00:00:00Z")
+                "INSERT INTO responses(session_id, person, json, updated_at) VALUES (?,?,?,?)",
+                ("session_id", "B", "{}", "2024-01-01T00:00:00Z")
             )
         
         conn = get_conn()
@@ -304,16 +301,16 @@ class TestPersonConstraint:
                 ("template_id", "Template", 1, "{}", "2024-01-01T00:00:00Z")
             )
             conn.execute(
-                "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier) VALUES (?,?,?,?,?,?)",
-                ("session_id", "Session", "template_id", "2024-01-01T00:00:00Z", b"salt", "verifier")
+                "INSERT INTO sessions(id, name, template_id, created_at) VALUES (?,?,?,?)",
+                ("session_id", "Session", "template_id", "2024-01-01T00:00:00Z")
             )
         
         conn = get_conn()
         try:
             with pytest.raises(sqlite3.IntegrityError):
                 conn.execute(
-                    "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?)",
-                    ("session_id", "C", b"blob", "2024-01-01T00:00:00Z")
+                    "INSERT INTO responses(session_id, person, json, updated_at) VALUES (?,?,?,?)",
+                    ("session_id", "C", "{}", "2024-01-01T00:00:00Z")
                 )
                 conn.commit()
         finally:

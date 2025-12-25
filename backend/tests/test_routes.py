@@ -67,9 +67,6 @@ class TestSessions:
             json={
                 "name": "Test Session",
                 "template_id": sample_template["id"],
-                "password": "test_password_123",
-                "pin_a": "1234",
-                "pin_b": "5678"
             }
         )
         
@@ -88,7 +85,6 @@ class TestSessions:
             json={
                 "name": "Test Session",
                 "template_id": "non_existent",
-                "password": "test_password_123"
             }
         )
         
@@ -137,8 +133,6 @@ class TestResponses:
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"],
                 "responses": responses
             }
         )
@@ -151,10 +145,7 @@ class TestResponses:
         """Test loading responses when none exist."""
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/load",
-            json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"]
-            }
+            json={}
         )
         
         assert response.status_code == 200
@@ -175,8 +166,6 @@ class TestResponses:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"],
                 "responses": responses
             }
         )
@@ -184,10 +173,7 @@ class TestResponses:
         # Load
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/load",
-            json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"]
-            }
+            json={}
         )
         
         assert response.status_code == 200
@@ -195,90 +181,19 @@ class TestResponses:
         assert "Q1" in data["responses"]
         assert data["responses"]["Q1"]["status"] == "YES"
         
-    def test_save_responses_wrong_password(self, test_client, session_data):
-        """Test saving responses with wrong password returns 401."""
-        response = test_client.post(
-            f"/api/sessions/{session_data['session_id']}/responses/A/save",
-            json={
-                "password": "wrong_password",
-                "pin": session_data["pin_a"],
-                "responses": {}
-            }
-        )
-        
-        assert response.status_code == 401
-        
-    def test_save_responses_wrong_pin(self, test_client, session_data):
-        """Test saving responses with wrong PIN returns 401."""
-        response = test_client.post(
-            f"/api/sessions/{session_data['session_id']}/responses/A/save",
-            json={
-                "password": session_data["password"],
-                "pin": "wrong_pin",
-                "responses": {}
-            }
-        )
-        
-        assert response.status_code == 401
+    # Password/PIN protection has been removed; plaintext local storage is used.
         
     def test_save_responses_invalid_person(self, test_client, session_data):
         """Test saving responses with invalid person returns 400."""
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/C/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"],
                 "responses": {}
             }
         )
         
         assert response.status_code == 400
-        
-    def test_load_responses_wrong_password(self, test_client, session_data):
-        """Test loading responses with wrong password returns 401."""
-        response = test_client.post(
-            f"/api/sessions/{session_data['session_id']}/responses/A/load",
-            json={
-                "password": "wrong_password",
-                "pin": session_data["pin_a"]
-            }
-        )
-        
-        assert response.status_code == 401
-        
-    def test_save_responses_no_pin_required(self, test_client, sample_template):
-        """Test saving responses when no PIN is required."""
-        from app.template_store import save_template
-        
-        save_template(
-            sample_template["id"],
-            sample_template["name"],
-            sample_template["version"],
-            sample_template
-        )
-        
-        # Create session without PINs
-        create_resp = test_client.post(
-            "/api/sessions",
-            json={
-                "name": "No PIN Session",
-                "template_id": sample_template["id"],
-                "password": "test_password_123"
-            }
-        )
-        session_id = create_resp.json()["id"]
-        
-        # Save responses without PIN
-        response = test_client.post(
-            f"/api/sessions/{session_id}/responses/A/save",
-            json={
-                "password": "test_password_123",
-                "pin": None,
-                "responses": {"Q1": {"status": "YES", "interest": 3, "comfort": 4}}
-            }
-        )
-        
-        assert response.status_code == 200
+    # Password/PIN checks removed.
 
 
 class TestCompare:
@@ -299,8 +214,6 @@ class TestCompare:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"],
                 "responses": responses_a
             }
         )
@@ -308,8 +221,6 @@ class TestCompare:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/B/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_b"],
                 "responses": responses_b
             }
         )
@@ -317,7 +228,7 @@ class TestCompare:
         # Compare
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/compare",
-            json={"password": session_data["password"]}
+            json={}
         )
         
         assert response.status_code == 200
@@ -331,19 +242,12 @@ class TestCompare:
         """Test comparing when responses are missing returns 400."""
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/compare",
-            json={"password": session_data["password"]}
+            json={}
         )
         
         assert response.status_code == 400
         
-    def test_compare_wrong_password(self, test_client, session_data):
-        """Test comparing with wrong password returns 401."""
-        response = test_client.post(
-            f"/api/sessions/{session_data['session_id']}/compare",
-            json={"password": "wrong_password"}
-        )
-        
-        assert response.status_code == 401
+    # Password protection removed.
 
 
 class TestExport:
@@ -357,8 +261,6 @@ class TestExport:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"],
                 "responses": responses_a
             }
         )
@@ -366,15 +268,13 @@ class TestExport:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/B/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_b"],
                 "responses": responses_b
             }
         )
         
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/export/json",
-            json={"password": session_data["password"]}
+            json={}
         )
         
         assert response.status_code == 200
@@ -394,8 +294,6 @@ class TestExport:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"],
                 "responses": responses_a
             }
         )
@@ -403,15 +301,13 @@ class TestExport:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/B/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_b"],
                 "responses": responses_b
             }
         )
         
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/export/markdown",
-            json={"password": session_data["password"]}
+            json={}
         )
         
         assert response.status_code == 200
@@ -548,8 +444,6 @@ class TestAIAnalyze:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"],
                 "responses": responses_a
             }
         )
@@ -557,8 +451,6 @@ class TestAIAnalyze:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/B/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_b"],
                 "responses": responses_b
             }
         )
@@ -583,7 +475,6 @@ class TestAIAnalyze:
             response = test_client.post(
                 f"/api/sessions/{session_data['session_id']}/ai/analyze",
                 json={
-                    "password": session_data["password"],
                     "provider": "openrouter",
                     "api_key": "test_key",
                     "model": "test-model",
@@ -600,7 +491,7 @@ class TestAIAnalyze:
         """Test listing AI reports when none exist."""
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/ai/list",
-            json={"password": session_data["password"]}
+            json={}
         )
         
         assert response.status_code == 200
@@ -615,8 +506,6 @@ class TestAIAnalyze:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/A/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_a"],
                 "responses": responses_a
             }
         )
@@ -624,8 +513,6 @@ class TestAIAnalyze:
         test_client.post(
             f"/api/sessions/{session_data['session_id']}/responses/B/save",
             json={
-                "password": session_data["password"],
-                "pin": session_data["pin_b"],
                 "responses": responses_b
             }
         )
@@ -633,7 +520,6 @@ class TestAIAnalyze:
         response = test_client.post(
             f"/api/sessions/{session_data['session_id']}/ai/analyze",
             json={
-                "password": session_data["password"],
                 "provider": "invalid_provider",
                 "api_key": "test_key",
                 "model": "test-model"

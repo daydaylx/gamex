@@ -7,7 +7,6 @@ from fastapi.testclient import TestClient
 
 from app.main import create_app
 from app.db import init_db, get_conn
-from app.crypto import create_key_material
 
 
 @pytest.fixture(scope="function")
@@ -229,18 +228,6 @@ def sample_responses_with_variants() -> Dict[str, Dict[str, Any]]:
 
 
 @pytest.fixture
-def test_password():
-    """Standard test password."""
-    return "test_password_123"
-
-
-@pytest.fixture
-def test_key_material(test_password):
-    """Generate key material for testing."""
-    return create_key_material(test_password)
-
-
-@pytest.fixture
 def test_client(test_db):
     """FastAPI test client with test database."""
     app = create_app()
@@ -264,9 +251,6 @@ def session_data(test_db, test_client, sample_template):
         json={
             "name": "Test Session",
             "template_id": sample_template["id"],
-            "password": "test_password_123",
-            "pin_a": "1234",
-            "pin_b": "5678"
         }
     )
     assert response.status_code == 200
@@ -274,9 +258,6 @@ def session_data(test_db, test_client, sample_template):
     
     return {
         "session_id": session["id"],
-        "password": "test_password_123",
-        "pin_a": "1234",
-        "pin_b": "5678"
     }
 
 
