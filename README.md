@@ -94,6 +94,24 @@ Alle psychologischen Module basieren auf peer-reviewed Forschung (2024-aktuell):
 - **Wichtig:** Gerätezugriff = Datenzugriff. Es gibt keine Passwort-/Verschlüsselungsfunktion mehr.
 - KI-Analyse ist optional. Wenn du sie nutzt, sendest du Daten an einen Provider (z.B. OpenRouter).
 
+## Architektur (Module / Zuständigkeiten)
+
+- **Domain-Logik (`core/`)**
+  - Server: `backend/app/core/compare.py`
+  - Offline: `apps/web/web/core/compare.js`
+  - Enthält Vergleich/Report-Klassifizierung (MATCH/EXPLORE/BOUNDARY), Flags, Action-Plan
+- **Templates (`templates/`)**
+  - Server Normalisierung/Loader: `backend/app/templates/normalize.py` + `backend/app/templates/loader.py`
+  - Offline Normalisierung: `apps/web/web/templates/normalize.js`
+  - Ziel: stabile Template-Form trotz älterer Shapes (Defaults/Migration-Glue)
+- **Persistenz (`storage/`)**
+  - Server SQLite Adapter: `backend/app/storage/sqlite.py`
+  - Offline IndexedDB Adapter: `apps/web/web/storage/indexeddb.js`
+  - Wichtig: bleibt Plaintext lokal (kein Auth/keine Verschlüsselung)
+- **UI (`ui/`)**
+  - Haupt-UI: `apps/web/web/app.js` (Rendering, Interaktion, API-Aufrufe)
+  - Template-Visibility-Regeln: `apps/web/web/templates/dependencies.js`
+
 ## Medizinischer Hinweis
 Das Tool ist keine medizinische Beratung. Bei Schmerzen/Blut/anhaltenden Beschwerden nach intensiven Praktiken:
 ärztlich abklären.

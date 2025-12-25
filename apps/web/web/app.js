@@ -1097,7 +1097,9 @@ function updateVisibility(responses = null) {
   const host = $("formHost");
   state.currentTemplate.modules.forEach(m => m.questions.forEach(q => {
     if (q.depends_on) {
-       const visible = evaluateDependency(q.depends_on, data);
+       const visible = (window.TemplateDependencies && typeof window.TemplateDependencies.evaluateDependency === "function")
+         ? window.TemplateDependencies.evaluateDependency(q.depends_on, data)
+         : false;
        const el = host.querySelector(`.item[data-qid="${q.id}"]`);
        if (el) el.classList.toggle("hidden", !visible);
     }
@@ -1114,47 +1116,6 @@ function scheduleValidation() {
   if (!state.validationEnabled) return;
   if (state.validationTimer) clearTimeout(state.validationTimer);
   state.validationTimer = setTimeout(() => validateAndShowHints(), 400);
-}
-function evaluateDependency(dep, responses) {
-  const t = responses[dep.id];
-  if (!t) return false;
-  
-  // Bestehende Logik für values
-  if (dep.values && Array.isArray(dep.values)) {
-    const val = t.value || t.status || t.dom_status || t.active_status;
-    return dep.values.includes(val);
-  }
-  
-  // Neue Logik für scale_0_10 Bedingungen
-  if (dep.condition) {
-    const value = t.value;
-    if (value === undefined || value === null) return false;
-    
-    // Parse condition: "scale_0_10 >= 5" oder ">= 5"
-    const match = dep.condition.match(/(>=|<=|>|<|==)\s*(\d+)/);
-    if (match) {
-      const operator = match[1];
-      const threshold = parseInt(match[2]);
-      switch(operator) {
-        case ">=": return value >= threshold;
-        case "<=": return value <= threshold;
-        case ">": return value > threshold;
-        case "<": return value < threshold;
-        case "==": return value == threshold;
-      }
-    }
-  }
-  
-  // Bestehende conditions Logik
-  if (dep.conditions) {
-    const val = t.value || t.status || t.dom_status || t.active_status;
-    return dep.conditions.every(c => {
-        if(c.operator === "!=" && c.value === val) return false;
-        return true; 
-    });
-  }
-  
-  return false;
 }
 
 // Autosave

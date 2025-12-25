@@ -7,7 +7,6 @@ from typing import Any, Dict
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, Response
 
-from app.db import db
 from app.models import (
     TemplateListItem,
     CreateSessionRequest,
@@ -23,222 +22,19 @@ from app.models import (
     RestoreRequest,
 )
 from app.backup import create_backup, restore_backup
-from app.template_store import list_templates, load_template
+from app.template_store import list_templates
+from app.templates.loader import load_template
 from app.compare import compare
 from app.ai import openrouter_analyze, list_ai_reports
 from app.logging import log_api_call, log_performance
+from app.storage import get_storage
+from app.core.validation import validate_responses as _validate_responses_core
+
+storage = get_storage()
 
 def validate_responses(template: Dict[str, Any], responses: Dict[str, Any]) -> tuple:
     """Validate responses against template. Returns (errors, warnings) as structured objects."""
-    errors = []
-    warnings = []
-    
-    if not template or "modules" not in template:
-        return errors, warnings
-    
-    question_map = {}
-    for mod in template.get("modules", []):
-        for q in mod.get("questions", []):
-            question_map[q.get("id")] = q
-    
-    for qid, resp_data in responses.items():
-        if not isinstance(resp_data, dict):
-            continue
-            
-        question = question_map.get(qid)
-        if not question:
-            warnings.append({
-                "question_id": qid,
-                "question_label": qid,
-                "field": None,
-                "message": f"Unknown question ID (may be from different template version)",
-                "type": "unknown_question"
-            })
-            continue
-        
-        schema = question.get("schema")
-        risk_level = question.get("risk_level", "A")
-        label = question.get("label", qid)
-        
-        if schema == "consent_rating":
-            # Dom/Sub Varianten
-            if "dom_status" in resp_data or "sub_status" in resp_data:
-                dom_status = resp_data.get("dom_status")
-                sub_status = resp_data.get("sub_status")
-                conditions = resp_data.get("conditions", "").strip()
-                
-                if dom_status == "MAYBE" and not conditions:
-                    errors.append({
-                        "question_id": qid,
-                        "question_label": label,
-                        "field": "dom_conditions",
-                        "message": "Dom Status 'VIELLEICHT' erfordert Bedingungen",
-                        "type": "missing_required"
-                    })
-                if sub_status == "MAYBE" and not conditions:
-                    errors.append({
-                        "question_id": qid,
-                        "question_label": label,
-                        "field": "sub_conditions",
-                        "message": "Sub Status 'VIELLEICHT' erfordert Bedingungen",
-                        "type": "missing_required"
-                    })
-                
-                # Validate ranges für dom/sub
-                for variant in ["dom", "sub"]:
-                    interest = resp_data.get(f"{variant}_interest")
-                    comfort = resp_data.get(f"{variant}_comfort")
-                    if interest is not None and (interest < 0 or interest > 4):
-                        errors.append({
-                            "question_id": qid,
-                            "question_label": label,
-                            "field": f"{variant}_interest",
-                            "message": f"{variant.capitalize()} Interesse muss zwischen 0 und 4 liegen",
-                            "type": "range_error"
-                        })
-                    if comfort is not None and (comfort < 0 or comfort > 4):
-                        errors.append({
-                            "question_id": qid,
-                            "question_label": label,
-                            "field": f"{variant}_comfort",
-                            "message": f"{variant.capitalize()} Komfort muss zwischen 0 und 4 liegen",
-                            "type": "range_error"
-                        })
-                    
-                    # Low comfort high interest warning
-                    if interest is not None and comfort is not None:
-                        if interest >= 3 and comfort <= 2:
-                            warnings.append({
-                                "question_id": qid,
-                                "question_label": label,
-                                "field": f"{variant}_interest",
-                                "message": f"{variant.capitalize()}: Hohes Interesse ({interest}) aber niedriger Komfort ({comfort})",
-                                "type": "low_comfort_high_interest"
-                            })
-            
-            # Active/Passive Varianten
-            elif "active_status" in resp_data or "passive_status" in resp_data:
-                active_status = resp_data.get("active_status")
-                passive_status = resp_data.get("passive_status")
-                conditions = resp_data.get("conditions", "").strip()
-                
-                if active_status == "MAYBE" and not conditions:
-                    errors.append({
-                        "question_id": qid,
-                        "question_label": label,
-                        "field": "active_conditions",
-                        "message": "Aktiv Status 'VIELLEICHT' erfordert Bedingungen",
-                        "type": "missing_required"
-                    })
-                if passive_status == "MAYBE" and not conditions:
-                    errors.append({
-                        "question_id": qid,
-                        "question_label": label,
-                        "field": "passive_conditions",
-                        "message": "Passiv Status 'VIELLEICHT' erfordert Bedingungen",
-                        "type": "missing_required"
-                    })
-                
-                # Validate ranges für active/passive
-                for variant in ["active", "passive"]:
-                    interest = resp_data.get(f"{variant}_interest")
-                    comfort = resp_data.get(f"{variant}_comfort")
-                    if interest is not None and (interest < 0 or interest > 4):
-                        errors.append({
-                            "question_id": qid,
-                            "question_label": label,
-                            "field": f"{variant}_interest",
-                            "message": f"{variant.capitalize()} Interesse muss zwischen 0 und 4 liegen",
-                            "type": "range_error"
-                        })
-                    if comfort is not None and (comfort < 0 or comfort > 4):
-                        errors.append({
-                            "question_id": qid,
-                            "question_label": label,
-                            "field": f"{variant}_comfort",
-                            "message": f"{variant.capitalize()} Komfort muss zwischen 0 und 4 liegen",
-                            "type": "range_error"
-                        })
-                    
-                    # Low comfort high interest warning
-                    if interest is not None and comfort is not None:
-                        if interest >= 3 and comfort <= 2:
-                            warnings.append({
-                                "question_id": qid,
-                                "question_label": label,
-                                "field": f"{variant}_interest",
-                                "message": f"{variant.capitalize()}: Hohes Interesse ({interest}) aber niedriger Komfort ({comfort})",
-                                "type": "low_comfort_high_interest"
-                            })
-            
-            # Standard consent_rating
-            else:
-                status = resp_data.get("status")
-                conditions = resp_data.get("conditions", "").strip()
-                interest = resp_data.get("interest")
-                comfort = resp_data.get("comfort")
-                
-                # MAYBE requires conditions
-                if status == "MAYBE" and not conditions:
-                    errors.append({
-                        "question_id": qid,
-                        "question_label": label,
-                        "field": "conditions",
-                        "message": "Bei Status 'VIELLEICHT' müssen Bedingungen angegeben werden",
-                        "type": "missing_required"
-                    })
-                
-                # Validate ranges
-                if interest is not None and (interest < 0 or interest > 4):
-                    errors.append({
-                        "question_id": qid,
-                        "question_label": label,
-                        "field": "interest",
-                        "message": "Interesse muss zwischen 0 und 4 liegen",
-                        "type": "range_error"
-                    })
-                if comfort is not None and (comfort < 0 or comfort > 4):
-                    errors.append({
-                        "question_id": qid,
-                        "question_label": label,
-                        "field": "comfort",
-                        "message": "Komfort muss zwischen 0 und 4 liegen",
-                        "type": "range_error"
-                    })
-                
-                # Low comfort high interest warning
-                if interest is not None and comfort is not None:
-                    if interest >= 3 and comfort <= 2:
-                        warnings.append({
-                            "question_id": qid,
-                            "question_label": label,
-                            "field": "interest",
-                            "message": f"Hohes Interesse ({interest}) aber niedriger Komfort ({comfort})",
-                            "type": "low_comfort_high_interest"
-                        })
-                
-                # High-risk questions should have conditions if YES
-                if risk_level == "C" and status == "YES" and not conditions:
-                    warnings.append({
-                        "question_id": qid,
-                        "question_label": label,
-                        "field": "conditions",
-                        "message": "High-Risk Frage: Bitte Bedingungen für Sicherheit notieren",
-                        "type": "high_risk_missing_conditions"
-                    })
-        
-        elif schema == "scale_0_10":
-            value = resp_data.get("value")
-            if value is not None and (value < 0 or value > 10):
-                errors.append({
-                    "question_id": qid,
-                    "question_label": label,
-                    "field": "value",
-                    "message": "Wert muss zwischen 0 und 10 liegen",
-                    "type": "range_error"
-                })
-    
-    return errors, warnings
+    return _validate_responses_core(template, responses)
 
 api_router = APIRouter()
 
@@ -262,26 +58,18 @@ def get_template(template_id: str) -> Dict[str, Any]:
 
 @api_router.get("/sessions", response_model=list[SessionListItem])
 def sessions():
-    with db() as conn:
-        rows = conn.execute("""
-            SELECT s.id, s.name, s.template_id, s.created_at,
-                   (SELECT 1 FROM responses r WHERE r.session_id=s.id AND r.person='A') AS has_a,
-                   (SELECT 1 FROM responses r WHERE r.session_id=s.id AND r.person='B') AS has_b
-            FROM sessions s
-            ORDER BY s.created_at DESC
-        """).fetchall()
-
-    out = []
-    for r in rows:
-        out.append(SessionListItem(
+    rows = storage.list_sessions()
+    return [
+        SessionListItem(
             id=r["id"],
             name=r["name"],
             template_id=r["template_id"],
             created_at=r["created_at"],
             has_a=bool(r["has_a"]),
             has_b=bool(r["has_b"]),
-        ))
-    return out
+        )
+        for r in rows
+    ]
 
 @api_router.post("/sessions", response_model=SessionListItem)
 def create_session(req: CreateSessionRequest):
@@ -294,11 +82,12 @@ def create_session(req: CreateSessionRequest):
     session_id = str(uuid.uuid4())
     created_at = _utcnow()
 
-    with db() as conn:
-        conn.execute(
-            "INSERT INTO sessions(id, name, template_id, created_at) VALUES (?,?,?,?)",
-            (session_id, req.name, req.template_id, created_at),
-        )
+    storage.create_session(
+        session_id=session_id,
+        name=req.name,
+        template_id=req.template_id,
+        created_at=created_at,
+    )
 
     return SessionListItem(
         id=session_id,
@@ -310,20 +99,17 @@ def create_session(req: CreateSessionRequest):
     )
 
 def _load_session_row(session_id: str):
-    with db() as conn:
-        row = conn.execute("SELECT * FROM sessions WHERE id = ?", (session_id,)).fetchone()
-    if not row:
+    try:
+        return storage.get_session_row(session_id)
+    except KeyError:
         raise HTTPException(status_code=404, detail="Session not found")
-    return row
 
 @api_router.get("/sessions/{session_id}", response_model=SessionInfo)
 def session_info(session_id: str):
     srow = _load_session_row(session_id)
     tpl = load_template(srow["template_id"])
 
-    with db() as conn:
-        has_a = conn.execute("SELECT 1 FROM responses WHERE session_id=? AND person='A'", (session_id,)).fetchone()
-        has_b = conn.execute("SELECT 1 FROM responses WHERE session_id=? AND person='B'", (session_id,)).fetchone()
+    has_a, has_b = storage.has_responses(session_id)
 
     return SessionInfo(
         id=srow["id"],
@@ -340,12 +126,10 @@ def load_responses(session_id: str, person: str, req: LoadResponsesRequest):
         raise HTTPException(status_code=400, detail="Invalid person")
     srow = _load_session_row(session_id)
 
-    with db() as conn:
-        row = conn.execute("SELECT json FROM responses WHERE session_id=? AND person=?", (session_id, person)).fetchone()
-    if not row:
+    data = storage.load_responses(session_id=session_id, person=person)
+    if not data:
         return {"responses": {}}
-
-    return {"responses": json.loads(row["json"])}
+    return {"responses": data}
 
 @api_router.post("/sessions/{session_id}/responses/{person}/save")
 def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
@@ -363,35 +147,24 @@ def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
     
     # Return warnings but only block on errors
     if validation_errors:
-        raise HTTPException(
+        return JSONResponse(
             status_code=400,
-            detail=json.dumps({
+            content={
                 "message": "Validation errors",
                 "errors": validation_errors,
-                "warnings": validation_warnings
-            })
+                "warnings": validation_warnings,
+            },
         )
-
-    payload = json.dumps(req.responses, ensure_ascii=False)
-
-    with db() as conn:
-        conn.execute(
-            "INSERT INTO responses(session_id, person, json, updated_at) VALUES (?,?,?,?) "
-            "ON CONFLICT(session_id, person) DO UPDATE SET json=excluded.json, updated_at=excluded.updated_at",
-            (session_id, person, payload, _utcnow()),
-        )
-    return {"ok": True, "updated_at": _utcnow()}
+    now = _utcnow()
+    storage.save_responses(session_id=session_id, person=person, responses=req.responses, updated_at=now)
+    return {"ok": True, "updated_at": now}
 
 def _load_both_responses(session_id: str):
     srow = _load_session_row(session_id)
-    with db() as conn:
-        ra = conn.execute("SELECT json FROM responses WHERE session_id=? AND person='A'", (session_id,)).fetchone()
-        rb = conn.execute("SELECT json FROM responses WHERE session_id=? AND person='B'", (session_id,)).fetchone()
-    if not ra or not rb:
+    try:
+        resp_a, resp_b = storage.load_both_responses(session_id=session_id)
+    except ValueError:
         raise HTTPException(status_code=400, detail="Need both A and B responses to compare")
-
-    resp_a = json.loads(ra["json"])
-    resp_b = json.loads(rb["json"])
     return srow, resp_a, resp_b
 
 @api_router.post("/sessions/{session_id}/compare", response_model=CompareResult)

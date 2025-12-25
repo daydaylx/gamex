@@ -8,6 +8,9 @@ Diese Dokumentation richtet sich an Entwickler, die am Intimacy Questionnaire To
 gamex/
 ├── backend/                # Python Backend (FastAPI)
 │   ├── app/                # Python package (Entry: python3 -m app)
+│   │   ├── core/           # Domain-Logik (vergleich/Report; framework-agnostisch)
+│   │   ├── templates/       # Template Loader + Normalisierung (Migration-Glue)
+│   │   ├── storage/         # Persistenz-Adapter (SQLite Provider)
 │   ├── tests/              # Pytest suite
 │   ├── requirements.txt    # Python Dependencies
 │   └── pytest.ini
@@ -19,6 +22,9 @@ gamex/
 │   │       ├── styles.css
 │   │       ├── validation.js
 │   │       ├── local-api.js  # Offline-Modus (IndexedDB, Plaintext)
+│   │       ├── core/         # Domain-Logik (Compare) für Offline
+│   │       ├── templates/     # Normalisierung + Dependency-Auswertung
+│   │       ├── storage/       # IndexedDB Adapter (Offline Persistenz)
 │   │       └── data/
 │   └── mobile/             # Capacitor Wrapper (Android)
 │       ├── package.json
@@ -349,11 +355,10 @@ Logging-Konfiguration: `backend/app/logging.py`
 
 ### Neues Template hinzufügen
 
-1. JSON-Datei in `backend/app/templates/` erstellen
-2. Template in `backend/app/template_store.py` registrieren
-3. `ensure_*_template()` Funktion hinzufügen
-4. In `backend/app/main.py` aufrufen
-5. **Wichtig:** Für Offline-Support auch nach `apps/web/web/data/templates/` kopieren und in `apps/web/web/data/templates.json` eintragen
+1. **Template-Datei**: JSON in `backend/app/templates/` erstellen/ablegen
+2. **Backend-Registrierung**: in `backend/app/template_store.py` per `ensure_*_template()` sicherstellen, dass es in die DB geladen wird (und in `backend/app/main.py` aufrufen)
+3. **Normalisierung/Migration** (falls nötig): in `backend/app/templates/normalize.py` (Backend) und `apps/web/web/templates/normalize.js` (Offline) über Defaults/Mapping abwärtskompatibel halten
+4. **Offline-Support**: Template-Datei nach `apps/web/web/data/templates/` kopieren und `apps/web/web/data/templates.json` aktualisieren
 
 ### Templates synchronisieren (Offline-Fall)
 
@@ -378,8 +383,17 @@ cp backend/app/templates/psycho_enhanced_v3.json apps/web/web/data/templates/
 ### Frontend-Änderungen
 
 - Haupt-Logik: `apps/web/web/app.js`
+- Compare Domain-Logik (Offline): `apps/web/web/core/compare.js`
+- Template Normalisierung/Visibility-Regeln: `apps/web/web/templates/normalize.js` und `apps/web/web/templates/dependencies.js`
+- IndexedDB Adapter (Offline Persistenz): `apps/web/web/storage/indexeddb.js`
 - Styling: `apps/web/web/styles.css`
 - HTML: `apps/web/web/index.html`
+
+### Wo ändere ich was? (Kurz)
+
+- **Matching/Vergleichslogik**: `backend/app/core/compare.py` (Server) und `apps/web/web/core/compare.js` (Offline)
+- **Template-Defaults/Migration**: `backend/app/templates/normalize.py` (Server) und `apps/web/web/templates/normalize.js` (Offline)
+- **Persistenz**: `backend/app/storage/sqlite.py` (SQLite) und `apps/web/web/storage/indexeddb.js` (IndexedDB)
 
 ## Troubleshooting
 
