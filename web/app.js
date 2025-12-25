@@ -38,21 +38,60 @@ const state = {
   activeDeck: null,
 };
 
+// Offline detection
+let isOnline = navigator.onLine;
+window.addEventListener('online', () => {
+    isOnline = true;
+    updateOfflineIndicator();
+});
+window.addEventListener('offline', () => {
+    isOnline = false;
+    updateOfflineIndicator();
+});
+
+function updateOfflineIndicator() {
+    const indicator = document.getElementById("offlineIndicator");
+    if (!indicator) {
+        const ind = document.createElement("div");
+        ind.id = "offlineIndicator";
+        ind.className = "offline-indicator";
+        document.body.insertBefore(ind, document.body.firstChild);
+        updateOfflineIndicator();
+        return;
+    }
+    
+    if (!isOnline) {
+        indicator.textContent = "🔴 Offline";
+        indicator.classList.add("visible");
+    } else {
+        indicator.classList.remove("visible");
+    }
+}
+
 async function api(path, opts = {}) {
   if (window.LocalApi && window.LocalApi.enabled) {
     return window.LocalApi.request(path, opts);
   }
-  const res = await fetch(path, {
-    headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
-    ...opts,
-  });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`${res.status} ${res.statusText}: ${txt}`);
+  
+  try {
+    const res = await fetch(path, {
+      headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
+      ...opts,
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`${res.status} ${res.statusText}: ${txt}`);
+    }
+    const ct = res.headers.get("content-type") || "";
+    if (ct.includes("application/json")) return await res.json();
+    return await res.blob();
+  } catch (error) {
+    // Better error handling for offline scenarios
+    if (!isOnline) {
+      throw new Error("Keine Internetverbindung. Bitte prüfe deine Verbindung und versuche es erneut.");
+    }
+    throw error;
   }
-  const ct = res.headers.get("content-type") || "";
-  if (ct.includes("application/json")) return await res.json();
-  return await res.blob();
 }
 
 function downloadBlob(blob, filename) {
