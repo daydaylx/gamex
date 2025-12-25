@@ -194,6 +194,31 @@
     </div>
   </main>
 
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Hauptnavigation">
+    <button class="mobile-nav-item active" data-view="home" aria-label="Home">
+      <span class="mobile-nav-icon">🏠</span>
+      <span class="mobile-nav-label">Home</span>
+    </button>
+    <button class="mobile-nav-item" data-view="sessions" aria-label="Sessions">
+      <span class="mobile-nav-icon">📋</span>
+      <span class="mobile-nav-label">Sessions</span>
+    </button>
+    <button class="mobile-nav-item" data-view="scenarios" aria-label="Szenarien">
+      <span class="mobile-nav-icon">🎴</span>
+      <span class="mobile-nav-label">Szenarien</span>
+    </button>
+    <button class="mobile-nav-item" id="mobileNavCompare" aria-label="Vergleich" style="display: none;">
+      <span class="mobile-nav-icon">⚖️</span>
+      <span class="mobile-nav-label">Vergleich</span>
+    </button>
+  </nav>
+
+  <!-- Floating Action Button -->
+  <button class="fab" id="fab" aria-label="Schnellaktionen" style="display: none;">
+    <span class="fab-icon">+</span>
+  </button>
+
   <script src="/validation.js"></script>
   <script src="/local-api.js"></script>
   <script src="/app.js"></script>

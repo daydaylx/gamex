@@ -1874,6 +1874,107 @@ async function saveFill() {
     msg($("saveMsg"), "Gespeichert", "ok");
     setSaveStatus(`Gespeichert um ${new Date(state.lastSaveTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`, "ok");
 }
+// Filter Bottom Sheet (Mobile)
+function showFilterBottomSheet(result = null) {
+  const res = result || state.lastCompareResult;
+  if (!res) return;
+  
+  const sheet = document.createElement("div");
+  sheet.className = "filter-bottom-sheet";
+  sheet.innerHTML = `
+    <div class="filter-bottom-sheet-backdrop"></div>
+    <div class="filter-bottom-sheet-content">
+      <div class="filter-bottom-sheet-header">
+        <h3>Filter</h3>
+        <button class="filter-bottom-sheet-close" aria-label="Schließen">✕</button>
+      </div>
+      <div class="filter-bottom-sheet-body">
+        <div class="filter-section">
+          <label class="filter-section-title">Bucket</label>
+          <div class="filter-options">
+            ${["ALL", "DOABLE NOW", "EXPLORE", "TALK FIRST", "MISMATCH"].map(bucket => `
+              <button type="button" class="filter-option-btn ${state.compareFilters.bucket === bucket ? 'active' : ''}" data-bucket="${bucket}">
+                ${bucket === "ALL" ? "Alle" : bucket === "DOABLE NOW" ? "Jetzt möglich" : bucket === "EXPLORE" ? "Erkunden" : bucket === "TALK FIRST" ? "Erst reden" : "Konflikt"}
+              </button>
+            `).join("")}
+          </div>
+        </div>
+        <div class="filter-section">
+          <label class="filter-section-title">Suche</label>
+          <input type="search" class="filter-search-input" placeholder="Suchen..." value="${state.compareFilters.query || ""}">
+        </div>
+        <div class="filter-section">
+          <label class="filter-section-title">Modul</label>
+          <select class="filter-module-select">
+            <option value="">Alle Module</option>
+            ${Object.keys(res.categorySummaries || {}).map(moduleId => `
+              <option value="${moduleId}" ${state.compareFilters.moduleId === moduleId ? "selected" : ""}>
+                ${res.categorySummaries[moduleId].name || moduleId}
+              </option>
+            `).join("")}
+          </select>
+        </div>
+        <div class="filter-section">
+          <label class="checkbox-label-large">
+            <input type="checkbox" class="filter-risk-only" ${state.compareFilters.riskOnly ? "checked" : ""}>
+            <span>Nur Risk C</span>
+          </label>
+          <label class="checkbox-label-large">
+            <input type="checkbox" class="filter-flagged-only" ${state.compareFilters.flaggedOnly ? "checked" : ""}>
+            <span>Nur Flagged</span>
+          </label>
+        </div>
+      </div>
+      <div class="filter-bottom-sheet-footer">
+        <button type="button" class="btn filter-reset-btn">Zurücksetzen</button>
+        <button type="button" class="btn primary filter-apply-btn">Anwenden</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(sheet);
+  setTimeout(() => sheet.classList.add("open"), 10);
+  
+  // Event handlers
+  const backdrop = sheet.querySelector(".filter-bottom-sheet-backdrop");
+  const closeBtn = sheet.querySelector(".filter-bottom-sheet-close");
+  const applyBtn = sheet.querySelector(".filter-apply-btn");
+  const resetBtn = sheet.querySelector(".filter-reset-btn");
+  
+  const close = () => {
+    sheet.classList.remove("open");
+    setTimeout(() => sheet.remove(), 300);
+  };
+  
+  backdrop.onclick = close;
+  closeBtn.onclick = close;
+  
+  sheet.querySelectorAll(".filter-option-btn").forEach(btn => {
+    btn.onclick = () => {
+      sheet.querySelectorAll(".filter-option-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    };
+  });
+  
+  applyBtn.onclick = () => {
+    const activeBucket = sheet.querySelector(".filter-option-btn.active")?.dataset.bucket || "ALL";
+    const query = sheet.querySelector(".filter-search-input").value.trim();
+    const moduleId = sheet.querySelector(".filter-module-select").value || null;
+    const riskOnly = sheet.querySelector(".filter-risk-only").checked;
+    const flaggedOnly = sheet.querySelector(".filter-flagged-only").checked;
+    
+    state.compareFilters = { bucket: activeBucket, query, moduleId, riskOnly, flaggedOnly };
+    renderCompareItems($("compareList"), res.items || []);
+    close();
+  };
+  
+  resetBtn.onclick = () => {
+    state.compareFilters = { bucket: "ALL", query: "", moduleId: null, riskOnly: false, flaggedOnly: false };
+    renderCompareItems($("compareList"), res.items || []);
+    close();
+  };
+}
+
 async function doCompare() {
     msg($("sessionMsg"), "");
     const {password} = getAuth();
@@ -1977,8 +2078,110 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && state.navOpen) setNavOpen(false);
 });
 
+// Mobile Navigation
+function initMobileNavigation() {
+  const bottomNav = document.getElementById("mobileBottomNav");
+  const fab = document.getElementById("fab");
+  const navItems = bottomNav?.querySelectorAll(".mobile-nav-item");
+  const mobileNavCompare = document.getElementById("mobileNavCompare");
+  
+  // Bottom Nav Items
+  navItems?.forEach(item => {
+    item.addEventListener("click", () => {
+      const view = item.dataset.view;
+      if (!view) return;
+      
+      // Update active state
+      navItems.forEach(i => i.classList.remove("active"));
+      item.classList.add("active");
+      
+      // Handle navigation
+      if (view === "home") {
+        backHome();
+      } else if (view === "sessions") {
+        // Show sessions list (already visible on home)
+        backHome();
+      } else if (view === "scenarios") {
+        if ($("scenarioView")) {
+          show($("scenarioView"), true);
+          show($("home"), false);
+          show($("sessionView"), false);
+          loadScenarios();
+        }
+      }
+    });
+  });
+  
+  // FAB - Quick Actions
+  fab?.addEventListener("click", () => {
+    if (state.currentSession) {
+      // If in session, show compare or form actions
+      if ($("panelCompare") && !$("panelCompare").classList.contains("hidden")) {
+        // Show compare actions menu
+        showFABMenu();
+      } else if ($("panelForm") && !$("panelForm").classList.contains("hidden")) {
+        // Show form actions
+        showFABMenu(["save", "compare", "scenarios"]);
+      } else {
+        // Show session actions
+        showFABMenu(["compare", "export", "scenarios"]);
+      }
+    } else {
+      // Show create session
+      document.getElementById("create")?.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+  
+  // Compare button in nav
+  mobileNavCompare?.addEventListener("click", () => {
+    if (state.currentSession) {
+      doCompare().catch((e) => showError($("sessionMsg"), e, "Vergleich fehlgeschlagen"));
+    }
+  });
+  
+  // Update nav visibility based on context
+  updateMobileNavVisibility();
+}
+
+function updateMobileNavVisibility() {
+  const bottomNav = document.getElementById("mobileBottomNav");
+  const fab = document.getElementById("fab");
+  const mobileNavCompare = document.getElementById("mobileNavCompare");
+  
+  // Show/hide based on current view
+  if (state.currentSession) {
+    bottomNav?.classList.add("in-session");
+    fab?.style.setProperty("display", "flex");
+    mobileNavCompare?.style.setProperty("display", "flex");
+  } else {
+    bottomNav?.classList.remove("in-session");
+    fab?.style.setProperty("display", window.innerWidth <= 768 ? "flex" : "none");
+    mobileNavCompare?.style.setProperty("display", "none");
+  }
+}
+
+function showFABMenu(actions = []) {
+  // Simple implementation - could be expanded to a proper menu
+  console.log("FAB Menu:", actions);
+  // For now, just show a simple action
+}
+
 // Boot
 (async () => {
     await loadTemplates();
     await loadSessions();
+    initMobileNavigation();
+    
+    // Update nav on view changes
+    const originalBackHome = backHome;
+    backHome = function() {
+      originalBackHome();
+      updateMobileNavVisibility();
+    };
+    
+    const originalOpenSession = openSession;
+    openSession = async function(sessionId) {
+      await originalOpenSession(sessionId);
+      updateMobileNavVisibility();
+    };
 })();
