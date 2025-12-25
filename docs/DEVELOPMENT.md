@@ -6,45 +6,31 @@ Diese Dokumentation richtet sich an Entwickler, die am Intimacy Questionnaire To
 
 ```
 gamex/
-├── app/                    # Python Backend (FastAPI)
-│   ├── __init__.py
-│   ├── __main__.py         # Entry point
-│   ├── main.py             # FastAPI App Setup
-│   ├── db.py               # SQLite Datenbank
-│   ├── models.py           # Pydantic Models
-│   ├── routes.py           # API Endpunkte
-│   ├── crypto.py           # Verschlüsselung
-│   ├── compare.py          # Vergleichslogik
-│   ├── ai.py               # KI-Analyse (OpenRouter)
-│   ├── backup.py           # Backup/Restore
-│   ├── logging.py          # Logging
-│   ├── template_store.py   # Template-Verwaltung
-│   └── templates/          # JSON Templates (Hauptquelle)
-│       ├── default_template.json
-│       ├── comprehensive_v1.json
-│       ├── psycho_enhanced_v3.json
-│       ├── unified_template.json
-│       └── scenarios.json
-├── web/                    # Frontend (Vanilla JS)
-│   ├── index.html
-│   ├── app.js              # Haupt-Logik
-│   ├── styles.css
-│   ├── validation.js
-│   ├── local-api.js        # Capacitor API Bridge (Offline-Fall)
-│   └── data/               # Statische Daten (für Offline-Fall)
-│       ├── templates.json  # Template-Index
-│       └── templates/       # Template-Duplikate (sollten mit app/templates/ synchronisiert sein)
-├── tests/                  # Unit Tests
-│   ├── test_routes.py
-│   ├── test_compare.py
-│   ├── test_crypto.py
-│   ├── test_db.py
-│   └── ...
-├── android/                # Capacitor Android Projekt
+├── backend/                # Python Backend (FastAPI)
+│   ├── app/                # Python package (Entry: python3 -m app)
+│   │   ├── core/           # Domain-Logik (vergleich/Report; framework-agnostisch)
+│   │   ├── templates/       # Template Loader + Normalisierung (Migration-Glue)
+│   │   ├── storage/         # Persistenz-Adapter (SQLite Provider)
+│   ├── tests/              # Pytest suite
+│   ├── requirements.txt    # Python Dependencies
+│   └── pytest.ini
+├── apps/
+│   ├── web/                # Frontend (Vanilla JS, statisch)
+│   │   └── web/
+│   │       ├── index.html
+│   │       ├── app.js
+│   │       ├── styles.css
+│   │       ├── validation.js
+│   │       ├── local-api.js  # Offline-Modus (IndexedDB, Plaintext)
+│   │       ├── core/         # Domain-Logik (Compare) für Offline
+│   │       ├── templates/     # Normalisierung + Dependency-Auswertung
+│   │       ├── storage/       # IndexedDB Adapter (Offline Persistenz)
+│   │       └── data/
+│   └── mobile/             # Capacitor Wrapper (Android)
+│       ├── package.json
+│       └── capacitor.config.json
 ├── docs/                   # Dokumentation
-├── requirements.txt        # Python Dependencies
-├── package.json           # Node.js Dependencies
-└── capacitor.config.json   # Capacitor Konfiguration
+└── ...
 ```
 
 ## Setup
@@ -62,7 +48,8 @@ gamex/
 git clone <repository-url>
 cd gamex
 
-# 2. Python Virtual Environment
+# 2. Python Virtual Environment (Backend)
+cd backend
 python3 -m venv .venv
 source .venv/bin/activate  # Linux/macOS
 # oder: .venv\Scripts\activate  # Windows
@@ -71,10 +58,13 @@ source .venv/bin/activate  # Linux/macOS
 pip install -r requirements.txt
 
 # 4. Node.js Dependencies (für Android)
+cd ../apps/mobile
 npm install
+cd ../..
 
 # 5. Server starten
-python -m app
+cd backend
+python3 -m app
 ```
 
 Die App läuft dann auf: http://127.0.0.1:8000
@@ -129,10 +119,7 @@ Listet alle Sessions.
 POST /api/sessions
 Body: {
   "name": "Session Name",
-  "template_id": "default_v2",
-  "password": "session-password",
-  "pin_a": "optional-pin-a",
-  "pin_b": "optional-pin-b"
+  "template_id": "default_v2"
 }
 ```
 Erstellt eine neue Session.
@@ -146,30 +133,23 @@ Lädt Session-Informationen.
 
 ```
 POST /api/sessions/{session_id}/responses/{person}/load
-Body: {
-  "password": "session-password",
-  "pin": "optional-pin"
-}
+Body: {}
 ```
 Lädt Antworten für Person A oder B.
 
 ```
 POST /api/sessions/{session_id}/responses/{person}/save
 Body: {
-  "password": "session-password",
-  "pin": "optional-pin",
   "responses": { ... }
 }
 ```
-Speichert Antworten für Person A oder B (verschlüsselt).
+Speichert Antworten für Person A oder B (Plaintext).
 
 #### Vergleich
 
 ```
 POST /api/sessions/{session_id}/compare
-Body: {
-  "password": "session-password"
-}
+Body: {}
 ```
 Erzeugt Vergleichs-Report (Matches, Explore, Boundaries, Risk Flags).
 
@@ -177,17 +157,13 @@ Erzeugt Vergleichs-Report (Matches, Explore, Boundaries, Risk Flags).
 
 ```
 POST /api/sessions/{session_id}/export/json
-Body: {
-  "password": "session-password"
-}
+Body: {}
 ```
 Exportiert Session als JSON.
 
 ```
 POST /api/sessions/{session_id}/export/markdown
-Body: {
-  "password": "session-password"
-}
+Body: {}
 ```
 Exportiert Session als Markdown.
 
@@ -203,7 +179,6 @@ Lädt alle Szenarien-Karten.
 ```
 POST /api/sessions/{session_id}/ai/analyze
 Body: {
-  "password": "session-password",
   "provider": "openrouter",
   "api_key": "your-api-key",
   "model": "anthropic/claude-3.5-sonnet",
@@ -216,9 +191,7 @@ Erstellt KI-Analyse (opt-in, sendet Daten an Provider).
 
 ```
 POST /api/sessions/{session_id}/ai/list
-Body: {
-  "password": "session-password"
-}
+Body: {}
 ```
 Listet alle KI-Reports für eine Session.
 
@@ -226,29 +199,24 @@ Listet alle KI-Reports für eine Session.
 
 ```
 POST /api/sessions/{session_id}/backup
-Body: {
-  "password": "session-password"
-}
+Body: {}
 ```
-Erstellt verschlüsseltes Backup.
+Erstellt ein Plaintext-Backup.
 
 ```
 POST /api/sessions/restore
 Body: {
-  "encrypted_data": "...",
-  "salt": "...",
-  "password": "session-password",
+  "backup": { ... },
   "new_name": "Optional New Name"
 }
 ```
-Stellt Backup wieder her.
+Stellt Backup wieder her (Plaintext).
 
 ### Fehlerbehandlung
 
 Die API verwendet HTTP Status Codes:
 - `200 OK` - Erfolg
 - `400 Bad Request` - Ungültige Request-Daten
-- `401 Unauthorized` - Falsches Passwort/PIN
 - `404 Not Found` - Session/Template nicht gefunden
 - `500 Internal Server Error` - Server-Fehler
 
@@ -271,7 +239,7 @@ pytest
 pytest --cov=app --cov-report=html
 
 # Spezifische Test-Datei
-pytest tests/test_routes.py
+pytest tests/test_routes.py  # aus dem backend/ Verzeichnis
 
 # Mit Verbose Output
 pytest -v
@@ -279,10 +247,9 @@ pytest -v
 
 ### Test-Struktur
 
-Tests befinden sich in `tests/`:
+Tests befinden sich in `backend/tests/`:
 - `test_routes.py` - API Endpunkt Tests
 - `test_compare.py` - Vergleichslogik Tests
-- `test_crypto.py` - Verschlüsselung Tests
 - `test_db.py` - Datenbank Tests
 - `test_ai.py` - KI-Analyse Tests
 - `test_backup.py` - Backup/Restore Tests
@@ -302,16 +269,18 @@ Coverage Reports werden generiert in:
 
 Die Web-Version benötigt keinen Build-Prozess. Einfach:
 ```bash
-python -m app
+cd backend
+python3 -m app
 ```
 
 ### Android APK
 
-Siehe detaillierte Anleitung: [APK_BUILD_GUIDE.md](../APK_BUILD_GUIDE.md)
+Siehe detaillierte Anleitung: [APK_BUILD_GUIDE.md](APK_BUILD_GUIDE.md)
 
 **Kurzfassung:**
 ```bash
 # 1. Web-Dateien syncen
+cd apps/mobile
 npx cap sync android
 
 # 2. Android Studio öffnen
@@ -322,7 +291,7 @@ npx cap open android
 
 Oder via CLI:
 ```bash
-cd android
+cd apps/mobile/android
 ./gradlew assembleRelease
 ```
 
@@ -330,29 +299,23 @@ cd android
 
 ### Schema
 
-Die SQLite Datenbank (`intimacy_tool.sqlite3`) enthält folgende Tabellen:
+Die SQLite Datenbank (Default: `~/.local/share/intimacy-tool/intimacy_tool.sqlite3`, override via `INTIMACY_TOOL_DB`) enthält folgende Tabellen:
 
 - `sessions` - Session-Metadaten
-- `responses` - Verschlüsselte Antworten (pro Person)
+- `responses` - Antworten (pro Person, Plaintext JSON)
 - `templates` - Template-Definitionen
-- `ai_reports` - KI-Analyse-Reports
-- `backups` - Backup-Metadaten
+- `ai_reports` - KI-Analyse-Reports (Plaintext JSON)
 
 ### Migrationen
 
 Aktuell gibt es keine automatischen Migrationen. Bei Schema-Änderungen:
 1. Datenbank-Backup erstellen
-2. Schema manuell anpassen (in `app/db.py`)
+2. Schema manuell anpassen (in `backend/app/db.py`)
 3. Bei Bedarf Migrations-Script schreiben
 
-## Verschlüsselung
+## Sicherheitshinweis
 
-- **Algorithmus:** AES-256-GCM
-- **Key Derivation:** PBKDF2-HMAC-SHA256 (100,000 Iterationen)
-- **Salt:** Zufällig pro Session (16 Bytes)
-- **Nonce:** Zufällig pro Verschlüsselung (12 Bytes)
-
-Siehe `app/crypto.py` für Details.
+Die Anwendung speichert Daten **lokal im Klartext**. Wer Zugriff auf Gerät/Profil/Dateisystem hat, hat potenziell Zugriff auf die Daten.
 
 ## Versionierung
 
@@ -380,7 +343,7 @@ Logs werden geschrieben in `logs/`:
 - `performance.log` - Performance-Metriken
 - `combined.log` - Alle Logs kombiniert
 
-Logging-Konfiguration: `app/logging.py`
+Logging-Konfiguration: `backend/app/logging.py`
 
 ## Code-Stil
 
@@ -392,37 +355,45 @@ Logging-Konfiguration: `app/logging.py`
 
 ### Neues Template hinzufügen
 
-1. JSON-Datei in `app/templates/` erstellen
-2. Template in `app/template_store.py` registrieren
-3. `ensure_*_template()` Funktion hinzufügen
-4. In `app/main.py` aufrufen
-5. **Wichtig:** Für Offline-Support auch nach `web/data/templates/` kopieren und in `web/data/templates.json` eintragen
+1. **Template-Datei**: JSON in `backend/app/templates/` erstellen/ablegen
+2. **Backend-Registrierung**: in `backend/app/template_store.py` per `ensure_*_template()` sicherstellen, dass es in die DB geladen wird (und in `backend/app/main.py` aufrufen)
+3. **Normalisierung/Migration** (falls nötig): in `backend/app/templates/normalize.py` (Backend) und `apps/web/web/templates/normalize.js` (Offline) über Defaults/Mapping abwärtskompatibel halten
+4. **Offline-Support**: Template-Datei nach `apps/web/web/data/templates/` kopieren und `apps/web/web/data/templates.json` aktualisieren
 
 ### Templates synchronisieren (Offline-Fall)
 
-Die Templates in `web/data/templates/` werden für den Offline-Fall benötigt (wenn kein Backend erreichbar ist). Diese sollten mit `app/templates/` synchronisiert werden:
+Die Templates in `apps/web/web/data/templates/` werden für den Offline-Fall benötigt (wenn kein Backend erreichbar ist). Diese sollten mit `backend/app/templates/` synchronisiert werden:
 
 ```bash
-# Templates nach web/data/ kopieren
-cp app/templates/default_template.json web/data/templates/
-cp app/templates/comprehensive_v1.json web/data/templates/
-cp app/templates/psycho_enhanced_v3.json web/data/templates/
+# Templates nach apps/web/web/data/ kopieren
+cp backend/app/templates/default_template.json apps/web/web/data/templates/
+cp backend/app/templates/comprehensive_v1.json apps/web/web/data/templates/
+cp backend/app/templates/psycho_enhanced_v3.json apps/web/web/data/templates/
 
 # templates.json Index aktualisieren falls nötig
 ```
 
 ### Neuen API-Endpunkt hinzufügen
 
-1. Route in `app/routes.py` definieren
-2. Pydantic Model in `app/models.py` (falls nötig)
-3. Test in `tests/test_routes.py` schreiben
-4. Frontend-Integration in `web/app.js`
+1. Route in `backend/app/routes.py` definieren
+2. Pydantic Model in `backend/app/models.py` (falls nötig)
+3. Test in `backend/tests/test_routes.py` schreiben
+4. Frontend-Integration in `apps/web/web/app.js`
 
 ### Frontend-Änderungen
 
-- Haupt-Logik: `web/app.js`
-- Styling: `web/styles.css`
-- HTML: `web/index.html`
+- Haupt-Logik: `apps/web/web/app.js`
+- Compare Domain-Logik (Offline): `apps/web/web/core/compare.js`
+- Template Normalisierung/Visibility-Regeln: `apps/web/web/templates/normalize.js` und `apps/web/web/templates/dependencies.js`
+- IndexedDB Adapter (Offline Persistenz): `apps/web/web/storage/indexeddb.js`
+- Styling: `apps/web/web/styles.css`
+- HTML: `apps/web/web/index.html`
+
+### Wo ändere ich was? (Kurz)
+
+- **Matching/Vergleichslogik**: `backend/app/core/compare.py` (Server) und `apps/web/web/core/compare.js` (Offline)
+- **Template-Defaults/Migration**: `backend/app/templates/normalize.py` (Server) und `apps/web/web/templates/normalize.js` (Offline)
+- **Persistenz**: `backend/app/storage/sqlite.py` (SQLite) und `apps/web/web/storage/indexeddb.js` (IndexedDB)
 
 ## Troubleshooting
 
@@ -434,22 +405,22 @@ lsof -i :8000  # Linux/macOS
 netstat -ano | findstr :8000  # Windows
 
 # Dependencies installiert?
-pip install -r requirements.txt
+cd backend && pip install -r requirements.txt
 ```
 
 ### Datenbank-Fehler
 
 ```bash
 # Datenbank neu initialisieren (ACHTUNG: Löscht alle Daten!)
-rm intimacy_tool.sqlite3
-python -m app
+rm -f ~/.local/share/intimacy-tool/intimacy_tool.sqlite3
+cd backend && python3 -m app
 ```
 
 ### Android Build-Fehler
 
 ```bash
 # Gradle Cache löschen
-cd android
+cd apps/mobile/android
 ./gradlew clean
 
 # Capacitor neu syncen
@@ -459,6 +430,6 @@ npx cap sync android
 ## Weitere Ressourcen
 
 - [README.md](../README.md) - Benutzer-Dokumentation
-- [APK_BUILD_GUIDE.md](../APK_BUILD_GUIDE.md) - Android Build Anleitung
+- [APK_BUILD_GUIDE.md](APK_BUILD_GUIDE.md) - Android Build Anleitung
 - [ANALYSE_UND_VERBESSERUNGSPLAN.md](../ANALYSE_UND_VERBESSERUNGSPLAN.md) - Geplante Verbesserungen
 

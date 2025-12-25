@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Intimacy Tool (Local)</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <h1>Intimacy Tool</h1>
+      <p class="sub">Local-first. Lokal gespeichert (Plaintext). Kein Overthinking, nur Struktur.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
+    <div id="main-content">
+    <section class="card" id="home">
+      <h2>Sessions</h2>
+      <div class="row">
+        <button class="btn" id="btnRefresh">Aktualisieren</button>
+      </div>
+      <div id="sessionsList" class="list"></div>
+    </section>
+
+    <section class="card" id="create">
+      <h2>Neue Session</h2>
+
+      <div class="grid2">
+        <label>
+          Name
+          <input id="newName" placeholder="z.B. Dez 2025" />
+        </label>
+
+        <label>
+          Template
+          <select id="newTemplate"></select>
+        </label>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="btnCreate">Erstellen</button>
+        <span class="hint">Hinweis: Daten liegen lokal im Klartext vor (Gerätezugriff = Datenzugriff).</span>
+      </div>
+      <div id="createMsg" class="msg"></div>
+    </section>
+
+    <section class="card" id="extras">
+      <h2>Extras</h2>
+      <div class="row">
+        <button class="btn" id="btnScenarios">Szenarien-Modus starten</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="scenarioView">
+      <div class="row space">
+        <h2>Szenarien</h2>
+        <button class="btn" id="btnCloseScenarios">Schließen</button>
+      </div>
+      <p class="sub">Diskutiert diese Situationen. Was würdet ihr tun?</p>
+      <div id="scenarioMsg" class="msg"></div>
+      <div id="scenarioHost" class="grid2" style="margin-top:20px"></div>
+    </section>
+
+    <section class="card hidden" id="sessionView">
+      <div class="row space">
+        <div>
+          <h2 id="sessTitle">Session</h2>
+          <p class="sub" id="sessMeta"></p>
+        </div>
+        <button class="btn" id="btnBack">Zurück</button>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="btnFillA">Ausfüllen: Person A</button>
+        <button class="btn" id="btnFillB">Ausfüllen: Person B</button>
+        <button class="btn" id="btnCompare">Vergleich anzeigen</button>
+        <button class="btn" id="btnExportMd">Export Markdown</button>
+        <button class="btn" id="btnExportJson">Export JSON</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div id="panelForm" class="panel hidden" role="region" aria-labelledby="formTitle">
+        <div class="row space form-header">
+          <h3 id="formTitle">Fragebogen</h3>
+          <div class="row">
+            <button class="btn" id="btnValidate" aria-label="Antworten prüfen">Antworten prüfen</button>
+            <button class="btn" id="btnCloseForm" aria-label="Formular schließen">Schließen</button>
+          </div>
+        </div>
+
+        <div id="formTools" class="form-tools">
+          <div id="progressBar" class="progress-bar" role="status" aria-live="polite">
+            <div class="progress-info">
+              <span id="progressText">0/0 beantwortet</span>
+              <span id="progressPct">0%</span>
+            </div>
+            <div class="progress-track">
+              <div id="progressFill" class="progress-fill" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="form-tool-row">
+            <button class="btn" id="btnExpandAll" aria-label="Alle Module öffnen">Alle öffnen</button>
+            <button class="btn" id="btnCollapseAll" aria-label="Alle Module schließen">Alle schließen</button>
+            <button class="btn" id="btnNextOpen" aria-label="Nächste offene Frage">Nächste offene Frage</button>
+            <button class="btn mobile-nav-toggle" id="btnToggleNav" aria-label="Fragenübersicht öffnen" aria-controls="questionNav" aria-expanded="false">Fragenübersicht</button>
+          </div>
+          <div id="validationSummary" class="validation-summary" aria-live="polite"></div>
+        </div>
+
+        <div class="form-layout">
+          <nav id="questionNav" class="question-nav" aria-label="Fragenübersicht"></nav>
+          <div id="formHost" role="form" aria-label="Fragebogen Formular"></div>
+        </div>
+        <div id="navBackdrop" class="nav-backdrop hidden" aria-hidden="true"></div>
+
+        <div class="row form-footer">
+          <button class="btn primary" id="btnSaveForm" aria-label="Antworten speichern">Speichern</button>
+          <span id="saveMsg" class="msg" role="status" aria-live="polite"></span>
+          <span id="saveStatus" class="save-status" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <div id="panelCompare" class="panel hidden" role="region" aria-label="Vergleichsansicht">
+        <div class="row space">
+          <h3>Vergleich</h3>
+          <button class="btn" id="btnCloseCompare" aria-label="Vergleich schließen">Schließen</button>
+        </div>
+        <div id="compareHost" role="main" aria-label="Vergleichsergebnisse"></div>
+      </div>
+
+      <div id="panelAI" class="panel hidden">
+        <h3>KI-Auswertung (optional)</h3>
+        <p class="hint">
+          Wenn du das nutzt, sendest du Daten an einen Provider. Standard: Redaction (Freitext raus).
+        </p>
+        <div class="grid2">
+          <label>OpenRouter API Key<input id="aiKey" type="password" placeholder="optional" /></label>
+          <label>Model<input id="aiModel" placeholder="z.B. openai/gpt-4.1-mini" /></label>
+          <label>Redact Freitext
+            <select id="aiRedact">
+              <option value="true" selected>true</option>
+              <option value="false">false</option>
+            </select>
+          </label>
+          <label>Max tokens<input id="aiMaxTokens" type="number" value="800" min="200" max="2000" /></label>
+        </div>
+        <div class="row">
+          <button class="btn" id="btnRunAI">KI-Analyse starten</button>
+        </div>
+        <pre id="aiOut" class="pre"></pre>
+      </div>
+
+      <div id="sessionMsg" class="msg"></div>
+    </section>
+    </div>
+  </main>
+
+  <script src="/core/validation.js"></script>
+  <script src="/validation.js"></script>
+  <script src="/core/compare.js"></script>
+  <script src="/templates/normalize.js"></script>
+  <script src="/templates/dependencies.js"></script>
+  <script src="/storage/indexeddb.js"></script>
+  <script src="/local-api.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
