@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 Person = Literal["A", "B"]
 YesMaybeNo = Literal["YES", "MAYBE", "NO"]
@@ -10,11 +10,9 @@ class TemplateListItem(BaseModel):
     version: int
 
 class CreateSessionRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     name: str = Field(min_length=1, max_length=100)
     template_id: str
-    password: str = Field(min_length=6, max_length=200)
-    pin_a: Optional[str] = Field(default=None, max_length=50)
-    pin_b: Optional[str] = Field(default=None, max_length=50)
 
 class SessionListItem(BaseModel):
     id: str
@@ -33,24 +31,22 @@ class SessionInfo(BaseModel):
     has_b: bool
 
 class LoadResponsesRequest(BaseModel):
-    password: str = Field(min_length=6, max_length=200)
-    pin: Optional[str] = Field(default=None, max_length=50)
+    model_config = ConfigDict(extra="ignore")
 
 class SaveResponsesRequest(BaseModel):
-    password: str = Field(min_length=6, max_length=200)
-    pin: Optional[str] = Field(default=None, max_length=50)
+    model_config = ConfigDict(extra="ignore")
     responses: Dict[str, Any]
 
 class CompareRequest(BaseModel):
-    password: str = Field(min_length=6, max_length=200)
+    model_config = ConfigDict(extra="ignore")
 
 class ExportRequest(BaseModel):
-    password: str = Field(min_length=6, max_length=200)
+    model_config = ConfigDict(extra="ignore")
 
 class AIAnalyzeRequest(BaseModel):
-    password: str = Field(min_length=6, max_length=200)
+    model_config = ConfigDict(extra="ignore")
     provider: str = Field(default="openrouter")
-    api_key: str = Field(min_length=10, max_length=500)
+    api_key: str = Field(min_length=1, max_length=500)
     model: str = Field(min_length=1, max_length=200)
     base_url: str = Field(default="https://openrouter.ai/api/v1")
     redact_free_text: bool = True
@@ -70,12 +66,11 @@ class AIReport(BaseModel):
     text: str
 
 class BackupRequest(BaseModel):
-    password: str = Field(min_length=6, max_length=200)
+    model_config = ConfigDict(extra="ignore")
 
 class RestoreRequest(BaseModel):
-    encrypted_data: str = Field(min_length=1)
-    salt: str = Field(min_length=1)
-    password: str = Field(min_length=6, max_length=200)
+    model_config = ConfigDict(extra="ignore")
+    backup: Dict[str, Any]
     new_name: Optional[str] = Field(default=None, max_length=100)
 
 

@@ -65,28 +65,31 @@ brew install android-platform-tools
 git clone https://github.com/daydaylx/gamex.git
 cd gamex
 
-# Python Environment setup
+# Python Environment setup (Backend)
+cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+cd ..
 
-# Node.js Abhängigkeiten installieren
+# Node.js Abhängigkeiten installieren (Capacitor)
+cd apps/mobile
 npm install
-
-# Capacitor initialisieren
-npx cap init "Intimacy Tool" "com.intimacytool.app"
 
 # Android Plattform hinzufügen
 npx cap add android
+cd ../..
 ```
 
 ### 2. Debug APK erstellen (für Tests)
 
 ```bash
 # Backend lokal starten (in separatem Terminal)
-python -m app
+cd backend
+python3 -m app
 
 # Web-Dateien syncen
+cd ../apps/mobile
 npx cap sync android
 
 # Android Projekt öffnen (öffnet Android Studio)
@@ -99,7 +102,7 @@ npx cap open android
 Oder über CLI:
 
 ```bash
-cd android
+cd apps/mobile/android
 ./gradlew assembleDebug
 
 # Debug APK finden
@@ -112,6 +115,7 @@ ls app/build/outputs/apk/debug/app-debug.apk
 
 ```bash
 # Methode 1: Automatisch mit build-release.sh
+cd apps/mobile
 export KEYSTORE_PASSWORD='dein_sicheres_password'
 export KEY_PASSWORD='dein_sicheres_key_password'
 ./build-release.sh
@@ -126,11 +130,11 @@ keytool -genkey -v \
     -keysize 2048 \
     -validity 10000
 
-# signingConfigs in android/app/build.gradle konfigurieren
+# signingConfigs in apps/mobile/android/app/build.gradle konfigurieren
 # (siehe unten: "Signing Konfiguration")
 
 # Release Build
-cd android
+cd apps/mobile/android
 ./gradlew assembleRelease
 
 # Release APK finden
@@ -141,7 +145,7 @@ ls app/build/outputs/apk/release/app-release.apk
 
 ### build.gradle anpassen
 
-Öffne `android/app/build.gradle` und füge die signingConfigs hinzu:
+Öffne `apps/mobile/android/app/build.gradle` und füge die signingConfigs hinzu:
 
 ```gradle
 android {
@@ -149,7 +153,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("../../secure/intimacy-tool.keystore")
+            storeFile file("../../../secure/intimacy-tool.keystore")
             storePassword System.getenv("KEYSTORE_PASSWORD") ?: project.hasProperty("keystorePassword") ? project.keystorePassword : ""
             keyAlias "intimacy"
             keyPassword System.getenv("KEY_PASSWORD") ?: project.hasProperty("keyPassword") ? project.keyPassword : ""
@@ -216,7 +220,7 @@ adb shell pm list packages | grep intimacy
 
 ### Version Code/Name
 
-In `android/app/build.gradle`:
+In `apps/mobile/android/app/build.gradle`:
 
 ```gradle
 defaultConfig {
@@ -256,7 +260,8 @@ defaultConfig {
 **Lösung:**
 ```bash
 # Backend muss laufen
-python -m app
+cd backend
+python3 -m app
 
 # Prüfen ob Port 8000 erreichbar
 curl http://127.0.0.1:8000
@@ -266,7 +271,7 @@ curl http://127.0.0.1:8000
 
 **Symptom:** API-Aufrufe scheitern in Konsole
 
-**Lösung:** CORS-Middleware in `app/main.py` hinzufügen:
+**Lösung:** CORS-Middleware in `backend/app/main.py` hinzufügen:
 
 ```python
 from fastapi.middleware.cors import CORSMiddleware
@@ -289,7 +294,7 @@ app.add_middleware(
 **Lösung:**
 ```bash
 # Gradle Wrapper neu generieren
-cd android
+cd apps/mobile/android
 gradle wrapper
 
 # Android SDK prüfen

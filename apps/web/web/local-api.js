@@ -3,10 +3,9 @@
 
   const params = new URLSearchParams(window.location.search);
   const forceLocal = params.get("local") === "1" || window.localStorage.getItem("LOCAL_API") === "1";
-  const hasCrypto = !!(window.crypto && window.crypto.subtle);
   const isNative = !!window.Capacitor && (typeof window.Capacitor.isNativePlatform === "function" ? window.Capacitor.isNativePlatform() : true);
   const isLocalProtocol = window.location.protocol === "file:" || window.location.protocol === "capacitor:";
-  const enabled = (forceLocal || isNative || isLocalProtocol) && hasCrypto;
+  const enabled = (forceLocal || isNative || isLocalProtocol);
 
   const LocalApi = {
     enabled,
@@ -19,19 +18,13 @@
   window.LocalApi = LocalApi;
 
   if (!enabled) {
-    if (forceLocal && !hasCrypto) {
-      console.warn("Local API disabled: Web Crypto not available.");
-    }
     return;
   }
 
   const DB_NAME = "intimacy_tool";
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
   const STORE_SESSIONS = "sessions";
   const STORE_RESPONSES = "responses";
-
-  const PBKDF_ITERATIONS = 390000;
-  const PIN_ITERATIONS = 220000;
 
   const textEncoder = new TextEncoder();
   const textDecoder = new TextDecoder();
@@ -40,7 +33,6 @@
   let templatesIndex = null;
   const templateCache = new Map();
   let scenariosCache = null;
-  const keyCache = new Map();
 
   function randomUUID() {
     if (window.crypto && typeof window.crypto.randomUUID === "function") {
@@ -54,139 +46,18 @@
     return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
   }
 
-  function bytesToBase64(bytes) {
-    let binary = "";
-    const chunk = 0x8000;
-    for (let i = 0; i < bytes.length; i += chunk) {
-      const slice = bytes.subarray(i, i + chunk);
-      binary += String.fromCharCode.apply(null, slice);
-    }
-    return btoa(binary);
-  }
-
-  function base64ToBytes(b64) {
-    const binary = atob(b64);
-    const out = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i += 1) {
-      out[i] = binary.charCodeAt(i);
-    }
-    return out;
-  }
-
-  function bytesToHex(bytes) {
-    let out = "";
-    for (let i = 0; i < bytes.length; i += 1) {
-      out += bytes[i].toString(16).padStart(2, "0");
-    }
-    return out;
-  }
-
-  function concatBytes(...parts) {
-    const total = parts.reduce((sum, p) => sum + p.length, 0);
-    const out = new Uint8Array(total);
-    let offset = 0;
-    for (const p of parts) {
-      out.set(p, offset);
-      offset += p.length;
-    }
-    return out;
-  }
-
-  function safeEqual(a, b) {
-    if (a.length !== b.length) return false;
-    let diff = 0;
-    for (let i = 0; i < a.length; i += 1) {
-      diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    }
-    return diff === 0;
-  }
-
-  async function sha256Bytes(data) {
-    const hash = await window.crypto.subtle.digest("SHA-256", data);
-    return new Uint8Array(hash);
-  }
-
-  async function deriveRawKey(password, saltBytes, iterations) {
-    const keyMaterial = await window.crypto.subtle.importKey(
-      "raw",
-      textEncoder.encode(password),
-      "PBKDF2",
-      false,
-      ["deriveBits"]
-    );
-    const bits = await window.crypto.subtle.deriveBits(
-      { name: "PBKDF2", salt: saltBytes, iterations, hash: "SHA-256" },
-      keyMaterial,
-      256
-    );
-    return new Uint8Array(bits);
-  }
-
-  async function verifierFromRaw(raw) {
-    const marker = textEncoder.encode("::verifier");
-    const data = concatBytes(raw, marker);
-    const hash = await sha256Bytes(data);
-    return bytesToHex(hash);
-  }
-
-  async function getKeyMaterial(sessionId, password, saltBytes) {
-    const cacheKey = `${sessionId}:${password}`;
-    const saltB64 = bytesToBase64(saltBytes);
-    const cached = keyCache.get(cacheKey);
-    if (cached && cached.saltB64 === saltB64) return cached;
-
-    const raw = await deriveRawKey(password, saltBytes, PBKDF_ITERATIONS);
-    const verifier = await verifierFromRaw(raw);
-    const aesKey = await window.crypto.subtle.importKey(
-      "raw",
-      raw,
-      { name: "AES-GCM" },
-      false,
-      ["encrypt", "decrypt"]
-    );
-    const entry = { raw, verifier, aesKey, saltB64 };
-    keyCache.set(cacheKey, entry);
-    return entry;
-  }
-
-  async function hashPin(pin, saltBytes, person) {
-    const marker = textEncoder.encode(`${person}::pin`);
-    const pinSalt = await sha256Bytes(concatBytes(saltBytes, marker));
-    const raw = await deriveRawKey(pin, pinSalt, PIN_ITERATIONS);
-    const hash = await sha256Bytes(raw);
-    return bytesToHex(hash);
-  }
-
-  async function encryptJson(aesKey, plaintext) {
-    const iv = new Uint8Array(12);
-    window.crypto.getRandomValues(iv);
-    const ciphertext = await window.crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
-      aesKey,
-      textEncoder.encode(plaintext)
-    );
-    return `${bytesToBase64(iv)}.${bytesToBase64(new Uint8Array(ciphertext))}`;
-  }
-
-  async function decryptJson(aesKey, blob) {
-    const parts = String(blob || "").split(".");
-    if (parts.length !== 2) throw new Error("Decrypt failed");
-    const iv = base64ToBytes(parts[0]);
-    const data = base64ToBytes(parts[1]);
-    const plaintext = await window.crypto.subtle.decrypt(
-      { name: "AES-GCM", iv },
-      aesKey,
-      data
-    );
-    return textDecoder.decode(plaintext);
-  }
-
   function openDb() {
     if (dbPromise) return dbPromise;
     dbPromise = new Promise((resolve, reject) => {
       const req = window.indexedDB.open(DB_NAME, DB_VERSION);
       req.onupgradeneeded = () => {
         const db = req.result;
+        // v2: remove legacy encrypted schema (breaking change) and recreate stores
+        if (req.oldVersion && req.oldVersion < 2) {
+          for (const name of [STORE_SESSIONS, STORE_RESPONSES]) {
+            if (db.objectStoreNames.contains(name)) db.deleteObjectStore(name);
+          }
+        }
         if (!db.objectStoreNames.contains(STORE_SESSIONS)) {
           db.createObjectStore(STORE_SESSIONS, { keyPath: "id" });
         }
@@ -307,37 +178,20 @@
     if (!req || typeof req !== "object") throw new Error("Invalid request");
     const name = String(req.name || "").trim();
     const templateId = String(req.template_id || "").trim();
-    const password = String(req.password || "");
-    const pinA = String(req.pin_a || "").trim() || null;
-    const pinB = String(req.pin_b || "").trim() || null;
 
     if (!name) throw new Error("Name fehlt.");
     if (!templateId) throw new Error("Template fehlt.");
-    if (!password || password.length < 6) throw new Error("Passwort fehlt oder ist zu kurz.");
 
     await loadTemplateById(templateId);
 
-    const saltBytes = new Uint8Array(16);
-    window.crypto.getRandomValues(saltBytes);
-    const salt = bytesToBase64(saltBytes);
-    const raw = await deriveRawKey(password, saltBytes, PBKDF_ITERATIONS);
-    const verifier = await verifierFromRaw(raw);
-
     const sessionId = randomUUID();
     const createdAt = new Date().toISOString();
-
-    const pinAHash = pinA ? await hashPin(pinA, saltBytes, "A") : null;
-    const pinBHash = pinB ? await hashPin(pinB, saltBytes, "B") : null;
 
     await dbPut(STORE_SESSIONS, {
       id: sessionId,
       name,
       template_id: templateId,
-      created_at: createdAt,
-      salt,
-      pw_verifier: verifier,
-      pin_a_hash: pinAHash,
-      pin_b_hash: pinBHash
+      created_at: createdAt
     });
 
     return {
@@ -354,22 +208,6 @@
     const row = await dbGet(STORE_SESSIONS, sessionId);
     if (!row) throw new Error("Session not found");
     return row;
-  }
-
-  async function requirePassword(sessionRow, sessionId, password) {
-    const saltBytes = base64ToBytes(sessionRow.salt);
-    const km = await getKeyMaterial(sessionId, password, saltBytes);
-    if (!safeEqual(km.verifier, sessionRow.pw_verifier)) {
-      throw new Error("Wrong password");
-    }
-    return { saltBytes, aesKey: km.aesKey };
-  }
-
-  async function verifyPin(pin, storedHash, saltBytes, person) {
-    if (!storedHash) return true;
-    if (!pin) return false;
-    const candidate = await hashPin(pin, saltBytes, person);
-    return safeEqual(candidate, storedHash);
   }
 
   async function getSessionInfo(sessionId) {
@@ -392,29 +230,16 @@
 
   async function loadResponses(sessionId, person, req) {
     if (person !== "A" && person !== "B") throw new Error("Invalid person");
-    if (!req || typeof req !== "object") throw new Error("Invalid request");
-    const password = String(req.password || "");
-    const pin = String(req.pin || "").trim() || null;
-
-    const row = await loadSessionRow(sessionId);
-    const { saltBytes, aesKey } = await requirePassword(row, sessionId, password);
-
-    const storedPinHash = person === "A" ? row.pin_a_hash : row.pin_b_hash;
-    const okPin = await verifyPin(pin, storedPinHash, saltBytes, person);
-    if (!okPin) throw new Error("Wrong PIN");
+    await loadSessionRow(sessionId);
 
     const respRow = await dbGet(STORE_RESPONSES, `${sessionId}:${person}`);
     if (!respRow) return { responses: {} };
-
-    const plaintext = await decryptJson(aesKey, respRow.encrypted_blob);
-    return { responses: JSON.parse(plaintext) };
+    return { responses: JSON.parse(respRow.json || "{}") };
   }
 
   async function saveResponses(sessionId, person, req) {
     if (person !== "A" && person !== "B") throw new Error("Invalid person");
     if (!req || typeof req !== "object") throw new Error("Invalid request");
-    const password = String(req.password || "");
-    const pin = String(req.pin || "").trim() || null;
     const responses = req.responses;
 
     if (!responses || typeof responses !== "object" || Array.isArray(responses)) {
@@ -422,11 +247,6 @@
     }
 
     const row = await loadSessionRow(sessionId);
-    const { saltBytes, aesKey } = await requirePassword(row, sessionId, password);
-
-    const storedPinHash = person === "A" ? row.pin_a_hash : row.pin_b_hash;
-    const okPin = await verifyPin(pin, storedPinHash, saltBytes, person);
-    if (!okPin) throw new Error("Wrong PIN");
 
     const template = await loadTemplateById(row.template_id);
     if (typeof window.validateResponses === "function") {
@@ -437,14 +257,14 @@
       }
     }
 
-    const blob = await encryptJson(aesKey, JSON.stringify(responses));
+    const blob = JSON.stringify(responses);
     const updatedAt = new Date().toISOString();
 
     await dbPut(STORE_RESPONSES, {
       id: `${sessionId}:${person}`,
       session_id: sessionId,
       person,
-      encrypted_blob: blob,
+      json: blob,
       updated_at: updatedAt
     });
 
@@ -780,28 +600,20 @@
   }
 
   async function compareSession(sessionId, req) {
-    if (!req || typeof req !== "object") throw new Error("Invalid request");
-    const password = String(req.password || "");
-
     const row = await loadSessionRow(sessionId);
-    const { aesKey } = await requirePassword(row, sessionId, password);
 
     const respA = await dbGet(STORE_RESPONSES, `${sessionId}:A`);
     const respB = await dbGet(STORE_RESPONSES, `${sessionId}:B`);
     if (!respA || !respB) throw new Error("Need both A and B responses to compare");
 
-    const plainA = await decryptJson(aesKey, respA.encrypted_blob);
-    const plainB = await decryptJson(aesKey, respB.encrypted_blob);
-    const parsedA = JSON.parse(plainA);
-    const parsedB = JSON.parse(plainB);
+    const parsedA = JSON.parse(respA.json || "{}");
+    const parsedB = JSON.parse(respB.json || "{}");
 
     const template = await loadTemplateById(row.template_id);
     return compare(template, parsedA, parsedB);
   }
 
-  LocalApi.clearCache = () => {
-    keyCache.clear();
-  };
+  LocalApi.clearCache = () => {};
 
   LocalApi.request = async (path, opts = {}) => {
     const method = (opts.method || "GET").toUpperCase();

@@ -7,7 +7,6 @@ from typing import Any, Dict, Optional
 
 import httpx
 
-from app.crypto import encrypt_json
 from app.db import db
 
 def _utcnow() -> str:
@@ -45,8 +44,6 @@ def redact(compare_result: Dict[str, Any], drop_free_text: bool = True) -> Dict[
 
 async def openrouter_analyze(
     session_id: str,
-    password: str,
-    salt: bytes,
     compare_result: Dict[str, Any],
     api_key: str,
     model: str,
@@ -85,26 +82,25 @@ async def openrouter_analyze(
         text = json.dumps(data, ensure_ascii=False)
 
     report_id = str(uuid.uuid4())
-    blob = encrypt_json(password, salt, json.dumps({"text": text}, ensure_ascii=False))
+    payload = json.dumps({"text": text}, ensure_ascii=False)
 
     with db() as conn:
         conn.execute(
-            "INSERT INTO ai_reports(id, session_id, created_at, provider, model, encrypted_blob) VALUES (?,?,?,?,?,?)",
-            (report_id, session_id, _utcnow(), "openrouter", model, blob),
+            "INSERT INTO ai_reports(id, session_id, created_at, provider, model, json) VALUES (?,?,?,?,?,?)",
+            (report_id, session_id, _utcnow(), "openrouter", model, payload),
         )
 
     return {"id": report_id, "created_at": _utcnow(), "provider": "openrouter", "model": model, "text": text}
 
-def list_ai_reports(session_id: str, password: str, salt: bytes):
-    from app.crypto import decrypt_json
+def list_ai_reports(session_id: str):
     with db() as conn:
         rows = conn.execute(
-            "SELECT id, created_at, provider, model, encrypted_blob FROM ai_reports WHERE session_id = ? ORDER BY created_at DESC",
+            "SELECT id, created_at, provider, model, json FROM ai_reports WHERE session_id = ? ORDER BY created_at DESC",
             (session_id,),
         ).fetchall()
     out = []
     for r in rows:
-        payload = json.loads(decrypt_json(password, salt, r["encrypted_blob"]))
+        payload = json.loads(r["json"])
         out.append({
             "id": r["id"],
             "created_at": r["created_at"],

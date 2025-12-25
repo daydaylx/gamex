@@ -19,7 +19,8 @@ def create_app() -> FastAPI:
     app.include_router(api_router, prefix="/api")
 
     # Serve static frontend
-    web_dir = os.path.join(os.path.dirname(__file__), "..", "web")
+    # Monorepo layout: apps/web/web contains the static frontend assets.
+    web_dir = os.path.join(os.path.dirname(__file__), "..", "..", "apps", "web", "web")
     web_dir = os.path.abspath(web_dir)
     app.mount("/", StaticFiles(directory=web_dir, html=True), name="web")
 
