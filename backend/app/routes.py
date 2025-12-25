@@ -7,7 +7,6 @@ from typing import Any, Dict
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, Response
 
-from app.db import db
 from app.models import (
     TemplateListItem,
     CreateSessionRequest,
@@ -28,6 +27,9 @@ from app.templates.loader import load_template
 from app.compare import compare
 from app.ai import openrouter_analyze, list_ai_reports
 from app.logging import log_api_call, log_performance
+from app.storage import get_storage
+
+storage = get_storage()
 
 def validate_responses(template: Dict[str, Any], responses: Dict[str, Any]) -> tuple:
     """Validate responses against template. Returns (errors, warnings) as structured objects."""
@@ -263,26 +265,18 @@ def get_template(template_id: str) -> Dict[str, Any]:
 
 @api_router.get("/sessions", response_model=list[SessionListItem])
 def sessions():
-    with db() as conn:
-        rows = conn.execute("""
-            SELECT s.id, s.name, s.template_id, s.created_at,
-                   (SELECT 1 FROM responses r WHERE r.session_id=s.id AND r.person='A') AS has_a,
-                   (SELECT 1 FROM responses r WHERE r.session_id=s.id AND r.person='B') AS has_b
-            FROM sessions s
-            ORDER BY s.created_at DESC
-        """).fetchall()
-
-    out = []
-    for r in rows:
-        out.append(SessionListItem(
+    rows = storage.list_sessions()
+    return [
+        SessionListItem(
             id=r["id"],
             name=r["name"],
             template_id=r["template_id"],
             created_at=r["created_at"],
             has_a=bool(r["has_a"]),
             has_b=bool(r["has_b"]),
-        ))
-    return out
+        )
+        for r in rows
+    ]
 
 @api_router.post("/sessions", response_model=SessionListItem)
 def create_session(req: CreateSessionRequest):
@@ -295,11 +289,12 @@ def create_session(req: CreateSessionRequest):
     session_id = str(uuid.uuid4())
     created_at = _utcnow()
 
-    with db() as conn:
-        conn.execute(
-            "INSERT INTO sessions(id, name, template_id, created_at) VALUES (?,?,?,?)",
-            (session_id, req.name, req.template_id, created_at),
-        )
+    storage.create_session(
+        session_id=session_id,
+        name=req.name,
+        template_id=req.template_id,
+        created_at=created_at,
+    )
 
     return SessionListItem(
         id=session_id,
@@ -311,20 +306,17 @@ def create_session(req: CreateSessionRequest):
     )
 
 def _load_session_row(session_id: str):
-    with db() as conn:
-        row = conn.execute("SELECT * FROM sessions WHERE id = ?", (session_id,)).fetchone()
-    if not row:
+    try:
+        return storage.get_session_row(session_id)
+    except KeyError:
         raise HTTPException(status_code=404, detail="Session not found")
-    return row
 
 @api_router.get("/sessions/{session_id}", response_model=SessionInfo)
 def session_info(session_id: str):
     srow = _load_session_row(session_id)
     tpl = load_template(srow["template_id"])
 
-    with db() as conn:
-        has_a = conn.execute("SELECT 1 FROM responses WHERE session_id=? AND person='A'", (session_id,)).fetchone()
-        has_b = conn.execute("SELECT 1 FROM responses WHERE session_id=? AND person='B'", (session_id,)).fetchone()
+    has_a, has_b = storage.has_responses(session_id)
 
     return SessionInfo(
         id=srow["id"],
@@ -341,12 +333,10 @@ def load_responses(session_id: str, person: str, req: LoadResponsesRequest):
         raise HTTPException(status_code=400, detail="Invalid person")
     srow = _load_session_row(session_id)
 
-    with db() as conn:
-        row = conn.execute("SELECT json FROM responses WHERE session_id=? AND person=?", (session_id, person)).fetchone()
-    if not row:
+    data = storage.load_responses(session_id=session_id, person=person)
+    if not data:
         return {"responses": {}}
-
-    return {"responses": json.loads(row["json"])}
+    return {"responses": data}
 
 @api_router.post("/sessions/{session_id}/responses/{person}/save")
 def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
@@ -372,27 +362,16 @@ def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
                 "warnings": validation_warnings
             })
         )
-
-    payload = json.dumps(req.responses, ensure_ascii=False)
-
-    with db() as conn:
-        conn.execute(
-            "INSERT INTO responses(session_id, person, json, updated_at) VALUES (?,?,?,?) "
-            "ON CONFLICT(session_id, person) DO UPDATE SET json=excluded.json, updated_at=excluded.updated_at",
-            (session_id, person, payload, _utcnow()),
-        )
-    return {"ok": True, "updated_at": _utcnow()}
+    now = _utcnow()
+    storage.save_responses(session_id=session_id, person=person, responses=req.responses, updated_at=now)
+    return {"ok": True, "updated_at": now}
 
 def _load_both_responses(session_id: str):
     srow = _load_session_row(session_id)
-    with db() as conn:
-        ra = conn.execute("SELECT json FROM responses WHERE session_id=? AND person='A'", (session_id,)).fetchone()
-        rb = conn.execute("SELECT json FROM responses WHERE session_id=? AND person='B'", (session_id,)).fetchone()
-    if not ra or not rb:
+    try:
+        resp_a, resp_b = storage.load_both_responses(session_id=session_id)
+    except ValueError:
         raise HTTPException(status_code=400, detail="Need both A and B responses to compare")
-
-    resp_a = json.loads(ra["json"])
-    resp_b = json.loads(rb["json"])
     return srow, resp_a, resp_b
 
 @api_router.post("/sessions/{session_id}/compare", response_model=CompareResult)

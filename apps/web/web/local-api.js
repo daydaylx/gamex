@@ -30,6 +30,26 @@
   const textDecoder = new TextDecoder();
 
   let dbPromise = null;
+  const idbStorage = (window.Storage && typeof window.Storage.createIndexedDbStorage === "function")
+    ? window.Storage.createIndexedDbStorage({
+        dbName: DB_NAME,
+        dbVersion: DB_VERSION,
+        onUpgrade: ({ db, req }) => {
+          // v2: remove legacy encrypted schema (breaking change) and recreate stores
+          if (req.oldVersion && req.oldVersion < 2) {
+            for (const name of [STORE_SESSIONS, STORE_RESPONSES]) {
+              if (db.objectStoreNames.contains(name)) db.deleteObjectStore(name);
+            }
+          }
+          if (!db.objectStoreNames.contains(STORE_SESSIONS)) {
+            db.createObjectStore(STORE_SESSIONS, { keyPath: "id" });
+          }
+          if (!db.objectStoreNames.contains(STORE_RESPONSES)) {
+            db.createObjectStore(STORE_RESPONSES, { keyPath: "id" });
+          }
+        }
+      })
+    : null;
   let templatesIndex = null;
   const templateCache = new Map();
   let scenariosCache = null;
@@ -47,6 +67,7 @@
   }
 
   function openDb() {
+    if (idbStorage) return idbStorage.openDb();
     if (dbPromise) return dbPromise;
     dbPromise = new Promise((resolve, reject) => {
       const req = window.indexedDB.open(DB_NAME, DB_VERSION);
@@ -72,6 +93,7 @@
   }
 
   async function dbGet(storeName, key) {
+    if (idbStorage) return await idbStorage.get(storeName, key);
     const db = await openDb();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(storeName, "readonly");
@@ -83,6 +105,7 @@
   }
 
   async function dbGetAll(storeName) {
+    if (idbStorage) return await idbStorage.getAll(storeName);
     const db = await openDb();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(storeName, "readonly");
@@ -94,6 +117,7 @@
   }
 
   async function dbPut(storeName, value) {
+    if (idbStorage) return await idbStorage.put(storeName, value);
     const db = await openDb();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(storeName, "readwrite");
