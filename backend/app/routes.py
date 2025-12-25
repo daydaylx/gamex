@@ -24,7 +24,6 @@ from app.models import (
 )
 from app.backup import create_backup, restore_backup
 from app.template_store import list_templates, load_template
-from app.crypto import create_key_material, verify_password, verify_pin, encrypt_json, decrypt_json, hash_pin
 from app.compare import compare
 from app.ai import openrouter_analyze, list_ai_reports
 from app.logging import log_api_call, log_performance
@@ -293,22 +292,19 @@ def create_session(req: CreateSessionRequest):
         raise HTTPException(status_code=400, detail="Invalid template_id")
 
     session_id = str(uuid.uuid4())
-    km = create_key_material(req.password)
-
-    pin_a_hash = hash_pin(req.pin_a, km.salt, "A") if req.pin_a else None
-    pin_b_hash = hash_pin(req.pin_b, km.salt, "B") if req.pin_b else None
+    created_at = _utcnow()
 
     with db() as conn:
         conn.execute(
-            "INSERT INTO sessions(id, name, template_id, created_at, salt, pw_verifier, pin_a_hash, pin_b_hash) VALUES (?,?,?,?,?,?,?,?)",
-            (session_id, req.name, req.template_id, _utcnow(), km.salt, km.verifier, pin_a_hash, pin_b_hash),
+            "INSERT INTO sessions(id, name, template_id, created_at) VALUES (?,?,?,?)",
+            (session_id, req.name, req.template_id, created_at),
         )
 
     return SessionListItem(
         id=session_id,
         name=req.name,
         template_id=req.template_id,
-        created_at=_utcnow(),
+        created_at=created_at,
         has_a=False,
         has_b=False,
     )
@@ -319,12 +315,6 @@ def _load_session_row(session_id: str):
     if not row:
         raise HTTPException(status_code=404, detail="Session not found")
     return row
-
-def _require_password(session_row, password: str):
-    salt = session_row["salt"]
-    if not verify_password(password, salt, session_row["pw_verifier"]):
-        raise HTTPException(status_code=401, detail="Wrong password")
-    return salt
 
 @api_router.get("/sessions/{session_id}", response_model=SessionInfo)
 def session_info(session_id: str):
@@ -349,33 +339,19 @@ def load_responses(session_id: str, person: str, req: LoadResponsesRequest):
     if person not in ("A", "B"):
         raise HTTPException(status_code=400, detail="Invalid person")
     srow = _load_session_row(session_id)
-    salt = _require_password(srow, req.password)
-
-    stored_pin_hash = srow["pin_a_hash"] if person == "A" else srow["pin_b_hash"]
-    if not verify_pin(req.pin, stored_pin_hash, salt, person):
-        raise HTTPException(status_code=401, detail="Wrong PIN")
 
     with db() as conn:
-        row = conn.execute("SELECT encrypted_blob FROM responses WHERE session_id=? AND person=?", (session_id, person)).fetchone()
+        row = conn.execute("SELECT json FROM responses WHERE session_id=? AND person=?", (session_id, person)).fetchone()
     if not row:
         return {"responses": {}}
 
-    try:
-        plaintext = decrypt_json(req.password, salt, row["encrypted_blob"])
-        return {"responses": json.loads(plaintext)}
-    except ValueError:
-        raise HTTPException(status_code=401, detail="Decrypt failed")
+    return {"responses": json.loads(row["json"])}
 
 @api_router.post("/sessions/{session_id}/responses/{person}/save")
 def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
     if person not in ("A", "B"):
         raise HTTPException(status_code=400, detail="Invalid person")
     srow = _load_session_row(session_id)
-    salt = _require_password(srow, req.password)
-
-    stored_pin_hash = srow["pin_a_hash"] if person == "A" else srow["pin_b_hash"]
-    if not verify_pin(req.pin, stored_pin_hash, salt, person):
-        raise HTTPException(status_code=401, detail="Wrong PIN")
 
     # basic sanity: must be dict
     if not isinstance(req.responses, dict):
@@ -396,34 +372,33 @@ def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
             })
         )
 
-    blob = encrypt_json(req.password, salt, json.dumps(req.responses, ensure_ascii=False))
+    payload = json.dumps(req.responses, ensure_ascii=False)
 
     with db() as conn:
         conn.execute(
-            "INSERT INTO responses(session_id, person, encrypted_blob, updated_at) VALUES (?,?,?,?) "
-            "ON CONFLICT(session_id, person) DO UPDATE SET encrypted_blob=excluded.encrypted_blob, updated_at=excluded.updated_at",
-            (session_id, person, blob, _utcnow()),
+            "INSERT INTO responses(session_id, person, json, updated_at) VALUES (?,?,?,?) "
+            "ON CONFLICT(session_id, person) DO UPDATE SET json=excluded.json, updated_at=excluded.updated_at",
+            (session_id, person, payload, _utcnow()),
         )
     return {"ok": True, "updated_at": _utcnow()}
 
-def _load_both_responses(session_id: str, password: str):
+def _load_both_responses(session_id: str):
     srow = _load_session_row(session_id)
-    salt = _require_password(srow, password)
     with db() as conn:
-        ra = conn.execute("SELECT encrypted_blob FROM responses WHERE session_id=? AND person='A'", (session_id,)).fetchone()
-        rb = conn.execute("SELECT encrypted_blob FROM responses WHERE session_id=? AND person='B'", (session_id,)).fetchone()
+        ra = conn.execute("SELECT json FROM responses WHERE session_id=? AND person='A'", (session_id,)).fetchone()
+        rb = conn.execute("SELECT json FROM responses WHERE session_id=? AND person='B'", (session_id,)).fetchone()
     if not ra or not rb:
         raise HTTPException(status_code=400, detail="Need both A and B responses to compare")
 
-    resp_a = json.loads(decrypt_json(password, salt, ra["encrypted_blob"]))
-    resp_b = json.loads(decrypt_json(password, salt, rb["encrypted_blob"]))
-    return srow, salt, resp_a, resp_b
+    resp_a = json.loads(ra["json"])
+    resp_b = json.loads(rb["json"])
+    return srow, resp_a, resp_b
 
 @api_router.post("/sessions/{session_id}/compare", response_model=CompareResult)
 def compare_session(session_id: str, req: CompareRequest):
     start = time.time()
     try:
-        srow, _salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+        srow, resp_a, resp_b = _load_both_responses(session_id)
         tpl = load_template(srow["template_id"])
         
         compare_start = time.time()
@@ -445,7 +420,7 @@ def compare_session(session_id: str, req: CompareRequest):
 
 @api_router.post("/sessions/{session_id}/export/json")
 def export_json(session_id: str, req: ExportRequest):
-    srow, _salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+    srow, resp_a, resp_b = _load_both_responses(session_id)
     tpl = load_template(srow["template_id"])
     result = compare(tpl, resp_a, resp_b)
 
@@ -461,7 +436,7 @@ def export_json(session_id: str, req: ExportRequest):
 
 @api_router.post("/sessions/{session_id}/export/markdown")
 def export_markdown(session_id: str, req: ExportRequest):
-    srow, _salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+    srow, resp_a, resp_b = _load_both_responses(session_id)
     tpl = load_template(srow["template_id"])
     result = compare(tpl, resp_a, resp_b)
 
@@ -521,7 +496,7 @@ def get_scenarios():
 
 @api_router.post("/sessions/{session_id}/ai/analyze")
 async def ai_analyze(session_id: str, req: AIAnalyzeRequest):
-    srow, salt, resp_a, resp_b = _load_both_responses(session_id, req.password)
+    srow, resp_a, resp_b = _load_both_responses(session_id)
     tpl = load_template(srow["template_id"])
     result = compare(tpl, resp_a, resp_b)
 
@@ -530,8 +505,6 @@ async def ai_analyze(session_id: str, req: AIAnalyzeRequest):
 
     report = await openrouter_analyze(
         session_id=session_id,
-        password=req.password,
-        salt=salt,
         compare_result=result,
         api_key=req.api_key,
         model=req.model,
@@ -543,15 +516,13 @@ async def ai_analyze(session_id: str, req: AIAnalyzeRequest):
 
 @api_router.post("/sessions/{session_id}/ai/list")
 def ai_list(session_id: str, req: CompareRequest):
-    srow = _load_session_row(session_id)
-    salt = _require_password(srow, req.password)
-    return {"reports": list_ai_reports(session_id, req.password, salt)}
+    return {"reports": list_ai_reports(session_id)}
 
 @api_router.post("/sessions/{session_id}/backup")
 def backup_session(session_id: str, req: BackupRequest):
-    """Create an encrypted backup of a session."""
+    """Create a plaintext backup of a session."""
     try:
-        backup_data = create_backup(session_id, req.password)
+        backup_data = create_backup(session_id)
         return backup_data
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -560,12 +531,10 @@ def backup_session(session_id: str, req: BackupRequest):
 
 @api_router.post("/sessions/restore")
 def restore_session(req: RestoreRequest):
-    """Restore a session from an encrypted backup."""
+    """Restore a session from a plaintext backup."""
     try:
         new_session_id = restore_backup(
-            req.encrypted_data,
-            req.salt,
-            req.password,
+            req.backup,
             req.new_name
         )
         return {
