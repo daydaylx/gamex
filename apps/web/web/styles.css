@@ -1428,6 +1428,33 @@ input[type=range]:focus { outline: none; box-shadow: none; }
 }
 .notes-toggle[open] > summary::after { content: "–"; }
 
+/* Android Touch Optimizations */
+@media (max-width: 768px) {
+  /* Minimum touch target size: 48dp (Android standard) */
+  .btn, button, .mobile-nav-item, .rating-btn, .scenario-btn {
+    min-height: 48px;
+    min-width: 48px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(236, 72, 153, 0.2);
+  }
+  
+  /* Spacing between touch targets: minimum 8dp */
+  .row { gap: 12px; }
+  .form-tool-row { gap: 12px; }
+  
+  /* Prevent text selection on touch */
+  .btn, button, .collapsible-header {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Ripple effect for Android */
+  .btn:active, button:active {
+    background: rgba(236, 72, 153, 0.3);
+    transform: scale(0.98);
+  }
+}
+
 /* Mobile Overrides */
 @media (max-width: 768px) {
   .grid2 { grid-template-columns: 1fr; }
@@ -1587,10 +1614,20 @@ input[type=range]:focus { outline: none; box-shadow: none; }
   
   .mobile-bottom-nav {
     display: flex; /* Show on mobile */
+    /* Android Material Design elevation */
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
   }
   
   .fab {
     display: flex; /* Show on mobile */
+    /* Material Design FAB elevation */
+    box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4),
+                0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  
+  .fab:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
   }
   
   .desktop-only {

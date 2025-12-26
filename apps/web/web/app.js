@@ -213,6 +213,7 @@ async function openSession(sessionId) {
   show($("create"), false);
   show($("extras"), false); 
   show($("sessionView"), true);
+  updateMobileNavVisibility();
 
   $("sessTitle").textContent = info.name;
   $("sessMeta").innerHTML = `
@@ -655,6 +656,16 @@ function renderConsentRating(q, existing = {}) {
     wrap.querySelector('[data-k="conditions"]').value = conditions;
     wrap.querySelector('[data-k="notes"]').value = notes;
     
+    // Android keyboard optimization for textareas
+    wrap.querySelectorAll('textarea').forEach(textarea => {
+        textarea.setAttribute("inputmode", "text");
+        if (textarea.dataset.k === "notes") {
+            textarea.setAttribute("enterkeyhint", "done");
+        } else {
+            textarea.setAttribute("enterkeyhint", "next");
+        }
+    });
+    
     // Context Flags Event Handler
     wrap.querySelectorAll('[data-flag]').forEach(checkbox => {
       checkbox.addEventListener('change', () => {
@@ -719,16 +730,57 @@ function renderScale(q, existing={}) {
 function renderEnum(q, existing={}) {
     const d = document.createElement("div");
     d.className="item";
-    d.innerHTML = `<div class="title">${q.label}</div><select data-k="value">${(q.options||[]).map(o=>`<option>${o}</option>`).join("")}</select>`;
-    d.querySelector('select').value = existing.value || q.options?.[0];
-    d.querySelector('select').onchange = () => handleFormChange(d);
+    const select = document.createElement("select");
+    select.dataset.k = "value";
+    select.setAttribute("enterkeyhint", "next");
+    
+    (q.options || []).forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.textContent = opt;
+        select.appendChild(option);
+    });
+    
+    select.value = existing.value || q.options?.[0];
+    select.onchange = () => handleFormChange(d);
+    
+    // Android: Auto-advance to next question after selection
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        select.addEventListener('change', () => {
+            setTimeout(() => {
+                const nextItem = d.nextElementSibling?.querySelector('input, textarea, select');
+                if (nextItem) {
+                    nextItem.focus();
+                }
+            }, 100);
+        });
+    }
+    
+    d.innerHTML = `<div class="title">${q.label}</div>`;
+    d.appendChild(select);
     return d;
 }
 function renderText(q, existing={}) {
     const d = document.createElement("div");
     d.className="item";
-    d.innerHTML = `<div class="title">${q.label}</div><textarea data-k="text">${existing.text||""}</textarea>`;
-    d.querySelector('textarea').oninput = () => handleFormChange(d);
+    const textarea = document.createElement("textarea");
+    textarea.dataset.k = "text";
+    textarea.value = existing.text || "";
+    textarea.setAttribute("inputmode", "text");
+    textarea.setAttribute("enterkeyhint", "next");
+    textarea.placeholder = q.placeholder || "";
+    textarea.oninput = () => handleFormChange(d);
+    
+    // Android keyboard optimization: Enter key moves to next question
+    textarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            goToNextOpenQuestion();
+        }
+    });
+    
+    d.innerHTML = `<div class="title">${q.label}</div>`;
+    d.appendChild(textarea);
     return d;
 }
 
@@ -1855,6 +1907,7 @@ async function startFill(person) {
     msg($("saveMsg"), "");
     setSaveStatus("Bereit");
     window.addEventListener('beforeunload', handleBeforeUnload);
+    updateMobileNavVisibility();
 }
 async function saveFill() {
     state.validationEnabled = true;
@@ -1982,21 +2035,120 @@ async function doCompare() {
     renderCompareView(res);
     show($("panelCompare"), true);
     show($("panelForm"), false);
+    updateMobileNavVisibility();
 }
 
 async function exportSession(format) {
     if (!state.currentSession) throw new Error("Keine Session aktiv");
-    if (window.LocalApi && window.LocalApi.enabled) {
-        throw new Error("Export ist im Offline-Modus derzeit nicht verfügbar");
-    }
     const kind = format === "markdown" ? "markdown" : "json";
-    const blob = await api(`/api/sessions/${state.currentSession.id}/export/${kind}`, {
-        method: "POST",
-        body: JSON.stringify({})
-    });
     const ext = kind === "markdown" ? "md" : "json";
-    downloadBlob(blob, `intimacy_export_${state.currentSession.id}.${ext}`);
-    msg($("sessionMsg"), "Export erstellt.", "ok");
+    const filename = `intimacy_export_${state.currentSession.id}.${ext}`;
+    
+    try {
+        let blob, textContent;
+        
+        if (window.LocalApi && window.LocalApi.enabled) {
+            // Offline mode: Generate export locally
+            const responses = await api(`/api/sessions/${state.currentSession.id}/responses/A/load`, {
+                method: "POST",
+                body: JSON.stringify({})
+            });
+            const responsesB = await api(`/api/sessions/${state.currentSession.id}/responses/B/load`, {
+                method: "POST",
+                body: JSON.stringify({})
+            });
+            
+            if (kind === "markdown") {
+                textContent = generateMarkdownExport(state.currentSession, responses.responses || {}, responsesB.responses || {});
+            } else {
+                textContent = JSON.stringify({
+                    session: state.currentSession,
+                    responses_a: responses.responses || {},
+                    responses_b: responsesB.responses || {}
+                }, null, 2);
+            }
+            blob = new Blob([textContent], { type: kind === "markdown" ? "text/markdown" : "application/json" });
+        } else {
+            // Server mode: Get export from API
+            blob = await api(`/api/sessions/${state.currentSession.id}/export/${kind}`, {
+                method: "POST",
+                body: JSON.stringify({})
+            });
+        }
+        
+        // Use native share if available (Android)
+        if (window.nativeShare && window.Capacitor && window.Capacitor.isNativePlatform()) {
+            // Convert blob to base64 for native share
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64Data = reader.result.split(',')[1];
+                const mimeType = kind === "markdown" ? "text/markdown" : "application/json";
+                
+                // Save to filesystem first
+                if (window.nativeFilesystem) {
+                    try {
+                        const path = await window.nativeFilesystem.writeFile({
+                            path: filename,
+                            data: base64Data,
+                            directory: window.nativeFilesystem.Directory.Documents,
+                            encoding: window.nativeFilesystem.Encoding.UTF8
+                        });
+                        
+                        // Share the file
+                        await window.nativeShare.share({
+                            title: 'Intimacy Tool Export',
+                            text: `Meine Session-Ergebnisse: ${state.currentSession.name}`,
+                            url: path.uri,
+                            dialogTitle: 'Ergebnisse teilen'
+                        });
+                        
+                        msg($("sessionMsg"), "Export geteilt.", "ok");
+                    } catch (err) {
+                        console.error("Native share error:", err);
+                        // Fallback to download
+                        downloadBlob(blob, filename);
+                        msg($("sessionMsg"), "Export erstellt.", "ok");
+                    }
+                } else {
+                    // Fallback to download
+                    downloadBlob(blob, filename);
+                    msg($("sessionMsg"), "Export erstellt.", "ok");
+                }
+            };
+            reader.readAsDataURL(blob);
+        } else {
+            // Web fallback: Download
+            downloadBlob(blob, filename);
+            msg($("sessionMsg"), "Export erstellt.", "ok");
+        }
+    } catch (e) {
+        showError($("sessionMsg"), e, "Export fehlgeschlagen");
+    }
+}
+
+function generateMarkdownExport(session, responsesA, responsesB) {
+    let md = `# ${session.name}\n\n`;
+    md += `**Erstellt:** ${new Date(session.created_at).toLocaleDateString('de-DE')}\n\n`;
+    md += `**Template:** ${session.template?.name || 'Unbekannt'}\n\n`;
+    md += `---\n\n`;
+    
+    if (Object.keys(responsesA).length > 0) {
+        md += `## Person A\n\n`;
+        for (const [qid, answer] of Object.entries(responsesA)) {
+            md += `### ${qid}\n`;
+            md += `\`\`\`json\n${JSON.stringify(answer, null, 2)}\n\`\`\`\n\n`;
+        }
+    }
+    
+    if (Object.keys(responsesB).length > 0) {
+        md += `## Person B\n\n`;
+        for (const [qid, answer] of Object.entries(responsesB)) {
+            md += `### ${qid}\n`;
+            md += `\`\`\`json\n${JSON.stringify(answer, null, 2)}\n\`\`\`\n\n`;
+        }
+    }
+    
+    return md;
 }
 
 async function runAIAnalysis() {
@@ -2092,6 +2244,22 @@ function initMobileNavigation() {
       } else if (view === "sessions") {
         // Show sessions list (already visible on home)
         backHome();
+      } else if (view === "form") {
+        // Show form panel if session is active
+        if (state.currentSession && state.currentPerson) {
+          show($("panelForm"), true);
+          show($("panelCompare"), false);
+        }
+      } else if (view === "compare") {
+        // Show compare panel if session is active
+        if (state.currentSession) {
+          if (!state.compareData) {
+            doCompare().catch((e) => showError($("sessionMsg"), e, "Vergleich fehlgeschlagen"));
+          } else {
+            show($("panelCompare"), true);
+            show($("panelForm"), false);
+          }
+        }
       } else if (view === "scenarios") {
         if ($("scenarioView")) {
           show($("scenarioView"), true);
@@ -2138,16 +2306,47 @@ function updateMobileNavVisibility() {
   const bottomNav = document.getElementById("mobileBottomNav");
   const fab = document.getElementById("fab");
   const mobileNavCompare = document.getElementById("mobileNavCompare");
+  const mobileNavForm = document.getElementById("mobileNavForm");
+  const isMobile = window.innerWidth <= 768;
   
   // Show/hide based on current view
   if (state.currentSession) {
     bottomNav?.classList.add("in-session");
-    fab?.style.setProperty("display", "flex");
-    mobileNavCompare?.style.setProperty("display", "flex");
+    if (isMobile) {
+      fab?.style.setProperty("display", "flex");
+      mobileNavCompare?.style.setProperty("display", "flex");
+      mobileNavForm?.style.setProperty("display", state.currentPerson ? "flex" : "none");
+    }
+    
+    // Update active state
+    const navItems = bottomNav?.querySelectorAll(".mobile-nav-item");
+    navItems?.forEach(item => {
+      item.classList.remove("active");
+      const view = item.dataset.view;
+      if (view === "form" && $("panelForm") && !$("panelForm").classList.contains("hidden")) {
+        item.classList.add("active");
+      } else if (view === "compare" && $("panelCompare") && !$("panelCompare").classList.contains("hidden")) {
+        item.classList.add("active");
+      } else if (view === "home" && !state.currentSession) {
+        item.classList.add("active");
+      } else if (view === "scenarios" && $("scenarioView") && !$("scenarioView").classList.contains("hidden")) {
+        item.classList.add("active");
+      }
+    });
   } else {
     bottomNav?.classList.remove("in-session");
-    fab?.style.setProperty("display", window.innerWidth <= 768 ? "flex" : "none");
-    mobileNavCompare?.style.setProperty("display", "none");
+    if (isMobile) {
+      fab?.style.setProperty("display", "flex");
+      mobileNavCompare?.style.setProperty("display", "none");
+      mobileNavForm?.style.setProperty("display", "none");
+    }
+    
+    // Set home as active
+    const homeItem = bottomNav?.querySelector('[data-view="home"]');
+    if (homeItem) {
+      bottomNav?.querySelectorAll(".mobile-nav-item").forEach(item => item.classList.remove("active"));
+      homeItem.classList.add("active");
+    }
   }
 }
 
@@ -2159,11 +2358,15 @@ function showFABMenu(actions = []) {
 
 // Native Android Features (Capacitor)
 function initNativeFeatures() {
-  // Back Button Handling (Android)
-  if (window.Capacitor && window.Capacitor.Plugins) {
-    const { App } = window.Capacitor.Plugins;
-    if (App && App.addListener) {
-      App.addListener('backButton', ({ canGoBack }) => {
+  if (!window.Capacitor || !window.Capacitor.Plugins) return;
+  
+  const plugins = window.Capacitor.Plugins;
+  
+  // App State Management
+  if (plugins.App) {
+    // Back Button Handling (Android)
+    if (plugins.App.addListener) {
+      plugins.App.addListener('backButton', ({ canGoBack }) => {
         if (!canGoBack || state.navOpen) {
           setNavOpen(false);
           if (state.currentSession && !state.navOpen) {
@@ -2175,29 +2378,197 @@ function initNativeFeatures() {
       });
     }
     
-    // StatusBar styling
-    const { StatusBar } = window.Capacitor.Plugins;
-    if (StatusBar) {
-      StatusBar.setStyle({ style: 'DARK' });
-      StatusBar.setBackgroundColor({ color: '#1a0a1a' });
-    }
-    
-    // Haptic Feedback (optional, via Capacitor)
-    if (window.Capacitor.Plugins.Haptics) {
-      window.hapticFeedback = {
-        light: () => window.Capacitor.Plugins.Haptics.impact({ style: 'LIGHT' }),
-        medium: () => window.Capacitor.Plugins.Haptics.impact({ style: 'MEDIUM' }),
-        heavy: () => window.Capacitor.Plugins.Haptics.impact({ style: 'HEAVY' })
-      };
-      
-      // Add haptic feedback to important actions
-      document.addEventListener('click', (e) => {
-        if (e.target.matches('.btn.primary, .fab, .mobile-nav-item')) {
-          window.hapticFeedback?.light();
+    // App State Changes
+    plugins.App.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        // App wurde in den Vordergrund gebracht
+        if (state.currentSession && state.hasUnsavedChanges) {
+          setSaveStatus("App wieder aktiv - Änderungen vorhanden", "warn");
         }
-      });
+      } else {
+        // App wurde in den Hintergrund gebracht
+        if (state.hasUnsavedChanges && state.autoSaveTimer) {
+          clearTimeout(state.autoSaveTimer);
+          autoSave();
+        }
+      }
+    });
+  }
+  
+  // StatusBar styling
+  if (plugins.StatusBar) {
+    plugins.StatusBar.setStyle({ style: 'DARK' });
+    plugins.StatusBar.setBackgroundColor({ color: '#1a0a1a' });
+    plugins.StatusBar.setOverlaysWebView({ overlay: false });
+  }
+  
+  // Keyboard Plugin
+  if (plugins.Keyboard) {
+    plugins.Keyboard.setAccessoryBarVisible({ isVisible: true });
+    
+    plugins.Keyboard.addListener('keyboardWillShow', (info) => {
+      // Scroll to active input when keyboard appears
+      const activeElement = document.activeElement;
+      if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+        setTimeout(() => {
+          activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    });
+    
+    plugins.Keyboard.addListener('keyboardWillHide', () => {
+      // Optional: Scroll back or adjust layout
+    });
+  }
+  
+  // Network Status
+  if (plugins.Network) {
+    plugins.Network.addListener('networkStatusChange', (status) => {
+      isOnline = status.connected;
+      updateOfflineIndicator();
+    });
+    
+    // Get initial network status
+    plugins.Network.getStatus().then(status => {
+      isOnline = status.connected;
+      updateOfflineIndicator();
+    });
+  }
+  
+  // Haptic Feedback (optional, via Capacitor)
+  if (plugins.Haptics) {
+    window.hapticFeedback = {
+      light: () => plugins.Haptics.impact({ style: 'LIGHT' }),
+      medium: () => plugins.Haptics.impact({ style: 'MEDIUM' }),
+      heavy: () => plugins.Haptics.impact({ style: 'HEAVY' })
+    };
+    
+    // Add haptic feedback to important actions
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('.btn.primary, .fab, .mobile-nav-item')) {
+        window.hapticFeedback?.light();
+      }
+    });
+  }
+  
+  // Share Plugin - will be used in export functions
+  if (plugins.Share) {
+    window.nativeShare = plugins.Share;
+  }
+  
+  // Filesystem Plugin - will be used in backup/export functions
+  if (plugins.Filesystem) {
+    window.nativeFilesystem = plugins.Filesystem;
+  }
+  
+  // Deep Link Handling (App Shortcuts)
+  if (plugins.App) {
+    plugins.App.addListener('appUrlOpen', (data) => {
+      const url = data.url;
+      if (url.startsWith('intimacytool://')) {
+        handleDeepLink(url);
+      }
+    });
+  }
+}
+
+function handleDeepLink(url) {
+  const urlObj = new URL(url);
+  const path = urlObj.pathname || urlObj.hostname;
+  
+  if (path === 'new-session' || path.includes('new-session')) {
+    // Scroll to create section
+    const createSection = $("create");
+    if (createSection) {
+      createSection.scrollIntoView({ behavior: 'smooth' });
+      $("newName")?.focus();
+    }
+  } else if (path === 'scenarios' || path.includes('scenarios')) {
+    loadScenarios();
+  } else if (path === 'last-session' || path.includes('last-session')) {
+    // Open last session
+    if (state.sessions && state.sessions.length > 0) {
+      const lastSession = state.sessions.sort((a, b) => 
+        new Date(b.created_at) - new Date(a.created_at)
+      )[0];
+      if (lastSession) {
+        openSession(lastSession.id);
+      }
+    }
+  } else if (path.startsWith('session/')) {
+    // Open specific session
+    const sessionId = path.split('/')[1];
+    if (sessionId) {
+      openSession(sessionId);
     }
   }
+}
+
+// Native File System Functions
+async function backupToFileSystem() {
+    if (!window.nativeFilesystem) {
+        throw new Error("Filesystem-Plugin nicht verfügbar");
+    }
+    
+    try {
+        // Get all sessions
+        const sessions = await api("/api/sessions");
+        const backupData = {
+            version: "1.0",
+            timestamp: new Date().toISOString(),
+            sessions: sessions
+        };
+        
+        const backupJson = JSON.stringify(backupData, null, 2);
+        const filename = `intimacy_backup_${new Date().toISOString().split('T')[0]}.json`;
+        
+        // Write to Documents directory
+        const result = await window.nativeFilesystem.writeFile({
+            path: filename,
+            data: btoa(unescape(encodeURIComponent(backupJson))),
+            directory: window.nativeFilesystem.Directory.Documents,
+            encoding: window.nativeFilesystem.Encoding.UTF8
+        });
+        
+        return { success: true, path: result.uri, filename };
+    } catch (error) {
+        console.error("Backup error:", error);
+        throw error;
+    }
+}
+
+async function restoreFromFileSystem() {
+    if (!window.nativeFilesystem) {
+        throw new Error("Filesystem-Plugin nicht verfügbar");
+    }
+    
+    // Note: File picker would require @capacitor/filesystem with file picker plugin
+    // For now, we'll use a simple approach - read from a known backup file
+    // In a full implementation, you'd use a file picker dialog
+    
+    try {
+        // This is a placeholder - in production, use a file picker
+        const filename = prompt("Backup-Dateiname eingeben (z.B. intimacy_backup_2025-01-27.json):");
+        if (!filename) return null;
+        
+        const file = await window.nativeFilesystem.readFile({
+            path: filename,
+            directory: window.nativeFilesystem.Directory.Documents,
+            encoding: window.nativeFilesystem.Encoding.UTF8
+        });
+        
+        const backupData = JSON.parse(decodeURIComponent(escape(atob(file.data))));
+        
+        // Validate backup format
+        if (!backupData.sessions || !Array.isArray(backupData.sessions)) {
+            throw new Error("Ungültiges Backup-Format");
+        }
+        
+        return backupData;
+    } catch (error) {
+        console.error("Restore error:", error);
+        throw error;
+    }
 }
 
 // Boot
