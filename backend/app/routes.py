@@ -276,16 +276,20 @@ async def ai_analyze(session_id: str, req: AIAnalyzeRequest):
     if req.provider != "openrouter":
         raise HTTPException(status_code=400, detail="Only openrouter supported currently")
 
-    report = await openrouter_analyze(
-        session_id=session_id,
-        compare_result=result,
-        api_key=req.api_key,
-        model=req.model,
-        base_url=req.base_url,
-        max_tokens=req.max_tokens,
-        redact_free_text=req.redact_free_text,
-    )
-    return report
+    try:
+        report = await openrouter_analyze(
+            session_id=session_id,
+            compare_result=result,
+            api_key=req.api_key,
+            model=req.model,
+            base_url=req.base_url,
+            max_tokens=req.max_tokens,
+            redact_free_text=req.redact_free_text,
+        )
+        return report
+    except ValueError as e:
+        # AI provider URL validation failed
+        raise HTTPException(status_code=400, detail=str(e))
 
 @api_router.post("/sessions/{session_id}/ai/list")
 def ai_list(session_id: str, req: CompareRequest):
