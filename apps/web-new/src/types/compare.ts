@@ -1,19 +1,30 @@
 import type { ResponseValue } from './form';
-import type { Question } from './template';
+import type { QuestionSchema, RiskLevel } from './common';
 
 /**
  * Comparison types for matching responses
  */
 
-export type MatchLevel = 'match' | 'partial' | 'mismatch' | 'incomplete';
+export type MatchLevel = 'MATCH' | 'EXPLORE' | 'BOUNDARY';
 
 export interface ComparisonResult {
   question_id: string;
-  question: Question;
-  match_level: MatchLevel;
+  label: string;
+  schema: QuestionSchema;
+  risk_level: RiskLevel;
+  module_id: string;
+  pair_status: MatchLevel;
+  status_a: string | null;
+  status_b: string | null;
+  interest_a: number | null;
+  interest_b: number | null;
+  comfort_a: number | null;
+  comfort_b: number | null;
   value_a: ResponseValue;
   value_b: ResponseValue;
-  explanation?: string;
+  delta_interest: number | null;
+  delta_comfort: number | null;
+  flags: string[];
 }
 
 export interface CompareFilters {
@@ -25,12 +36,6 @@ export interface CompareFilters {
 }
 
 export interface CompareResponse {
-  results: ComparisonResult[];
-  summary: {
-    total: number;
-    matches: number;
-    partial: number;
-    mismatches: number;
-    incomplete: number;
-  };
+  items: ComparisonResult[];
+  action_plan: string[];
 }

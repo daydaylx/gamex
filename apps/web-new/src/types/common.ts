@@ -12,9 +12,11 @@ export type QuestionSchema =
   | 'consent_rating'
   | 'scale_0_10'
   | 'enum'
+  | 'multi'
   | 'text'
   | 'bool'
-  | 'scale_1_5';
+  | 'scale_1_5'
+  | 'scenario';
 
 /**
  * Valid tags for categorizing questions

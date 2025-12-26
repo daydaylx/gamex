@@ -6,13 +6,36 @@ import type { Person, YesMaybeNo } from './common';
 
 /**
  * ConsentRating response - the most complex question type
+ * Supports three variants: standard, dom/sub, active/passive
  */
 export interface ConsentRatingValue {
-  interest?: number; // 0-5
-  dom_status?: YesMaybeNo;
+  // Standard variant
+  status?: YesMaybeNo | 'HARD_LIMIT';
+  interest?: number; // 0-4
+  comfort?: number; // 0-4
+  conditions?: string;
+
+  // Dom/Sub variant
+  dom_status?: YesMaybeNo | 'HARD_LIMIT';
+  dom_interest?: number; // 0-4
+  dom_comfort?: number; // 0-4
   dom_conditions?: string;
-  sub_status?: YesMaybeNo;
+  sub_status?: YesMaybeNo | 'HARD_LIMIT';
+  sub_interest?: number; // 0-4
+  sub_comfort?: number; // 0-4
   sub_conditions?: string;
+
+  // Active/Passive variant
+  active_status?: YesMaybeNo | 'HARD_LIMIT';
+  active_interest?: number; // 0-4
+  active_comfort?: number; // 0-4
+  active_conditions?: string;
+  passive_status?: YesMaybeNo | 'HARD_LIMIT';
+  passive_interest?: number; // 0-4
+  passive_comfort?: number; // 0-4
+  passive_conditions?: string;
+
+  // Legacy
   hard_no?: boolean;
 }
 
