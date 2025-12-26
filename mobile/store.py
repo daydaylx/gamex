@@ -74,13 +74,19 @@ class AppStore(EventDispatcher):
     save_status_kind = StringProperty('')  # '', 'success', 'error'
     validation_summary = StringProperty('')
 
+    # Wizard State
+    wizard_started = BooleanProperty(False)
+    current_question_index = NumericProperty(0)  # Index in flattened question list
+    wizard_questions = ListProperty([])  # Flattened list of all questions
+
     # Auto-save
     auto_save_interval = NumericProperty(5.0)  # seconds
     _auto_save_timer = None
 
     # Events
     __events__ = ('on_navigate', 'on_session_changed', 'on_template_changed',
-                  'on_save_complete', 'on_save_error', 'on_data_loaded')
+                  'on_save_complete', 'on_save_error', 'on_data_loaded',
+                  'on_wizard_started', 'on_wizard_completed')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -370,3 +376,107 @@ class AppStore(EventDispatcher):
     def on_data_loaded(self):
         """Event: Initial data loaded."""
         pass
+
+    def on_wizard_started(self):
+        """Event: Wizard flow started."""
+        pass
+
+    def on_wizard_completed(self):
+        """Event: Wizard flow completed."""
+        pass
+
+    # ===== Wizard Methods =====
+
+    def start_wizard(self):
+        """
+        Start the wizard flow.
+
+        Flattens template questions and initializes wizard state.
+        """
+        if not self.current_template:
+            raise ValueError("No template loaded")
+
+        # Flatten questions from all modules
+        questions = []
+        for module in self.current_template.get('modules', []):
+            for question in module.get('questions', []):
+                # Add module info to question
+                q = dict(question)
+                q['_module_name'] = module.get('name', '')
+                questions.append(q)
+
+        self.wizard_questions = questions
+        self.current_question_index = 0
+        self.wizard_started = True
+
+        self.dispatch('on_wizard_started')
+
+    def next_question(self) -> bool:
+        """
+        Move to next question.
+
+        Returns:
+            True if moved, False if already at last question
+        """
+        if self.current_question_index < len(self.wizard_questions) - 1:
+            self.current_question_index += 1
+            return True
+        return False
+
+    def previous_question(self) -> bool:
+        """
+        Move to previous question.
+
+        Returns:
+            True if moved, False if already at first question
+        """
+        if self.current_question_index > 0:
+            self.current_question_index -= 1
+            return True
+        return False
+
+    def get_current_question(self) -> Optional[Dict[str, Any]]:
+        """
+        Get current question.
+
+        Returns:
+            Question dict or None if wizard not started
+        """
+        if not self.wizard_started or not self.wizard_questions:
+            return None
+
+        if 0 <= self.current_question_index < len(self.wizard_questions):
+            return self.wizard_questions[self.current_question_index]
+
+        return None
+
+    def is_last_question(self) -> bool:
+        """Check if current question is the last one."""
+        return self.current_question_index == len(self.wizard_questions) - 1
+
+    def is_first_question(self) -> bool:
+        """Check if current question is the first one."""
+        return self.current_question_index == 0
+
+    def get_wizard_progress(self) -> Dict[str, int]:
+        """
+        Get wizard progress info.
+
+        Returns:
+            Dict with 'current' (1-indexed), 'total', 'module_name'
+        """
+        if not self.wizard_started:
+            return {'current': 0, 'total': 0, 'module_name': ''}
+
+        current_q = self.get_current_question()
+        return {
+            'current': self.current_question_index + 1,
+            'total': len(self.wizard_questions),
+            'module_name': current_q.get('_module_name', '') if current_q else '',
+        }
+
+    def complete_wizard(self):
+        """Mark wizard as completed and save."""
+        self.wizard_started = False
+        self.save_responses()
+        self.dispatch('on_wizard_completed')

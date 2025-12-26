@@ -8,19 +8,45 @@
     color: 1, 1, 1, 1
     font_size: '16sp'
     size_hint_y: None
-    height: '48dp'
-    padding: ['10dp', '10dp']
+    height: '52dp'
+    padding: ['12dp', '12dp']
+    bold: True
 
 <Label>:
     color: 0.1, 0.1, 0.1, 1
-    font_size: '14sp'
+    font_size: '15sp'
+    text_size: self.width, None
+    halign: 'left'
+    valign: 'middle'
 
 <TextInput>:
     background_color: 1, 1, 1, 1
     foreground_color: 0.1, 0.1, 0.1, 1
     cursor_color: 0.2, 0.6, 0.8, 1
-    font_size: '14sp'
-    padding: ['10dp', '10dp']
+    font_size: '16sp'
+    padding: ['12dp', '12dp']
     multiline: False
     size_hint_y: None
-    height: '44dp'
+    height: '48dp'
+
+<Slider>:
+    cursor_size: ('32dp', '32dp')
+
+<ToggleButton>:
+    background_color: 0.9, 0.9, 0.9, 1
+    background_down: 0.2, 0.6, 0.8, 1
+    color: 0.1, 0.1, 0.1, 1
+    font_size: '16sp'
+    bold: True
+
+<CheckBox>:
+    size_hint: None, None
+    size: '44dp', '44dp'
+
+<ProgressBar>:
+    canvas:
+        Color:
+            rgba: 0.2, 0.6, 0.8, 1
+        Rectangle:
+            pos: self.x, self.y
+            size: self.value_normalized * self.width, self.height
