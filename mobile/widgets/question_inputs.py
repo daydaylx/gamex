@@ -24,7 +24,7 @@ class BaseInput(BoxLayout):
         self.bind(minimum_height=self.setter("height"))
 
         self._on_change = on_change
-        self.set_response(response)
+        BaseInput.set_response(self, response)
 
     def set_response(self, response: Any) -> None:
         self.response = response
