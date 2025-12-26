@@ -440,12 +440,29 @@ class AppStore(EventDispatcher):
         """
         if not self.wizard_started:
             return None
-        # Sync wizard index if user set property directly
-        self._wizard.questions = list(self.wizard_questions or [])
-        self._wizard.started = True
-        self._wizard.index = int(self.current_question_index)
+
+        # Ensure internal wizard state matches Kivy properties without
+        # performing unnecessary copies on every call.
+        self._sync_wizard_state_from_properties()
         return self._wizard.current()
 
+    def _sync_wizard_state_from_properties(self) -> None:
+        """
+        Synchronize the internal wizard state from the public properties
+        in a lightweight way, avoiding redundant list copies and assignments.
+        """
+        # Keep questions list in sync only if the reference has changed.
+        if self._wizard.questions is not self.wizard_questions:
+            self._wizard.questions = list(self.wizard_questions or [])
+
+        # Ensure the started flag is consistent.
+        if not self._wizard.started and self.wizard_started:
+            self._wizard.started = True
+
+        # Sync the current index only when it differs.
+        desired_index = int(self.current_question_index)
+        if self._wizard.index != desired_index:
+            self._wizard.index = desired_index
     def is_last_question(self) -> bool:
         """Check if current question is the last one."""
         if not self.wizard_questions:
