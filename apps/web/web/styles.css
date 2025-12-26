@@ -1222,6 +1222,105 @@ textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
   flex: 1;
 }
 
+/* Info Button & Details Box */
+.btn-info-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(236, 72, 153, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.btn-info-toggle .info-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn-info-toggle .info-text {
+  font-size: 0.8rem;
+}
+
+.btn-info-toggle:hover {
+  background: rgba(236, 72, 153, 0.25);
+  border-color: rgba(236, 72, 153, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.2);
+}
+
+.btn-info-toggle.active {
+  background: rgba(236, 72, 153, 0.3);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+}
+
+@media (max-width: 640px) {
+  .btn-info-toggle .info-text {
+    display: none;
+  }
+  .btn-info-toggle {
+    padding: 6px 10px;
+  }
+}
+
+/* Old btn-info-toggle styles removed - replaced above */
+
+.info-details-box {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding: 16px;
+  background: rgba(236, 72, 153, 0.08);
+  border: 1px solid rgba(236, 72, 153, 0.2);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--primary);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.info-details-box.open {
+  max-height: 1000px;
+  opacity: 1;
+  padding: 16px;
+}
+
+.info-details-header {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-details-header .info-header-icon {
+  font-size: 1.2rem;
+}
+
+.info-details-content {
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.info-details-box .info-details-header + * {
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
 .question-help {
     background: rgba(0,0,0,0.2);
     padding: 8px 12px;

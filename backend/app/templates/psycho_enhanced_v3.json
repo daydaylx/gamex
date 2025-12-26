@@ -1,7 +1,7 @@
 {
   "id": "psycho_enhanced_v3",
   "name": "Intimacy & Kink v3 (Psychologisch vertieft)",
-  "version": 3,
+  "version": 4,
   "description": "Erweitert um wissenschaftlich fundierte psychologische Tiefe: Bindung, Subspace, Scham, Power Dynamics, Aftercare, Regulation. Kombiniert alle 9 Basis-Module mit 6 psychologischen Vertiefungs-Modulen.",
   "modules": [
     {
@@ -261,12 +261,12 @@
           "schema": "consent_rating",
           "risk_level": "A",
           "label": "Augen verbinden (Blindfold)",
-          "help": "Kontrolle über das Sehen abgeben. Verstärkt andere Sinne.",
+          "help": "Kontrolle über das Sehen abgeben. Verstärkt andere Sinne. Erfordert Vertrauen da man nicht sehen kann.",
           "tags": [
             "sensory",
             "level1"
           ],
-          "info_details": "Einfachste Form des Kontrollverlusts. Erfordert mehr verbale Kommunikation, da Körpersprache nicht gesehen wird."
+          "info_details": "Psychologie: Blindfold erfordert mehr verbale Kommunikation, da Körpersprache nicht gesehen wird. Verstärkt andere Sinne (Hören, Fühlen, Riechen) → intensivere Wahrnehmung. Erfordert Vertrauen - man ist vulnerabel ohne Sehsinn. Attachment Theory: Erfordert sicheres Vertrauen. Kann sehr meditativ sein (Serotonin-Subspace möglich). Einfachste Form des Kontrollverlusts."
         }
       ]
     },
@@ -400,7 +400,8 @@
           "schema": "consent_rating",
           "risk_level": "B",
           "label": "Gehorsam & Dienen (Service)",
-          "help": "Getränke bringen, Aufgaben erfüllen, 'zu Diensten sein'.",
+          "help": "Akt der Hingabe: 'Ich diene dir' zeigt tiefe Verbundenheit. Für viele ist es befreiend, Verantwortung abzugeben.",
+          "info_details": "Akt der Hingabe: 'Ich diene dir' zeigt tiefe Verbundenheit. Für viele ist es befreiend, Verantwortung abzugeben. Psychologie: Service/Gehorsam erlaubt es, aus dem Alltagsstress auszubrechen ('Ich muss nichts entscheiden'). Attachment Theory: Struktur und klare Regeln können Sicherheit geben, besonders für ängstlich gebundene Personen. Macht als Dienstleistung: Dominanz ist Service ('Ich übernehme Verantwortung für unser Erlebnis').",
           "tags": [
             "ds",
             "service",
@@ -421,7 +422,8 @@
           "schema": "consent_rating",
           "risk_level": "B",
           "label": "Disziplinierung / Bestrafung",
-          "help": "Wenn Regeln gebrochen werden, folgt eine Konsequenz (abgesprochen!).",
+          "help": "Struktur und Konsequenzen können Sicherheit geben, besonders für ängstlich gebundene Personen.",
+          "info_details": "Struktur und Konsequenzen können Sicherheit geben, besonders für ängstlich gebundene Personen. Psychologie: Klare Regeln und vorhersehbare Konsequenzen reduzieren Unsicherheit. Attachment Theory: Ängstlich gebundene suchen oft Struktur ('Ich weiß, was passiert'). Wichtig: Immer abgesprochen und konsensuell. Unterschied zwischen 'Funishment' (spielerische Bestrafung) und echter Disziplinierung.",
           "tags": [
             "ds",
             "punishment",
@@ -541,7 +543,8 @@
           "schema": "consent_rating",
           "risk_level": "B",
           "label": "Knebel (Gags)",
-          "help": "Den Mund verschließen. (Atmung muss immer frei sein!)",
+          "help": "Ultimative Auslieferung, erfordert absolutes Vertrauen da Kommunikation eingeschränkt ist. Atmung muss IMMER frei bleiben!",
+          "info_details": "Ultimative Auslieferung, erfordert absolutes Vertrauen da Kommunikation eingeschränkt ist. Psychologie: Gibt Kontrolle über Sprache ab - sehr vulnerabler Akt. Attachment Theory: Erfordert extrem hohes Vertrauen. WICHTIG: Atmung muss IMMER frei bleiben! Non-verbales Safeword vereinbaren (Klopfen, Ball fallen lassen).",
           "tags": [
             "bondage",
             "gag",

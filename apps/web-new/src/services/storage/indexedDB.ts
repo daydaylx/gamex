@@ -175,3 +175,74 @@ export function createIndexedDbStorage(config: StorageConfig): IndexedDBStorage 
     clear,
   };
 }
+
+// Standalone instance for simple usage
+let defaultInstance: IndexedDBStorage | null = null;
+let currentDbName = '';
+let currentDbVersion = 0;
+
+/**
+ * Initializes or retrieves the default IndexedDB instance
+ */
+export function init(dbName: string, dbVersion: number): Promise<IDBDatabase> {
+  if (defaultInstance && dbName === currentDbName && dbVersion === currentDbVersion) {
+    return defaultInstance.openDb();
+  }
+
+  currentDbName = dbName;
+  currentDbVersion = dbVersion;
+
+  defaultInstance = createIndexedDbStorage({
+    dbName,
+    dbVersion,
+    onUpgrade: ({ db, req }) => {
+      // Basic upgrade: create stores if they don't exist
+      const storeNames = ['sessions', 'responses'];
+
+      // Access oldVersion from the transaction object
+      const oldVersion = (req as IDBOpenDBRequest & { oldVersion: number }).oldVersion;
+
+      // Remove old stores if version < 2 (breaking change for v2)
+      if (oldVersion && oldVersion < 2) {
+        for (const name of storeNames) {
+          if (db.objectStoreNames.contains(name)) {
+            db.deleteObjectStore(name);
+          }
+        }
+      }
+
+      // Create stores
+      for (const name of storeNames) {
+        if (!db.objectStoreNames.contains(name)) {
+          db.createObjectStore(name, { keyPath: 'id' });
+        }
+      }
+    },
+  });
+
+  return defaultInstance.openDb();
+}
+
+/**
+ * Gets a value from the default instance
+ */
+export function get<T>(storeName: string, key: IDBValidKey): Promise<T | null> {
+  if (!defaultInstance) throw new Error('IndexedDB not initialized. Call init() first.');
+  return defaultInstance.get<T>(storeName, key);
+}
+
+/**
+ * Gets all values from the default instance
+ */
+export function getAll<T>(storeName: string): Promise<T[]> {
+  if (!defaultInstance) throw new Error('IndexedDB not initialized. Call init() first.');
+  return defaultInstance.getAll<T>(storeName);
+}
+
+/**
+ * Puts a value in the default instance
+ */
+export function put(storeName: string, value: unknown): Promise<void> {
+  if (!defaultInstance) throw new Error('IndexedDB not initialized. Call init() first.');
+  return defaultInstance.put(storeName, value);
+}

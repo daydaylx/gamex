@@ -2,4 +2,4 @@
  * Storage service exports
  */
 
-export { createIndexedDbStorage, type IndexedDBStorage, type StorageConfig } from './indexedDB';
+export { createIndexedDbStorage, init, get, getAll, put, type IndexedDBStorage, type StorageConfig } from './indexedDB';

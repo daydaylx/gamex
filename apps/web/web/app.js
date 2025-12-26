@@ -469,15 +469,21 @@ function renderConsentRating(q, existing = {}) {
       : (existing.status || status) === "MAYBE";
     const detailsOpen = q.risk_level === "C" || hasDetailsContent || maybeStatus;
 
-    // Info Button Logic
+    // Info Button Logic - More prominent
     let infoBtn = "";
     let infoBox = "";
     if (q.info_details) {
-      infoBtn = `<button class="btn-info-toggle" title="Details anzeigen" onclick="this.parentElement.parentElement.querySelector('.info-details-box').classList.toggle('open')">i</button>`;
+      infoBtn = `<button class="btn-info-toggle" title="Psychologische Erklärung & Details anzeigen" aria-label="Details anzeigen" onclick="this.parentElement.parentElement.querySelector('.info-details-box').classList.toggle('open'); this.classList.toggle('active')">
+        <span class="info-icon">ℹ️</span>
+        <span class="info-text">Details</span>
+      </button>`;
       infoBox = `
         <div class="info-details-box">
-          <div class="info-details-header">ℹ️ Deep Dive: ${escapeHtml(q.label)}</div>
-          ${escapeHtml(q.info_details)}
+          <div class="info-details-header">
+            <span class="info-header-icon">📚</span>
+            <strong>Deep Dive: ${escapeHtml(q.label)}</strong>
+          </div>
+          <div class="info-details-content">${escapeHtml(q.info_details)}</div>
         </div>
       `;
     }

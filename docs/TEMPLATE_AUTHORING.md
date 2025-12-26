@@ -69,7 +69,8 @@ Jede Frage hat folgende Basis-Felder:
 
 ### Optionale Felder
 
-- **help**: Hilfetext, der dem Nutzer angezeigt wird
+- **help**: Hilfetext, der dem Nutzer angezeigt wird (kurz, prägnant)
+- **info_details**: Ausführliche psychologische/wissenschaftliche Erklärung (länger, ausklappbar)
 - **depends_on**: Bedingte Anzeige (siehe unten)
 
 ## Schema-Typen
@@ -237,12 +238,68 @@ Die Frage wird nur angezeigt, wenn die Frage mit ID "AN01" mit "YES" oder "MAYBE
 - "Was magst du?"
 - "Alles rund um Sex?"
 
-### Hilfe-Texte
+### Hilfe-Texte (help)
 
 Hilfe-Texte sollten:
-- Kontext liefern
-- Sicherheitshinweise enthalten (bei High-Risk)
-- Bei MAYBE erklären, warum Bedingungen wichtig sind
+- **Aussagekräftig sein**: Vermeide generische Texte wie "Kategorie: ..."
+- **Kontext liefern**: Erkläre kurz, was die Praxis bedeutet
+- **Psychologische Bedeutung**: Bei relevanten Praktiken die psychologische Dimension erwähnen (Vertrauen, Hingabe, Verletzlichkeit)
+- **Sicherheitshinweise enthalten**: Bei High-Risk-Fragen (risk_level B/C) immer Sicherheitshinweise
+- **Bei MAYBE erklären**: Warum Bedingungen wichtig sind
+- **Kurz und prägnant**: 1-2 Sätze, nicht zu lang
+
+**Gute Beispiele:**
+- ✅ "Schmerz setzt Endorphine frei → Euphorie. Kann zu Subspace führen."
+- ✅ "Akt der Hingabe: 'Ich diene dir' zeigt tiefe Verbundenheit."
+- ✅ "Ultimative Auslieferung, erfordert absolutes Vertrauen da Kommunikation eingeschränkt ist."
+- ✅ "Physische Nähe und Berührung schaffen emotionale Verbindung und Sicherheit. Oxytocin wird ausgeschüttet."
+- ✅ "Materialien wie Latex oder Leder können sensorische Reize verstärken und Rollenidentität unterstützen."
+
+**Schlechte Beispiele:**
+- ❌ "Kategorie: Materialien:"
+- ❌ "Kategorie: Kommunikation:"
+- ❌ "Kategorie: Wichtig ist mir:"
+- ❌ Zu generisch, keine Information
+
+### Info-Details (info_details)
+
+`info_details` ist ein optionales Feld für ausführliche psychologische und wissenschaftliche Erklärungen:
+
+- **Wann verwenden**: Bei komplexen Praktiken, die psychologische Tiefe oder Neurochemie-Erklärungen benötigen
+  - Impact Play (Spanking, Tools)
+  - Bondage (feste Fesseln, Gags)
+  - Breathplay (sehr riskant!)
+  - Machtdynamiken (Submission, Dominanz)
+  - Fetische (Material, Körperteil, Rollenspiele)
+  - Aftercare-Bedürfnisse
+- **Inhalt**: 
+  - Psychologische Bedeutung (Vertrauen, Hingabe, Verletzlichkeit)
+  - Attachment Theory Bezüge (wenn relevant)
+  - Neurochemie (Endorphine, Subspace, Hormone)
+  - Sicherheitshinweise (bei Risk Level B/C)
+- **Länge**: Kann länger sein als `help` (mehrere Sätze, Absatz)
+- **Format**: Wissenschaftlich fundiert, aber verständlich
+- **Quellen**: Basierend auf PSYCHOLOGIE_LEITFADEN.md und FORSCHUNG_ZITATE.md
+
+**Beispiele für info_details:**
+
+```json
+{
+  "label": "Feste Bondage / Seile",
+  "help": "**WICHTIG**: Niemals Blut abschnüren, Nervenbahnen schützen!",
+  "info_details": "Gefühl der völligen Auslieferung. Kann sehr entspannend wirken, weil man 'nichts mehr tun muss'. Attachment Theory: Fesseln erzeugt extreme Vulnerabilität - funktioniert nur mit sicherem Bindungsstil oder sehr hohem Vertrauen. Neurochemie: Serotonin-Subspace möglich (meditative Entspannung)."
+}
+```
+
+**Themen für info_details:**
+- **Vertrauen & Verletzlichkeit**: Bondage, Gags, Blindfolds
+- **Hingabe & Service**: Service/Gehorsam, Orgasmuskontrolle
+- **Macht & Kontrolle**: Dominanz/Submission, Disziplinierung
+- **Neurochemie**: Impact Play (Endorphine), Breathplay (Noradrenalin), Bondage (Serotonin)
+- **Fetische**: Material-Fetische, Körperteil-Fetische, Rollenspiele
+- **Aftercare**: Sub Drop, Dom Drop, Regulation
+
+**Quellen**: Siehe `docs/PSYCHOLOGIE_LEITFADEN.md` und `docs/FORSCHUNG_ZITATE.md` für wissenschaftliche Grundlagen.
 
 ### Modul-Organisation
 

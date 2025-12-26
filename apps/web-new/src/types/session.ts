@@ -17,7 +17,6 @@ export interface SessionListItem {
   created_at: string;
   has_a: boolean;
   has_b: boolean;
-  encrypted: boolean;
 }
 
 export interface SessionInfo {
@@ -35,4 +34,14 @@ export interface SaveResponsesRequest {
 
 export interface LoadResponsesRequest {
   // Empty for now, may have options in future
+}
+
+/**
+ * Session database row (stored in IndexedDB)
+ */
+export interface Session {
+  id: string;
+  name: string;
+  template_id: string;
+  created_at: string;
 }

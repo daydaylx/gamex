@@ -1,7 +1,7 @@
 {
   "id": "comprehensive_v1",
   "name": "Umfassender Intimität & BDSM Fragebogen",
-  "version": 1,
+  "version": 2,
   "description": "Kombiniert aus GentleDom, QueerTopia und Gamex Fragebogen. ~200+ Fragen zu Sexualität, BDSM, Grenzen und Kommunikation.",
   "modules": [
     {
@@ -100,7 +100,7 @@
             "communication"
           ],
           "label": "Offenheit / Ehrlichkeit",
-          "help": "Kategorie: Wichtig ist mir:",
+          "help": "Grundlage für sichere Intimität. Offene Kommunikation reduziert Missverständnisse und stärkt Vertrauen.",
           "has_dom_sub": true
         },
         {
@@ -113,7 +113,7 @@
             "communication"
           ],
           "label": "Respekt",
-          "help": "Kategorie: Wichtig ist mir:",
+          "help": "Grenzen, Bedürfnisse und Wünsche respektieren - auch wenn sie nicht geteilt werden.",
           "has_dom_sub": true
         },
         {
@@ -152,7 +152,7 @@
             "communication"
           ],
           "label": "Vertrauen",
-          "help": "Kategorie: Wichtig ist mir:",
+          "help": "Grundlage für Verletzlichkeit und tiefe Intimität. Attachment Theory: Erfordert sicheres Bindungsmuster oder sehr hohes Vertrauen.",
           "has_dom_sub": true
         },
         {
@@ -353,7 +353,7 @@
             "passive"
           ],
           "label": "Verbale Anweisungen geben/empfangen",
-          "help": "Kategorie: Kommunikation:",
+          "help": "Direkte Kommunikation über Wünsche und Bedürfnisse. Reduziert Missverständnisse und steigert Intensität.",
           "has_dom_sub": true
         },
         {
@@ -401,7 +401,7 @@
             "passive"
           ],
           "label": "Kosenamen verwenden",
-          "help": "Kategorie: Kommunikation:",
+          "help": "Intimität und Zugehörigkeit ausdrücken. Kann Machtdynamik verstärken (z.B. 'Gutes Mädchen').",
           "has_dom_sub": true
         },
         {
@@ -4029,8 +4029,9 @@
             "active"
           ],
           "label": "Gehorsam",
-          "help": "Kategorie: Befehle & Gehorsam:",
-          "has_dom_sub": true
+          "help": "Akt der Hingabe: 'Ich diene dir' zeigt tiefe Verbundenheit. Für viele ist es befreiend, Verantwortung abzugeben und sich führen zu lassen.",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Gehorsam ist ein Akt der Stärke, nicht der Schwäche. Du wählst aktiv, Kontrolle abzugeben - das erfordert enormes Vertrauen. Attachment Theory: Ängstlich gebundene Menschen suchen oft Struktur und klare Regeln durch Gehorsam. Für viele ist es eine Befreiung vom Leistungsdruck des Alltags - 'Ich muss nichts mehr entscheiden'."
         },
         {
           "id": "BDS004",
@@ -4071,8 +4072,9 @@
             "active"
           ],
           "label": "Kontrolle abgeben",
-          "help": "Kategorie: Befehle & Gehorsam:",
-          "has_dom_sub": true
+          "help": "Machtabgabe ist ein Akt der Stärke: 'Ich vertraue dir so sehr, dass ich loslasse'. Erfordert extremes Vertrauen und kann sehr befreiend sein.",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Submission ist paradox - du kontrollierst, indem du Kontrolle abgibst. Safeword = ultimative Macht. Attachment-Forschung zeigt: 60,5% submissive Frauen haben höchste Trennungsangst-Werte. Submission kann Sicherheit durch Struktur geben. Wichtig: Submission ist NICHT Schwäche - es ist aktive Wahl und erfordert Mut."
         },
         {
           "id": "BDS007",
@@ -4085,8 +4087,9 @@
             "active"
           ],
           "label": "Kontrolle übernehmen",
-          "help": "Kategorie: Befehle & Gehorsam:",
-          "has_dom_sub": true
+          "help": "Dominanz ist Dienstleistung: 'Ich übernehme Verantwortung für unser Erlebnis'. Macht als Geschenk, nicht als Egotrip.",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Ethische Dominanz ist Service für das Vergnügen/Wachstum des Partners. 'The sub has the power' - weil Sub durch Consent & Safeword Meta-Kontrolle behält. Attachment-Forschung: Sichere & vermeidende Bindungsstile korrelieren mit Dominanz-Präferenz. Wichtig: Macht ist verhandelt, nicht erzwungen. Konsens unterscheidet BDSM von Gewalt."
         },
         {
           "id": "BDS008",
@@ -4116,8 +4119,9 @@
             "power"
           ],
           "label": "Hingabe: Verantwortung abgeben und sich führen lassen",
-          "help": "Kategorie: Befehle & Gehorsam:",
-          "has_dom_sub": true
+          "help": "Hingabe zeigt tiefe Verbundenheit. Befreiend für Menschen, die im Alltag viel Verantwortung tragen - hier können sie loslassen.",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Hingabe erfordert extremes Vertrauen. Attachment Theory: Ängstlich gebundene suchen Sicherheit durch Struktur. Für viele ist es eine Flucht vor dem Leistungsdruck - 'Ich muss nichts mehr tun, ich darf einfach sein'. Paradox: Weniger Kontrolle = mehr Freiheit. Wichtig: Hingabe ist freiwillig und kann jederzeit durch Safeword beendet werden."
         },
         {
           "id": "BDS010",
@@ -4487,8 +4491,9 @@
             "oral"
           ],
           "label": "Orgasmuskontrolle",
-          "help": "Kategorie: Orgasmuskontrolle:",
-          "has_dom_sub": true
+          "help": "Erfordert immense Hingabe und Vertrauen, da körperliche Autonomie abgegeben wird. Erzeugt Spannung und Frustration.",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Orgasmuskontrolle erfordert immense Hingabe und Vertrauen, da körperliche Autonomie abgegeben wird. Erzeugt Spannung und Frustration, die sich in intensiverer Lust entladen kann. Attachment Theory: Erfordert extremes Vertrauen. Kann emotionale Regulation trainieren (Umgang mit Frustration). Wichtig: Kommunikation ist essentiell - Sub muss klar kommunizieren können, wenn es zu viel wird."
         },
         {
           "id": "BDS034",
@@ -4651,8 +4656,9 @@
             "impact"
           ],
           "label": "Klatschen/Spanking",
-          "help": "**WICHTIG**: Zonen beachten! Po ist sicher, Nieren/Rücken sind tabu. Safe-Word vereinbaren!",
-          "has_dom_sub": true
+          "help": "Schmerz setzt Endorphine frei → Euphorie. Kann zu Subspace führen. **WICHTIG**: Po ist sicher, Nieren/Rücken sind tabu. Safe-Word vereinbaren!",
+          "has_dom_sub": true,
+          "info_details": "Neurochemie: Schmerz aktiviert das Endorphin-System (körpereigene Opioide) → Euphorie, Schmerzunempfindlichkeit, 'Runner's High'. Neuroscience: 2016-Studie zeigt 'transiente Hypofrontalität' - reduzierte Aktivität im präfrontalen Kortex während Subspace (ähnlich Meditation). Neurochemie involviert: Adrenalin, Cortisol, Endorphine, Dopamin, Oxytocin, Endocannabinoide. Drei Subspace-Typen: Endorphin-mediiert (Impact), Noradrenalin-mediiert (Angst), Serotonin-mediiert (meditativ). Wichtig: Unterscheide 'guten Schmerz' (dumpf, Po) von 'schlechtem Schmerz' (Gelenke, Organe)."
         },
         {
           "id": "BDS002",
@@ -5379,8 +5385,9 @@
             "bondage"
           ],
           "label": "Leichte Fesselungen / Fixierung (Soft Bondage)",
-          "help": "**WICHTIG**: Niemals Blut abschnüren, Nervenbahnen schützen! Nicht allein lassen bei fester Bondage!",
-          "has_dom_sub": true
+          "help": "Gefühl der Auslieferung, aber man kann sich theoretisch befreien. Erfordert Vertrauen. **WICHTIG**: Niemals Blut abschnüren, Nervenbahnen schützen!",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Soft Bondage ist Einstieg in Kontrollverlust. Erfordert mehr verbale Kommunikation, da Körpersprache eingeschränkt ist. Attachment Theory: Erfordert sicheres Vertrauen. Kann sehr entspannend sein ('Ich muss nichts mehr tun'). Wichtig: Auch bei Soft Bondage niemals allein lassen. Schere bereit halten."
         },
         {
           "id": "BDS003",
@@ -5463,8 +5470,9 @@
             "bondage"
           ],
           "label": "Fesseln (mit Seil)",
-          "help": "**WICHTIG**: Niemals Blut abschnüren, Nervenbahnen schützen! Nicht allein lassen bei fester Bondage!",
-          "has_dom_sub": true
+          "help": "Gefühl der völligen Auslieferung. Kann sehr entspannend sein. **WICHTIG**: Niemals Blut abschnüren, Nervenbahnen schützen! Nicht allein lassen!",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Feste Fesseln erzeugen extreme Vulnerabilität - funktioniert nur mit sicherem Bindungsstil oder sehr hohem Vertrauen. Attachment Theory: Ängstlich gebundene können in Panik geraten (Trigger: Hilflosigkeit). Paradox: Freiheit durch Einschränkung. Neurochemie: Serotonin-mediiertes Subspace möglich (meditativ, friedlich). Sicherheit: Niemals allein lassen. Schere bereit halten. Auf Nervenbahnen achten (taube Finger = sofort lösen!)."
         },
         {
           "id": "BDS010",
@@ -5571,8 +5579,9 @@
             "bondage"
           ],
           "label": "Augen verbinden / Sinnesentzug",
-          "help": "**WICHTIG**: Niemals Blut abschnüren, Nervenbahnen schützen! Nicht allein lassen bei fester Bondage!",
-          "has_dom_sub": true
+          "help": "Verstärkt andere Sinne, erfordert Vertrauen da man nicht sehen kann. Einfachste Form des Kontrollverlusts.",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Blindfold erfordert mehr verbale Kommunikation, da Körpersprache nicht gesehen wird. Verstärkt andere Sinne (Hören, Fühlen, Riechen) → intensivere Wahrnehmung. Erfordert Vertrauen - man ist vulnerabel ohne Sehsinn. Attachment Theory: Erfordert sicheres Vertrauen. Kann sehr meditativ sein (Serotonin-Subspace möglich)."
         },
         {
           "id": "BDS019",
@@ -5607,8 +5616,9 @@
             "bondage"
           ],
           "label": "Gag",
-          "help": "**WICHTIG**: Niemals Blut abschnüren, Nervenbahnen schützen! Nicht allein lassen bei fester Bondage!",
-          "has_dom_sub": true
+          "help": "Ultimative Auslieferung, erfordert absolutes Vertrauen da Kommunikation eingeschränkt ist. **WICHTIG**: Atmung muss immer frei sein!",
+          "has_dom_sub": true,
+          "info_details": "Psychologie: Gag = ultimative Kontrollabgabe. Kommunikation ist eingeschränkt → erfordert extremes Vertrauen. Non-verbales Safeword (Klopfen) absolut essentiell. Attachment Theory: Erfordert sehr hohes Vertrauen oder sicheren Bindungsstil. Ängstlich gebundene können Panik bekommen (Trigger: Hilflosigkeit + Sprachverlust). Wichtig: Atmung muss IMMER frei sein. Partner:in muss auf Körpersprache achten."
         },
         {
           "id": "BDS022",
@@ -5808,8 +5818,9 @@
             "fetish"
           ],
           "label": "Latex",
-          "help": "Kategorie: Materialien:",
-          "has_dom_sub": true
+          "help": "Eng anliegend, sensorische Deprivation, Rollenidentität. Kann Gefühl von 'Anderssein' oder Transformation geben.",
+          "has_dom_sub": true,
+          "info_details": "Material-Fetisch: Latex ist eng anliegend und erzeugt sensorische Deprivation (weniger Berührung spürbar). Psychologie: Kann Gefühl von 'Anderssein' oder Transformation geben ('Ich bin jemand anderes'). Rollenidentität wird verstärkt. Sensorische Reize: Glatt, eng, isolierend. Wichtig: Latex-Allergie prüfen! Viele Menschen sind allergisch gegen Latex."
         },
         {
           "id": "FET002",
@@ -5820,8 +5831,9 @@
             "fetish"
           ],
           "label": "Leder",
-          "help": "Kategorie: Materialien:",
-          "has_dom_sub": true
+          "help": "Tradition, Stärke, Dauerhaftigkeit. Oft mit Dominanz-Konnotationen verbunden. Sensorische Reize: fest, strukturiert, warm.",
+          "has_dom_sub": true,
+          "info_details": "Material-Fetisch: Leder steht für Tradition, Stärke, Dauerhaftigkeit. Psychologie: Oft mit Dominanz-Konnotationen verbunden (Leder = Macht, Autorität). Sensorische Reize: Fest, strukturiert, warm. Kann Rollenidentität unterstützen. Wichtig: Lederpflege beachten, damit es lange hält."
         },
         {
           "id": "FET003",
@@ -5856,8 +5868,9 @@
             "fetish"
           ],
           "label": "Nylon",
-          "help": "Kategorie: Materialien:",
-          "has_dom_sub": true
+          "help": "Sensorische Reize, visuelle Ästhetik, kann Objektifizierung unterstützen. Glatt, seidig, eng anliegend.",
+          "has_dom_sub": true,
+          "info_details": "Material-Fetisch: Nylon/Strumpfhosen erzeugen sensorische Reize (glatt, seidig, eng anliegend). Psychologie: Visuelle Ästhetik kann Objektifizierung unterstützen ('Ich bin ein Objekt'). Kann Rollenidentität verstärken. Sensorische Reize: Glatt, seidig, eng. Wichtig: Nylon kann rutschig sein - Vorsicht bei bestimmten Praktiken."
         },
         {
           "id": "FET006",
@@ -5940,8 +5953,9 @@
             "fetish"
           ],
           "label": "Petplay",
-          "help": "Kategorie: Rollenspiele:",
-          "has_dom_sub": true
+          "help": "Urlaub vom Menschsein. Keine Worte, nur Instinkt. Sehr meditativ, befreit von Alltagssorgen.",
+          "has_dom_sub": true,
+          "info_details": "Rollenspiel: Petplay = 'Headspace'. Urlaub vom Menschsein. Keine Worte, keine komplexen Gedanken, nur Instinkt und Gehorsam. Psychologie: Sehr meditativ und befreiend von Alltagssorgen. Neurochemie: Serotonin-mediiertes Subspace möglich (meditativ, friedlich). Kann Regression ermöglichen ('Ich muss nichts entscheiden'). Wichtig: Klare Grenzen zwischen Rolle und Realität. Aftercare mit Reassurance ('Du bist wertvoll als Mensch')."
         },
         {
           "id": "FET013",
@@ -5966,8 +5980,9 @@
             "fetish"
           ],
           "label": "Ageplay",
-          "help": "Kategorie: Rollenspiele:",
-          "has_dom_sub": true
+          "help": "Erfordert klare Grenzen zwischen Rolle und Realität. Kann Regression oder Fürsorge-Bedürfnisse erfüllen.",
+          "has_dom_sub": true,
+          "info_details": "Rollenspiel: Ageplay erfordert klare Grenzen zwischen Rolle und Realität. Psychologie: Kann Regression ermöglichen ('Ich muss nichts entscheiden') oder Fürsorge-Bedürfnisse erfüllen (Caregiver-Seite). Attachment Theory: Kann Bedürfnisse nach Sicherheit und Struktur erfüllen. Wichtig: Klare Trennung zwischen Rolle und Realität. Aftercare mit Reassurance ('Du bist erwachsen und wertvoll'). Nicht zu verwechseln mit echten Kindern - das ist Tabu."
         },
         {
           "id": "FET015",
@@ -6070,7 +6085,8 @@
             "fetish"
           ],
           "label": "Fußfetisch / Körperteil-Worship",
-          "help": "Kategorie: Spezielle Fetische:",
+          "help": "Psychologie: Füße sind oft tabuisiert, daher besonders 'verboten' und erregend. Kann auch mit Service/Unterwerfung verbunden sein.",
+          "info_details": "Psychologie: Füße sind oft tabuisiert, daher besonders 'verboten' und erregend. Kann auch mit Service/Unterwerfung verbunden sein (Füße küssen = Demut). Körperteil-Worship: Anerkennung und Verehrung eines Körperteils. Kann Selbstwertgefühl stärken ('Du bist wertvoll'). Sensorische Aspekte: Berührung, Geruch, visuelle Ästhetik. Fetisch-Appeal: Tabu, Service, Objektifizierung.",
           "has_dom_sub": true
         },
         {
@@ -6083,7 +6099,7 @@
             "fetish"
           ],
           "label": "Fokus auf Füße, Hände etc.",
-          "help": "Kategorie: Spezielle Fetische:",
+          "help": "Anerkennung und Verehrung eines Körperteils. Kann Selbstwertgefühl stärken ('Du bist wertvoll').",
           "has_dom_sub": true
         },
         {
@@ -6535,8 +6551,9 @@
             "breathplay"
           ],
           "label": "Breathplay",
-          "help": "**⚠️ EXTREME WARNUNG ⚠️**",
+          "help": "⚠️ EXTREM RISIKOREICH. Spiel mit Urangst und ultimativem Vertrauen. **WARNUNG**: Physisch sehr gefährlich - Hirnschäden/Tod möglich!",
           "has_dom_sub": true,
+          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Panic-Hormone Cascade: Adrenalin-Spike → Cortisol-Anstieg → bei Freigabe: Endorphin-Flood + Dopamin-Rush = extreme Euphorie. Neurochemie: Noradrenalin-mediiertes Subspace möglich (Adrenalin-getrieben, fokussiert). ABER: Physisch EXTREM gefährlich - Hirnschäden möglich bei 30+ Sekunden Sauerstoffmangel, Herzstillstand-Risiko, Tod möglich. Nur Carotiden (seitlich), NIEMALS Kehlkopf. Nur für Expert:innen mit medizinischem Wissen. Safeword muss non-verbal sein (Klopfen).",
           "depends_on": {
             "id": "BRE013",
             "values": [
@@ -6555,8 +6572,9 @@
             "breathplay"
           ],
           "label": "Choking",
-          "help": "**⚠️ EXTREME WARNUNG ⚠️**",
+          "help": "⚠️ EXTREM RISIKOREICH. Spiel mit Urangst und ultimativem Vertrauen. **WARNUNG**: Physisch sehr gefährlich - Hirnschäden/Tod möglich!",
           "has_dom_sub": true,
+          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Panic-Hormone Cascade: Adrenalin-Spike → Cortisol-Anstieg → bei Freigabe: Endorphin-Flood + Dopamin-Rush = extreme Euphorie. Neurochemie: Noradrenalin-mediiertes Subspace möglich (Adrenalin-getrieben, fokussiert). ABER: Physisch EXTREM gefährlich - Hirnschäden möglich bei 30+ Sekunden Sauerstoffmangel, Herzstillstand-Risiko, Tod möglich. Nur Carotiden (seitlich), NIEMALS Kehlkopf. Nur für Expert:innen mit medizinischem Wissen. Safeword muss non-verbal sein (Klopfen).",
           "depends_on": {
             "id": "BRE013",
             "values": [
