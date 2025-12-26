@@ -51,6 +51,7 @@ class SessionFormScreen(Screen):
 
         self._showing_summary = False
         self.current_wizard_view: Optional[str] = None
+        self._showing_module_intro_for: Optional[str] = None
 
         self.current_question_widget: Optional[QuestionPage] = None
         self.status_label: Optional[Label] = None
@@ -196,6 +197,10 @@ class SessionFormScreen(Screen):
             self._render_summary_page()
             return
 
+        if self._should_show_module_intro(progress, question):
+            self._render_module_intro(progress)
+            return
+
         scroll = ScrollView()
         content = BoxLayout(orientation="vertical", size_hint_y=None, spacing=12, padding=10)
         content.bind(minimum_height=content.setter("height"))
@@ -217,6 +222,59 @@ class SessionFormScreen(Screen):
         nav.next_text = "Zusammenfassung →" if self.app_store.is_last_question() else "Weiter →"
         nav.next_disabled = not self.current_question_widget.is_valid()
         self.main_layout.add_widget(nav)
+
+    def _render_module_intro(self, progress):
+        module_title = progress.get("module_name") or "Neues Modul"
+        module_emoji = progress.get("module_emoji") or "📘"
+        module_context = progress.get("module_context") or progress.get("module_description") or ""
+        self._showing_module_intro_for = progress.get("module_id")
+
+        scroll = ScrollView()
+        content = BoxLayout(orientation="vertical", size_hint_y=None, spacing=14, padding=10)
+        content.bind(minimum_height=content.setter("height"))
+        scroll.add_widget(content)
+
+        intro_card = BoxLayout(orientation="vertical", padding=14, spacing=10, size_hint_y=None)
+        intro_card.bind(minimum_height=intro_card.setter("height"))
+        intro_card.add_widget(
+            make_wrapped_label(
+                f"{module_emoji} {module_title}",
+                font_size="20sp",
+                bold=True,
+            )
+        )
+
+        if module_context:
+            intro_card.add_widget(
+                make_wrapped_label(
+                    module_context,
+                    font_size="15sp",
+                    color=(0.35, 0.35, 0.35, 1),
+                )
+            )
+
+        content.add_widget(intro_card)
+
+        self.main_layout.add_widget(scroll)
+
+        nav = NavigationBar()
+        nav.on_back = self._on_question_back
+        nav.on_next = self._on_module_intro_continue
+        nav.back_text = "← Zurück"
+        nav.back_disabled = False
+        nav.next_text = "Weiter →"
+        nav.next_disabled = False
+        self.main_layout.add_widget(nav)
+
+    def _should_show_module_intro(self, progress, question):
+        module_id = progress.get("module_id") or question.get("moduleId") or ""
+        if not module_id:
+            return False
+        if self.app_store.has_seen_module_intro(module_id):
+            return False
+        previous_question = self._get_previous_question()
+        previous_module = (previous_question or {}).get("moduleId", "")
+        return previous_module != module_id
 
     def _render_summary_page(self):
         self._showing_summary = True
@@ -508,6 +566,20 @@ class SessionFormScreen(Screen):
         self.app_store.update_response(question_id, response)
         self._render_view()
 
+    def _on_module_intro_continue(self, *_args):
+        if not self.app_store:
+            return
+
+        module_id = self._showing_module_intro_for
+        if not module_id:
+            current_q = self.app_store.get_current_question()
+            module_id = (current_q or {}).get("moduleId")
+
+        if module_id:
+            self.app_store.mark_module_intro_seen(module_id)
+
+        self._render_view()
+
     def _on_question_back(self, *_args):
         if not self.app_store:
             return
@@ -523,6 +595,17 @@ class SessionFormScreen(Screen):
 
         self.app_store.previous_question()
         self._render_view()
+
+    def _get_previous_question(self):
+        if not self.app_store or not self.app_store.wizard_questions:
+            return None
+        current_index = int(self.app_store.current_question_index)
+        if current_index <= 0:
+            return None
+        try:
+            return self.app_store.wizard_questions[current_index - 1]
+        except IndexError:
+            return None
 
     def _on_question_next(self, *_args):
         if not self.app_store or not self.app_store.wizard_started:
