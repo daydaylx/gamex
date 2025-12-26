@@ -1,59 +1,34 @@
-# Intimacy Questionnaire Tool (Local-first)
+# Intimacy Tool (Local-first)
 
-Dieses Tool hilft zwei Personen (A/B), getrennt einen Fragebogen auszufüllen, die Antworten zu vergleichen
-und einen Report zu erzeugen: Matches / Explore / Grenzen / Risiko-Flags.
+Dieses Tool hilft zwei Personen (A/B), getrennt einen Fragebogen auszufüllen, die Antworten zu vergleichen und einen Report zu erzeugen (Matches / Explore / Grenzen / Risiko-Flags). **Local-first** bedeutet: Daten bleiben auf deinem Gerät (SQLite bzw. IndexedDB) – ohne Login/Cloud.
 
 ## Wichtige Prinzipien
-- "NEIN" ist final. Kein Diskutieren/Überreden.
-- "VIELLEICHT" gilt nur unter Bedingungen.
-- Fantasie ≠ Wunsch ≠ Identität.
 
-## Features
+- **"NEIN" ist final**: Kein Diskutieren/Überreden.
+- **"VIELLEICHT" gilt nur unter Bedingungen**.
+- **Fantasie ≠ Wunsch ≠ Identität**.
 
-- **Lokale Sessions (Plaintext):** Antworten werden lokal im Klartext gespeichert
-- **Getrennte Antworten:** Person A und B füllen unabhängig voneinander aus
-- **Intelligenter Vergleich:** Automatische Kategorisierung in Matches, Explore-Themen und Grenzen
-- **Risiko-Flags:** Identifizierung von Themen mit hohem Interesse aber niedrigem Komfort
-- **Action Plan:** Vorschläge für die nächsten Experimente basierend auf Matches
-- **Szenarien-Karten:** 20 interaktive Szenarien mit 4-Optionen-System (A/B/C/D)
-- **Export:** Ergebnisse als JSON oder Markdown exportieren
-- **Backup & Restore:** Plaintext-Backups erstellen und wiederherstellen
-- **Optional KI-Analyse:** OpenRouter-Integration für vertiefte Analysen (opt-in)
-- **Android App:** Native Android-App via Capacitor (siehe [APK Build Guide](docs/APK_BUILD_GUIDE.md))
+## Features (aktueller Stand)
 
-## Verfügbare Templates
+- **Sessions (A/B getrennt)**: zwei getrennte Antwort-Sets pro Session.
+- **Vergleich/Report**: automatische Kategorisierung (z.B. *DOABLE NOW / EXPLORE / TALK FIRST / MISMATCH*) + Flags.
+- **Validierung & Auto-Save**: Antworten werden geprüft; Auto-Save pausiert bei Validierungsfehlern.
+- **Szenarien-Modus**: interaktive Szenarien-Karten (4 Optionen A/B/C/D).
+- **Export (Server-Modus)**: JSON und Markdown Export der Session.
+- **Backup & Restore (Server-Modus)**: Plaintext-Backups per API erstellen/wiederherstellen.
+- **Optionale KI-Analyse (Server-Modus)**: OpenRouter-Integration (opt-in, mit Redaction-Option).
+- **Offline/Local-API Modus**: speichert Sessions in IndexedDB (z.B. für Android/WebView).
+- **Android App**: Capacitor Wrapper (siehe [APK Build Guide](docs/APK_BUILD_GUIDE.md)).
 
-Das Tool bietet mehrere Fragebogen-Templates:
+## Verfügbare Templates (IDs)
 
-### 1. Intimität & Grenzen (v2 - Optimiert) - `default_v2`
-**Empfohlen für:** Einsteiger und Paare, die einen ausgewogenen Überblick wollen
+Die App zeigt Templates aus dem Backend bzw. (im Offline-Modus) aus `apps/web/web/data/templates.json`.
 
-- 9 Basis-Module: Rahmen & Logistik, Basis & Kommunikation, Rollen & Kontrolle, Sensorik, Oral, Penetration, High-Risk, Bereits erlebt, Review
-- Fokus auf granulare Abstufungen bei High-Risk Themen
-- Sicherheitshinweise prominent bei Risk-Level C
-- ~80-100 Fragen
+- **`unified_v1`**: Default-Template (Datei: `backend/app/templates/default_template.json`; intern kann die JSON-`id` historisch abweichen)
+- **`comprehensive_v1`**: Umfassender Intimität & BDSM Fragebogen
+- **`psycho_enhanced_v3`**: Psychologisch vertiefter Fragebogen (v3)
 
-### 2. Umfassender Intimität & BDSM Fragebogen - `comprehensive_v1`
-**Empfohlen für:** Erfahrene Nutzer, die eine sehr detaillierte Abfrage wünschen
-
-- Kombiniert aus GentleDom, QueerTopia und Gamex Fragebogen
-- ~200+ Fragen zu Sexualität, BDSM, Grenzen und Kommunikation
-- Sehr detaillierte Abfrage aller Bereiche
-
-### 3. Intimacy & Kink v3 (Psychologisch vertieft) - `psycho_enhanced_v3`
-**Empfohlen für:** Paare, die psychologische Tiefe und wissenschaftliche Fundierung suchen
-
-- Alle 9 Basis-Module + 6 psychologische Vertiefungs-Module
-- Wissenschaftlich fundiert (peer-reviewed Forschung 2024-aktuell)
-- Fokus auf: Bindung, Subspace, Scham, Power Dynamics, Aftercare, Regulation
-- ~150+ Fragen
-
-### 4. Intimacy & Kink (v2 - Polished) - `unified_v2`
-**Empfohlen für:** Moderne, ausgewogene Abfrage mit Fokus auf Konsens
-
-- Startet sanft (Rahmen, Kommunikation) und steigert sich modular
-- Fokus auf Konsens und psychologische Sicherheit
-- ~100-120 Fragen
+> Hinweis: Im Repo liegen weitere Template-Dateien unter `backend/app/templates/` (z.B. `unified_template.json`, `starter_template.json`). Diese sind aktuell **nicht automatisch aktiv**, solange sie nicht im Template-Store registriert werden.
 
 ## Psychologische Vertiefung (v3)
 
@@ -85,14 +60,17 @@ Alle psychologischen Module basieren auf peer-reviewed Forschung (2024-aktuell):
 **Hinweis:** Dieser Fragebogen ersetzt keine professionelle Therapie. Bei anhaltenden psychischen Problemen nach sexuellen Erfahrungen: Bitte wende dich an eine:n Therapeut:in mit BDSM/Kink-Awareness.
 
 **Deutsche Beratungsstellen:**
-- **Pro Familia:** https://www.profamilia.de (Sexualberatung)
-- **BZgA:** https://www.bzga.de (Bundeszentrale für gesundheitliche Aufklärung)
-- **Telefonseelsorge:** 0800 111 0 111 (kostenlos, 24/7)
+- **Pro Familia:** [`https://www.profamilia.de`](https://www.profamilia.de) (Sexualberatung)
+- **BZgA:** [`https://www.bzga.de`](https://www.bzga.de) (Bundeszentrale für gesundheitliche Aufklärung)
+- **Telefonseelsorge:** `0800 111 0 111` (kostenlos, 24/7)
 
 ## Datenschutz
-- Antworten werden lokal im Klartext gespeichert (Backend: SQLite-Datei im User-Data-Dir; Offline-Modus: IndexedDB im Browser/App-WebView).
-- **Wichtig:** Gerätezugriff = Datenzugriff. Es gibt keine Passwort-/Verschlüsselungsfunktion mehr.
-- KI-Analyse ist optional. Wenn du sie nutzt, sendest du Daten an einen Provider (z.B. OpenRouter).
+
+- **Speicherung**:
+  - **Server-Modus**: SQLite-Datei lokal (Default-Pfad via XDG, siehe `INTIMACY_TOOL_DB`).
+  - **Offline/Local-API Modus**: IndexedDB im Browser/App-WebView.
+- **Wichtig**: Gerätezugriff = Datenzugriff. Aktuell gibt es **keine Passwort-/Verschlüsselungsfunktion**.
+- **KI-Analyse**: optional. Bei Nutzung werden Daten an einen Provider gesendet (z.B. OpenRouter).
 
 ## Architektur (Module / Zuständigkeiten)
 
@@ -108,7 +86,7 @@ Alle psychologischen Module basieren auf peer-reviewed Forschung (2024-aktuell):
   - Server SQLite Adapter: `backend/app/storage/sqlite.py`
   - Offline IndexedDB Adapter: `apps/web/web/storage/indexeddb.js`
   - Wichtig: bleibt Plaintext lokal (kein Auth/keine Verschlüsselung)
-- **UI (`ui/`)**
+- **Frontend (statisches Web)**
   - Haupt-UI: `apps/web/web/app.js` (Rendering, Interaktion, API-Aufrufe)
   - Template-Visibility-Regeln: `apps/web/web/templates/dependencies.js`
 
@@ -118,7 +96,7 @@ Das Tool ist keine medizinische Beratung. Bei Schmerzen/Blut/anhaltenden Beschwe
 
 ## Installation & Start
 
-### Web-Version (Lokal)
+### Web-Version (Server-Modus, empfohlen)
 
 ```bash
 cd backend
@@ -137,6 +115,14 @@ python3 -m app
 Dann im Browser öffnen: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 **Hinweis:** Die App ist auch im lokalen Netzwerk erreichbar, wenn die Firewall es erlaubt.
+
+### Offline/Local-API Modus (IndexedDB statt SQLite)
+
+- **Im Browser (mit lokalem Server)**: Starte den Server wie oben und öffne die App mit `?local=1`, z.B. `http://127.0.0.1:8000/?local=1`.
+- **In der Android-App**: Local-API ist automatisch aktiv (Capacitor/WebView).
+
+Einschränkungen im Offline-Modus:
+- **Export** und **KI-Analyse** sind aktuell **nicht verfügbar** (Server-Endpoints).
 
 ### Android App
 
@@ -173,12 +159,3 @@ npx cap open android
 - **[Nächste Optimierungen](NEXT_OPTIMIZATIONS.md)** - Priorisierte Liste der nächsten Features
 - **[Verbesserungsplan (Kurz)](VERBESSERUNGSPLAN_KURZ.md)** - Executive Summary
 - **[Verbesserungsbeispiele](VERBESSERUNGSBEISPIELE.md)** - Vorher/Nachher Beispiele für geplante Änderungen
-
-
-
-
-
-
-
-
-
