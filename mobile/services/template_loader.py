@@ -38,7 +38,8 @@ class TemplateLoader:
             return assets_templates
 
         # Fallback to backend templates
-        backend_dir = mobile_dir.parent / 'backend' / 'templates'
+        # Backend templates live in backend/app/templates in this repo.
+        backend_dir = mobile_dir.parent / 'backend' / 'app' / 'templates'
         if backend_dir.exists():
             return backend_dir
 
