@@ -80,7 +80,20 @@ class SqliteStorageProvider:
             ).fetchone()
         if not row:
             return None
-        return json.loads(row["json"])
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'storage/sqlite.py:83', 'message': 'before JSON parse', 'data': {'session_id': session_id, 'person': person, 'json_length': len(row["json"]) if row["json"] else 0}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'C'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
+        try:
+            result = json.loads(row["json"])
+            # #region agent log
+            _log_data = {'location': 'storage/sqlite.py:89', 'message': 'JSON parse success', 'data': {'session_id': session_id, 'person': person, 'keys_count': len(result) if isinstance(result, dict) else 0}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'C'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+            # #endregion
+            return result
+        except json.JSONDecodeError as e:
+            # #region agent log
+            _log_data = {'location': 'storage/sqlite.py:95', 'message': 'ERROR: JSON decode failed', 'data': {'session_id': session_id, 'person': person, 'error': str(e), 'json_preview': row["json"][:100] if row["json"] else None}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'C'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+            # #endregion
+            raise
 
     def save_responses(
         self,

@@ -104,6 +104,7 @@ class AIAnalyzeRequest(BaseModel):
     base_url: str = Field(default="https://openrouter.ai/api/v1")
     redact_free_text: bool = True
     max_tokens: int = 800
+    password: Optional[str] = Field(default=None, min_length=1, max_length=128, description="Master password (required for encrypted sessions)")
 
 class CompareResult(BaseModel):
     meta: Dict[str, Any]

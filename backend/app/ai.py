@@ -100,8 +100,18 @@ async def openrouter_analyze(
     text = ""
     try:
         text = data["choices"][0]["message"]["content"]
-    except Exception:
+    except (KeyError, IndexError, TypeError) as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'ai.py:103', 'message': 'ERROR: exception in AI response parsing', 'data': {'error_type': type(e).__name__, 'error_msg': str(e), 'data_keys': list(data.keys()) if isinstance(data, dict) else 'not_dict'}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'post-fix', 'hypothesisId': 'B'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
+        # Fallback: return full response as JSON
         text = json.dumps(data, ensure_ascii=False)
+    except Exception as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'ai.py:109', 'message': 'ERROR: unexpected exception in AI response parsing', 'data': {'error_type': type(e).__name__, 'error_msg': str(e)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'post-fix', 'hypothesisId': 'B'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
+        # Re-raise unexpected exceptions to avoid hiding bugs
+        raise
 
     report_id = str(uuid.uuid4())
     payload = json.dumps({"text": text}, ensure_ascii=False)

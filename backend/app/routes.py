@@ -464,6 +464,9 @@ def _load_both_responses(session_id: str, password: Optional[str] = None):
     Raises:
         HTTPException: If responses missing or password incorrect
     """
+    # #region agent log
+    import json as _json; import time as _time; _log_data = {'location': 'routes.py:453', 'message': '_load_both_responses entry', 'data': {'session_id': session_id, 'has_password': password is not None}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'A'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+    # #endregion
     srow = _load_session_row(session_id)
     try:
         resp_a_raw, resp_b_raw = storage.load_both_responses(session_id=session_id)
@@ -472,8 +475,14 @@ def _load_both_responses(session_id: str, password: Optional[str] = None):
 
     # Check if encrypted
     if is_encrypted(resp_a_raw) or is_encrypted(resp_b_raw):
+        # #region agent log
+        _log_data = {'location': 'routes.py:474', 'message': 'encrypted session detected', 'data': {'session_id': session_id, 'has_password': password is not None, 'resp_a_encrypted': is_encrypted(resp_a_raw), 'resp_b_encrypted': is_encrypted(resp_b_raw)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'A'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
         # Encrypted session
         if not password:
+            # #region agent log
+            _log_data = {'location': 'routes.py:476', 'message': 'ERROR: encrypted session without password', 'data': {'session_id': session_id}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'A'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+            # #endregion
             raise HTTPException(
                 status_code=401,
                 detail="Password required for encrypted session"
@@ -525,6 +534,9 @@ def compare_session(session_id: str, req: CompareRequestEncrypted):
         
         return result
     except Exception as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'routes.py:527', 'message': 'ERROR: exception in compare_session', 'data': {'session_id': session_id, 'error_type': type(e).__name__, 'error_msg': str(e)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'E'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
         total_duration = (time.time() - start) * 1000
         log_api_call(f"/sessions/{session_id}/compare", "POST", 500, total_duration)
         raise
@@ -609,8 +621,11 @@ def get_scenarios():
 
 @api_router.post("/sessions/{session_id}/ai/analyze")
 async def ai_analyze(session_id: str, req: AIAnalyzeRequest):
-    """AI analysis (NOTE: does not yet support encrypted sessions - TODO)"""
-    srow, resp_a, resp_b = _load_both_responses(session_id, password=None)  # TODO: add password support
+    """AI analysis (supports both encrypted and unencrypted sessions)"""
+    # #region agent log
+    import json as _json; import time as _time; _log_data = {'location': 'routes.py:622', 'message': 'ai_analyze called', 'data': {'session_id': session_id, 'has_password': req.password is not None}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'post-fix', 'hypothesisId': 'A'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+    # #endregion
+    srow, resp_a, resp_b = _load_both_responses(session_id, password=req.password)
     tpl = load_template(srow["template_id"])
     result = compare(tpl, resp_a, resp_b)
 
@@ -645,6 +660,9 @@ def backup_session(session_id: str, req: BackupRequest):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'routes.py:647', 'message': 'ERROR: exception in backup_session', 'data': {'session_id': session_id, 'error_type': type(e).__name__, 'error_msg': str(e)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'E'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
         raise HTTPException(status_code=500, detail=f"Backup failed: {str(e)}")
 
 @api_router.post("/sessions/restore")
@@ -662,4 +680,7 @@ def restore_session(req: RestoreRequest):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'routes.py:664', 'message': 'ERROR: exception in restore_session', 'data': {'error_type': type(e).__name__, 'error_msg': str(e)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'run1', 'hypothesisId': 'E'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
         raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")

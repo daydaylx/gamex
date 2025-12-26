@@ -19,9 +19,13 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "immer": "^11.1.0",
+    "lucide-preact": "^0.562.0",
     "preact": "^10.27.2",
+    "tailwind-merge": "^3.4.0",
     "wouter-preact": "^3.9.0",
     "zustand": "^5.0.9"
   },
@@ -42,6 +46,7 @@
     "jsdom": "^27.3.0",
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
+    "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "vite": "^7.2.4",
     "vitest": "^4.0.16"

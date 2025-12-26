@@ -27,40 +27,91 @@ if [ -z "$KEYSTORE_PASSWORD" ] || [ -z "$KEY_PASSWORD" ]; then
     echo ""
 fi
 
-# Keystore-Pfad prüfen
-KEYSTORE_PATH="secure/intimacy-tool.keystore"
+# Keystore-Pfad prüfen (konsistent mit build.gradle)
+KEYSTORE_PATH="../../android/keystore/release.keystore"
 if [ ! -f "$KEYSTORE_PATH" ]; then
-    echo -e "${YELLOW}Keystore nicht gefunden: $KEYSTORE_PATH${NC}"
-    echo -e "${YELLOW}Neuen Keystore erstellen? (j/n)${NC}"
-    read -r CREATE_KEYSTORE
-    
-    if [ "$CREATE_KEYSTORE" = "j" ] || [ "$CREATE_KEYSTORE" = "J" ]; then
-        mkdir -p secure
-        echo -e "${GREEN}Erstelle neuen Keystore...${NC}"
-        keytool -genkey -v \
-            -keystore "$KEYSTORE_PATH" \
-            -alias intimacy \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
-            -dname "CN=Intimacy Tool, OU=Development, O=Intimacy Tool, L=City, ST=State, C=DE"
-        echo -e "${GREEN}Keystore erstellt: $KEYSTORE_PATH${NC}"
+    # Alternative: secure/intimacy-tool.keystore
+    ALTERNATIVE_KEYSTORE="../../secure/intimacy-tool.keystore"
+    if [ -f "$ALTERNATIVE_KEYSTORE" ]; then
+        KEYSTORE_PATH="$ALTERNATIVE_KEYSTORE"
+        echo -e "${GREEN}Verwende alternativen Keystore: $KEYSTORE_PATH${NC}"
     else
-        echo -e "${RED}Build abgebrochen${NC}"
-        exit 1
+        echo -e "${YELLOW}Keystore nicht gefunden: $KEYSTORE_PATH${NC}"
+        echo -e "${YELLOW}Neuen Keystore erstellen? (j/n)${NC}"
+        read -r CREATE_KEYSTORE
+        
+        if [ "$CREATE_KEYSTORE" = "j" ] || [ "$CREATE_KEYSTORE" = "J" ]; then
+            mkdir -p ../../android/keystore
+            echo -e "${GREEN}Erstelle neuen Keystore...${NC}"
+            keytool -genkey -v \
+                -keystore "$KEYSTORE_PATH" \
+                -alias release \
+                -keyalg RSA \
+                -keysize 2048 \
+                -validity 10000 \
+                -storepass "$KEYSTORE_PASSWORD" \
+                -keypass "$KEY_PASSWORD" \
+                -dname "CN=Intimacy Tool, OU=Development, O=Intimacy Tool, L=City, ST=State, C=DE"
+            echo -e "${GREEN}Keystore erstellt: $KEYSTORE_PATH${NC}"
+        else
+            echo -e "${RED}Build abgebrochen${NC}"
+            exit 1
+        fi
     fi
 fi
 
-# Version erhöhen
-if [ -f "android/app/build.gradle" ]; then
-    echo -e "${GREEN}Version automatisch erhöhen...${NC}"
-    # Version Logik könnte hier implementiert werden
-    VERSION_DATE=$(date +%Y%m%d)
-else
-    echo -e "${YELLOW}Android Projekt noch nicht initialisiert${NC}"
-    echo -e "${YELLOW}Führe zuerst 'npm install' und 'npx cap add android' aus${NC}"
+# Version automatisch erhöhen
+VERSION_FILE="../../android/version.properties"
+if [ ! -f "$VERSION_FILE" ]; then
+    echo -e "${YELLOW}Version-Datei nicht gefunden, erstelle neue...${NC}"
+    mkdir -p ../../android
+    cat > "$VERSION_FILE" << EOF
+# Version Management für Intimacy Tool APK
+versionCode=1
+versionName=1.0.0
+EOF
+fi
+
+# Version aus Datei lesen und erhöhen
+CURRENT_VERSION_CODE=$(grep "^versionCode=" "$VERSION_FILE" | cut -d'=' -f2)
+CURRENT_VERSION_NAME=$(grep "^versionName=" "$VERSION_FILE" | cut -d'=' -f2)
+
+# Version Code erhöhen
+NEW_VERSION_CODE=$((CURRENT_VERSION_CODE + 1))
+
+# Version Name parsen und erhöhen (Semantic Versioning: MAJOR.MINOR.PATCH)
+IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION_NAME"
+MAJOR=${VERSION_PARTS[0]}
+MINOR=${VERSION_PARTS[1]}
+PATCH=${VERSION_PARTS[2]:-0}
+
+# Patch-Version erhöhen
+PATCH=$((PATCH + 1))
+NEW_VERSION_NAME="$MAJOR.$MINOR.$PATCH"
+
+# Version in Datei schreiben
+cat > "$VERSION_FILE" << EOF
+# Version Management für Intimacy Tool APK
+# Automatisch aktualisiert am $(date +%Y-%m-%d\ %H:%M:%S)
+versionCode=$NEW_VERSION_CODE
+versionName=$NEW_VERSION_NAME
+EOF
+
+echo -e "${GREEN}Version erhöht:${NC}"
+echo -e "  Alte Version: $CURRENT_VERSION_NAME (Code: $CURRENT_VERSION_CODE)"
+echo -e "  Neue Version: $NEW_VERSION_NAME (Code: $NEW_VERSION_CODE)"
+
+# Capacitor config.json synchronisieren
+CAPACITOR_CONFIG="capacitor.config.json"
+if [ -f "$CAPACITOR_CONFIG" ]; then
+    # Version in capacitor.config.json aktualisieren (nur versionName, nicht versionCode)
+    if command -v jq &> /dev/null; then
+        jq ".version = \"$NEW_VERSION_NAME\"" "$CAPACITOR_CONFIG" > "$CAPACITOR_CONFIG.tmp" && mv "$CAPACITOR_CONFIG.tmp" "$CAPACITOR_CONFIG"
+        echo -e "${GREEN}Capacitor config.json aktualisiert${NC}"
+    else
+        echo -e "${YELLOW}jq nicht installiert, capacitor.config.json wird nicht aktualisiert${NC}"
+        echo -e "${YELLOW}Bitte manuell aktualisieren: version = \"$NEW_VERSION_NAME\"${NC}"
+    fi
 fi
 
 # Capacitor sync
@@ -77,15 +128,19 @@ if [ ! -f "gradlew" ]; then
     echo -e "${YELLOW}Bitte 'gradle wrapper' ausführen oder Android Studio verwenden${NC}"
 fi
 
-# Build mit Passwörtern
+# Build mit Passwörtern als Gradle-Properties
 ./gradlew assembleRelease \
     -PkeystorePassword="$KEYSTORE_PASSWORD" \
-    -PkeyPassword="$KEY_PASSWORD"
+    -PkeyPassword="$KEY_PASSWORD" \
+    -PkeystoreAlias="release" \
+    -PkeystorePath="$KEYSTORE_PATH"
 
 # APK kopieren und umbenennen
 if [ -f "app/build/outputs/apk/release/app-release.apk" ]; then
-    VERSION="v$(date +%Y.%m.%d)"
-    APK_NAME="intimacy-tool-$VERSION.apk"
+    # Version aus version.properties lesen für Dateinamen
+    APK_VERSION_NAME=$(grep "^versionName=" "$VERSION_FILE" | cut -d'=' -f2)
+    APK_VERSION_CODE=$(grep "^versionCode=" "$VERSION_FILE" | cut -d'=' -f2)
+    APK_NAME="intimacy-tool-v${APK_VERSION_NAME}-${APK_VERSION_CODE}.apk"
     cp app/build/outputs/apk/release/app-release.apk "../$APK_NAME"
     
     # Checksumme erstellen

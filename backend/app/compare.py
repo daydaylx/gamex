@@ -17,24 +17,6 @@ from app.core.compare import (
 def _utcnow() -> str:
     return datetime.now(timezone.utc).isoformat()
 
-def _load_scenarios() -> List[Dict[str, Any]]:
-    try:
-        here = os.path.dirname(__file__)
-        path = os.path.join(here, "templates", "scenarios.json")
-        if not os.path.exists(path):
-            return []
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            # Handle both list and dict formats
-            if isinstance(data, list):
-                return data
-            elif isinstance(data, dict) and "scenarios" in data:
-                return data["scenarios"]
-            else:
-                return []
-    except Exception:
-        return []
-
 def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, Any]) -> Dict[str, Any]:
     start = time.time()
     # Note: scenarios loading kept for potential future use

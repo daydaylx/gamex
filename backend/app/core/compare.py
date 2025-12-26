@@ -26,8 +26,17 @@ def _load_scenarios() -> List[Dict[str, Any]]:
                 return data["scenarios"]
             else:
                 return []
-    except Exception:
+    except (json.JSONDecodeError, IOError, OSError) as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'core/compare.py:29', 'message': 'ERROR: exception in _load_scenarios', 'data': {'error_type': type(e).__name__, 'error_msg': str(e)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'post-fix', 'hypothesisId': 'D'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
         return []
+    except Exception as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'core/compare.py:33', 'message': 'ERROR: unexpected exception in _load_scenarios', 'data': {'error_type': type(e).__name__, 'error_msg': str(e)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'post-fix', 'hypothesisId': 'D'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
+        # Re-raise unexpected exceptions to avoid hiding bugs
+        raise
 
 def normalize_answer(answer: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -181,8 +190,17 @@ def _flag_low_comfort_high_interest(entry: Dict[str, Any]) -> bool:
         i = int(interest)
         c = int(comfort)
         return i >= 3 and c <= 2
-    except Exception:
+    except (ValueError, TypeError, KeyError) as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'core/compare.py:187', 'message': 'ERROR: exception in _flag_low_comfort_high_interest', 'data': {'error_type': type(e).__name__, 'error_msg': str(e)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'post-fix', 'hypothesisId': 'D'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
         return False
+    except Exception as e:
+        # #region agent log
+        import json as _json; import time as _time; _log_data = {'location': 'core/compare.py:191', 'message': 'ERROR: unexpected exception in _flag_low_comfort_high_interest', 'data': {'error_type': type(e).__name__, 'error_msg': str(e)}, 'timestamp': int(_time.time() * 1000), 'sessionId': 'debug-session', 'runId': 'post-fix', 'hypothesisId': 'D'}; _log_file = open('/home/d/Schreibtisch/gamex/.cursor/debug.log', 'a'); _log_file.write(_json.dumps(_log_data) + '\n'); _log_file.close()
+        # #endregion
+        # Re-raise unexpected exceptions to avoid hiding bugs
+        raise
 
 def _abs_delta(a: Optional[int], b: Optional[int]) -> Optional[int]:
     if a is None or b is None:

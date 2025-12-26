@@ -10,8 +10,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -64,6 +64,9 @@ pnpm-debug.log*
 android/
 node_modules/
 dist/
+
+# Version-Management (optional - kann committed werden für Team-Synchronisation)
+# android/version.properties
 
 # Security - NEVER commit these
 keystore/

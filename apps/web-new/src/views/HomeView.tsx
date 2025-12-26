@@ -1,160 +1,86 @@
-import { useState, useEffect } from 'preact/hooks';
-import { Link } from 'wouter-preact';
-import { Card, Button } from '../components/ui';
-import { listSessions, listTemplates, createSession } from '../services/api/localApi';
-import type { SessionListItem, TemplateListItem } from '../types';
+import { useState } from "preact/hooks";
+import { Plus, ChevronRight, Calendar } from "lucide-preact";
+import { Link } from "wouter-preact";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+
+// Dummy Data for UI Dev
+const MOCK_SESSIONS = [
+  { id: "1", name: "Dezember Check-in", date: "2025-12-24", progressA: 100, progressB: 45, status: "active" },
+  { id: "2", name: "Silvester Planung", date: "2025-12-26", progressA: 0, progressB: 0, status: "new" },
+];
 
 export function HomeView() {
-  const [sessions, setSessions] = useState<SessionListItem[]>([]);
-  const [templates, setTemplates] = useState<TemplateListItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [creating, setCreating] = useState(false);
-  const [newSessionName, setNewSessionName] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState('');
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
-    try {
-      setLoading(true);
-      const [sessionsData, templatesData] = await Promise.all([
-        listSessions(),
-        listTemplates(),
-      ]);
-      setSessions(sessionsData);
-      setTemplates(templatesData);
-      if (templatesData.length > 0) {
-        setSelectedTemplate(templatesData[0]!.id);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Fehler beim Laden');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleCreateSession() {
-    if (!newSessionName.trim() || !selectedTemplate) {
-      setError('Bitte Name und Template auswählen');
-      return;
-    }
-
-    try {
-      setCreating(true);
-      setError(null);
-      const session = await createSession({
-        name: newSessionName.trim(),
-        template_id: selectedTemplate,
-      });
-      setSessions([session, ...sessions]);
-      setNewSessionName('');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Fehler beim Erstellen');
-    } finally {
-      setCreating(false);
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="wrap">
-        <Card>
-          <p>Lädt...</p>
-        </Card>
-      </div>
-    );
-  }
+  const [sessions] = useState(MOCK_SESSIONS);
 
   return (
-    <div>
-      <Card>
-        <h2>Neue Session</h2>
-        <div className="grid2">
-          <div>
-            <label>
-              Name
-              <input
-                type="text"
-                value={newSessionName}
-                onInput={(e) => setNewSessionName((e.target as HTMLInputElement).value)}
-                placeholder="z.B. Dez 2025"
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Template
-              <select
-                value={selectedTemplate}
-                onChange={(e) => setSelectedTemplate((e.target as HTMLSelectElement).value)}
-              >
-                {templates.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        </div>
-        <div className="row" style={{ marginTop: '16px' }}>
-          <Button
-            variant="primary"
-            onClick={handleCreateSession}
-            disabled={creating || !newSessionName.trim() || !selectedTemplate}
-          >
-            {creating ? 'Erstelle...' : 'Erstellen'}
+    <div className="space-y-8">
+      {/* Hero Section */}
+      <section className="space-y-4 py-4 md:py-10 text-center md:text-left">
+        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+          Intimacy. <span className="text-primary">Structured.</span>
+        </h1>
+        <p className="max-w-[700px] text-muted-foreground md:text-xl">
+          Ein sicherer Raum für ehrliche Gespräche. Vergleiche Grenzen und Wünsche, ohne Druck. Deine Daten verlassen nie dein Gerät.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center md:justify-start">
+          <Button size="lg" className="gap-2">
+            <Plus className="h-5 w-5" /> Neue Session
           </Button>
-          <span className="hint">
-            Hinweis: Daten liegen lokal im Klartext vor (Gerätezugriff = Datenzugriff).
-          </span>
+          <Button size="lg" variant="outline">
+            Mehr erfahren
+          </Button>
         </div>
-        {error && <div className="msg err">{error}</div>}
-      </Card>
+      </section>
 
-      <Card>
-        <div className="row space">
-          <h2>Sessions</h2>
-          <Button onClick={loadData}>Aktualisieren</Button>
+      {/* Session List */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold tracking-tight">Deine Sessions</h2>
         </div>
-        {sessions.length === 0 ? (
-          <p className="hint">Noch keine Sessions vorhanden.</p>
-        ) : (
-          <div className="list">
-            {sessions.map((session) => (
-              <Link key={session.id} href={`/sessions/${session.id}`}>
-                <div className="item" style={{ cursor: 'pointer' }}>
-                  <div className="title">{session.name}</div>
-                  <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {session.has_a && <span className="badge">Person A</span>}
-                    {session.has_b && <span className="badge">Person B</span>}
-                    {!session.has_a && !session.has_b && (
-                      <span className="hint">Noch nicht ausgefüllt</span>
-                    )}
-                  </div>
-                  <div className="session-progress" style={{ marginTop: '12px' }}>
-                    <div className="session-progress-bar">
-                      <div
-                        className="session-progress-fill"
-                        style={{
-                          width: `${((session.has_a ? 1 : 0) + (session.has_b ? 1 : 0)) * 50}%`,
-                        }}
-                      />
+        
+        <div className="grid gap-4 md:grid-cols-2">
+          {sessions.map((session) => (
+            <Link key={session.id} href={`/sessions/${session.id}`}>
+              <a className="block group">
+                <Card className="transition-all hover:border-primary/50 hover:shadow-md">
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                          {session.name}
+                        </CardTitle>
+                        <CardDescription className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(session.date).toLocaleDateString()}
+                        </CardDescription>
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                     </div>
-                    <div className="session-progress-text">
-                      {new Date(session.created_at).toLocaleDateString('de-DE')}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant={session.progressA === 100 ? "success" : "secondary"}>
+                        Person A: {session.progressA}%
+                      </Badge>
+                      <Badge variant={session.progressB === 100 ? "success" : "secondary"}>
+                        Person B: {session.progressB}%
+                      </Badge>
                     </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </Card>
+                  </CardContent>
+                </Card>
+              </a>
+            </Link>
+          ))}
+          
+          {/* New Session Card Placeholder */}
+          <button className="flex h-full min-h-[140px] w-full flex-col items-center justify-center rounded-lg border border-dashed hover:bg-accent/50 transition-colors gap-2 text-muted-foreground hover:text-foreground">
+            <Plus className="h-8 w-8 opacity-50" />
+            <span className="font-medium">Neue Session erstellen</span>
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
-
