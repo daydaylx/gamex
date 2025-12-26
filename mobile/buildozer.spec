@@ -16,7 +16,8 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json
 
 # (list) List of inclusions using pattern matching
-source.include_patterns = assets/*,data/*,backend/app/*.py,backend/app/core/*.py,backend/app/templates/*.py
+# Only include minimal backend modules needed for APK
+source.include_patterns = assets/*,data/*,backend/app/__init__.py,backend/app/models.py,backend/app/config.py,backend/app/core/*.py,backend/app/templates/*.py,backend/app/templates/*.json,backend/app/storage/*.py
 
 # (list) Source files to exclude (let empty to not exclude anything)
 source.exclude_exts = spec
@@ -32,7 +33,8 @@ version = 1.0.0
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy==2.3.0,sqlite3,pydantic
+# APK-only: minimal dependencies, no web frameworks
+requirements = python3,kivy==2.3.0,sqlite3,pydantic==2.10.3
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
