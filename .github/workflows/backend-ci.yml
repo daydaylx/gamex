@@ -63,7 +63,7 @@ jobs:
 
     - name: Upload coverage HTML
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: coverage-html-${{ matrix.python-version }}
         path: backend/htmlcov/
@@ -96,7 +96,7 @@ jobs:
 
     - name: Upload Bandit report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: bandit-report
         path: backend/bandit-report.json
