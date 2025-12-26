@@ -21,6 +21,7 @@ class SessionListItem(BaseModel):
     created_at: str
     has_a: bool
     has_b: bool
+    encrypted: bool = False
 
 class SessionInfo(BaseModel):
     id: str

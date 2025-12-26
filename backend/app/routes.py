@@ -2,7 +2,7 @@ import json
 import time
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, Response
@@ -38,6 +38,7 @@ from app.logging import log_api_call, log_performance
 from app.storage import get_storage
 from app.core.validation import validate_responses as _validate_responses_core
 from app.keychain import KeychainManager
+from app.db import db
 from app.crypto import encrypt_data, decrypt_data, is_encrypted, InvalidPasswordError
 
 storage = get_storage()
@@ -221,6 +222,7 @@ def create_encrypted_session(req: CreateSessionRequestEncrypted):
         created_at=created_at,
         has_a=False,
         has_b=False,
+        encrypted=True,
     )
 
 def _load_session_row(session_id: str):
@@ -246,30 +248,70 @@ def session_info(session_id: str):
     )
 
 @api_router.post("/sessions/{session_id}/responses/{person}/load")
-def load_responses(session_id: str, person: str, req: LoadResponsesRequest):
+def load_responses(session_id: str, person: str, req: LoadResponsesRequestEncrypted):
+    """
+    Load responses (supports both encrypted and unencrypted sessions).
+
+    For encrypted sessions: password required in request body.
+    For unencrypted sessions: password optional (ignored).
+    """
     if person not in ("A", "B"):
         raise HTTPException(status_code=400, detail="Invalid person")
-    srow = _load_session_row(session_id)
 
+    srow = _load_session_row(session_id)
     data = storage.load_responses(session_id=session_id, person=person)
+
     if not data:
-        return {"responses": {}}
-    return {"responses": data}
+        return {"responses": {}, "encrypted": False}
+
+    # Check if data is encrypted
+    if is_encrypted(data):
+        # Encrypted session - password required
+        if not req.password:
+            raise HTTPException(
+                status_code=401,
+                detail="Password required for encrypted session"
+            )
+
+        try:
+            # Unlock keychain and get session key
+            master_key = KeychainManager.unlock(req.password)
+            session_key = KeychainManager.get_session_key(session_id, master_key)
+
+            # Decrypt data
+            plaintext = decrypt_data(data, session_key)
+            return {"responses": json.loads(plaintext), "encrypted": True}
+
+        except InvalidPasswordError:
+            raise HTTPException(status_code=401, detail="Incorrect password")
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    else:
+        # Unencrypted session (legacy)
+        return {"responses": data, "encrypted": False}
 
 @api_router.post("/sessions/{session_id}/responses/{person}/save")
-def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
+def save_responses(session_id: str, person: str, req: SaveResponsesRequestEncrypted):
+    """
+    Save responses with automatic encryption for encrypted sessions.
+
+    For encrypted sessions: password required, data encrypted before storage.
+    For unencrypted sessions: password optional, data stored as plaintext.
+    """
     if person not in ("A", "B"):
         raise HTTPException(status_code=400, detail="Invalid person")
+
     srow = _load_session_row(session_id)
 
-    # basic sanity: must be dict
+    # Basic sanity: must be dict
     if not isinstance(req.responses, dict):
         raise HTTPException(status_code=400, detail="responses must be object/dict")
 
-    # Validate responses against template
+    # Validate responses against template (before encryption)
     tpl = load_template(srow["template_id"])
     validation_errors, validation_warnings = validate_responses(tpl, req.responses)
-    
+
     # Return warnings but only block on errors
     if validation_errors:
         return JSONResponse(
@@ -280,23 +322,119 @@ def save_responses(session_id: str, person: str, req: SaveResponsesRequest):
                 "warnings": validation_warnings,
             },
         )
-    now = _utcnow()
-    storage.save_responses(session_id=session_id, person=person, responses=req.responses, updated_at=now)
-    return {"ok": True, "updated_at": now}
 
-def _load_both_responses(session_id: str):
+    # Check if session is encrypted
+    with db() as conn:
+        row = conn.execute(
+            "SELECT encryption_version FROM sessions WHERE id = ?",
+            (session_id,)
+        ).fetchone()
+
+    is_encrypted_session = row and row["encryption_version"] and row["encryption_version"] >= 1
+
+    now = _utcnow()
+
+    if is_encrypted_session:
+        # Encrypted session - encrypt before saving
+        if not req.password:
+            raise HTTPException(
+                status_code=401,
+                detail="Password required for encrypted session"
+            )
+
+        try:
+            # Unlock keychain and get session key
+            master_key = KeychainManager.unlock(req.password)
+            session_key = KeychainManager.get_session_key(session_id, master_key)
+
+            # Encrypt responses
+            plaintext = json.dumps(req.responses, ensure_ascii=False)
+            encrypted = encrypt_data(plaintext, session_key)
+
+            # Save encrypted data
+            storage.save_responses(
+                session_id=session_id,
+                person=person,
+                responses=encrypted,
+                updated_at=now
+            )
+
+        except InvalidPasswordError:
+            raise HTTPException(status_code=401, detail="Incorrect password")
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    else:
+        # Unencrypted session (legacy) - save as plaintext
+        storage.save_responses(
+            session_id=session_id,
+            person=person,
+            responses=req.responses,
+            updated_at=now
+        )
+
+    return {"status": "saved", "updated_at": now}
+
+def _load_both_responses(session_id: str, password: Optional[str] = None):
+    """
+    Load both responses with encryption support.
+
+    Args:
+        session_id: Session UUID
+        password: Master password (required for encrypted sessions)
+
+    Returns:
+        (session_row, responses_a, responses_b)
+
+    Raises:
+        HTTPException: If responses missing or password incorrect
+    """
     srow = _load_session_row(session_id)
     try:
-        resp_a, resp_b = storage.load_both_responses(session_id=session_id)
+        resp_a_raw, resp_b_raw = storage.load_both_responses(session_id=session_id)
     except ValueError:
         raise HTTPException(status_code=400, detail="Need both A and B responses to compare")
+
+    # Check if encrypted
+    if is_encrypted(resp_a_raw) or is_encrypted(resp_b_raw):
+        # Encrypted session
+        if not password:
+            raise HTTPException(
+                status_code=401,
+                detail="Password required for encrypted session"
+            )
+
+        try:
+            # Unlock and get session key
+            master_key = KeychainManager.unlock(password)
+            session_key = KeychainManager.get_session_key(session_id, master_key)
+
+            # Decrypt both responses
+            resp_a = json.loads(decrypt_data(resp_a_raw, session_key)) if is_encrypted(resp_a_raw) else resp_a_raw
+            resp_b = json.loads(decrypt_data(resp_b_raw, session_key)) if is_encrypted(resp_b_raw) else resp_b_raw
+
+        except InvalidPasswordError:
+            raise HTTPException(status_code=401, detail="Incorrect password")
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    else:
+        # Unencrypted session (legacy)
+        resp_a = resp_a_raw
+        resp_b = resp_b_raw
+
     return srow, resp_a, resp_b
 
 @api_router.post("/sessions/{session_id}/compare", response_model=CompareResult)
-def compare_session(session_id: str, req: CompareRequest):
+def compare_session(session_id: str, req: CompareRequestEncrypted):
+    """
+    Compare responses (supports encrypted and unencrypted sessions).
+
+    For encrypted sessions: password required in request body.
+    """
     start = time.time()
     try:
-        srow, resp_a, resp_b = _load_both_responses(session_id)
+        srow, resp_a, resp_b = _load_both_responses(session_id, password=req.password)
         tpl = load_template(srow["template_id"])
         
         compare_start = time.time()
@@ -317,8 +455,9 @@ def compare_session(session_id: str, req: CompareRequest):
         raise
 
 @api_router.post("/sessions/{session_id}/export/json")
-def export_json(session_id: str, req: ExportRequest):
-    srow, resp_a, resp_b = _load_both_responses(session_id)
+def export_json(session_id: str, req: CompareRequestEncrypted):
+    """Export session to JSON (supports encrypted sessions with password)"""
+    srow, resp_a, resp_b = _load_both_responses(session_id, password=req.password)
     tpl = load_template(srow["template_id"])
     result = compare(tpl, resp_a, resp_b)
 
@@ -333,8 +472,9 @@ def export_json(session_id: str, req: ExportRequest):
     return Response(content=data, media_type="application/json", headers={"Content-Disposition": f'attachment; filename="{fname}"'})
 
 @api_router.post("/sessions/{session_id}/export/markdown")
-def export_markdown(session_id: str, req: ExportRequest):
-    srow, resp_a, resp_b = _load_both_responses(session_id)
+def export_markdown(session_id: str, req: CompareRequestEncrypted):
+    """Export session to Markdown (supports encrypted sessions with password)"""
+    srow, resp_a, resp_b = _load_both_responses(session_id, password=req.password)
     tpl = load_template(srow["template_id"])
     result = compare(tpl, resp_a, resp_b)
 
@@ -394,7 +534,8 @@ def get_scenarios():
 
 @api_router.post("/sessions/{session_id}/ai/analyze")
 async def ai_analyze(session_id: str, req: AIAnalyzeRequest):
-    srow, resp_a, resp_b = _load_both_responses(session_id)
+    """AI analysis (NOTE: does not yet support encrypted sessions - TODO)"""
+    srow, resp_a, resp_b = _load_both_responses(session_id, password=None)  # TODO: add password support
     tpl = load_template(srow["template_id"])
     result = compare(tpl, resp_a, resp_b)
 
