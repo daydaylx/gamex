@@ -1,9 +1,46 @@
-[
+{
+  "decks": [
+    {
+      "id": "warmup",
+      "name": "Deck 1: Warm-Up",
+      "description": "Reden über Nähe, Initiation, Feedback, Aftercare, Grenzen. Kein 'Kink', nur Basis-Sicherheit.",
+      "scenarios": ["S01", "S02", "S03", "S04"],
+      "order": 1
+    },
+    {
+      "id": "roles",
+      "name": "Deck 2: Rollen & Dynamik",
+      "description": "Dominant/devot/switch, Kontrolle abgeben/nehmen, Regeln, Sprache, Tempo.",
+      "scenarios": ["S05", "S06", "S07", "S08"],
+      "order": 2
+    },
+    {
+      "id": "curiosity",
+      "name": "Deck 3: Neugier & Tabu",
+      "description": "Neue Settings, Spielzeuge, Beobachten/Beobachtet werden, Fantasie vs Umsetzung.",
+      "scenarios": ["S09", "S10", "S11", "S12"],
+      "order": 3
+    },
+    {
+      "id": "highrisk",
+      "name": "Deck 4: High-Risk",
+      "description": "Themen mit höherem körperlichen/psychischen Risiko. ⚠️ Sicherheits-Gate erforderlich.",
+      "scenarios": ["S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20"],
+      "order": 4,
+      "requires_safety_gate": true
+    }
+  ],
+  "scenarios": [
   {
     "id": "S01",
     "title": "Die offene Tür",
     "category": "Public/Voyeur",
     "description": "Die kühle Nachtluft tut gut, du wolltest nur kurz dem Lärm der Party entfliehen. Doch aus dem halbdunklen Gartenhaus dringen Geräusche. Ein gedämpftes Stöhnen, das rhythmische Klatschen von Haut auf Haut. Durch den Spalt der Tür siehst du sie: Zwei Gäste, völlig ineinander verschlungen, die Kleidung hastig beiseite geschoben. Plötzlich trifft sein Blick deinen. Er hält nicht inne. Ein sündiges Lächeln umspielt seine Lippen, und er winkt dich mit einer fast unmerkbaren Kopfbewegung näher...",
+    "info_card": {
+      "emotional_context": "Oft geht's um den Kitzel des Verbotenen, Exhibitionismus, Macht über die Situation.",
+      "typical_risks": "Entdeckung, Scham, Consent-Drittpersonen (andere Gäste).",
+      "safety_gate": "Voraussetzungen: Privater Raum, keine unbeteiligten Dritten, klare Grenzen zu Voyeurismus."
+    },
     "options": [
       { "id": "A", "label": "Abwenden und gehen (Das ist mir zu privat)", "risk_type": "boundary" },
       { "id": "B", "label": "Nur zusehen (Der Kitzel des Verbotenen, ohne Berührung)", "risk_type": "fantasy_passive" },
@@ -16,6 +53,11 @@
     "title": "Kontrollverlust Light",
     "category": "Power Dynamics",
     "description": "Das Klirren des Bestecks im Restaurant scheint plötzlich weit weg. Er legt seine Hand auf deine, drückt sanft, aber bestimmt zu, bis du ihn ansiehst. Seine Stimme ist leise, ein gefährliches Schnurren: 'Hör mir gut zu. Ab jetzt triffst du keine Entscheidungen mehr. Nicht, was du isst. Nicht, wann wir gehen. Und schon gar nicht, was passiert, wenn wir zuhause sind. Du gibst die Verantwortung jetzt ab.' Ein Schauer läuft dir über den Rücken...",
+    "info_card": {
+      "emotional_context": "Machtgefälle kann intensiv sein, erfordert aber vertrauensvolle Kommunikation.",
+      "typical_risks": "Gefühl des Ausgeliefertseins, Angst vor Kontrollverlust, mangelnde Nachbesprechung.",
+      "safety_gate": "Voraussetzungen: Safeword vereinbart, klare Grenzen, nach der Szene ausführliche Nachbesprechung."
+    },
     "options": [
       { "id": "A", "label": "Den Griff lösen (Ich möchte meine Kontrolle behalten)", "risk_type": "boundary" },
       { "id": "B", "label": "Spielerisch provozieren ('Du musst mich schon zwingen')", "risk_type": "playful" },
@@ -76,6 +118,11 @@
     "title": "Das 'Nein'-Spiel (CNC)",
     "category": "High Risk/CNC",
     "description": "Ihr rauft spielerisch auf dem Teppich, ein Kräftemessen aus Lachen und Kitzeln. Du windest dich, rufst lachend 'Nein, hör auf!'. Doch er hält dich fest, drückt dich mit seinem Gewicht nach unten. Das Lachen in seinem Gesicht weicht einem intensiven Blick. Er macht nicht weiter, lässt aber auch nicht los. Du spürst seine Überlegenheit. 'Zwing mich doch, aufzuhören', raunt er.",
+    "info_card": {
+      "emotional_context": "CNC (Consensual Non-Consent) spielt mit dem Paradox der 'erzwungenen' Einwilligung. Erfordert höchstes Vertrauen.",
+      "typical_risks": "Grenzverletzung durch Missverständnisse, psychisches Trauma, Verlust des Gefühls von Sicherheit.",
+      "safety_gate": "Voraussetzungen: Safeword muss 100% respektiert werden, vorherige ausführliche Kommunikation, Erfahrung mit Power Dynamics."
+    },
     "options": [
       { "id": "A", "label": "Ernsthaft stoppen (Das Spiel ist vorbei)", "risk_type": "boundary" },
       { "id": "B", "label": "Nur im verbalen Spiel bleiben", "risk_type": "playful" },
@@ -148,6 +195,10 @@
     "title": "Körperflüssigkeiten",
     "category": "Sensation/Taboo",
     "description": "Die Kontrolle entgleitet. Er hält dein Gesicht fest, zwingt dich, ihn anzusehen. Sein Atem geht stoßweise. Du merkst, dass er kurz vor dem Höhepunkt ist. 'Ich will dich markieren', keucht er, und deutet an, dir direkt ins Gesicht zu kommen oder zu spucken. Es ist keine Frage, es ist eine Ankündigung, die gleich Realität wird.",
+    "safety_gate": {
+      "required": ["safeword_agreed", "time_available", "no_surprises"],
+      "message": "Dieses Szenario erfordert: Safeword vereinbart, genug Zeit, keine Überraschungen."
+    },
     "options": [
       { "id": "A", "label": "Wegdrehen (Nicht im Gesicht)", "risk_type": "boundary" },
       { "id": "B", "label": "Geschehen lassen, ohne aktiv zu werden", "risk_type": "passive" },
@@ -184,6 +235,11 @@
     "title": "Die Fesseln (Restriktion)",
     "category": "Restraint/Bondage",
     "description": "Das Seil – oder vielleicht sind es Handschellen – klickt ins Schloss. Deine Hände sind fixiert, deine Bewegungsfreiheit ist gleich Null. Du liegst auf dem Bett, völlig offen, unfähig, dich zu schützen oder zu berühren. Er tritt einen Schritt zurück, betrachtet das Werk und lächelt. Du realisierst: Egal was jetzt passiert, du kannst nichts tun, außer es geschehen zu lassen.",
+    "info_card": {
+      "emotional_context": "Bondage kombiniert Kontrollverlust mit physischer Restriktion. Kann sehr intensiv sein.",
+      "typical_risks": "Klaustrophobie, Verletzungen durch falsche Technik, Panik bei zu viel Enge.",
+      "safety_gate": "Voraussetzungen: Kenntnis der Technik, non-verbales Stop-Signal vereinbart, Schere griffbereit, keine Enge am Hals."
+    },
     "options": [
       { "id": "A", "label": "Sofort lösen (Das Gefühl der Enge macht mir Angst)", "risk_type": "boundary" },
       { "id": "B", "label": "Nur ganz leichte Fesseln (z.B. Seidentuch)", "risk_type": "hesitant" },
@@ -239,4 +295,5 @@
       { "id": "D", "label": "Die demütige Verehrung voll ausleben", "risk_type": "active" }
     ]
   }
-]
+  ]
+}
