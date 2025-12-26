@@ -1,22 +1,21 @@
-"""Wizard-based Session Form Screen."""
+"""Session Form Screen - Questionnaire Wizard Interface."""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.spinner import Spinner
 from kivy.properties import ObjectProperty, StringProperty
 
-from mobile.widgets.progress_header import ProgressHeader
-from mobile.widgets.question_widgets import (
-    ScaleQuestion,
-    EnumQuestion,
-    MultiChoiceQuestion,
-    TextQuestion,
-    ConsentRatingQuestion,
+from mobile.widgets.wizard_state import WizardState
+from mobile.widgets.wizard_screens import (
+    WizardStartScreen,
+    QuestionPage,
+    SummaryPage,
 )
 
 if TYPE_CHECKING:
@@ -25,476 +24,449 @@ if TYPE_CHECKING:
 
 class SessionFormScreen(Screen):
     """
-    Wizard-based session form screen.
+    Session form screen with Wizard/Stepper interface.
 
     Features:
     - One question per screen
-    - Progress indicator
+    - Progress indicator with step counter
     - Back/Next navigation
-    - Start screen & summary screen
     - Auto-save responses
+    - Start screen and summary page
+    - Mobile-first design with large touch targets
     """
 
     app_store = ObjectProperty(None)
+    mode = StringProperty('simple')  # 'simple' or 'detailed'
+
+    # Wizard states
+    WIZARD_STATE_CREATE = 'create'
+    WIZARD_STATE_SELECT_PERSON = 'select_person'
+    WIZARD_STATE_START = 'start'
+    WIZARD_STATE_QUESTION = 'question'
+    WIZARD_STATE_SUMMARY = 'summary'
 
     def __init__(self, app_store: AppStore, **kwargs):
         super().__init__(**kwargs)
         self.app_store = app_store
-        self.current_question_widget = None
+        self.wizard_state = None
+        self.current_wizard_view = None
 
-        # Main layout
-        self.main_layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-
-        # Progress header
-        self.progress_header = ProgressHeader()
-        self.main_layout.add_widget(self.progress_header)
-
-        # Status message
-        self.status_label = Label(
-            text='',
-            size_hint_y=None,
-            height=30,
-            font_size='12sp',
-            color=(0.2, 0.6, 0.8, 1),
-        )
-        self.main_layout.add_widget(self.status_label)
-
-        # Content area (scrollable)
-        self.content_scroll = ScrollView()
-        self.content_layout = BoxLayout(
-            orientation='vertical',
-            spacing=15,
-            size_hint_y=None,
-            padding=10,
-        )
-        self.content_layout.bind(minimum_height=self.content_layout.setter('height'))
-        self.content_scroll.add_widget(self.content_layout)
-        self.main_layout.add_widget(self.content_scroll)
-
-        # Navigation buttons
-        self.nav_layout = BoxLayout(
-            orientation='horizontal',
-            size_hint_y=None,
-            height=60,
-            spacing=10,
-            padding=[0, 10],
-        )
-
-        self.back_btn = Button(
-            text='← Zurück',
-            on_press=self._on_back,
-            size_hint_x=0.3,
-        )
-        self.nav_layout.add_widget(self.back_btn)
-
-        # Spacer
-        self.nav_layout.add_widget(BoxLayout(size_hint_x=0.4))
-
-        self.next_btn = Button(
-            text='Weiter →',
-            on_press=self._on_next,
-            size_hint_x=0.3,
-        )
-        self.nav_layout.add_widget(self.next_btn)
-
-        self.main_layout.add_widget(self.nav_layout)
-
+        # Main container
+        self.main_layout = BoxLayout(orientation='vertical')
         self.add_widget(self.main_layout)
 
         # Bind to store
         if self.app_store:
             self.app_store.bind(current_session=self._on_session_changed)
-            self.app_store.bind(wizard_started=self._on_wizard_state_changed)
-            self.app_store.bind(current_question_index=self._on_question_changed)
-            self.app_store.bind(save_status=self._update_status)
 
     def on_enter(self):
         """Called when screen is entered."""
-        self._render_content()
+        self._render_view()
 
     def _on_session_changed(self, *args):
         """Handle session change."""
-        self._render_content()
+        self._render_view()
 
-    def _on_wizard_state_changed(self, *args):
-        """Handle wizard state change."""
-        self._render_content()
+    def _render_view(self):
+        """Render the appropriate view based on current state."""
+        self.main_layout.clear_widgets()
 
-    def _on_question_changed(self, *args):
-        """Handle question navigation."""
-        self._render_question()
-
-    def _render_content(self):
-        """Render appropriate content based on wizard state."""
-        if not self.app_store or not self.app_store.current_session:
-            self._render_no_session()
-            return
-
-        if not self.app_store.current_person:
-            self._render_select_person()
-            return
-
-        if not self.app_store.wizard_started:
-            self._render_start_screen()
-        else:
-            self._render_question()
-
-    def _render_no_session(self):
-        """Render message when no session is active."""
-        self.content_layout.clear_widgets()
-        self.progress_header.current = 0
-        self.progress_header.total = 0
-
-        info = Label(
-            text='Keine aktive Session.\nBitte wähle eine Session im Dashboard.',
-            font_size='16sp',
-            size_hint_y=None,
-            height=100,
-        )
-        self.content_layout.add_widget(info)
-
-        self.back_btn.text = '← Dashboard'
-        self.next_btn.disabled = True
-
-    def _render_select_person(self):
-        """Render person selection."""
-        self.content_layout.clear_widgets()
-        self.progress_header.current = 0
-        self.progress_header.total = 0
-
-        title = Label(
-            text='Person wählen',
-            font_size='20sp',
-            bold=True,
-            size_hint_y=None,
-            height=50,
-        )
-        self.content_layout.add_widget(title)
-
-        info = Label(
-            text='Wähle aus, für welche Person du den Fragebogen ausfüllen möchtest:',
-            font_size='16sp',
-            size_hint_y=None,
-            height=60,
-        )
-        self.content_layout.add_widget(info)
-
-        # Person A button
-        person_a_btn = Button(
-            text='Person A',
-            size_hint_y=None,
-            height=60,
-            font_size='18sp',
-            on_press=lambda x: self._select_person('A'),
-        )
-        self.content_layout.add_widget(person_a_btn)
-
-        # Person B button
-        person_b_btn = Button(
-            text='Person B',
-            size_hint_y=None,
-            height=60,
-            font_size='18sp',
-            on_press=lambda x: self._select_person('B'),
-        )
-        self.content_layout.add_widget(person_b_btn)
-
-        self.back_btn.text = '← Dashboard'
-        self.next_btn.disabled = True
-
-    def _select_person(self, person: str):
-        """Select person and load their responses."""
-        if self.app_store and self.app_store.current_session:
-            self.app_store.load_session(
-                self.app_store.current_session['id'],
-                person=person,
-            )
-            self._render_content()
-
-    def _render_start_screen(self):
-        """Render wizard start screen."""
-        self.content_layout.clear_widgets()
-        self.progress_header.current = 0
-        self.progress_header.total = 0
-
-        # Title
-        session = self.app_store.current_session
-        template = self.app_store.current_template
-
-        title = Label(
-            text=f'📋 {template.get("name", "Fragebogen")}',
-            font_size='22sp',
-            bold=True,
-            size_hint_y=None,
-            height=60,
-        )
-        self.content_layout.add_widget(title)
-
-        # Person info
-        person_label = Label(
-            text=f'Antworten für: Person {self.app_store.current_person}',
-            font_size='16sp',
-            color=(0.5, 0.5, 0.5, 1),
-            size_hint_y=None,
-            height=30,
-        )
-        self.content_layout.add_widget(person_label)
-
-        # Description
-        description = template.get('description', 'Beantworte die folgenden Fragen, um deine Präferenzen festzuhalten.')
-        desc_label = Label(
-            text=description,
-            font_size='16sp',
-            size_hint_y=None,
-            height=80,
-            text_size=(None, None),
-        )
-        self.content_layout.add_widget(desc_label)
-
-        # Info box
-        info = Label(
-            text='ℹ️ Du wirst durch die Fragen geleitet.\n'
-                 'Eine Frage pro Seite.\n'
-                 'Deine Antworten werden automatisch gespeichert.',
-            font_size='14sp',
-            size_hint_y=None,
-            height=100,
-            color=(0.3, 0.3, 0.3, 1),
-        )
-        self.content_layout.add_widget(info)
-
-        # Start button
-        start_btn = Button(
-            text='▶ Fragebogen starten',
-            size_hint_y=None,
-            height=60,
-            font_size='18sp',
-            on_press=self._on_start_wizard,
-        )
-        self.content_layout.add_widget(start_btn)
-
-        # Navigation buttons
-        self.back_btn.text = '← Dashboard'
-        self.next_btn.disabled = True
-
-    def _on_start_wizard(self, instance):
-        """Start the wizard."""
-        if self.app_store:
-            self.app_store.start_wizard()
-
-    def _render_question(self):
-        """Render current question."""
-        if not self.app_store or not self.app_store.wizard_started:
-            return
-
-        question = self.app_store.get_current_question()
-        if not question:
-            # Wizard complete, show summary
-            self._render_summary()
-            return
-
-        # Update progress
-        progress = self.app_store.get_wizard_progress()
-        self.progress_header.current = progress['current']
-        self.progress_header.total = progress['total']
-        self.progress_header.module_name = progress['module_name']
-
-        # Clear and render question widget
-        self.content_layout.clear_widgets()
-
-        # Create appropriate widget based on schema
-        schema = question.get('schema', 'text')
-        widget_class = self._get_widget_for_schema(schema)
-
-        if widget_class:
-            self.current_question_widget = widget_class(
-                question=question,
-                response=self.app_store.form_responses.get(question['id']),
-                on_change=self._on_answer_change,
-            )
-            self.content_layout.add_widget(self.current_question_widget)
-        else:
-            # Fallback
-            error = Label(
-                text=f'Unbekannter Fragetyp: {schema}',
-                size_hint_y=None,
-                height=100,
-            )
-            self.content_layout.add_widget(error)
-
-        # Update navigation buttons
-        self.back_btn.text = '← Zurück'
-        self.back_btn.disabled = self.app_store.is_first_question()
-
-        if self.app_store.is_last_question():
-            self.next_btn.text = 'Zusammenfassung →'
-        else:
-            self.next_btn.text = 'Weiter →'
-
-        # Enable/disable next based on validation
-        self._update_next_button()
-
-    def _get_widget_for_schema(self, schema: str):
-        """Get widget class for question schema."""
-        mapping = {
-            'scale_0_10': ScaleQuestion,
-            'enum': EnumQuestion,
-            'multi': MultiChoiceQuestion,
-            'text': TextQuestion,
-            'consent_rating': ConsentRatingQuestion,
-        }
-        return mapping.get(schema)
-
-    def _on_answer_change(self, question_id: str, response):
-        """Handle answer change from question widget."""
-        if self.app_store:
-            self.app_store.update_response(question_id, response)
-            self._update_next_button()
-
-    def _update_next_button(self):
-        """Update next button state based on validation."""
-        if self.current_question_widget:
-            is_valid = self.current_question_widget.is_valid()
-            self.next_btn.disabled = not is_valid
-        else:
-            self.next_btn.disabled = False
-
-    def _on_back(self, instance):
-        """Handle back button press."""
         if not self.app_store:
             return
 
-        if not self.app_store.wizard_started:
-            # Go back to dashboard
-            self.app_store.navigate_to('dashboard')
-        else:
-            # Go to previous question
-            if not self.app_store.previous_question():
-                # At first question, go back to start screen
-                self.app_store.wizard_started = False
-                self._render_start_screen()
-
-    def _on_next(self, instance):
-        """Handle next button press."""
-        if not self.app_store or not self.app_store.wizard_started:
+        # Check if we need to create a new session
+        if not self.app_store.current_session:
+            self._render_create_session()
             return
 
-        # Validate current question
-        if self.current_question_widget and not self.current_question_widget.is_valid():
-            self.status_label.text = '⚠️ Bitte beantworte die Frage'
+        # Check if person is selected
+        if not self.app_store.current_person:
+            self._render_person_selection()
             return
 
-        # Auto-save before moving
-        if self.app_store.has_unsaved_changes:
-            self.app_store.auto_save()
+        # Check if template is loaded
+        template = self.app_store.current_template
+        if not template:
+            self._render_error('Template nicht gefunden')
+            return
 
-        # Move to next or summary
-        if self.app_store.is_last_question():
-            self._render_summary()
-        else:
-            self.app_store.next_question()
+        # Initialize wizard state if not exists
+        if not self.wizard_state:
+            self.wizard_state = WizardState(
+                template=template,
+                responses=dict(self.app_store.form_responses),
+            )
+            self.current_wizard_view = self.WIZARD_STATE_START
 
-    def _render_summary(self):
-        """Render summary screen with all answers."""
-        self.content_layout.clear_widgets()
-        self.progress_header.current = 0
-        self.progress_header.total = 0
+        # Render current wizard view
+        self._render_wizard_view()
+
+    def _render_wizard_view(self):
+        """Render current wizard view."""
+        if self.current_wizard_view == self.WIZARD_STATE_START:
+            self._render_start_screen()
+        elif self.current_wizard_view == self.WIZARD_STATE_QUESTION:
+            self._render_question_page()
+        elif self.current_wizard_view == self.WIZARD_STATE_SUMMARY:
+            self._render_summary_page()
+
+    def _render_start_screen(self):
+        """Render wizard start screen."""
+        template = self.app_store.current_template
+
+        # Header with session info and back button
+        header = self._create_header(
+            title=self.app_store.current_session.get('name', 'Session'),
+            show_back=True,
+        )
+        self.main_layout.add_widget(header)
+
+        # Start screen
+        start_screen = WizardStartScreen(
+            template=template,
+            on_start=self._on_wizard_start,
+        )
+        self.main_layout.add_widget(start_screen)
+
+    def _render_question_page(self):
+        """Render question page."""
+        question_page = QuestionPage(
+            wizard_state=self.wizard_state,
+            app_store=self.app_store,
+            on_back=self._on_question_back,
+            on_next=self._on_question_next,
+        )
+        self.main_layout.add_widget(question_page)
+
+    def _render_summary_page(self):
+        """Render summary page."""
+        summary_page = SummaryPage(
+            wizard_state=self.wizard_state,
+            on_back=self._on_summary_back,
+            on_submit=self._on_summary_submit,
+        )
+        self.main_layout.add_widget(summary_page)
+
+    def _render_create_session(self):
+        """Render session creation form."""
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
 
         # Title
         title = Label(
-            text='✅ Zusammenfassung',
+            text='Neue Session erstellen',
+            size_hint_y=None,
+            height=50,
             font_size='22sp',
             bold=True,
-            size_hint_y=None,
-            height=60,
         )
-        self.content_layout.add_widget(title)
+        layout.add_widget(title)
 
-        # Info
-        info = Label(
-            text=f'Du hast alle {len(self.app_store.wizard_questions)} Fragen beantwortet.\n'
-                 f'Beantwortete Fragen: {len(self.app_store.form_responses)}',
+        # Session name input
+        name_layout = BoxLayout(size_hint_y=None, height=50, spacing=10)
+        name_layout.add_widget(Label(text='Name:', size_hint_x=0.3, font_size='16sp'))
+        self.session_name_input = TextInput(
+            hint_text='Session-Name eingeben',
+            multiline=False,
+            size_hint_x=0.7,
             font_size='16sp',
-            size_hint_y=None,
-            height=60,
         )
-        self.content_layout.add_widget(info)
+        name_layout.add_widget(self.session_name_input)
+        layout.add_widget(name_layout)
 
-        # Summary of answers (simplified)
-        summary_label = Label(
-            text='Deine Antworten wurden gespeichert.',
+        # Template selection
+        if self.app_store.templates:
+            template_layout = BoxLayout(size_hint_y=None, height=50, spacing=10)
+            template_layout.add_widget(Label(text='Template:', size_hint_x=0.3, font_size='16sp'))
+            template_values = [t['name'] for t in self.app_store.templates]
+            self.template_spinner = Spinner(
+                text='Template wählen',
+                values=template_values,
+                size_hint_x=0.7,
+                font_size='16sp',
+            )
+            template_layout.add_widget(self.template_spinner)
+            layout.add_widget(template_layout)
+
+        # Status label
+        self.status_label = Label(
+            text='',
+            size_hint_y=None,
+            height=30,
             font_size='14sp',
-            size_hint_y=None,
-            height=40,
-            color=(0.3, 0.6, 0.3, 1),
+            color=(0.9, 0.3, 0.3, 1),
         )
-        self.content_layout.add_widget(summary_label)
+        layout.add_widget(self.status_label)
 
-        # Actions
-        actions_title = Label(
-            text='Was möchtest du jetzt tun?',
+        # Spacer
+        layout.add_widget(BoxLayout())
+
+        # Buttons
+        actions_layout = BoxLayout(size_hint_y=None, height=60, spacing=15)
+
+        back_btn = Button(
+            text='Abbrechen',
+            size_hint_x=0.4,
             font_size='16sp',
+            background_color=(0.7, 0.7, 0.7, 1),
+        )
+        back_btn.bind(on_press=lambda i: self.app_store.navigate_to('dashboard'))
+        actions_layout.add_widget(back_btn)
+
+        create_btn = Button(
+            text='Session erstellen',
+            size_hint_x=0.6,
+            font_size='18sp',
             bold=True,
-            size_hint_y=None,
-            height=40,
         )
-        self.content_layout.add_widget(actions_title)
+        create_btn.bind(on_press=self._on_create_session)
+        actions_layout.add_widget(create_btn)
 
-        # Review answers button
-        review_btn = Button(
-            text='📝 Antworten überprüfen',
+        layout.add_widget(actions_layout)
+
+        self.main_layout.add_widget(layout)
+
+    def _render_person_selection(self):
+        """Render person selection view."""
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=20)
+
+        # Session info
+        session = self.app_store.current_session
+        title = Label(
+            text=session.get('name', 'Session'),
+            size_hint_y=None,
+            height=60,
+            font_size='24sp',
+            bold=True,
+        )
+        layout.add_widget(title)
+
+        # Instruction
+        instruction = Label(
+            text='Bitte wähle eine Person aus:',
             size_hint_y=None,
             height=50,
-            on_press=self._on_review_answers,
+            font_size='18sp',
         )
-        self.content_layout.add_widget(review_btn)
+        layout.add_widget(instruction)
 
-        # Compare button (if both persons answered)
-        compare_btn = Button(
-            text='🔍 Jetzt vergleichen',
+        # Person buttons
+        person_layout = BoxLayout(
+            orientation='vertical',
             size_hint_y=None,
-            height=50,
-            on_press=self._on_compare,
+            height=200,
+            spacing=15,
+            padding=[50, 20, 50, 20],
         )
-        self.content_layout.add_widget(compare_btn)
 
-        # Finish button
-        finish_btn = Button(
-            text='✓ Fertig - Zum Dashboard',
+        person_a_btn = Button(
+            text='Person A',
             size_hint_y=None,
-            height=50,
-            on_press=self._on_finish,
+            height=70,
+            font_size='20sp',
+            bold=True,
         )
-        self.content_layout.add_widget(finish_btn)
+        person_a_btn.bind(on_press=lambda i: self._select_person('A'))
+        person_layout.add_widget(person_a_btn)
 
-        # Update navigation
-        self.back_btn.text = '← Zur letzten Frage'
-        self.next_btn.disabled = True
+        person_b_btn = Button(
+            text='Person B',
+            size_hint_y=None,
+            height=70,
+            font_size='20sp',
+            bold=True,
+        )
+        person_b_btn.bind(on_press=lambda i: self._select_person('B'))
+        person_layout.add_widget(person_b_btn)
 
-    def _on_review_answers(self, instance):
-        """Go back to first question to review."""
-        if self.app_store:
-            self.app_store.current_question_index = 0
-            self._render_question()
+        layout.add_widget(person_layout)
 
-    def _on_compare(self, instance):
-        """Navigate to compare screen."""
-        if self.app_store:
-            try:
-                self.app_store.run_compare()
-                self.app_store.navigate_to('compare_report')
-            except Exception as e:
-                self.status_label.text = f'Fehler: {str(e)}'
+        # Spacer
+        layout.add_widget(BoxLayout())
 
-    def _on_finish(self, instance):
-        """Finish wizard and go to dashboard."""
-        if self.app_store:
-            self.app_store.complete_wizard()
+        # Back button
+        back_btn = Button(
+            text='← Zurück zum Dashboard',
+            size_hint=(None, None),
+            size=(250, 50),
+            pos_hint={'center_x': 0.5},
+            font_size='16sp',
+            background_color=(0.7, 0.7, 0.7, 1),
+        )
+        back_btn.bind(on_press=lambda i: self.app_store.navigate_to('dashboard'))
+        layout.add_widget(back_btn)
+
+        layout.add_widget(BoxLayout())
+
+        self.main_layout.add_widget(layout)
+
+    def _render_error(self, message: str):
+        """Render error message."""
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=20)
+
+        error_label = Label(
+            text=f'Fehler: {message}',
+            font_size='18sp',
+            color=(0.9, 0.3, 0.3, 1),
+        )
+        layout.add_widget(error_label)
+
+        back_btn = Button(
+            text='Zurück',
+            size_hint=(None, None),
+            size=(200, 50),
+            pos_hint={'center_x': 0.5},
+        )
+        back_btn.bind(on_press=lambda i: self.app_store.navigate_to('dashboard'))
+        layout.add_widget(back_btn)
+
+        self.main_layout.add_widget(layout)
+
+    def _create_header(self, title: str, show_back: bool = True) -> BoxLayout:
+        """Create header with title and optional back button."""
+        header = BoxLayout(
+            orientation='horizontal',
+            size_hint_y=None,
+            height=60,
+            padding=[15, 10, 15, 10],
+            spacing=10,
+        )
+
+        if show_back:
+            back_btn = Button(
+                text='←',
+                size_hint=(None, None),
+                size=(50, 50),
+                font_size='24sp',
+                background_color=(0.7, 0.7, 0.7, 1),
+            )
+            back_btn.bind(on_press=self._on_header_back)
+            header.add_widget(back_btn)
+
+        title_label = Label(
+            text=title,
+            font_size='20sp',
+            bold=True,
+            halign='left',
+        )
+        header.add_widget(title_label)
+
+        return header
+
+    # ===== Event Handlers =====
+
+    def _on_create_session(self, instance):
+        """Handle session creation."""
+        if not self.app_store:
+            return
+
+        # Get values
+        name = getattr(self, 'session_name_input', None)
+        template = getattr(self, 'template_spinner', None)
+
+        if not name or not name.text.strip():
+            self.status_label.text = 'Bitte gib einen Namen ein'
+            return
+
+        if not template or template.text == 'Template wählen':
+            self.status_label.text = 'Bitte wähle ein Template'
+            return
+
+        # Find template ID
+        template_id = None
+        for t in self.app_store.templates:
+            if t['name'] == template.text:
+                template_id = t['id']
+                break
+
+        if not template_id:
+            self.status_label.text = 'Template nicht gefunden'
+            return
+
+        try:
+            # Create session
+            self.app_store.create_session(
+                name=name.text.strip(),
+                template_id=template_id,
+            )
+            # Session will be loaded automatically, triggering re-render
+        except Exception as e:
+            self.status_label.text = f'Fehler: {str(e)}'
+
+    def _select_person(self, person: str):
+        """Select person and load their responses."""
+        if not self.app_store or not self.app_store.current_session:
+            return
+
+        self.app_store.load_session(
+            self.app_store.current_session['id'],
+            person=person,
+        )
+
+        # Reset wizard state for fresh start
+        self.wizard_state = None
+
+        # Render will be triggered by session change event
+        self._render_view()
+
+    def _on_wizard_start(self):
+        """Handle wizard start."""
+        self.current_wizard_view = self.WIZARD_STATE_QUESTION
+        self._render_view()
+
+    def _on_question_back(self):
+        """Handle back from question page."""
+        # Wizard state handles the navigation internally
+        # Just need to check if we're back at the start
+        if self.wizard_state and self.wizard_state.current_index == 0:
+            # User might want to go back to start screen
+            pass
+
+    def _on_question_next(self):
+        """Handle next from question page (to summary)."""
+        self.current_wizard_view = self.WIZARD_STATE_SUMMARY
+        self._render_view()
+
+    def _on_summary_back(self):
+        """Handle back from summary page."""
+        self.current_wizard_view = self.WIZARD_STATE_QUESTION
+        self._render_view()
+
+    def _on_summary_submit(self):
+        """Handle summary submit."""
+        if not self.app_store:
+            return
+
+        try:
+            # Save responses
+            self.app_store.save_responses()
+
+            # Reset wizard
+            self.wizard_state = None
+            self.current_wizard_view = None
+
+            # Navigate to dashboard or comparison
             self.app_store.navigate_to('dashboard')
 
-    def _update_status(self, *args):
-        """Update status label from store."""
-        if self.app_store:
-            status = self.app_store.save_status
-            if status:
-                self.status_label.text = status
+        except Exception as e:
+            print(f"Error submitting responses: {e}")
+
+    def _on_header_back(self, instance):
+        """Handle header back button."""
+        if self.current_wizard_view == self.WIZARD_STATE_START:
+            # Go back to person selection
+            self.app_store.current_person = None
+            self.wizard_state = None
+            self.current_wizard_view = None
+            self._render_view()
+        elif self.current_wizard_view == self.WIZARD_STATE_QUESTION:
+            # Go back to start screen
+            self.current_wizard_view = self.WIZARD_STATE_START
+            # Reset wizard index
+            if self.wizard_state:
+                self.wizard_state.current_index = 0
+            self._render_view()
+        else:
+            # Default: go to dashboard
+            if self.app_store.has_unsaved_changes:
+                self.app_store.auto_save()
+            self.app_store.navigate_to('dashboard')

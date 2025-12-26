@@ -1,572 +1,325 @@
-"""
-Question Widgets
+"""Question Widgets for different question types."""
+from __future__ import annotations
 
-Specialized widgets for different question types.
-"""
-from typing import Any, Dict, Callable, Optional
+from typing import Callable, Any, Optional
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.slider import Slider
-from kivy.uix.togglebutton import ToggleButton
-from kivy.uix.checkbox import CheckBox
-from kivy.properties import DictProperty, StringProperty, ObjectProperty
+from kivy.uix.gridlayout import GridLayout
+from kivy.graphics import Color, Rectangle
 
 
 class BaseQuestionWidget(BoxLayout):
-    """Base class for all question widgets."""
+    """Base widget for all question types."""
 
-    question = DictProperty({})
-    response = ObjectProperty(None, allownone=True)
-    on_change = ObjectProperty(None, allownone=True)  # Callback when answer changes
+    def __init__(self, question: dict, initial_value: Any = None, on_change: Optional[Callable] = None, **kwargs):
+        """
+        Initialize base question widget.
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = 'vertical'
-        self.spacing = 15
-        self.padding = [15, 15]
-        self.size_hint_y = None
+        Args:
+            question: Question data dict
+            initial_value: Initial answer value
+            on_change: Callback when answer changes
+        """
+        super().__init__(orientation='vertical', spacing=15, **kwargs)
 
-    def _notify_change(self, value):
-        """Notify parent about value change."""
-        self.response = value
-        if self.on_change:
-            self.on_change(self.question.get('id'), value)
-
-    def get_response(self) -> Any:
-        """Get current response value."""
-        return self.response
-
-    def is_valid(self) -> bool:
-        """Check if current response is valid."""
-        # Override in subclasses
-        return True
-
-
-class ScaleQuestion(BaseQuestionWidget):
-    """Scale question (0-10) with slider."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.height = 200
+        self.question = question
+        self.on_change_callback = on_change
+        self.current_value = initial_value
 
         # Question label
         self.question_label = Label(
-            text='',
-            font_size='18sp',
-            bold=True,
+            text=question.get('label', ''),
             size_hint_y=None,
-            height=60,
-            text_size=(None, None),
+            height=80,
+            font_size='18sp',
             halign='left',
             valign='top',
+            text_size=(None, None),
+            markup=True,
         )
         self.add_widget(self.question_label)
 
-        # Help text
-        self.help_label = Label(
-            text='',
-            font_size='14sp',
-            color=(0.5, 0.5, 0.5, 1),
-            size_hint_y=None,
-            height=30,
-            text_size=(None, None),
-            halign='left',
-        )
-        self.add_widget(self.help_label)
+        # Help text (optional)
+        help_text = question.get('help', '')
+        if help_text:
+            self.help_label = Label(
+                text=f'[color=666666][size=14sp]{help_text}[/size][/color]',
+                size_hint_y=None,
+                height=50,
+                halign='left',
+                valign='top',
+                text_size=(None, None),
+                markup=True,
+            )
+            self.add_widget(self.help_label)
+
+    def on_size(self, *args):
+        """Update text_size when widget resizes."""
+        if hasattr(self, 'question_label'):
+            self.question_label.text_size = (self.width - 20, None)
+            self.question_label.height = max(80, self.question_label.texture_size[1] + 20)
+
+        if hasattr(self, 'help_label'):
+            self.help_label.text_size = (self.width - 20, None)
+            self.help_label.height = max(50, self.help_label.texture_size[1] + 20)
+
+    def get_value(self) -> Any:
+        """Get current answer value."""
+        return self.current_value
+
+    def set_value(self, value: Any):
+        """Set answer value."""
+        self.current_value = value
+
+    def trigger_change(self, value: Any):
+        """Trigger on_change callback."""
+        self.current_value = value
+        if self.on_change_callback:
+            self.on_change_callback(value)
+
+
+class ScaleQuestionWidget(BaseQuestionWidget):
+    """Widget for scale questions (0-10)."""
+
+    def __init__(self, question: dict, initial_value: Any = None, on_change: Optional[Callable] = None, **kwargs):
+        super().__init__(question, initial_value, on_change, **kwargs)
 
         # Value display
         self.value_label = Label(
-            text='Noch nicht beantwortet',
-            font_size='24sp',
+            text=str(initial_value) if initial_value is not None else '5',
+            size_hint_y=None,
+            height=60,
+            font_size='32sp',
             bold=True,
             color=(0.2, 0.6, 0.8, 1),
-            size_hint_y=None,
-            height=40,
         )
         self.add_widget(self.value_label)
 
         # Slider
+        slider_value = float(initial_value) if initial_value is not None else 5.0
         self.slider = Slider(
             min=0,
             max=10,
-            value=5,
+            value=slider_value,
             step=1,
             size_hint_y=None,
-            height=40,
+            height=60,
         )
         self.slider.bind(value=self._on_slider_change)
         self.add_widget(self.slider)
 
         # Scale labels
-        scale_labels = BoxLayout(size_hint_y=None, height=25)
-        scale_labels.add_widget(Label(text='0', font_size='12sp'))
-        scale_labels.add_widget(Label(text='5', font_size='12sp'))
-        scale_labels.add_widget(Label(text='10', font_size='12sp'))
-        self.add_widget(scale_labels)
+        scale_layout = BoxLayout(size_hint_y=None, height=30)
+        scale_layout.add_widget(Label(text='0', font_size='14sp', color=(0.5, 0.5, 0.5, 1)))
+        scale_layout.add_widget(Label(text='5', font_size='14sp', color=(0.5, 0.5, 0.5, 1)))
+        scale_layout.add_widget(Label(text='10', font_size='14sp', color=(0.5, 0.5, 0.5, 1)))
+        self.add_widget(scale_layout)
 
-        # Bind question updates
-        self.bind(question=self._update_question)
-        self.bind(response=self._update_from_response)
-
-    def _update_question(self, *args):
-        """Update UI from question data."""
-        if self.question:
-            self.question_label.text = self.question.get('label', '')
-            self.help_label.text = self.question.get('help', '')
-
-    def _update_from_response(self, *args):
-        """Update UI from existing response."""
-        if self.response is not None and isinstance(self.response, dict):
-            value = self.response.get('value')
-            if value is not None:
-                self.slider.value = value
-                self.value_label.text = str(int(value))
+        # Set initial value
+        if initial_value is not None:
+            self.current_value = int(initial_value)
 
     def _on_slider_change(self, instance, value):
         """Handle slider value change."""
         int_value = int(value)
         self.value_label.text = str(int_value)
-        self._notify_change({'value': int_value})
+        self.trigger_change(int_value)
 
-    def is_valid(self) -> bool:
-        """Scale questions are always valid (have default value)."""
-        return True
-
-
-class EnumQuestion(BaseQuestionWidget):
-    """Single choice question with radio buttons."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.height = 300
-        self.selected_option = None
-        self.option_buttons = []
-
-        # Question label
-        self.question_label = Label(
-            text='',
-            font_size='18sp',
-            bold=True,
-            size_hint_y=None,
-            height=60,
-            text_size=(None, None),
-            halign='left',
-            valign='top',
-        )
-        self.add_widget(self.question_label)
-
-        # Help text
-        self.help_label = Label(
-            text='',
-            font_size='14sp',
-            color=(0.5, 0.5, 0.5, 1),
-            size_hint_y=None,
-            height=30,
-            text_size=(None, None),
-            halign='left',
-        )
-        self.add_widget(self.help_label)
-
-        # Options container
-        self.options_layout = BoxLayout(
-            orientation='vertical',
-            spacing=10,
-            size_hint_y=None,
-        )
-        self.options_layout.bind(minimum_height=self.options_layout.setter('height'))
-        self.add_widget(self.options_layout)
-
-        # Bind question updates
-        self.bind(question=self._update_question)
-        self.bind(response=self._update_from_response)
-
-    def _update_question(self, *args):
-        """Update UI from question data."""
-        if not self.question:
-            return
-
-        self.question_label.text = self.question.get('label', '')
-        self.help_label.text = self.question.get('help', '')
-
-        # Create option buttons
-        self.options_layout.clear_widgets()
-        self.option_buttons = []
-
-        options = self.question.get('options', [])
-        for option in options:
-            btn = ToggleButton(
-                text=option,
-                size_hint_y=None,
-                height=50,
-                group=f"enum_{self.question.get('id', 'default')}",
-                font_size='16sp',
-            )
-            btn.bind(state=lambda instance, value, opt=option: self._on_option_toggle(opt, value))
-            self.options_layout.add_widget(btn)
-            self.option_buttons.append(btn)
-
-        # Adjust height based on options
-        self.height = 150 + (len(options) * 60)
-
-    def _update_from_response(self, *args):
-        """Update UI from existing response."""
-        if self.response is not None and isinstance(self.response, dict):
-            value = self.response.get('value')
-            if value:
-                # Set the correct button to selected
-                for btn in self.option_buttons:
-                    if btn.text == value:
-                        btn.state = 'down'
-
-    def _on_option_toggle(self, option: str, state: str):
-        """Handle option selection."""
-        if state == 'down':
-            self.selected_option = option
-            self._notify_change({'value': option})
-
-    def is_valid(self) -> bool:
-        """Enum questions require a selection."""
-        return self.selected_option is not None or self.response is not None
+    def get_value(self) -> int:
+        """Get current scale value."""
+        return int(self.slider.value)
 
 
-class MultiChoiceQuestion(BaseQuestionWidget):
-    """Multiple choice question with checkboxes."""
+class TextQuestionWidget(BaseQuestionWidget):
+    """Widget for text questions."""
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.height = 300
-        self.selected_options = set()
-        self.checkboxes = {}
-
-        # Question label
-        self.question_label = Label(
-            text='',
-            font_size='18sp',
-            bold=True,
-            size_hint_y=None,
-            height=60,
-            text_size=(None, None),
-            halign='left',
-            valign='top',
-        )
-        self.add_widget(self.question_label)
-
-        # Help text
-        self.help_label = Label(
-            text='',
-            font_size='14sp',
-            color=(0.5, 0.5, 0.5, 1),
-            size_hint_y=None,
-            height=30,
-            text_size=(None, None),
-            halign='left',
-        )
-        self.add_widget(self.help_label)
-
-        # Options container
-        self.options_layout = BoxLayout(
-            orientation='vertical',
-            spacing=10,
-            size_hint_y=None,
-        )
-        self.options_layout.bind(minimum_height=self.options_layout.setter('height'))
-        self.add_widget(self.options_layout)
-
-        # Bind question updates
-        self.bind(question=self._update_question)
-        self.bind(response=self._update_from_response)
-
-    def _update_question(self, *args):
-        """Update UI from question data."""
-        if not self.question:
-            return
-
-        self.question_label.text = self.question.get('label', '')
-        self.help_label.text = self.question.get('help', '')
-
-        # Create option checkboxes
-        self.options_layout.clear_widgets()
-        self.checkboxes = {}
-
-        options = self.question.get('options', [])
-        for option in options:
-            option_row = BoxLayout(size_hint_y=None, height=40, spacing=10)
-
-            checkbox = CheckBox(size_hint_x=None, width=40)
-            checkbox.bind(active=lambda instance, value, opt=option: self._on_checkbox_toggle(opt, value))
-            self.checkboxes[option] = checkbox
-
-            label = Label(text=option, font_size='16sp', halign='left')
-            label.bind(size=label.setter('text_size'))
-
-            option_row.add_widget(checkbox)
-            option_row.add_widget(label)
-            self.options_layout.add_widget(option_row)
-
-        # Adjust height based on options
-        self.height = 150 + (len(options) * 50)
-
-    def _update_from_response(self, *args):
-        """Update UI from existing response."""
-        if self.response is not None and isinstance(self.response, dict):
-            values = self.response.get('values', [])
-            self.selected_options = set(values)
-            # Update checkboxes
-            for option, checkbox in self.checkboxes.items():
-                checkbox.active = option in self.selected_options
-
-    def _on_checkbox_toggle(self, option: str, active: bool):
-        """Handle checkbox toggle."""
-        if active:
-            self.selected_options.add(option)
-        else:
-            self.selected_options.discard(option)
-
-        self._notify_change({'values': list(self.selected_options)})
-
-    def is_valid(self) -> bool:
-        """Multi-choice questions are valid if at least one is selected."""
-        return len(self.selected_options) > 0 or (self.response and len(self.response.get('values', [])) > 0)
-
-
-class TextQuestion(BaseQuestionWidget):
-    """Free text question."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.height = 250
-
-        # Question label
-        self.question_label = Label(
-            text='',
-            font_size='18sp',
-            bold=True,
-            size_hint_y=None,
-            height=60,
-            text_size=(None, None),
-            halign='left',
-            valign='top',
-        )
-        self.add_widget(self.question_label)
-
-        # Help text
-        self.help_label = Label(
-            text='',
-            font_size='14sp',
-            color=(0.5, 0.5, 0.5, 1),
-            size_hint_y=None,
-            height=30,
-            text_size=(None, None),
-            halign='left',
-        )
-        self.add_widget(self.help_label)
+    def __init__(self, question: dict, initial_value: Any = None, on_change: Optional[Callable] = None, **kwargs):
+        super().__init__(question, initial_value, on_change, **kwargs)
 
         # Text input
         self.text_input = TextInput(
-            hint_text='Deine Antwort hier eingeben...',
+            text=str(initial_value) if initial_value else '',
             multiline=True,
             size_hint_y=None,
-            height=120,
+            height=150,
             font_size='16sp',
+            hint_text='Deine Antwort hier eingeben...',
         )
         self.text_input.bind(text=self._on_text_change)
         self.add_widget(self.text_input)
 
-        # Bind question updates
-        self.bind(question=self._update_question)
-        self.bind(response=self._update_from_response)
-
-    def _update_question(self, *args):
-        """Update UI from question data."""
-        if self.question:
-            self.question_label.text = self.question.get('label', '')
-            self.help_label.text = self.question.get('help', '')
-
-    def _update_from_response(self, *args):
-        """Update UI from existing response."""
-        if self.response is not None and isinstance(self.response, dict):
-            text = self.response.get('text', '')
-            if text:
-                self.text_input.text = text
-
-    def _on_text_change(self, instance, value):
-        """Handle text input change."""
-        self._notify_change({'text': value})
-
-    def is_valid(self) -> bool:
-        """Text questions are valid if not empty."""
-        return bool(self.text_input.text.strip()) or (self.response and bool(self.response.get('text', '').strip()))
-
-
-class ConsentRatingQuestion(BaseQuestionWidget):
-    """
-    Consent rating question with status + interest + comfort sliders.
-
-    Schema: consent_rating
-    Response: {status, interest, comfort, conditions, notes}
-    """
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.height = 450
-        self.current_status = None
-
-        # Question label
-        self.question_label = Label(
-            text='',
-            font_size='18sp',
-            bold=True,
-            size_hint_y=None,
-            height=60,
-            text_size=(None, None),
-            halign='left',
-            valign='top',
-        )
-        self.add_widget(self.question_label)
-
-        # Help text
-        self.help_label = Label(
-            text='',
-            font_size='14sp',
-            color=(0.5, 0.5, 0.5, 1),
+        # Character count
+        self.char_count_label = Label(
+            text=f'{len(self.text_input.text)} Zeichen',
             size_hint_y=None,
             height=30,
-            text_size=(None, None),
-            halign='left',
+            font_size='12sp',
+            halign='right',
+            color=(0.5, 0.5, 0.5, 1),
         )
-        self.add_widget(self.help_label)
+        self.add_widget(self.char_count_label)
 
-        # Status buttons
-        status_label = Label(
-            text='Status:',
-            font_size='16sp',
-            bold=True,
+    def _on_text_change(self, instance, value):
+        """Handle text change."""
+        self.char_count_label.text = f'{len(value)} Zeichen'
+        self.trigger_change(value)
+
+    def get_value(self) -> str:
+        """Get current text value."""
+        return self.text_input.text
+
+
+class EnumQuestionWidget(BaseQuestionWidget):
+    """Widget for enum (multiple choice) questions."""
+
+    def __init__(self, question: dict, initial_value: Any = None, on_change: Optional[Callable] = None, **kwargs):
+        super().__init__(question, initial_value, on_change, **kwargs)
+
+        self.options = question.get('options', [])
+        self.selected_option = initial_value
+        self.option_buttons = []
+
+        # Options grid
+        options_layout = BoxLayout(
+            orientation='vertical',
+            spacing=10,
             size_hint_y=None,
-            height=25,
         )
-        self.add_widget(status_label)
+        options_layout.bind(minimum_height=options_layout.setter('height'))
 
-        self.status_layout = BoxLayout(size_hint_y=None, height=50, spacing=5)
+        for option in self.options:
+            btn = Button(
+                text=option,
+                size_hint_y=None,
+                height=60,
+                font_size='16sp',
+                halign='center',
+            )
 
-        self.status_buttons = {}
-        statuses = [
-            ('YES', '✓ Ja', (0.2, 0.7, 0.3, 1)),
-            ('MAYBE', '? Vielleicht', (0.8, 0.7, 0.2, 1)),
-            ('NO', '✗ Nein', (0.8, 0.3, 0.2, 1)),
+            # Style selected button
+            if option == initial_value:
+                btn.background_color = (0.2, 0.6, 0.8, 1)
+            else:
+                btn.background_color = (0.9, 0.9, 0.9, 1)
+                btn.color = (0.2, 0.2, 0.2, 1)
+
+            btn.bind(on_press=lambda b, opt=option: self._on_option_select(opt))
+            self.option_buttons.append(btn)
+            options_layout.add_widget(btn)
+
+        self.add_widget(options_layout)
+
+    def _on_option_select(self, option: str):
+        """Handle option selection."""
+        self.selected_option = option
+
+        # Update button styles
+        for btn in self.option_buttons:
+            if btn.text == option:
+                btn.background_color = (0.2, 0.6, 0.8, 1)
+                btn.color = (1, 1, 1, 1)
+            else:
+                btn.background_color = (0.9, 0.9, 0.9, 1)
+                btn.color = (0.2, 0.2, 0.2, 1)
+
+        self.trigger_change(option)
+
+    def get_value(self) -> Optional[str]:
+        """Get selected option."""
+        return self.selected_option
+
+
+class ConsentRatingQuestionWidget(BaseQuestionWidget):
+    """Widget for consent rating questions (Yes/Maybe/No)."""
+
+    def __init__(self, question: dict, initial_value: Any = None, on_change: Optional[Callable] = None, **kwargs):
+        super().__init__(question, initial_value, on_change, **kwargs)
+
+        self.selected_value = initial_value
+        self.rating_buttons = {}
+
+        # Rating options
+        ratings = [
+            ('yes', 'Ja ✓', (0.2, 0.7, 0.3, 1)),
+            ('maybe', 'Vielleicht ?', (1.0, 0.7, 0.2, 1)),
+            ('no', 'Nein ✗', (0.9, 0.3, 0.3, 1)),
         ]
 
-        for status_id, label, color in statuses:
-            btn = ToggleButton(
-                text=label,
-                group=f"consent_{id(self)}",
-                font_size='14sp',
+        ratings_layout = GridLayout(
+            cols=3,
+            spacing=10,
+            size_hint_y=None,
+            height=80,
+        )
+
+        for value, text, color in ratings:
+            btn = Button(
+                text=text,
+                font_size='18sp',
+                bold=True,
             )
-            btn.bind(state=lambda instance, value, sid=status_id: self._on_status_toggle(sid, value))
-            self.status_buttons[status_id] = btn
-            self.status_layout.add_widget(btn)
 
-        self.add_widget(self.status_layout)
+            # Style selected button
+            if value == initial_value:
+                btn.background_color = color
+            else:
+                btn.background_color = (0.9, 0.9, 0.9, 1)
+                btn.color = (0.2, 0.2, 0.2, 1)
 
-        # Interest slider
-        interest_label = Label(
-            text='Interesse (0-10):',
-            font_size='14sp',
-            size_hint_y=None,
-            height=25,
-        )
-        self.add_widget(interest_label)
+            btn.bind(on_press=lambda b, v=value, c=color: self._on_rating_select(v, c))
+            self.rating_buttons[value] = (btn, color)
+            ratings_layout.add_widget(btn)
 
-        self.interest_slider = Slider(min=0, max=10, value=5, step=1, size_hint_y=None, height=30)
-        self.interest_value_label = Label(text='5', font_size='16sp', size_hint_y=None, height=25)
-        self.interest_slider.bind(value=lambda i, v: setattr(self.interest_value_label, 'text', str(int(v))))
-        self.interest_slider.bind(value=lambda i, v: self._update_response())
-        self.add_widget(self.interest_slider)
-        self.add_widget(self.interest_value_label)
+        self.add_widget(ratings_layout)
 
-        # Comfort slider
-        comfort_label = Label(
-            text='Wohlfühllevel (0-10):',
-            font_size='14sp',
-            size_hint_y=None,
-            height=25,
-        )
-        self.add_widget(comfort_label)
+    def _on_rating_select(self, value: str, color: tuple):
+        """Handle rating selection."""
+        self.selected_value = value
 
-        self.comfort_slider = Slider(min=0, max=10, value=5, step=1, size_hint_y=None, height=30)
-        self.comfort_value_label = Label(text='5', font_size='16sp', size_hint_y=None, height=25)
-        self.comfort_slider.bind(value=lambda i, v: setattr(self.comfort_value_label, 'text', str(int(v))))
-        self.comfort_slider.bind(value=lambda i, v: self._update_response())
-        self.add_widget(self.comfort_slider)
-        self.add_widget(self.comfort_value_label)
+        # Update button styles
+        for val, (btn, btn_color) in self.rating_buttons.items():
+            if val == value:
+                btn.background_color = btn_color
+                btn.color = (1, 1, 1, 1)
+            else:
+                btn.background_color = (0.9, 0.9, 0.9, 1)
+                btn.color = (0.2, 0.2, 0.2, 1)
 
-        # Notes
-        notes_label = Label(
-            text='Notizen (optional):',
-            font_size='14sp',
-            size_hint_y=None,
-            height=25,
-        )
-        self.add_widget(notes_label)
+        self.trigger_change(value)
 
-        self.notes_input = TextInput(
-            hint_text='Zusätzliche Gedanken...',
-            multiline=True,
-            size_hint_y=None,
-            height=60,
-            font_size='14sp',
-        )
-        self.notes_input.bind(text=lambda i, v: self._update_response())
-        self.add_widget(self.notes_input)
+    def get_value(self) -> Optional[str]:
+        """Get selected rating."""
+        return self.selected_value
 
-        # Bind question updates
-        self.bind(question=self._update_question)
-        self.bind(response=self._update_from_response)
 
-    def _update_question(self, *args):
-        """Update UI from question data."""
-        if self.question:
-            self.question_label.text = self.question.get('label', '')
-            self.help_label.text = self.question.get('help', '')
+def create_question_widget(
+    question: dict,
+    initial_value: Any = None,
+    on_change: Optional[Callable] = None
+) -> BaseQuestionWidget:
+    """
+    Factory function to create appropriate question widget.
 
-    def _update_from_response(self, *args):
-        """Update UI from existing response."""
-        if self.response is not None and isinstance(self.response, dict):
-            status = self.response.get('status')
-            if status and status in self.status_buttons:
-                self.status_buttons[status].state = 'down'
-                self.current_status = status
+    Args:
+        question: Question data dict
+        initial_value: Initial answer value
+        on_change: Callback when answer changes
 
-            interest = self.response.get('interest')
-            if interest is not None:
-                self.interest_slider.value = interest
+    Returns:
+        Question widget instance
+    """
+    schema = question.get('schema', 'text')
 
-            comfort = self.response.get('comfort')
-            if comfort is not None:
-                self.comfort_slider.value = comfort
+    widget_map = {
+        'scale_0_10': ScaleQuestionWidget,
+        'text': TextQuestionWidget,
+        'enum': EnumQuestionWidget,
+        'consent_rating': ConsentRatingQuestionWidget,
+    }
 
-            notes = self.response.get('notes', '')
-            if notes:
-                self.notes_input.text = notes
-
-    def _on_status_toggle(self, status: str, state: str):
-        """Handle status button toggle."""
-        if state == 'down':
-            self.current_status = status
-            self._update_response()
-
-    def _update_response(self):
-        """Update response from current widget state."""
-        response = {
-            'status': self.current_status,
-            'interest': int(self.interest_slider.value),
-            'comfort': int(self.comfort_slider.value),
-            'notes': self.notes_input.text,
-        }
-        self._notify_change(response)
-
-    def is_valid(self) -> bool:
-        """Consent rating requires a status selection."""
-        return self.current_status is not None or (self.response and self.response.get('status') is not None)
+    widget_class = widget_map.get(schema, TextQuestionWidget)
+    return widget_class(question, initial_value, on_change)
