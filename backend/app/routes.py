@@ -40,6 +40,7 @@ from app.core.validation import validate_responses as _validate_responses_core
 from app.keychain import KeychainManager
 from app.db import db
 from app.crypto import encrypt_data, decrypt_data, is_encrypted, InvalidPasswordError
+from app.config import config
 
 storage = get_storage()
 
@@ -140,31 +141,105 @@ def sessions():
 
 @api_router.post("/sessions", response_model=SessionListItem)
 def create_session(req: CreateSessionRequest):
-    """Create unencrypted session (legacy/backward-compatible)"""
-    # verify template exists
+    """
+    Create session with optional encryption.
+
+    If password is provided: creates encrypted session (recommended)
+    If no password: creates unencrypted session (legacy, not recommended)
+
+    Environment variables:
+    - FORCE_ENCRYPTION=true: Require password (reject unencrypted sessions)
+    - WARN_UNENCRYPTED=true: Log warning for unencrypted sessions
+    """
+    # Verify template exists
     try:
         load_template(req.template_id)
     except KeyError:
         raise HTTPException(status_code=400, detail="Invalid template_id")
 
-    session_id = str(uuid.uuid4())
-    created_at = _utcnow()
+    # Check if encryption is required but not provided
+    if config.is_encryption_required() and not req.password:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Encryption required. Please provide a password to create an encrypted session. "
+                "Set FORCE_ENCRYPTION=false to allow unencrypted sessions (not recommended)."
+            )
+        )
 
-    storage.create_session(
-        session_id=session_id,
-        name=req.name,
-        template_id=req.template_id,
-        created_at=created_at,
-    )
+    # Create encrypted session if password provided
+    if req.password:
+        # Check if keychain is initialized
+        if not KeychainManager.is_initialized():
+            # Auto-initialize keychain with provided password
+            try:
+                KeychainManager.initialize(req.password)
+            except ValueError as e:
+                raise HTTPException(status_code=400, detail=str(e))
 
-    return SessionListItem(
-        id=session_id,
-        name=req.name,
-        template_id=req.template_id,
-        created_at=created_at,
-        has_a=False,
-        has_b=False,
-    )
+        # Unlock keychain and get master key
+        try:
+            master_key = KeychainManager.unlock(req.password)
+        except InvalidPasswordError:
+            raise HTTPException(
+                status_code=401,
+                detail="Incorrect password. Please use the same password you used to initialize the keychain."
+            )
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+        # Create session
+        session_id = str(uuid.uuid4())
+        created_at = _utcnow()
+
+        storage.create_session(
+            session_id=session_id,
+            name=req.name,
+            template_id=req.template_id,
+            created_at=created_at,
+        )
+
+        # Create and encrypt session key
+        KeychainManager.create_session_key(session_id, master_key)
+
+        return SessionListItem(
+            id=session_id,
+            name=req.name,
+            template_id=req.template_id,
+            created_at=created_at,
+            has_a=False,
+            has_b=False,
+            encrypted=True,
+        )
+
+    # Create unencrypted session (legacy path)
+    else:
+        if config.should_warn_unencrypted():
+            import logging
+            logging.warning(
+                f"Creating unencrypted session '{req.name}'. "
+                "Consider using encrypted sessions for better security."
+            )
+
+        session_id = str(uuid.uuid4())
+        created_at = _utcnow()
+
+        storage.create_session(
+            session_id=session_id,
+            name=req.name,
+            template_id=req.template_id,
+            created_at=created_at,
+        )
+
+        return SessionListItem(
+            id=session_id,
+            name=req.name,
+            template_id=req.template_id,
+            created_at=created_at,
+            has_a=False,
+            has_b=False,
+            encrypted=False,
+        )
 
 @api_router.post("/sessions/encrypted", response_model=SessionListItem)
 def create_encrypted_session(req: CreateSessionRequestEncrypted):

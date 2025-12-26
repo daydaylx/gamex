@@ -59,6 +59,12 @@ class CreateSessionRequest(BaseModel):
     model_config = ConfigDict(extra="ignore")
     name: str = Field(min_length=1, max_length=100)
     template_id: str
+    password: Optional[str] = Field(
+        default=None,
+        min_length=12,
+        max_length=128,
+        description="Master password for encrypted session (optional, but recommended)"
+    )
 
 class SessionListItem(BaseModel):
     id: str
