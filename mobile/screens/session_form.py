@@ -139,18 +139,38 @@ class SessionFormScreen(Screen):
 
         layout.add_widget(BoxLayout())
 
-        layout.add_widget(
+        checkin_card = BoxLayout(
+            orientation="vertical",
+            padding=[16, 14, 16, 14],
+            spacing=10,
+            size_hint_y=None,
+            height=230,
+        )
+        checkin_card.add_widget(Label(text="✨ Check-in", font_size="18sp", bold=True, halign="left"))
+        checkin_card.add_widget(
             make_wrapped_label(
-                "Beantworte die Fragen ehrlich und in Ruhe.\n\n"
-                "Du kannst jederzeit zurückgehen.\n"
-                "Deine Antworten werden automatisch gespeichert.",
-                font_size="14sp",
+                "Wie fühlt ihr euch heute?", font_size="20sp", bold=True, color=(0.1, 0.1, 0.1, 1)
+            )
+        )
+        mood_spinner = Spinner(
+            text="Stimmung auswählen",
+            values=("Energiegeladen", "Ausgeglichen", "Neugierig", "Müde", "Gestresst"),
+            size_hint=(1, None),
+            height=48,
+            font_size="16sp",
+        )
+        checkin_card.add_widget(mood_spinner)
+        checkin_card.add_widget(
+            make_wrapped_label(
+                "Nehmt euch kurz Zeit für diesen kleinen Check-in – danach geht es direkt weiter mit euren Fragen.",
+                font_size="15sp",
                 color=(0.35, 0.35, 0.35, 1),
             )
         )
+        layout.add_widget(checkin_card)
 
         start_btn = Button(
-            text="Start",
+            text="Los geht's",
             size_hint=(None, None),
             size=(300, 60),
             pos_hint={"center_x": 0.5},
