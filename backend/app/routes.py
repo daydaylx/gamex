@@ -20,6 +20,14 @@ from app.models import (
     AIAnalyzeRequest,
     BackupRequest,
     RestoreRequest,
+    # Encryption models
+    InitializeKeychainRequest,
+    UnlockKeychainRequest,
+    ChangePasswordRequest,
+    CreateSessionRequestEncrypted,
+    LoadResponsesRequestEncrypted,
+    SaveResponsesRequestEncrypted,
+    CompareRequestEncrypted,
 )
 from app.backup import create_backup, restore_backup
 from app.template_store import list_templates
@@ -29,6 +37,8 @@ from app.ai import openrouter_analyze, list_ai_reports
 from app.logging import log_api_call, log_performance
 from app.storage import get_storage
 from app.core.validation import validate_responses as _validate_responses_core
+from app.keychain import KeychainManager
+from app.crypto import encrypt_data, decrypt_data, is_encrypted, InvalidPasswordError
 
 storage = get_storage()
 
@@ -56,6 +66,62 @@ def get_template(template_id: str) -> Dict[str, Any]:
     except KeyError:
         raise HTTPException(status_code=404, detail="Template not found")
 
+# ========== Keychain / Encryption Endpoints ==========
+
+@api_router.get("/keychain/status")
+def keychain_status():
+    """Check keychain initialization status and encryption statistics"""
+    return KeychainManager.get_encryption_status()
+
+@api_router.post("/keychain/initialize")
+def initialize_keychain(req: InitializeKeychainRequest):
+    """
+    Initialize keychain with master password (first-time setup).
+
+    This must be done before creating encrypted sessions.
+    Password minimum length: 12 characters.
+    """
+    try:
+        result = KeychainManager.initialize(req.password)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@api_router.post("/keychain/unlock")
+def unlock_keychain(req: UnlockKeychainRequest):
+    """
+    Verify master password.
+
+    Returns success status. Frontend should store password in memory
+    to use for subsequent operations (don't send master key over wire).
+    """
+    try:
+        # Just verify password is correct (don't return master key!)
+        KeychainManager.unlock(req.password)
+        return {"status": "unlocked"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except InvalidPasswordError:
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+@api_router.post("/keychain/change-password")
+def change_keychain_password(req: ChangePasswordRequest):
+    """
+    Change master password without re-encrypting all session data.
+
+    This is the key advantage of hybrid encryption: only the master key
+    needs re-encryption, session keys and data remain unchanged.
+    """
+    try:
+        result = KeychainManager.change_password(req.old_password, req.new_password)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except InvalidPasswordError:
+        raise HTTPException(status_code=401, detail="Incorrect old password")
+
+# ========== Session Endpoints (with encryption support) ==========
+
 @api_router.get("/sessions", response_model=list[SessionListItem])
 def sessions():
     rows = storage.list_sessions()
@@ -73,6 +139,7 @@ def sessions():
 
 @api_router.post("/sessions", response_model=SessionListItem)
 def create_session(req: CreateSessionRequest):
+    """Create unencrypted session (legacy/backward-compatible)"""
     # verify template exists
     try:
         load_template(req.template_id)
@@ -88,6 +155,64 @@ def create_session(req: CreateSessionRequest):
         template_id=req.template_id,
         created_at=created_at,
     )
+
+    return SessionListItem(
+        id=session_id,
+        name=req.name,
+        template_id=req.template_id,
+        created_at=created_at,
+        has_a=False,
+        has_b=False,
+    )
+
+@api_router.post("/sessions/encrypted", response_model=SessionListItem)
+def create_encrypted_session(req: CreateSessionRequestEncrypted):
+    """
+    Create encrypted session (requires initialized keychain + master password).
+
+    This endpoint:
+    1. Verifies master password
+    2. Creates session
+    3. Generates random session key
+    4. Encrypts session key with master key
+    5. Stores encrypted session key in database
+
+    All future responses for this session will be encrypted.
+    """
+    # Verify keychain initialized
+    if not KeychainManager.is_initialized():
+        raise HTTPException(
+            status_code=400,
+            detail="Keychain not initialized. Call /api/keychain/initialize first."
+        )
+
+    # Verify template exists
+    try:
+        load_template(req.template_id)
+    except KeyError:
+        raise HTTPException(status_code=400, detail="Invalid template_id")
+
+    # Unlock keychain and get master key
+    try:
+        master_key = KeychainManager.unlock(req.password)
+    except InvalidPasswordError:
+        raise HTTPException(status_code=401, detail="Incorrect password")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    # Create session
+    session_id = str(uuid.uuid4())
+    created_at = _utcnow()
+
+    storage.create_session(
+        session_id=session_id,
+        name=req.name,
+        template_id=req.template_id,
+        created_at=created_at,
+    )
+
+    # Create and encrypt session key
+    KeychainManager.create_session_key(session_id, master_key)
 
     return SessionListItem(
         id=session_id,

@@ -73,6 +73,47 @@ class RestoreRequest(BaseModel):
     backup: Dict[str, Any]
     new_name: Optional[str] = Field(default=None, max_length=100)
 
+# Encryption / Keychain Models
+class InitializeKeychainRequest(BaseModel):
+    """Request to initialize keychain with master password"""
+    model_config = ConfigDict(extra="ignore")
+    password: str = Field(min_length=12, max_length=128, description="Master password (min 12 chars)")
+
+class UnlockKeychainRequest(BaseModel):
+    """Request to unlock keychain and verify password"""
+    model_config = ConfigDict(extra="ignore")
+    password: str = Field(min_length=1, max_length=128)
+
+class ChangePasswordRequest(BaseModel):
+    """Request to change master password"""
+    model_config = ConfigDict(extra="ignore")
+    old_password: str = Field(min_length=1, max_length=128)
+    new_password: str = Field(min_length=12, max_length=128, description="New password (min 12 chars)")
+
+# Extended models with encryption support
+class CreateSessionRequestEncrypted(BaseModel):
+    """Create session with encryption (requires master password)"""
+    model_config = ConfigDict(extra="ignore")
+    name: str = Field(min_length=1, max_length=100)
+    template_id: str
+    password: str = Field(min_length=1, max_length=128, description="Master password")
+
+class LoadResponsesRequestEncrypted(BaseModel):
+    """Load responses (with password for encrypted sessions)"""
+    model_config = ConfigDict(extra="ignore")
+    password: Optional[str] = Field(default=None, min_length=1, max_length=128)
+
+class SaveResponsesRequestEncrypted(BaseModel):
+    """Save responses with encryption"""
+    model_config = ConfigDict(extra="ignore")
+    responses: Dict[str, Any]
+    password: str = Field(min_length=1, max_length=128, description="Master password")
+
+class CompareRequestEncrypted(BaseModel):
+    """Compare responses (with password for encrypted sessions)"""
+    model_config = ConfigDict(extra="ignore")
+    password: Optional[str] = Field(default=None, min_length=1, max_length=128)
+
 
 
 
