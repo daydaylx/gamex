@@ -4,6 +4,52 @@ from pydantic import BaseModel, Field, ConfigDict
 Person = Literal["A", "B"]
 YesMaybeNo = Literal["YES", "MAYBE", "NO"]
 
+# Tag Vocabulary
+VALID_TAGS = {
+    # Acts
+    "kissing", "touching", "oral", "penetration", "anal", "handjob", "fingering", "rimming", "fisting", "sex",
+    # Dynamics
+    "dominance", "submission", "switch", "control", "lead", "follow", "service", "worship", "humiliation", "degradation", "praise", "discipline",
+    # Toys & Gear
+    "toys", "vibrator", "plug", "dildo", "strap-on", "rope", "restraint", "bondage", "cuffs", "gag", "blindfold", "hood", "collar", "leash", "gear", "material", "latex", "leather",
+    # Risk / Sensation
+    "breath", "breathplay", "impact", "spanking", "pain", "sensation", "temperature", "wax", "ice", "edge", "edging", "cnc", "fear", "choking", "blood", "needles",
+    # Context / Social
+    "public", "voyeur", "exhibition", "group", "threesome", "partner_swap", "soft_swap", "privacy", "digital", "recording",
+    # Body
+    "feet", "hands", "bodyparts", "fluids", "watersports", "scat", "spit", "cum", "period", "lactation",
+    # Logistics / Meta
+    "time", "stress", "coping", "aftercare", "safety", "rules", "negotiation", "communication", "boundaries", "review", "planning", "money",
+    # Expanded Vocabulary based on existing templates
+    "risk", "level2", "level3", "extreme", "prep", "roleplay", "petplay",
+    "physical", "needs", "emotional", "temporal", "duration", "drop", "warning_signs", "consent", "override", "importance", "priority", "followup", "recovery", "profile", "dom_drop", "top_care",
+    "psychology", "attachment", "foundation", "closeness", "reassurance", "reflection", "anxiety", "rejection", "jealousy", "monogamy", "vulnerability", "intimacy",
+    "subspace", "altered_states", "physiology", "symptoms", "trance", "emotion", "preference", "awareness",
+    "regulation", "overwhelm", "strategies", "intensity", "signals", "tolerance", "capacity", "reading", "triggers", "processing", "integration",
+    "shame", "self_assessment", "origins", "fantasy", "taboo", "post_sex", "context", "kink", "catharsis", "moral", "conflict", "healing", "growth",
+    "power", "spectrum", "protocols", "rituals", "lifestyle", "24/7", "TPE", "decision_making", "ethics",
+    "repeat", "less", "highlight", "friction", "debrief", "notes",
+    "intent", "hard_no", "consent_language", "hard_limits", "soft_limits", "openness", "values",
+    "feedback", "dirty_talk", "initiation", "feedback_style", "check_in", "non_verbal", "difficult_topics", "timing",
+    "exploration", "novelty", "curiosity", "experimentation", "routine", "research", "bucket_list",
+    "immediate", "verbal", "safer_sex", "contraception", "hygiene", "pace", "pain_threshold", "allergies", "stis", "emergency",
+    "environment", "noise", "spontaneity", "setting", "cleanliness", "lighting", "sensitivities", "language", "opt_out", "safewords",
+    "logistics", "frequency", "roles", "power_exchange", "caregiver", "protocol",
+    "sensual", "massage", "give", "receive", "manual", "roughness", "cuddling", "vaginal", "positions", "breasts", "hugging", "hand_holding", "nipple", "clamps",
+    "soft", "sensory", "double", "marking", "biting", "light", "denial", "voyeurism", "progression", "intense",
+    "activities", "quickie", "long_session", "multiple_orgasm", "exhibitionism", "mutual_masturbation", "phone_sex", "shower", "cuckolding", "orgy",
+    "bdsm", "restraints", "punishment", "suspension", "forced_orgasm",
+    "body_language", "medical", "satisfaction",
+    # Additional tags found in templates
+    "emotions", "relationship", "materials", "fetish", "penis", "high-risk", "active", "passive",
+    "meta", "level1", "essential", "health", "kink_light", "hard", "ds", "core", "fun", "zones", "touch",
+    "wishes", "identity", "genital"
+}
+
+def validate_tags(tags: List[str]) -> List[str]:
+    """Validates a list of tags against the vocabulary. Returns invalid tags."""
+    return [t for t in tags if t not in VALID_TAGS]
+
 class TemplateListItem(BaseModel):
     id: str
     name: str
