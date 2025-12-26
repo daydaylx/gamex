@@ -1,9 +1,9 @@
 {
   "appId": "com.intimacytool.app",
   "appName": "Intimacy Tool",
-  "webDir": "../web/web",
+  "webDir": "../web-new/dist",
   "bundledWebRuntime": false,
-  "version": "1.0.0",
+  "version": "1.0.5",
   "server": {
     "cleartext": true
   },

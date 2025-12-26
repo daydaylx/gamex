@@ -19,8 +19,10 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "immer": "^11.1.0",
     "preact": "^10.27.2",
+    "wouter-preact": "^3.9.0",
     "zustand": "^5.0.9"
   },
   "devDependencies": {
