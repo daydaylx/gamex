@@ -1,0 +1,46 @@
+{
+  "appId": "com.intimacytool.app",
+  "appName": "Intimacy Tool",
+  "webDir": "../web-new/dist",
+  "bundledWebRuntime": false,
+  "version": "1.0.10",
+  "server": {
+    "cleartext": true
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "",
+      "keystoreAlias": "",
+      "keystoreAliasPassword": "",
+      "keystorePassword": ""
+    }
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#2d1a2d",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "androidSpinnerStyle": "large",
+      "spinnerColor": "#f472b6",
+      "splashFullScreen": true,
+      "splashImmersive": true,
+      "layoutName": "launch_screen",
+      "useDialog": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#1a0a1a"
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "DARK",
+      "resizeOnFullScreen": true
+    },
+    "App": {
+      "launchAutoHide": true
+    }
+  }
+}
