@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Callable, Optional
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
