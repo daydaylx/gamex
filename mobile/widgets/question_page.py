@@ -108,7 +108,9 @@ class QuestionPage(BoxLayout):
         if msg:
             self.error_label.text = msg
             self.error_label.opacity = 1
-            # force resize
+            # Force Kivy to recompute the label's texture/height.
+            # Reassigning the text property triggers the internal update mechanism
+            # so that the layout is refreshed correctly when the error message changes.
             self.error_label.text = self.error_label.text
         else:
             self.error_label.text = ""
