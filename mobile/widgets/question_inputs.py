@@ -257,16 +257,16 @@ class ConsentRatingInput(BaseInput):
         self._interest_value = make_wrapped_label("5", font_size="18sp", bold=True, color=(0.2, 0.6, 0.8, 1))
         self.interest_slider = Slider(min=0, max=10, value=5, step=1, size_hint_y=None, height="44dp")
         self.interest_slider.bind(value=self._on_interest)
-        self.add_widget(self.interest_slider)
         self.add_widget(self._interest_value)
+        self.add_widget(self.interest_slider)
 
         # Comfort
         self.add_widget(make_wrapped_label("Komfort (0–10):", font_size="14sp", color=(0.35, 0.35, 0.35, 1)))
         self._comfort_value = make_wrapped_label("5", font_size="18sp", bold=True, color=(0.2, 0.6, 0.8, 1))
         self.comfort_slider = Slider(min=0, max=10, value=5, step=1, size_hint_y=None, height="44dp")
         self.comfort_slider.bind(value=self._on_comfort)
-        self.add_widget(self.comfort_slider)
         self.add_widget(self._comfort_value)
+        self.add_widget(self.comfort_slider)
 
         # Notes
         self.add_widget(make_wrapped_label("Notizen (optional):", font_size="14sp", color=(0.35, 0.35, 0.35, 1)))
