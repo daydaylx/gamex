@@ -153,6 +153,7 @@
           ],
           "label": "Vertrauen",
           "help": "Grundlage für Verletzlichkeit und tiefe Intimität. Attachment Theory: Erfordert sicheres Bindungsmuster oder sehr hohes Vertrauen.",
+          "info_details": "Emotionale Dimension: Vertrauen ermöglicht Verletzlichkeit - die Basis für tiefe Intimität. Attachment Theory: Sichere Bindung ermöglicht emotionale Offenheit ohne Angst vor Verlassenwerden. Emotionale Sicherheit: Wenn du vertraust, kannst du loslassen und dich öffnen. Wichtig: Vertrauen wächst durch konsistente Kommunikation und respektvolle Grenzen. Emotionale Intimität erfordert Vertrauen - ohne Vertrauen bleibt Intimität oberflächlich."
           "has_dom_sub": true
         },
         {
@@ -323,8 +324,9 @@
             "communication"
           ],
           "label": "Dirty Talk (währenddessen sprechen)",
-          "help": "Kategorie: Kommunikation:",
-          "has_dom_sub": true
+          "help": "Verbale Kommunikation während Sex verstärkt emotionale Verbindung. Worte können Intimität vertiefen und emotionale Nähe schaffen.",
+          "has_dom_sub": true,
+          "info_details": "Emotionale Dimension: Dirty Talk kann emotionale Verbindung verstärken. Worte während Sex schaffen Intimität und emotionale Nähe. Attachment Theory: Ängstlich gebundene profitieren oft von verbaler Reassurance ('Du bist schön', 'Ich will nur dich'). Emotionale Kommunikation: Worte können Emotionen ausdrücken, die über das Physische hinausgehen. Wichtig: Kommuniziere, welche Art von Worten du magst - manche brauchen sanfte Worte, andere intensivere. Respektiere emotionale Grenzen."
         },
         {
           "id": "FRA019",
@@ -337,8 +339,9 @@
             "communication"
           ],
           "label": "Verbale Zustimmung während Sex",
-          "help": "Kategorie: Kommunikation:",
-          "has_dom_sub": true
+          "help": "Verbale Kommunikation verstärkt emotionale Verbindung und schafft Sicherheit. Attachment Theory: Besonders wichtig für ängstlich gebundene Personen.",
+          "has_dom_sub": true,
+          "info_details": "Emotionale Dimension: Verbale Zustimmung während Sex verstärkt emotionale Verbindung und schafft Sicherheit. 'Ja, das fühlt sich gut an' = emotionale Bestätigung und Verbindung. Attachment Theory: Ängstlich gebundene profitieren oft von verbaler Reassurance ('Du machst das gut', 'Ich mag das'). Emotionale Kommunikation: Worte können Emotionen ausdrücken, die über das Physische hinausgehen. Wichtig: Kommunikation schafft emotionale Sicherheit - beide Partner wissen, dass alles okay ist."
         },
         {
           "id": "FRA020",
@@ -1194,8 +1197,9 @@
             "safety"
           ],
           "label": "Nähe/Kuscheln",
-          "help": "Kategorie: Aftercare (Nachsorge):",
-          "has_dom_sub": true
+          "help": "Physische Nähe nach intensiven Erfahrungen. Oxytocin wird ausgeschüttet, was emotionale Bindung und Sicherheit fördert. Wichtig für ängstlich gebundene Personen.",
+          "has_dom_sub": true,
+          "info_details": "Emotionale Aftercare: Physische Nähe (Kuscheln, Körperkontakt) setzt Oxytocin frei, was emotionale Bindung und Sicherheit fördert. Attachment Theory: Ängstlich gebundene brauchen oft mehr Nähe nach Sex/BDSM ('Du bist noch da, ich bin nicht allein'). Nach intensiven Erfahrungen kann Hormon-Crash (Sub Drop) zu emotionaler Instabilität führen - Nähe gibt Sicherheit. Wichtig: Nicht alle brauchen Nähe - vermeidend gebundene brauchen manchmal Space. Kommuniziere deine Bedürfnisse."
         },
         {
           "id": "HEA042",
@@ -1206,8 +1210,9 @@
             "safety"
           ],
           "label": "Reden/Feedback",
-          "help": "Kategorie: Aftercare (Nachsorge):",
-          "has_dom_sub": true
+          "help": "Verbale Verarbeitung nach intensiven Erfahrungen. Hilft Emotionen zu regulieren und Missverständnisse zu vermeiden. Wichtig für emotionale Integration.",
+          "has_dom_sub": true,
+          "info_details": "Emotionale Aftercare: Verbales Processing hilft, Erfahrungen zu integrieren und Emotionen zu regulieren. Nach intensiven Sessions können Gefühle verwirrend sein - Gespräch bringt Klarheit. Attachment Theory: Ängstlich gebundene brauchen oft verbale Reassurance ('Das war schön', 'Du warst toll'). Wichtig: Nicht alle wollen direkt danach reden - manche brauchen Zeit. Respektiere das Timing deines Partners."
         },
         {
           "id": "HEA043",
@@ -1230,8 +1235,9 @@
             "safety"
           ],
           "label": "Space/Allein sein",
-          "help": "Kategorie: Aftercare (Nachsorge):",
-          "has_dom_sub": true
+          "help": "Emotionale Selbstregulation durch Rückzug. Wichtig für vermeidend gebundene Personen. Kein Zeichen von Ablehnung, sondern Bedürfnis nach Autonomie.",
+          "has_dom_sub": true,
+          "info_details": "Emotionale Aftercare: Space ermöglicht emotionale Selbstregulation. Attachment Theory: Vermeidend gebundene brauchen Raum zur Selbstregulation ('Ich brauche meine Autonomie zurück'). Wichtig: Space ist KEIN Zeichen von Ablehnung - es ist ein Bedürfnis. Kommuniziere klar ('Ich brauch 20min für mich, dann bin ich wieder da') statt einfach zu verschwinden. Reduziert Angst beim Partner."
         },
         {
           "id": "HEA045",
@@ -1254,8 +1260,9 @@
             "safety"
           ],
           "label": "Nachbesprechen",
-          "help": "Kategorie: Aftercare (Nachsorge):",
-          "has_dom_sub": true
+          "help": "Emotionale Integration durch verbales Processing. Hilft Erfahrungen zu verarbeiten und für zukünftige Sessions zu lernen. Kann Stunden oder Tage später stattfinden.",
+          "has_dom_sub": true,
+          "info_details": "Emotionale Aftercare: Nachbesprechung hilft bei emotionaler Integration. Nach intensiven Sessions können Gefühle verwirrend sein - Gespräch bringt Klarheit. Timing: Manche brauchen direkt danach Feedback, andere brauchen Zeit (24-48h). Wichtig: Ohne Schuldzuweisung ('Was war gut?', 'Was war schwierig?'). Attachment Theory: Ängstlich gebundene zeigen höheres Bedürfnis nach post-sex Kontakt."
         },
         {
           "id": "HEA047",
@@ -1981,7 +1988,8 @@
             "touch"
           ],
           "label": "Kuscheln",
-          "help": "Kategorie: Kuscheln & Berührungen:"
+          "help": "Physische Nähe und Berührung schaffen emotionale Verbindung und Sicherheit. Oxytocin wird ausgeschüttet, was Bindung fördert und Stress reduziert.",
+          "info_details": "Emotionale Dimension: Kuscheln aktiviert das Bindungssystem. Oxytocin wird ausgeschüttet, was Vertrauen, emotionale Nähe und Entspannung fördert. Attachment Theory: Ängstlich gebundene brauchen oft mehr physische Nähe zur emotionalen Regulation. Vermeidend gebundene können sich eingeengt fühlen - respektiere unterschiedliche Bedürfnisse. Wichtig: Physische Nähe reduziert Stress und fördert emotionale Sicherheit."
         },
         {
           "id": "BOD009",
@@ -2056,7 +2064,8 @@
             "touch"
           ],
           "label": "Massieren",
-          "help": "Kategorie: Kuscheln & Berührungen:"
+          "help": "Akt der Fürsorge durch Berührung. Emotionale Dimension: 'Ich sorge für dich' durch physische Zuwendung. Fördert emotionale Bindung und Entspannung.",
+          "info_details": "Emotionale Dimension: Massieren ist ein Akt der Fürsorge durch Berührung. 'Ich sorge für dich' durch physische Zuwendung. Emotionale Bindung: Fördert emotionale Bindung und Entspannung. Oxytocin wird ausgeschüttet, was Vertrauen und emotionale Nähe fördert. Attachment Theory: Physische Berührung aktiviert das Bindungssystem. Für die gebende Person: Emotionale Erfüllung durch das Geben von Fürsorge. Für die empfangende Person: Loslassen, Vertrauen, emotionale Öffnung. Wichtig: Kommunikation hilft - Feedback geben, was sich gut anfühlt."
         },
         {
           "id": "BOD014",
@@ -2086,7 +2095,8 @@
             "touch"
           ],
           "label": "Ausführliche Massagen / Sinnliche Berührungen (Ganzkörper)",
-          "help": "Kategorie: Kuscheln & Berührungen:"
+          "help": "Tiefe physische und emotionale Verbindung durch Berührung. Oxytocin wird ausgeschüttet, was emotionale Bindung und Entspannung fördert.",
+          "info_details": "Emotionale Dimension: Ausführliche Massagen schaffen tiefe physische und emotionale Verbindung. Oxytocin wird ausgeschüttet, was emotionale Bindung, Vertrauen und Entspannung fördert. Attachment Theory: Physische Berührung aktiviert das Bindungssystem - besonders wichtig für ängstlich gebundene Personen. Emotionale Intimität: Diese Praxis kann emotionale Intimität massiv vertiefen - Berührung ist eine Form der nonverbalen Kommunikation von Zuneigung. Für die gebende Person: Emotionale Erfüllung durch Fürsorge ('Ich sorge für dich'). Für die empfangende Person: Loslassen, Vertrauen, emotionale Öffnung. Wichtig: Kommunikation hilft, die emotionale Verbindung zu vertiefen - Feedback geben, was sich gut anfühlt."
         },
         {
           "id": "BOD016",
@@ -2488,7 +2498,8 @@
             "genital"
           ],
           "label": "Vaginale Penetration (mit Penis)",
-          "help": "Kategorie: Vaginale Penetration:"
+          "help": "Tiefe physische und emotionale Verbindung. Erfordert Vertrauen und Loslassen. Kann emotionale Intimität massiv vertiefen.",
+          "info_details": "Emotionale Dimension: Vaginale Penetration ist eine tiefe physische und emotionale Verbindung. Erfordert Vertrauen und Loslassen. Emotionale Bindung: Kann emotionale Intimität massiv vertiefen - physische Nähe fördert emotionale Nähe. Attachment Theory: Erfordert sicheres Vertrauen - du musst dich sicher genug fühlen, um dich zu öffnen. Emotionale Intimität: Diese Praxis kann eine tiefe emotionale Verbindung schaffen. Wichtig: Kommunikation währenddessen hilft, die emotionale Verbindung zu vertiefen. Aftercare mit Nähe und verbale Bestätigung fördert emotionale Integration."
         },
         {
           "id": "SEX013",
@@ -2503,8 +2514,9 @@
             "genital"
           ],
           "label": "Vaginal aktiv (bei ihr)",
-          "help": "Kategorie: Vaginale Penetration:",
-          "has_active_passive": true
+          "help": "Aktive Rolle bei Penetration. Emotionale Dimension: Kontrolle übernehmen, führen, Verantwortung für das Erlebnis übernehmen.",
+          "has_active_passive": true,
+          "info_details": "Emotionale Dimension: Vaginal aktiv bedeutet, die Kontrolle über das Tempo und die Intensität zu haben. Emotionale Bindung: Führen kann eine Form der Fürsorge sein ('Ich sorge für unser Erlebnis'). Attachment Theory: Vermeidend gebundene können aktive Rolle bevorzugen (Kontrolle = Sicherheit). Emotionale Verantwortung: Du übernimmst Verantwortung für das Erlebnis. Wichtig: Kommunikation mit Partner ist essentiell - Feedback hilft, die emotionale Verbindung zu vertiefen."
         },
         {
           "id": "SEX014",
@@ -2520,8 +2532,9 @@
             "passive"
           ],
           "label": "Vaginal passiv (bei ihr)",
-          "help": "Kategorie: Vaginale Penetration:",
-          "has_active_passive": true
+          "help": "Passive Rolle bei Penetration. Emotionale Dimension: Loslassen, sich führen lassen, Vertrauen zeigen. Erfordert emotionale Öffnung.",
+          "has_active_passive": true,
+          "info_details": "Emotionale Dimension: Vaginal passiv bedeutet, loszulassen und sich führen zu lassen. Emotionale Bindung: Vertrauen zeigen, sich zu öffnen, kann die emotionale Bindung vertiefen. Attachment Theory: Ängstlich gebundene können passive Rolle bevorzugen (sich führen lassen = Sicherheit). Emotionale Verletzlichkeit: Sich dem Partner physisch und emotional zu öffnen. Wichtig: Kommunikation ist essentiell - Safeword, Feedback, emotionale Aftercare mit Reassurance."
         },
         {
           "id": "SEX015",
@@ -2585,8 +2598,9 @@
             "passive"
           ],
           "label": "Fisting aktiv geben (vaginal)",
-          "help": "Kategorie: Vaginale Penetration:",
-          "has_active_passive": true
+          "help": "Ultimative Intimität und Fürsorge. Erfordert extremes Vertrauen und Verantwortung. Emotionale Bindung wird durch diese tiefe Verbindung verstärkt.",
+          "has_active_passive": true,
+          "info_details": "Emotionale Dimension: Fisting aktiv geben ist ein Akt tiefster Fürsorge und Verantwortung. Du nimmst die intimste Form der Berührung vor - das erfordert extremes Vertrauen und emotionale Verbindung. Für die gebende Person: Emotionale Verantwortung ('Ich sorge für dich, ich bin vorsichtig'), tiefe Verbundenheit durch physische Intimität. Attachment Theory: Erfordert sicheres Bindungsmuster - du musst vertrauen, dass du nicht verletzt wirst, und Verantwortung übernehmen. Emotionale Bindung: Diese Praxis kann die emotionale Bindung massiv vertiefen - es ist eine Form der ultimativen Hingabe und Fürsorge gleichzeitig."
         },
         {
           "id": "SEX019",
@@ -2602,8 +2616,9 @@
             "passive"
           ],
           "label": "Fisting passiv empfangen (vaginal)",
-          "help": "Kategorie: Vaginale Penetration:",
-          "has_active_passive": true
+          "help": "Ultimative Verletzlichkeit und Vertrauen. Emotionale Öffnung erfordert tiefe Bindung. Kann emotionale Intimität massiv vertiefen.",
+          "has_active_passive": true,
+          "info_details": "Emotionale Dimension: Fisting empfangen ist ultimative Verletzlichkeit - physisch und emotional. Du öffnest dich komplett, gibst Kontrolle ab, vertraust darauf, dass du nicht verletzt wirst. Emotionale Bindung: Diese Praxis erfordert extremes Vertrauen und kann die emotionale Bindung massiv vertiefen. Attachment Theory: Erfordert sicheres Bindungsmuster oder sehr hohes Vertrauen. Ängstlich gebundene können Panik bekommen (Trigger: Extreme Verletzlichkeit). Emotionale Öffnung: Du lässt jemanden in deinen intimsten Raum - das ist eine Form der ultimativen emotionalen Hingabe. Nach der Praxis: Emotionale Aftercare ist essentiell - Reassurance, Nähe, verbale Bestätigung ('Du warst mutig', 'Ich sorge für dich')."
         },
         {
           "id": "SEX020",
@@ -2907,7 +2922,8 @@
             "passive"
           ],
           "label": "Manuelle Stimulation (Handjob / Fingern) geben",
-          "help": "Kategorie: Manuelle Stimulation:"
+          "help": "Akt der Hingabe und Fürsorge durch intime Berührung. Emotionale Dimension: 'Ich verwöhne dich' = Ausdruck von Zuneigung und emotionaler Verbindung.",
+          "info_details": "Emotionale Dimension: Manuelle Stimulation geben ist ein Akt der Hingabe und Fürsorge. 'Ich verwöhne dich' = Ausdruck von Zuneigung und emotionaler Verbindung. Emotionale Bindung: Physische Intimität fördert emotionale Bindung. Attachment Theory: Kann emotionale Nähe verstärken. Für die gebende Person: Emotionale Erfüllung durch das Geben von Vergnügen. Wichtig: Kommunikation ist essentiell - Feedback hilft, die emotionale Verbindung zu vertiefen."
         },
         {
           "id": "SEX039",
@@ -2923,7 +2939,8 @@
             "passive"
           ],
           "label": "Manuelle Stimulation (Handjob / Fingern) empfangen",
-          "help": "Kategorie: Manuelle Stimulation:"
+          "help": "Empfangen von intimer Fürsorge. Erfordert Vertrauen und Loslassen. Emotionale Dimension: Zulassen, verwöhnt zu werden = emotionale Öffnung.",
+          "info_details": "Emotionale Dimension: Manuelle Stimulation empfangen erfordert Vertrauen und Loslassen. Du lässt zu, dass jemand dich intimer berührt - das ist eine Form der emotionalen Öffnung. Emotionale Bindung: Zulassen, verwöhnt zu werden, kann die emotionale Bindung vertiefen. Attachment Theory: Erfordert Vertrauen - du musst dich sicher genug fühlen, um loszulassen. Emotionale Verletzlichkeit: Sich dem Partner physisch und emotional zu öffnen. Wichtig: Kommunikation hilft, die emotionale Verbindung zu vertiefen - Feedback geben, was sich gut anfühlt."
         },
         {
           "id": "SEX040",
@@ -3328,7 +3345,8 @@
             "passive"
           ],
           "label": "Anale Penetration (mit Penis)",
-          "help": "**WICHTIG**: Hygiene & Vorbereitung sind Pflicht. Nur mit viel Gleitgel. Niemals von Anal zu Vaginal ohne gründliche Reinigung."
+          "help": "Erfordert extremes Vertrauen und Loslassen. Emotionale Dimension: Ultimative Verletzlichkeit und emotionale Öffnung. **WICHTIG**: Hygiene & Vorbereitung sind Pflicht.",
+          "info_details": "Emotionale Dimension: Anale Penetration erfordert extremes Vertrauen und Loslassen. Ultimative Verletzlichkeit - physisch und emotional. Emotionale Bindung: Diese Praxis erfordert extremes Vertrauen und kann die emotionale Bindung massiv vertiefen. Attachment Theory: Erfordert sicheres Bindungsmuster oder sehr hohes Vertrauen. Ängstlich gebundene können Panik bekommen (Trigger: Extreme Verletzlichkeit). Emotionale Öffnung: Du lässt jemanden in deinen intimsten Raum - das ist eine Form der ultimativen emotionalen Hingabe. Nach der Praxis: Emotionale Aftercare ist essentiell - Reassurance, Nähe, verbale Bestätigung. **WICHTIG**: Hygiene & Vorbereitung sind Pflicht. Nur mit viel Gleitgel. Niemals von Anal zu Vaginal ohne gründliche Reinigung."
         },
         {
           "id": "SEX026",
@@ -3359,8 +3377,9 @@
             "passive"
           ],
           "label": "Anal passiv (bei ihm)",
-          "help": "**WICHTIG**: Hygiene & Vorbereitung sind Pflicht. Nur mit viel Gleitgel. Niemals von Anal zu Vaginal ohne gründliche Reinigung.",
-          "has_active_passive": true
+          "help": "Ultimative Verletzlichkeit und Vertrauen. Emotionale Öffnung erfordert tiefe Bindung. **WICHTIG**: Hygiene & Vorbereitung sind Pflicht.",
+          "has_active_passive": true,
+          "info_details": "Emotionale Dimension: Anal passiv empfangen ist ultimative Verletzlichkeit - physisch und emotional. Du öffnest dich komplett, gibst Kontrolle ab, vertraust darauf, dass du nicht verletzt wirst. Emotionale Bindung: Diese Praxis erfordert extremes Vertrauen und kann die emotionale Bindung massiv vertiefen. Attachment Theory: Erfordert sicheres Bindungsmuster oder sehr hohes Vertrauen. Ängstlich gebundene können Panik bekommen (Trigger: Extreme Verletzlichkeit). Emotionale Öffnung: Du lässt jemanden in deinen intimsten Raum - das ist eine Form der ultimativen emotionalen Hingabe. Nach der Praxis: Emotionale Aftercare ist essentiell - Reassurance, Nähe, verbale Bestätigung. **WICHTIG**: Hygiene & Vorbereitung sind Pflicht. Nur mit viel Gleitgel."
         },
         {
           "id": "SEX028",
@@ -3391,8 +3410,9 @@
             "passive"
           ],
           "label": "Anal passiv (bei ihr)",
-          "help": "**WICHTIG**: Hygiene & Vorbereitung sind Pflicht. Nur mit viel Gleitgel. Niemals von Anal zu Vaginal ohne gründliche Reinigung.",
-          "has_active_passive": true
+          "help": "Ultimative Verletzlichkeit und Vertrauen. Emotionale Öffnung erfordert tiefe Bindung. **WICHTIG**: Hygiene & Vorbereitung sind Pflicht.",
+          "has_active_passive": true,
+          "info_details": "Emotionale Dimension: Anal passiv empfangen ist ultimative Verletzlichkeit - physisch und emotional. Du öffnest dich komplett, gibst Kontrolle ab, vertraust darauf, dass du nicht verletzt wirst. Emotionale Bindung: Diese Praxis erfordert extremes Vertrauen und kann die emotionale Bindung massiv vertiefen. Attachment Theory: Erfordert sicheres Bindungsmuster oder sehr hohes Vertrauen. Ängstlich gebundene können Panik bekommen (Trigger: Extreme Verletzlichkeit). Emotionale Öffnung: Du lässt jemanden in deinen intimsten Raum - das ist eine Form der ultimativen emotionalen Hingabe. Nach der Praxis: Emotionale Aftercare ist essentiell - Reassurance, Nähe, verbale Bestätigung. **WICHTIG**: Hygiene & Vorbereitung sind Pflicht. Nur mit viel Gleitgel. Niemals von Anal zu Vaginal ohne gründliche Reinigung."
         },
         {
           "id": "SEX030",
@@ -3542,8 +3562,9 @@
             "sex"
           ],
           "label": "Oralsex aktiv geben",
-          "help": "Kategorie: Oralsex - Basis:",
-          "has_active_passive": true
+          "help": "Akt der Hingabe und Fürsorge. Zeigt tiefe Verbundenheit durch intime Berührung. Emotionale Dimension: 'Ich verwöhne dich' = Ausdruck von Zuneigung.",
+          "has_active_passive": true,
+          "info_details": "Emotionale Dimension: Oralsex aktiv geben ist ein Akt der Hingabe und Fürsorge. Du zeigst tiefe Verbundenheit durch intime Berührung. Emotionale Bindung: 'Ich verwöhne dich' = Ausdruck von Zuneigung und emotionaler Verbindung. Attachment Theory: Kann emotionale Nähe verstärken - physische Intimität fördert emotionale Bindung. Für die gebende Person: Emotionale Erfüllung durch das Geben von Vergnügen. Wichtig: Kommunikation ist essentiell - Feedback hilft, die emotionale Verbindung zu vertiefen."
         },
         {
           "id": "ORA004",
@@ -3556,7 +3577,8 @@
             "sex"
           ],
           "label": "Oralsex empfangen",
-          "help": "Kategorie: Oralsex - Basis:"
+          "help": "Empfangen von intimer Fürsorge. Erfordert Vertrauen und Loslassen. Emotionale Dimension: Zulassen, verwöhnt zu werden = emotionale Öffnung.",
+          "info_details": "Emotionale Dimension: Oralsex empfangen erfordert Vertrauen und Loslassen. Du lässt zu, dass jemand dich intimer berührt - das ist eine Form der emotionalen Öffnung. Emotionale Bindung: Zulassen, verwöhnt zu werden, kann die emotionale Bindung vertiefen. Attachment Theory: Erfordert Vertrauen - du musst dich sicher genug fühlen, um loszulassen. Emotionale Verletzlichkeit: Sich dem Partner physisch und emotional zu öffnen. Wichtig: Kommunikation hilft, die emotionale Verbindung zu vertiefen - Feedback geben, was sich gut anfühlt."
         },
         {
           "id": "ORA005",
@@ -4135,8 +4157,9 @@
             "power"
           ],
           "label": "Strafen",
-          "help": "Kategorie: Strafen & Belohnungen:",
-          "has_dom_sub": true
+          "help": "Struktur und Konsequenzen können emotionale Sicherheit geben. Immer abgesprochen und konsensuell. Attachment Theory: Besonders wichtig für ängstlich gebundene Personen.",
+          "has_dom_sub": true,
+          "info_details": "Emotionale Dimension: Strafen können emotionale Sicherheit geben durch Struktur und vorhersehbare Konsequenzen. Attachment Theory: Ängstlich gebundene suchen oft Struktur ('Ich weiß, was passiert') - klare Regeln reduzieren Unsicherheit. Emotionale Regulation: Struktur hilft bei emotionaler Regulation - weniger Unsicherheit = weniger Angst. Wichtig: Immer abgesprochen und konsensuell! Strafen sind verhandelt, nicht willkürlich. Aftercare mit Reassurance ist essentiell ('Du bist wertvoll', 'Das war nur Spiel'). Unterschied zwischen 'Funishment' (spielerische Bestrafung) und echter Disziplinierung."
         },
         {
           "id": "BDS011",
@@ -4150,7 +4173,8 @@
             "power"
           ],
           "label": "Belohnungen",
-          "help": "Kategorie: Strafen & Belohnungen:",
+          "help": "Positive Verstärkung schafft emotionale Sicherheit und Bestätigung. Attachment Theory: Besonders wichtig für ängstlich gebundene Personen.",
+          "info_details": "Emotionale Dimension: Belohnungen schaffen emotionale Sicherheit und Bestätigung. Positive Verstärkung ('Du warst gut') stärkt Selbstwertgefühl und emotionale Bindung. Attachment Theory: Ängstlich gebundene brauchen oft mehr Bestätigung und Reassurance. Emotionale Regulation: Positive Rückmeldung hilft bei emotionaler Regulation - Bestätigung reduziert Unsicherheit. Wichtig: Belohnungen sollten authentisch sein - nicht nur mechanisch, sondern mit echter emotionaler Verbindung."
           "has_dom_sub": true
         },
         {
@@ -4493,7 +4517,7 @@
           "label": "Orgasmuskontrolle",
           "help": "Erfordert immense Hingabe und Vertrauen, da körperliche Autonomie abgegeben wird. Erzeugt Spannung und Frustration.",
           "has_dom_sub": true,
-          "info_details": "Psychologie: Orgasmuskontrolle erfordert immense Hingabe und Vertrauen, da körperliche Autonomie abgegeben wird. Erzeugt Spannung und Frustration, die sich in intensiverer Lust entladen kann. Attachment Theory: Erfordert extremes Vertrauen. Kann emotionale Regulation trainieren (Umgang mit Frustration). Wichtig: Kommunikation ist essentiell - Sub muss klar kommunizieren können, wenn es zu viel wird."
+          "info_details": "Psychologie: Orgasmuskontrolle erfordert immense Hingabe und Vertrauen, da körperliche Autonomie abgegeben wird. Emotionale Dimension: Erzeugt Spannung und Frustration, die sich in intensiverer Lust entladen kann. Kann emotionale Regulation trainieren (Umgang mit Frustration, Überwältigung). Attachment Theory: Erfordert extremes Vertrauen. Emotionale Herausforderung: Frustration aushalten lernen, ohne zu kollabieren. Wichtig: Kommunikation ist essentiell - Sub muss klar kommunizieren können, wenn es emotional zu viel wird. Aftercare mit Reassurance wichtig ('Du warst stark')."
         },
         {
           "id": "BDS034",
@@ -5472,7 +5496,7 @@
           "label": "Fesseln (mit Seil)",
           "help": "Gefühl der völligen Auslieferung. Kann sehr entspannend sein. **WICHTIG**: Niemals Blut abschnüren, Nervenbahnen schützen! Nicht allein lassen!",
           "has_dom_sub": true,
-          "info_details": "Psychologie: Feste Fesseln erzeugen extreme Vulnerabilität - funktioniert nur mit sicherem Bindungsstil oder sehr hohem Vertrauen. Attachment Theory: Ängstlich gebundene können in Panik geraten (Trigger: Hilflosigkeit). Paradox: Freiheit durch Einschränkung. Neurochemie: Serotonin-mediiertes Subspace möglich (meditativ, friedlich). Sicherheit: Niemals allein lassen. Schere bereit halten. Auf Nervenbahnen achten (taube Finger = sofort lösen!)."
+          "info_details": "Psychologie: Feste Fesseln erzeugen extreme Vulnerabilität - funktioniert nur mit sicherem Bindungsstil oder sehr hohem Vertrauen. Emotionale Dimension: Verletzlichkeit erfordert emotionale Sicherheit. Attachment Theory: Ängstlich gebundene können in Panik geraten (Trigger: Hilflosigkeit). Paradox: Freiheit durch Einschränkung. Neurochemie: Serotonin-mediiertes Subspace möglich (meditativ, friedlich). Emotionale Regulation: Kann sehr entspannend sein ('Ich muss nichts mehr tun'). Wichtig: Emotionale Aftercare nach Bondage ist essentiell - Reassurance und Nähe geben Sicherheit zurück. Sicherheit: Niemals allein lassen. Schere bereit halten. Auf Nervenbahnen achten (taube Finger = sofort lösen!)."
         },
         {
           "id": "BDS010",
@@ -7462,8 +7486,9 @@
             "extreme"
           ],
           "label": "Fisting vaginal",
-          "help": "**⚠️ WARNUNG ⚠️**",
+          "help": "Ultimative Intimität und Vertrauen. Erfordert extreme emotionale Bindung. **⚠️ WARNUNG ⚠️** Physisch sehr anspruchsvoll.",
           "has_dom_sub": true,
+          "info_details": "Emotionale Dimension: Fisting ist die ultimative Form der physischen und emotionalen Intimität. Emotionale Bindung: Erfordert extremes Vertrauen und kann die emotionale Bindung massiv vertiefen. Für die gebende Person: Emotionale Verantwortung und Fürsorge ('Ich sorge für dich'). Für die empfangende Person: Ultimative Verletzlichkeit und emotionale Öffnung. Attachment Theory: Erfordert sicheres Bindungsmuster - beide müssen vertrauen können. Emotionale Intimität: Diese Praxis kann eine tiefe emotionale Verbindung schaffen, die über das Physische hinausgeht. Nach der Praxis: Emotionale Aftercare ist essentiell - Reassurance, Nähe, verbale Bestätigung. Physisch: Sehr langsamer Prozess des Dehnens (Stunden!). Führt oft in tiefen Trance-Zustand (Subspace). Wichtig: Niemals erzwingen, immer Gleitgel, langsame Dekompression.",
           "depends_on": {
             "id": "EXT015A",
             "values": [
@@ -7534,9 +7559,10 @@
             "extreme"
           ],
           "label": "Fisting aktiv geben (bei ihr)",
-          "help": "**⚠️ WARNUNG ⚠️**",
+          "help": "Ultimative Intimität und Fürsorge. Erfordert extremes Vertrauen und emotionale Verantwortung. **⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
           "has_dom_sub": true,
+          "info_details": "Emotionale Dimension: Fisting aktiv geben ist ein Akt tiefster Fürsorge und Verantwortung. Du nimmst die intimste Form der Berührung vor - das erfordert extremes Vertrauen und emotionale Verbindung. Emotionale Bindung: Diese Praxis kann die emotionale Bindung massiv vertiefen - es ist eine Form der ultimativen Hingabe und Fürsorge gleichzeitig. Für die gebende Person: Emotionale Verantwortung ('Ich sorge für dich, ich bin vorsichtig'), tiefe Verbundenheit durch physische Intimität. Attachment Theory: Erfordert sicheres Bindungsmuster - du musst vertrauen, dass du nicht verletzt wirst, und Verantwortung übernehmen. Nach der Praxis: Emotionale Aftercare ist wichtig - Reassurance geben ('Du warst mutig'), Nähe, verbale Bestätigung.",
           "depends_on": {
             "id": "EXT015A",
             "values": [
@@ -7559,9 +7585,10 @@
             "extreme"
           ],
           "label": "Fisting passiv empfangen (bei ihr)",
-          "help": "**⚠️ WARNUNG ⚠️**",
+          "help": "Ultimative Verletzlichkeit und Vertrauen. Emotionale Öffnung erfordert tiefe Bindung. **⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
           "has_dom_sub": true,
+          "info_details": "Emotionale Dimension: Fisting empfangen ist ultimative Verletzlichkeit - physisch und emotional. Du öffnest dich komplett, gibst Kontrolle ab, vertraust darauf, dass du nicht verletzt wirst. Emotionale Bindung: Diese Praxis erfordert extremes Vertrauen und kann die emotionale Bindung massiv vertiefen. Attachment Theory: Erfordert sicheres Bindungsmuster oder sehr hohes Vertrauen. Ängstlich gebundene können Panik bekommen (Trigger: Extreme Verletzlichkeit). Emotionale Öffnung: Du lässt jemanden in deinen intimsten Raum - das ist eine Form der ultimativen emotionalen Hingabe. Nach der Praxis: Emotionale Aftercare ist essentiell - Reassurance ('Du warst mutig', 'Ich sorge für dich'), Nähe, verbale Bestätigung. Physisch: Sehr langsamer Prozess, kann zu tiefem Subspace führen.",
           "depends_on": {
             "id": "EXT015A",
             "values": [
@@ -7584,9 +7611,10 @@
             "extreme"
           ],
           "label": "Fisting aktiv geben (bei ihm)",
-          "help": "**⚠️ WARNUNG ⚠️**",
+          "help": "Ultimative Intimität und Fürsorge. Erfordert extremes Vertrauen und emotionale Verantwortung. **⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
           "has_dom_sub": true,
+          "info_details": "Emotionale Dimension: Fisting aktiv geben ist ein Akt tiefster Fürsorge und Verantwortung. Du nimmst die intimste Form der Berührung vor - das erfordert extremes Vertrauen und emotionale Verbindung. Emotionale Bindung: Diese Praxis kann die emotionale Bindung massiv vertiefen - es ist eine Form der ultimativen Hingabe und Fürsorge gleichzeitig. Für die gebende Person: Emotionale Verantwortung ('Ich sorge für dich, ich bin vorsichtig'), tiefe Verbundenheit durch physische Intimität. Attachment Theory: Erfordert sicheres Bindungsmuster - du musst vertrauen, dass du nicht verletzt wirst, und Verantwortung übernehmen. Nach der Praxis: Emotionale Aftercare ist wichtig - Reassurance geben ('Du warst mutig'), Nähe, verbale Bestätigung.",
           "depends_on": {
             "id": "EXT015A",
             "values": [
@@ -7609,9 +7637,10 @@
             "extreme"
           ],
           "label": "Fisting passiv empfangen (bei ihm)",
-          "help": "**⚠️ WARNUNG ⚠️**",
+          "help": "Ultimative Verletzlichkeit und Vertrauen. Emotionale Öffnung erfordert tiefe Bindung. **⚠️ WARNUNG ⚠️**",
           "has_active_passive": true,
           "has_dom_sub": true,
+          "info_details": "Emotionale Dimension: Fisting empfangen ist ultimative Verletzlichkeit - physisch und emotional. Du öffnest dich komplett, gibst Kontrolle ab, vertraust darauf, dass du nicht verletzt wirst. Emotionale Bindung: Diese Praxis erfordert extremes Vertrauen und kann die emotionale Bindung massiv vertiefen. Attachment Theory: Erfordert sicheres Bindungsmuster oder sehr hohes Vertrauen. Ängstlich gebundene können Panik bekommen (Trigger: Extreme Verletzlichkeit). Emotionale Öffnung: Du lässt jemanden in deinen intimsten Raum - das ist eine Form der ultimativen emotionalen Hingabe. Nach der Praxis: Emotionale Aftercare ist essentiell - Reassurance ('Du warst mutig', 'Ich sorge für dich'), Nähe, verbale Bestätigung. Physisch: Sehr langsamer Prozess, kann zu tiefem Subspace führen.",
           "depends_on": {
             "id": "EXT015A",
             "values": [
