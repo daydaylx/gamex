@@ -30,90 +30,152 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="wrap">
-      <h1>Intimacy Tool</h1>
-      <p class="sub">Local-first. Lokal gespeichert (Plaintext). Kein Overthinking, nur Struktur.</p>
+    <div class="wrap topbar-inner">
+      <div>
+        <h1>Intimacy Tool</h1>
+        <p class="sub">Lokale Arbeitshilfe – Klartext-Speicherung, keine versteckten Cloud-Syncs.</p>
+      </div>
+      <nav class="primary-nav" id="primaryNav" aria-label="Hauptnavigation">
+        <button class="nav-link active" data-nav="dashboard">Dashboard</button>
+        <button class="nav-link" data-nav="sessions">Sessions</button>
+        <button class="nav-link" data-nav="scenarios">Szenarien</button>
+      </nav>
     </div>
   </header>
+
+  <div class="security-badge" id="securityBadge" role="status">
+    🔒 Lokale Klartext-Speicherung – Gerät schützen & Export bewusst teilen.
+  </div>
 
   <main class="wrap">
     <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
     <div id="main-content">
-    <section class="card" id="home">
-      <h2>Sessions</h2>
-      <div class="row">
-        <button class="btn" id="btnRefresh">Aktualisieren</button>
-      </div>
-      <div id="sessionsList" class="list"></div>
-    </section>
-
-    <section class="card" id="create">
-      <h2>Neue Session</h2>
-
-      <div class="grid2">
-        <label>
-          Name
-          <input id="newName" placeholder="z.B. Dez 2025" />
-        </label>
-
-        <label>
-          Template
-          <select id="newTemplate"></select>
-        </label>
-      </div>
-
-      <div class="row">
-        <button class="btn primary" id="btnCreate">Erstellen</button>
-        <span class="hint">Hinweis: Daten liegen lokal im Klartext vor (Gerätezugriff = Datenzugriff).</span>
-      </div>
-      <div id="createMsg" class="msg"></div>
-    </section>
-
-    <section class="card" id="extras">
-      <h2>Extras</h2>
-      <div class="row">
-        <button class="btn" id="btnScenarios">Szenarien-Modus starten</button>
-      </div>
-    </section>
-
-    <section class="card hidden" id="scenarioView">
-      <div class="row space">
-        <h2>Szenarien</h2>
-        <button class="btn" id="btnCloseScenarios">Schließen</button>
-      </div>
-      <p class="sub">Diskutiert diese Situationen. Was würdet ihr tun?</p>
-      <div id="scenarioMsg" class="msg"></div>
-      <div id="scenarioHost" class="grid2" style="margin-top:20px"></div>
-    </section>
-
-    <section class="card hidden" id="sessionView">
-      <div class="row space">
-        <div>
-          <h2 id="sessTitle">Session</h2>
-          <p class="sub" id="sessMeta"></p>
-        </div>
-        <button class="btn" id="btnBack">Zurück</button>
-      </div>
-
-      <div class="info-box" id="flowGuide">
-        <div class="info-box-title">So funktioniert's</div>
-        <ol>
-          <li>Person A füllt zuerst aus.</li>
-          <li>Dann Person B.</li>
-          <li>Vergleich zeigt Matches & Unterschiede.</li>
-          <li>Export ist optional.</li>
-        </ol>
-      </div>
-
-      <div class="flow-actions">
-        <div class="primary-action">
-          <button class="btn primary" id="btnPrimaryFlow">Los geht's</button>
-          <div class="hint" id="primaryFlowHint"></div>
+      <section class="view-panel" data-view-panel data-view="dashboard" id="dashboardView">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">Was ist Gamex?</p>
+            <h2>Ruhig geführt von Session zu Session</h2>
+            <p class="sub">
+              Kurzer Ablauf: Session anlegen, Person A ausfüllen, Person B ergänzen, Vergleich prüfen. Alles bleibt lokal
+              gespeichert – Klartext für volle Transparenz.
+            </p>
+            <div class="hero-actions">
+              <button class="btn primary" id="btnStartNew">Neue Session starten</button>
+              <button class="btn ghost" id="btnScrollSessions">Bestehende Sessions ansehen</button>
+            </div>
+          </div>
+          <div class="hero-steps">
+            <div class="hero-card">
+              <div class="hero-step">1</div>
+              <div>
+                <div class="hero-title">Session wählen</div>
+                <div class="hero-text">Vorlage aussuchen, Namen vergeben.</div>
+              </div>
+            </div>
+            <div class="hero-card">
+              <div class="hero-step">2</div>
+              <div>
+                <div class="hero-title">Antworten sichern</div>
+                <div class="hero-text">Zwischenspeichern sichtbar, Autosave aktiv.</div>
+              </div>
+            </div>
+            <div class="hero-card">
+              <div class="hero-step">3</div>
+              <div>
+                <div class="hero-title">Vergleichen & exportieren</div>
+                <div class="hero-text">Matches, Grenzen, optional Szenarien & KI.</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="row stack" id="secondaryActions">
+        <section class="card" id="sessionsCard">
+          <div class="section-header">
+            <div>
+              <h2>Sessions</h2>
+              <p class="sub">Statuschips zeigen den Fortschritt von Person A & B. Öffne eine Karte, um den Fragebogen zu starten.</p>
+            </div>
+            <div class="row">
+              <button class="btn quiet" id="btnRefresh">Aktualisieren</button>
+              <button class="btn secondary" id="btnScenarios">Szenarien öffnen</button>
+            </div>
+          </div>
+          <div id="sessionsList" class="list"></div>
+        </section>
+
+        <section class="card" id="create">
+          <div class="section-header">
+            <div>
+              <h3>Neue Session anlegen</h3>
+              <p class="sub">Lokale Speicherung ohne Login. Bitte Gerät schützen.</p>
+            </div>
+            <div class="hint">Klartext: Jeder mit Gerätezugriff kann die Daten lesen.</div>
+          </div>
+
+          <div class="grid2">
+            <label>
+              Name
+              <input id="newName" placeholder="z.B. Dez 2025" />
+            </label>
+
+            <label>
+              Template
+              <select id="newTemplate"></select>
+            </label>
+          </div>
+
+          <div class="row">
+            <button class="btn primary" id="btnCreate">Session starten</button>
+            <span class="hint">Hinweis: Daten liegen lokal im Klartext vor (Gerätezugriff = Datenzugriff).</span>
+          </div>
+          <div id="createMsg" class="msg"></div>
+        </section>
+      </section>
+
+      <section class="card hidden view-panel" data-view-panel data-view="scenarios" id="scenarioView">
+        <div class="row space">
+          <div>
+            <p class="eyebrow">Exploration</p>
+            <h2>Szenarien</h2>
+            <p class="sub">Diskutiert diese Situationen. Was würdet ihr tun?</p>
+          </div>
+          <button class="btn ghost" id="btnCloseScenarios">Zurück zum Dashboard</button>
+        </div>
+        <div id="scenarioMsg" class="msg"></div>
+        <div id="scenarioHost" class="grid2 scenario-grid"></div>
+      </section>
+
+      <section class="card hidden view-panel" data-view-panel data-view="session" id="sessionView">
+        <div class="session-header">
+          <div>
+            <p class="eyebrow">Session</p>
+            <h2 id="sessTitle">Session</h2>
+            <p class="sub" id="sessMeta"></p>
+          </div>
+          <div class="row">
+            <div class="save-status" id="saveStatusChip" aria-live="polite"></div>
+            <button class="btn ghost" id="btnBack">Zurück zum Dashboard</button>
+          </div>
+        </div>
+
+        <div class="info-box" id="flowGuide">
+          <div class="info-box-title">So funktioniert's</div>
+          <ol>
+            <li>Person A füllt zuerst aus.</li>
+            <li>Dann Person B.</li>
+            <li>Vergleich zeigt Matches & Unterschiede.</li>
+            <li>Export optional – bewusst teilen.</li>
+          </ol>
+        </div>
+
+        <div class="flow-actions">
+          <div class="primary-action">
+            <button class="btn primary" id="btnPrimaryFlow">Session öffnen</button>
+            <div class="hint" id="primaryFlowHint"></div>
+          </div>
+
           <details class="more-menu">
-            <summary aria-label="Weitere Aktionen">⋯ Mehr</summary>
+            <summary aria-label="Weitere Aktionen">Weitere Aktionen</summary>
             <div class="more-menu-actions">
               <button class="btn" id="btnCompare">Vergleich ansehen</button>
               <div class="hint" id="compareHint"></div>
@@ -122,125 +184,121 @@
             </div>
           </details>
         </div>
-      </div>
 
-      <div class="divider"></div>
+        <nav class="session-tabs" id="sessionTabs" aria-label="Session Bereiche">
+          <button class="tab-link active" data-tab="form">Fragen</button>
+          <button class="tab-link" data-tab="compare">Vergleich</button>
+          <button class="tab-link" data-tab="scenarios">Szenarien</button>
+          <button class="tab-link" data-tab="ai">KI</button>
+        </nav>
 
-      <div id="errorPanel" class="info-box hidden" role="region" aria-live="polite">
-        <div class="row space">
-          <div>
-            <div class="info-box-title">Letzte Fehler</div>
-            <p class="sub">Wir speichern die letzten Fehlermeldungen, damit klar ist, was schief lief.</p>
+        <div id="errorPanel" class="info-box hidden" role="region" aria-live="polite">
+          <div class="row space">
+            <div>
+              <div class="info-box-title">Letzte Fehler</div>
+              <p class="sub">Wir speichern die letzten Fehlermeldungen, damit klar ist, was schief lief.</p>
+            </div>
+            <button class="btn ghost" id="btnClearErrors">Zurücksetzen</button>
           </div>
-          <button class="btn" id="btnClearErrors">Zurücksetzen</button>
+          <div id="errorList" class="error-list"></div>
         </div>
-        <div id="errorList" class="error-list"></div>
-      </div>
 
-      <div id="panelForm" class="panel hidden" role="region" aria-labelledby="formTitle">
-        <div class="row space form-header">
-          <h3 id="formTitle">Fragebogen</h3>
+        <div id="panelForm" class="panel" role="region" aria-labelledby="formTitle">
+          <div class="form-toolbar">
+            <div class="form-toolbar-left">
+              <h3 id="formTitle">Fragebogen</h3>
+              <div class="mode-toggle" role="group" aria-label="Modus">
+                <button class="chip active" data-mode="simple">Einfach</button>
+                <button class="chip" data-mode="advanced">Erweitert</button>
+              </div>
+            </div>
+            <div class="row">
+              <button class="btn primary" id="btnSaveForm" aria-label="Antworten speichern">Antworten speichern</button>
+              <button class="btn ghost" id="btnValidate" aria-label="Antworten prüfen">Prüfen</button>
+            </div>
+          </div>
+
+          <div id="formTools" class="form-tools">
+            <div id="progressBar" class="progress-card" role="status" aria-live="polite">
+              <div class="progress-meta">
+                <div class="progress-label">Fortschritt</div>
+                <div class="progress-value" id="progressPct">0%</div>
+              </div>
+              <div class="progress-track">
+                <div id="progressFill" class="progress-fill" style="width:0%"></div>
+              </div>
+              <div id="progressText" class="progress-text">0/0 beantwortet</div>
+              <div id="validationSummary" class="validation-summary" aria-live="polite"></div>
+            </div>
+
+            <details class="actions-menu">
+              <summary>Weitere Formular-Aktionen</summary>
+              <div class="actions-grid">
+                <button class="btn" id="btnExpandAll" aria-label="Alle Module öffnen">Alle öffnen</button>
+                <button class="btn" id="btnCollapseAll" aria-label="Alle Module schließen">Alle schließen</button>
+                <button class="btn" id="btnNextOpen" aria-label="Nächste offene Frage">Nächste offene Frage</button>
+                <button class="btn" id="btnToggleNav" aria-label="Fragenübersicht öffnen" aria-controls="questionNav" aria-expanded="false">Fragenübersicht</button>
+              </div>
+            </details>
+          </div>
+
+          <div class="form-layout">
+            <nav id="questionNav" class="question-nav" aria-label="Fragenübersicht"></nav>
+            <div id="formHost" role="form" aria-label="Fragebogen Formular"></div>
+          </div>
+          <div id="navBackdrop" class="nav-backdrop hidden" aria-hidden="true"></div>
+          <div class="form-footer">
+            <div class="row">
+              <span id="saveMsg" class="msg" role="status" aria-live="polite"></span>
+              <span id="saveStatus" class="save-status" role="status" aria-live="polite"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="panelCompare" class="panel hidden" role="region" aria-label="Vergleichsansicht">
+          <div class="row space">
+            <h3>Vergleich</h3>
+            <button class="btn ghost" id="btnCloseCompare" aria-label="Vergleich schließen">Schließen</button>
+          </div>
+          <div class="hint">Nach Antworten von A & B werden Matches, Grenzen und Abweichungen sichtbar.</div>
+          <div id="compareHost" role="main" aria-label="Vergleichsergebnisse"></div>
+        </div>
+
+        <div id="panelScenarios" class="panel hidden" aria-label="Szenarien in der Session">
+          <div class="row space">
+            <h3>Szenarien</h3>
+            <button class="btn ghost" id="btnOpenScenarioFull">Vollständige Ansicht</button>
+          </div>
+          <div id="sessionScenarioMsg" class="msg"></div>
+          <div id="sessionScenarioHost" class="scenario-grid"></div>
+        </div>
+
+        <div id="panelAI" class="panel hidden">
+          <h3>KI-Auswertung (optional)</h3>
+          <p class="hint">
+            Wenn du das nutzt, sendest du Daten an einen Provider. Standard: Redaction (Freitext raus).
+          </p>
+          <div class="grid2">
+            <label>OpenRouter API Key<input id="aiKey" type="password" placeholder="optional" /></label>
+            <label>Model<input id="aiModel" placeholder="z.B. openai/gpt-4.1-mini" /></label>
+            <label>Redact Freitext
+              <select id="aiRedact">
+                <option value="true" selected>true</option>
+                <option value="false">false</option>
+              </select>
+            </label>
+            <label>Max tokens<input id="aiMaxTokens" type="number" value="800" min="200" max="2000" /></label>
+          </div>
           <div class="row">
-            <button class="btn" id="btnValidate" aria-label="Antworten prüfen">Antworten prüfen</button>
-            <button class="btn" id="btnCloseForm" aria-label="Formular schließen">Schließen</button>
+            <button class="btn primary" id="btnRunAI">KI-Analyse starten</button>
           </div>
+          <pre id="aiOut" class="pre"></pre>
         </div>
 
-        <div id="formTools" class="form-tools">
-          <div id="progressBar" class="progress-bar" role="status" aria-live="polite">
-            <div class="progress-info">
-              <span id="progressText">0/0 beantwortet</span>
-              <span id="progressPct">0%</span>
-            </div>
-            <div class="progress-track">
-              <div id="progressFill" class="progress-fill" style="width:0%"></div>
-            </div>
-          </div>
-          <div class="form-tool-row">
-            <button class="btn" id="btnExpandAll" aria-label="Alle Module öffnen">Alle öffnen</button>
-            <button class="btn" id="btnCollapseAll" aria-label="Alle Module schließen">Alle schließen</button>
-            <button class="btn" id="btnNextOpen" aria-label="Nächste offene Frage">Nächste offene Frage</button>
-            <button class="btn mobile-nav-toggle" id="btnToggleNav" aria-label="Fragenübersicht öffnen" aria-controls="questionNav" aria-expanded="false">Fragenübersicht</button>
-          </div>
-          <div id="validationSummary" class="validation-summary" aria-live="polite"></div>
-        </div>
-
-        <div class="form-layout">
-          <nav id="questionNav" class="question-nav" aria-label="Fragenübersicht"></nav>
-          <div id="formHost" role="form" aria-label="Fragebogen Formular"></div>
-        </div>
-        <div id="navBackdrop" class="nav-backdrop hidden" aria-hidden="true"></div>
-
-        <div class="row form-footer">
-          <button class="btn primary" id="btnSaveForm" aria-label="Antworten speichern">Speichern</button>
-          <span id="saveMsg" class="msg" role="status" aria-live="polite"></span>
-          <span id="saveStatus" class="save-status" role="status" aria-live="polite"></span>
-        </div>
-      </div>
-
-      <div id="panelCompare" class="panel hidden" role="region" aria-label="Vergleichsansicht">
-        <div class="row space">
-          <h3>Vergleich</h3>
-          <button class="btn" id="btnCloseCompare" aria-label="Vergleich schließen">Schließen</button>
-        </div>
-        <div id="compareHost" role="main" aria-label="Vergleichsergebnisse"></div>
-      </div>
-
-      <div id="panelAI" class="panel hidden">
-        <h3>KI-Auswertung (optional)</h3>
-        <p class="hint">
-          Wenn du das nutzt, sendest du Daten an einen Provider. Standard: Redaction (Freitext raus).
-        </p>
-        <div class="grid2">
-          <label>OpenRouter API Key<input id="aiKey" type="password" placeholder="optional" /></label>
-          <label>Model<input id="aiModel" placeholder="z.B. openai/gpt-4.1-mini" /></label>
-          <label>Redact Freitext
-            <select id="aiRedact">
-              <option value="true" selected>true</option>
-              <option value="false">false</option>
-            </select>
-          </label>
-          <label>Max tokens<input id="aiMaxTokens" type="number" value="800" min="200" max="2000" /></label>
-        </div>
-        <div class="row">
-          <button class="btn" id="btnRunAI">KI-Analyse starten</button>
-        </div>
-        <pre id="aiOut" class="pre"></pre>
-      </div>
-
-      <div id="sessionMsg" class="msg"></div>
-    </section>
+        <div id="sessionMsg" class="msg"></div>
+      </section>
     </div>
   </main>
-
-  <!-- Android Bottom Navigation -->
-  <nav id="mobileBottomNav" class="mobile-bottom-nav" aria-label="Hauptnavigation">
-    <button class="mobile-nav-item" data-view="home" aria-label="Startseite">
-      <span class="mobile-nav-icon">🏠</span>
-      <span class="mobile-nav-label">Start</span>
-    </button>
-    <button class="mobile-nav-item" data-view="sessions" aria-label="Sessions">
-      <span class="mobile-nav-icon">📋</span>
-      <span class="mobile-nav-label">Sessions</span>
-    </button>
-    <button class="mobile-nav-item" id="mobileNavForm" data-view="form" aria-label="Formular" style="display: none;">
-      <span class="mobile-nav-icon">✏️</span>
-      <span class="mobile-nav-label">Formular</span>
-    </button>
-    <button class="mobile-nav-item" id="mobileNavCompare" data-view="compare" aria-label="Vergleich" style="display: none;">
-      <span class="mobile-nav-icon">⚖️</span>
-      <span class="mobile-nav-label">Vergleich</span>
-    </button>
-    <button class="mobile-nav-item" data-view="scenarios" aria-label="Szenarien">
-      <span class="mobile-nav-icon">🎴</span>
-      <span class="mobile-nav-label">Szenarien</span>
-    </button>
-  </nav>
-
-  <!-- Floating Action Button -->
-  <button id="fab" class="fab" aria-label="Schnellaktionen">
-    <span class="fab-icon">+</span>
-  </button>
 
   <script src="/core/validation.js"></script>
   <script src="/validation.js"></script>
