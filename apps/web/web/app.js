@@ -38,6 +38,8 @@ const state = {
   activeDeck: null,
 };
 
+const ERROR_LOG_KEY = "intimacy:lastErrors";
+
 // Offline detection
 let isOnline = navigator.onLine;
 window.addEventListener('online', () => {
@@ -128,6 +130,7 @@ function showError(el, error, prefix = "Fehler") {
   const detail = error?.message || String(error || "");
   const text = detail ? `${prefix}: ${detail}` : prefix;
   msg(el, text, "err");
+  recordError(detail, prefix);
 }
 
 function setSaveStatus(text, kind = "") {
@@ -142,6 +145,59 @@ function setValidationSummary(text, kind = "") {
   if (!el) return;
   el.textContent = text || "";
   el.className = "validation-summary" + (kind ? ` ${kind}` : "");
+}
+
+function readErrorLog() {
+  try {
+    const raw = localStorage.getItem(ERROR_LOG_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.warn("Fehler beim Lesen des Error Logs", e);
+    return [];
+  }
+}
+
+function writeErrorLog(entries) {
+  try {
+    localStorage.setItem(ERROR_LOG_KEY, JSON.stringify(entries.slice(0, 10)));
+  } catch (e) {
+    console.warn("Fehler beim Schreiben des Error Logs", e);
+  }
+}
+
+function recordError(detail, context = "Fehler") {
+  const entry = {
+    message: typeof detail === "string" ? detail : detail?.message || String(detail || "Unbekannter Fehler"),
+    context,
+    at: new Date().toISOString(),
+  };
+  const list = [entry, ...readErrorLog()].slice(0, 10);
+  writeErrorLog(list);
+  renderErrorPanel(list);
+}
+
+function renderErrorPanel(entries = readErrorLog()) {
+  const panel = $("errorPanel");
+  const listHost = $("errorList");
+  if (!panel || !listHost) return;
+
+  if (!entries.length) {
+    panel.classList.add("hidden");
+    listHost.innerHTML = "";
+    return;
+  }
+
+  panel.classList.remove("hidden");
+  listHost.innerHTML = "";
+  entries.forEach((entry) => {
+    const div = document.createElement("div");
+    div.className = "error-list-item";
+    const date = new Date(entry.at).toLocaleString("de-DE", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
+    div.innerHTML = `<strong>${escapeHtml(entry.context)}</strong><div>${escapeHtml(entry.message)}</div><div class="hint">${date}</div>`;
+    listHost.appendChild(div);
+  });
 }
 
 async function loadTemplates() {
@@ -216,11 +272,7 @@ async function openSession(sessionId) {
   updateMobileNavVisibility();
 
   $("sessTitle").textContent = info.name;
-  $("sessMeta").innerHTML = `
-    <span class="badge">Template: ${info.template.name}</span>
-    <span class="badge ${info.has_a ? 'risk-badge-A' : ''}">A: ${info.has_a ? "Fertig" : "Offen"}</span>
-    <span class="badge ${info.has_b ? 'risk-badge-A' : ''}">B: ${info.has_b ? "Fertig" : "Offen"}</span>
-  `;
+  renderSessionMeta();
 
   show($("panelForm"), false);
   show($("panelCompare"), false);
@@ -234,6 +286,7 @@ async function openSession(sessionId) {
   state.compareFilters = { bucket: "ALL", riskOnly: false, flaggedOnly: false, query: "", moduleId: null };
   state.scenarioActiveIds = [];
   setNavOpen(false);
+  updateSessionFlowUI();
 }
 
 function backHome() {
@@ -274,7 +327,56 @@ function backHome() {
   show($("home"), true);
   show($("create"), true);
   show($("extras"), true);
+  updateSessionFlowUI();
   loadSessions();
+}
+
+function renderSessionMeta() {
+  if (!state.currentSession) return;
+  $("sessMeta").innerHTML = `
+    <span class="badge">Template: ${state.currentSession.template?.name || state.currentSession.template?.id || ""}</span>
+    <span class="badge ${state.currentSession.has_a ? 'risk-badge-A' : ''}">A: ${state.currentSession.has_a ? "Fertig" : "Offen"}</span>
+    <span class="badge ${state.currentSession.has_b ? 'risk-badge-A' : ''}">B: ${state.currentSession.has_b ? "Fertig" : "Offen"}</span>
+  `;
+}
+
+function getFlowState() {
+  const hasA = !!state.currentSession?.has_a;
+  const hasB = !!state.currentSession?.has_b;
+
+  if (!hasA) return { action: "A", label: "Person A starten", hint: "Starte mit Person A und speichere die Antworten." };
+  if (!hasB) return { action: "B", label: "Person B starten", hint: "Als nächstes Person B ausfüllen und speichern." };
+  return { action: "COMPARE", label: "Vergleich ansehen", hint: "Beide Personen sind fertig. Zeig den Vergleich." };
+}
+
+function updateSessionFlowUI() {
+  const flowBtn = $("btnPrimaryFlow");
+  const flowHint = $("primaryFlowHint");
+  const compareBtn = $("btnCompare");
+  const compareHint = $("compareHint");
+  if (!state.currentSession || !flowBtn) return;
+
+  const flowState = getFlowState();
+  flowBtn.textContent = flowState.label;
+  flowBtn.dataset.action = flowState.action;
+  flowHint.textContent = flowState.hint;
+
+  const compareReady = flowState.action === "COMPARE";
+  if (compareBtn) {
+    compareBtn.disabled = !compareReady;
+    compareBtn.setAttribute("aria-disabled", String(!compareReady));
+    compareBtn.textContent = "Vergleich ansehen";
+    if (compareHint) compareHint.textContent = compareReady ? "Bereit: beide Personen gespeichert." : "Erst Person A & B ausfüllen.";
+  }
+
+  const exportReady = !!state.currentSession?.has_a || !!state.currentSession?.has_b;
+  ["btnExportMd", "btnExportJson"].forEach((id) => {
+    const btn = $(id);
+    if (!btn) return;
+    btn.disabled = !exportReady;
+    btn.setAttribute("aria-disabled", String(!exportReady));
+    btn.title = exportReady ? "" : "Export verfügbar, sobald mindestens eine Person gespeichert hat.";
+  });
 }
 
 function escapeHtml(str) {
@@ -1928,8 +2030,12 @@ async function saveFill() {
     });
     state.hasUnsavedChanges = false;
     state.lastSaveTime = Date.now();
+    if (state.currentPerson === "A") state.currentSession.has_a = true;
+    if (state.currentPerson === "B") state.currentSession.has_b = true;
     msg($("saveMsg"), "Gespeichert", "ok");
     setSaveStatus(`Gespeichert um ${new Date(state.lastSaveTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`, "ok");
+    renderSessionMeta();
+    updateSessionFlowUI();
 }
 // Filter Bottom Sheet (Mobile)
 function showFilterBottomSheet(result = null) {
@@ -2034,6 +2140,12 @@ function showFilterBottomSheet(result = null) {
 
 async function doCompare() {
     msg($("sessionMsg"), "");
+    if (!state.currentSession?.has_a || !state.currentSession?.has_b) {
+        const hint = $("compareHint");
+        if (hint) hint.textContent = "Vergleich verfügbar, sobald Person A & B gespeichert wurden.";
+        msg($("sessionMsg"), "Bitte erst Person A & B speichern, dann ist der Vergleich verfügbar.", "warn");
+        return;
+    }
     const res = await api(`/api/sessions/${state.currentSession.id}/compare`, {
         method: "POST", body: JSON.stringify({})
     });
@@ -2042,6 +2154,17 @@ async function doCompare() {
     show($("panelCompare"), true);
     show($("panelForm"), false);
     updateMobileNavVisibility();
+}
+
+function handlePrimaryFlow() {
+    const flowState = getFlowState();
+    if (!state.currentSession || !flowState) return;
+
+    if (flowState.action === "A" || flowState.action === "B") {
+        startFill(flowState.action).catch((e) => showError($("sessionMsg"), e));
+    } else if (flowState.action === "COMPARE") {
+        doCompare().catch((e) => showError($("sessionMsg"), e, "Vergleich fehlgeschlagen"));
+    }
 }
 
 async function exportSession(format) {
@@ -2188,7 +2311,7 @@ $("btnRefresh").onclick = loadSessions;
 $("btnCreate").onclick = async () => {
     try {
         await api("/api/sessions", {
-            method:"POST", 
+            method:"POST",
             body: JSON.stringify({
                 name: $("newName").value, 
                 template_id: $("newTemplate").value
@@ -2199,8 +2322,7 @@ $("btnCreate").onclick = async () => {
     } catch(e) { showError($("createMsg"), e, "Session konnte nicht erstellt werden"); }
 };
 $("btnBack").onclick = backHome;
-$("btnFillA").onclick = () => startFill("A").catch((e) => showError($("sessionMsg"), e));
-$("btnFillB").onclick = () => startFill("B").catch((e) => showError($("sessionMsg"), e));
+$("btnPrimaryFlow").onclick = () => handlePrimaryFlow();
 $("btnSaveForm").onclick = () => saveFill().catch((e) => showError($("saveMsg"), e, "Speichern fehlgeschlagen"));
 $("btnCloseForm").onclick = () => {
     show($("panelForm"), false);
@@ -2211,6 +2333,7 @@ $("btnCloseCompare").onclick = () => show($("panelCompare"), false);
 $("btnScenarios").onclick = () => loadScenarios();
 $("btnScenarios").innerHTML = `${Icons.cards} Szenarien-Modus`;
 $("btnCloseScenarios").onclick = backHome;
+$("btnClearErrors").onclick = () => { writeErrorLog([]); renderErrorPanel([]); };
 $("btnValidate").onclick = () => {
     state.validationEnabled = true;
     validateAndShowHints({ scrollToError: true });
@@ -2581,6 +2704,7 @@ async function restoreFromFileSystem() {
 (async () => {
     await loadTemplates();
     await loadSessions();
+    renderErrorPanel();
     initMobileNavigation();
     initNativeFeatures();
     updateOfflineIndicator();

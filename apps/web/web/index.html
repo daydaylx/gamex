@@ -95,15 +95,47 @@
         <button class="btn" id="btnBack">Zurück</button>
       </div>
 
-      <div class="row">
-        <button class="btn" id="btnFillA">Ausfüllen: Person A</button>
-        <button class="btn" id="btnFillB">Ausfüllen: Person B</button>
-        <button class="btn" id="btnCompare">Vergleich anzeigen</button>
-        <button class="btn" id="btnExportMd">Export Markdown</button>
-        <button class="btn" id="btnExportJson">Export JSON</button>
+      <div class="info-box" id="flowGuide">
+        <div class="info-box-title">So funktioniert's</div>
+        <ol>
+          <li>Person A füllt zuerst aus.</li>
+          <li>Dann Person B.</li>
+          <li>Vergleich zeigt Matches & Unterschiede.</li>
+          <li>Export ist optional.</li>
+        </ol>
+      </div>
+
+      <div class="flow-actions">
+        <div class="primary-action">
+          <button class="btn primary" id="btnPrimaryFlow">Los geht's</button>
+          <div class="hint" id="primaryFlowHint"></div>
+        </div>
+
+        <div class="row stack" id="secondaryActions">
+          <details class="more-menu">
+            <summary aria-label="Weitere Aktionen">⋯ Mehr</summary>
+            <div class="more-menu-actions">
+              <button class="btn" id="btnCompare">Vergleich ansehen</button>
+              <div class="hint" id="compareHint"></div>
+              <button class="btn" id="btnExportMd">Export Markdown</button>
+              <button class="btn" id="btnExportJson">Export JSON</button>
+            </div>
+          </details>
+        </div>
       </div>
 
       <div class="divider"></div>
+
+      <div id="errorPanel" class="info-box hidden" role="region" aria-live="polite">
+        <div class="row space">
+          <div>
+            <div class="info-box-title">Letzte Fehler</div>
+            <p class="sub">Wir speichern die letzten Fehlermeldungen, damit klar ist, was schief lief.</p>
+          </div>
+          <button class="btn" id="btnClearErrors">Zurücksetzen</button>
+        </div>
+        <div id="errorList" class="error-list"></div>
+      </div>
 
       <div id="panelForm" class="panel hidden" role="region" aria-labelledby="formTitle">
         <div class="row space form-header">

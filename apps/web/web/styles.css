@@ -140,6 +140,92 @@ h3 { font-size: 1.25rem; font-weight: 600; margin: 1.5rem 0 1rem; color: var(--t
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .row.space { justify-content: space-between; }
 
+.row.stack { flex-direction: column; align-items: stretch; }
+
+.info-box {
+  background: rgba(45, 26, 45, 0.6);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.info-box-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.info-box ol {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text);
+  display: grid;
+  gap: 6px;
+}
+
+.flow-actions {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+  grid-template-columns: minmax(240px, 1fr);
+}
+
+.primary-action {
+  display: grid;
+  gap: 8px;
+}
+
+.primary-action .btn {
+  width: 100%;
+  justify-content: center;
+  font-size: 1.05rem;
+  padding: 14px 18px;
+}
+
+.more-menu {
+  width: 100%;
+  background: rgba(45, 26, 45, 0.4);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 0 12px 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.more-menu summary {
+  cursor: pointer;
+  padding: 12px 0;
+  list-style: none;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.more-menu summary::-webkit-details-marker { display: none; }
+
+.more-menu-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.more-menu .hint {
+  margin: 0 0 6px;
+}
+
+.error-list {
+  display: grid;
+  gap: 10px;
+}
+
+.error-list-item {
+  background: rgba(244, 63, 94, 0.08);
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+}
+
+.error-list-item strong { display: block; margin-bottom: 4px; }
+
 .grid2 { 
   display: grid; 
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -1560,7 +1646,12 @@ input[type=range]:focus { outline: none; box-shadow: none; }
   .list { grid-template-columns: 1fr; }
   .card { padding: 16px; }
   .btn { width: 100%; margin-bottom: 8px; }
-  .row .btn { width: auto; flex: 1; margin-bottom: 0; }
+  .row { flex-direction: column; align-items: stretch; }
+  .row.space { align-items: stretch; }
+  .row.split { flex-direction: row; flex-wrap: wrap; }
+  .row.split .btn { flex: 1; width: auto; min-width: 0; }
+  .row.stack { gap: 10px; }
+  .flow-actions { grid-template-columns: 1fr; }
   h1 { font-size: 1.1rem; }
   .form-layout { grid-template-columns: 1fr; }
   .question-nav {
