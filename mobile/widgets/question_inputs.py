@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
