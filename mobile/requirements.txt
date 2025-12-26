@@ -1,14 +1,7 @@
-# GameX Mobile - Python Requirements
+# GameX Mobile - APK Requirements (Minimal)
 
-# Kivy framework
+# Kivy framework for Android UI
 kivy==2.3.0
 
-# Data validation
-pydantic>=2.0.0
-
-# Backend dependencies (for reusing logic)
-fastapi>=0.100.0
-uvicorn>=0.23.0
-
-# For development/testing
-pytest>=7.4.0
+# Data validation (used by backend/app/models.py)
+pydantic==2.10.3

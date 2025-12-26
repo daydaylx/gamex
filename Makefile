@@ -1,62 +1,29 @@
-# Makefile for Intimacy Tool Development
+# Makefile for GameX Mobile (APK-only)
 
-.PHONY: help install test lint format clean run
+.PHONY: help clean install build-debug build-release test
 
 # Default target
 help:
+	@echo "GameX Mobile - APK Build Targets"
+	@echo ""
 	@echo "Available targets:"
-	@echo "  install      - Install all dependencies"
-	@echo "  test         - Run all tests"
-	@echo "  test-cov     - Run tests with coverage"
-	@echo "  lint         - Run all linters"
-	@echo "  format       - Format code (black, isort)"
-	@echo "  security     - Run security scans"
-	@echo "  clean        - Clean build artifacts"
-	@echo "  run          - Run development server"
-	@echo "  run-mobile   - Run mobile app in dev mode"
+	@echo "  install       - Install buildozer and dependencies"
+	@echo "  clean         - Clean build artifacts and cache"
+	@echo "  build-debug   - Build debug APK"
+	@echo "  build-release - Build release APK"
+	@echo "  test          - Run mobile app tests (if any)"
+	@echo ""
+	@echo "APK Output: mobile/bin/"
 
 # Installation
 install:
-	@echo "Installing backend dependencies..."
-	cd backend && pip install -r requirements.txt -r requirements-dev.txt
-
-# Testing
-test:
-	@echo "Running backend tests..."
-	cd backend && pytest
-
-test-cov:
-	@echo "Running tests with coverage..."
-	cd backend && pytest --cov=app --cov-report=html --cov-report=term-missing
-
-test-watch:
-	@echo "Running tests in watch mode..."
-	cd backend && pytest-watch
-
-# Linting
-lint:
-	@echo "Running flake8..."
-	cd backend && flake8 app/ tests/
-	@echo "Running mypy..."
-	cd backend && mypy app/
-
-lint-fix:
-	@echo "Auto-fixing linting issues..."
-	cd backend && isort app/ tests/
-	cd backend && black app/ tests/
-
-# Formatting
-format:
-	@echo "Formatting code..."
-	cd backend && black app/ tests/
-	cd backend && isort app/ tests/
-
-# Security
-security:
-	@echo "Running bandit security scan..."
-	cd backend && bandit -r app/ -ll -i
-	@echo "Checking dependencies for vulnerabilities..."
-	cd backend && safety check
+	@echo "Installing buildozer and dependencies..."
+	pip3 install --user buildozer cython
+	@echo ""
+	@echo "Make sure you have Android build dependencies installed:"
+	@echo "  sudo apt-get install -y build-essential git python3-dev \\"
+	@echo "    libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \\"
+	@echo "    libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev"
 
 # Cleaning
 clean:
@@ -66,33 +33,24 @@ clean:
 	find . -type f -name "*.pyo" -delete
 	find . -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name "htmlcov" -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name ".coverage" -delete
-	find . -type f -name "coverage.xml" -delete
+	rm -rf mobile/.buildozer mobile/bin 2>/dev/null || true
 	@echo "Clean complete!"
 
-# Running
-run:
-	@echo "Starting development server..."
-	cd backend && python -m app
+# Building
+build-debug:
+	@echo "Building debug APK..."
+	cd mobile && buildozer android debug
+	@echo ""
+	@echo "APK built: mobile/bin/gamex-1.0.0-armeabi-v7a-debug.apk"
 
-run-mobile:
-	@echo "Building and running mobile app..."
-	cd apps/mobile && npx cap sync android && npx cap run android
+build-release:
+	@echo "Building release APK..."
+	cd mobile && buildozer android release
+	@echo ""
+	@echo "APK built: mobile/bin/gamex-1.0.0-armeabi-v7a-release.apk"
+	@echo "Note: Release APK needs to be signed before distribution"
 
-# CI Simulation (local)
-ci:
-	@echo "Running CI checks locally..."
-	@make lint
-	@make test-cov
-	@make security
-	@echo "All CI checks passed!"
-
-# Pre-commit checks
-pre-commit:
-	@echo "Running pre-commit checks..."
-	@make format
-	@make lint
-	@make test
-	@echo "Pre-commit checks complete!"
+# Testing
+test:
+	@echo "Running mobile app tests..."
+	@echo "No tests configured yet"
