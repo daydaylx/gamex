@@ -71,7 +71,7 @@ def validate_response(question: Dict[str, Any], response: Any) -> Tuple[bool, st
             return (False, "Dieses Feld ist erforderlich.") if required else (True, "")
         try:
             num = float(v)
-        except Exception:
+        except (ValueError, TypeError):
             return False, "Bitte gib eine gültige Zahl ein."
         min_v = validation.get("min")
         max_v = validation.get("max")
@@ -87,7 +87,7 @@ def validate_response(question: Dict[str, Any], response: Any) -> Tuple[bool, st
             return (False, "Bitte wähle einen Wert.") if required else (True, "")
         try:
             num = int(v)
-        except Exception:
+        except (ValueError, TypeError):
             return False, "Bitte wähle einen gültigen Wert."
         min_v = validation.get("min")
         max_v = validation.get("max")

@@ -420,8 +420,10 @@ class SessionFormScreen(Screen):
             try:
                 self.app_store.run_compare()
                 self.app_store.navigate_to('compare_report')
+            except ValueError:
+                self.status_label.text = "Vergleich ist erst möglich, wenn Person A und Person B ausgefüllt haben."
             except Exception as e:
-                self.status_label.text = f'Fehler: {str(e)}'
+                self.status_label.text = f'Auswertung fehlgeschlagen: {str(e)}'
 
     def _on_finish(self, instance):
         """Finish wizard and go to dashboard."""
@@ -439,8 +441,11 @@ class SessionFormScreen(Screen):
             try:
                 self.app_store.run_compare()
                 self.app_store.navigate_to("compare_report")
-            except Exception:
-                self.app_store.navigate_to("dashboard")
+            except ValueError:
+                # Save succeeded, but compare isn't possible yet.
+                self.status_label.text = "Gespeichert. Vergleich ist erst möglich, wenn Person A und Person B ausgefüllt haben."
+            except Exception as e:
+                self.status_label.text = f"Gespeichert, aber Auswertung fehlgeschlagen: {str(e)}"
         except Exception as e:
             self.status_label.text = f"Fehler: {str(e)}"
 

@@ -83,7 +83,7 @@ class ScaleInput(BaseInput):
                 self.slider.value = v
                 self.value_label.text = str(v)
                 self._touched = True
-            except Exception:
+            except (ValueError, TypeError):
                 pass
 
     def _on_slider(self, _inst, value: float) -> None:
@@ -166,7 +166,10 @@ class MultiChoiceInput(BaseInput):
             self._selected.add(option)
         else:
             self._selected.discard(option)
-        self._on_change({"values": sorted(list(self._selected))})
+        # Preserve the option order as shown in the UI/template (more predictable
+        # than alphabetical sorting or "selection order").
+        ordered_values = [opt for opt in self._options if opt in self._selected]
+        self._on_change({"values": ordered_values})
 
 
 class TextAnswerInput(BaseInput):
@@ -294,14 +297,14 @@ class ConsentRatingInput(BaseInput):
             if interest is not None:
                 try:
                     self.interest_slider.value = int(interest)
-                except Exception:
+                except (ValueError, TypeError):
                     pass
 
             comfort = response.get("comfort")
             if comfort is not None:
                 try:
                     self.comfort_slider.value = int(comfort)
-                except Exception:
+                except (ValueError, TypeError):
                     pass
 
             notes = response.get("notes")
