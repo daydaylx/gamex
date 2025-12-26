@@ -70,6 +70,9 @@ def flatten_template_questions(template: Dict[str, Any]) -> List[Dict[str, Any]]
     for module in template.get("modules", []) or []:
         module_id = module.get("id", "")
         module_name = module.get("name", "")
+        module_description = module.get("description", "") or ""
+        module_emoji = module.get("emoji", "") or ""
+        module_context = module.get("context", "") or module_description
         for q in module.get("questions", []) or []:
             schema = q.get("schema", "text")
             required = bool(q.get("required", True))
@@ -89,6 +92,9 @@ def flatten_template_questions(template: Dict[str, Any]) -> List[Dict[str, Any]]
                 template_schema=str(schema),
                 moduleId=str(module_id),
                 moduleName=str(module_name),
+                moduleDescription=str(module_description),
+                moduleEmoji=str(module_emoji),
+                moduleContext=str(module_context),
                 raw=dict(q),
             )
             questions.append(qq.model_dump(by_alias=True))

@@ -66,6 +66,9 @@ class Question(BaseModel):
     template_schema: str = Field(default="", alias="schema")  # original template schema, used by backend compare
     module_id: str = Field(default="", alias="moduleId")
     module_name: str = Field(default="", alias="moduleName")
+    module_description: str = Field(default="", alias="moduleDescription")
+    module_emoji: str = Field(default="", alias="moduleEmoji")
+    module_context: str = Field(default="", alias="moduleContext")
     raw: dict[str, Any] = Field(default_factory=dict)
 
     model_config = {

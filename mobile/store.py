@@ -80,6 +80,7 @@ class AppStore(EventDispatcher):
     wizard_started = BooleanProperty(False)
     current_question_index = NumericProperty(0)  # Index in flattened question list
     wizard_questions = ListProperty([])  # Flattened list of all questions
+    module_intro_seen = DictProperty({})
 
     # Auto-save
     auto_save_interval = NumericProperty(5.0)  # seconds
@@ -402,6 +403,7 @@ class AppStore(EventDispatcher):
         # Build structured question list (JSON-friendly dicts)
         questions = flatten_template_questions(self.current_template)
         self.wizard_questions = questions
+        self.module_intro_seen = {}
 
         self._wizard.start(questions)
         self.current_question_index = self._wizard.index
@@ -473,12 +475,13 @@ class AppStore(EventDispatcher):
         """Check if current question is the first one."""
         return int(self.current_question_index) == 0
 
-    def get_wizard_progress(self) -> Dict[str, int]:
+    def get_wizard_progress(self) -> Dict[str, Any]:
         """
         Get wizard progress info.
 
         Returns:
             Dict with 'current' (1-indexed), 'total', 'module_name'
+            plus module metadata used for intros.
         """
         if not self.wizard_started:
             return {'current': 0, 'total': 0, 'module_name': ''}
@@ -488,7 +491,27 @@ class AppStore(EventDispatcher):
             'current': self.current_question_index + 1,
             'total': len(self.wizard_questions),
             'module_name': current_q.get('moduleName', '') if current_q else '',
+            'module_id': current_q.get('moduleId', '') if current_q else '',
+            'module_description': current_q.get('moduleDescription', '') if current_q else '',
+            'module_emoji': current_q.get('moduleEmoji', '') if current_q else '',
+            'module_context': current_q.get('moduleContext', '') if current_q else '',
         }
+
+    def has_seen_module_intro(self, module_id: str) -> bool:
+        """Check if an intro card was already shown for a module."""
+        if not module_id:
+            return True
+        return bool(self.module_intro_seen.get(module_id))
+
+    def mark_module_intro_seen(self, module_id: str) -> None:
+        """Mark a module intro card as shown."""
+        if not module_id:
+            return
+        seen = dict(self.module_intro_seen or {})
+        if seen.get(module_id):
+            return
+        seen[module_id] = True
+        self.module_intro_seen = seen
 
     def complete_wizard(self):
         """Mark wizard as completed and save."""
