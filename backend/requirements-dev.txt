@@ -7,7 +7,7 @@ pytest-asyncio==1.3.0
 pytest-cov==6.0.0
 
 # Code Quality
-flake8==7.1.1
+flake8==7.3.0
 mypy==1.13.0
 black==24.10.0
 isort==7.0.0
