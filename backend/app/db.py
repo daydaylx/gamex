@@ -40,6 +40,29 @@ def db() -> Iterator[sqlite3.Connection]:
     finally:
         conn.close()
 
+def _migrate_sessions_for_encryption(conn: sqlite3.Connection) -> None:
+    """
+    Add encryption-related columns to sessions table if they don't exist.
+    Safe to run multiple times (idempotent).
+    """
+    # Check existing columns
+    cols = [r["name"] for r in conn.execute("PRAGMA table_info(sessions)").fetchall()]
+
+    # Add encrypted_session_key column
+    if "encrypted_session_key" not in cols:
+        conn.execute("ALTER TABLE sessions ADD COLUMN encrypted_session_key TEXT")
+
+    # Add session_salt column
+    if "session_salt" not in cols:
+        conn.execute("ALTER TABLE sessions ADD COLUMN session_salt TEXT")
+
+    # Add encryption_version column
+    if "encryption_version" not in cols:
+        conn.execute("ALTER TABLE sessions ADD COLUMN encryption_version INTEGER DEFAULT 0")
+
+    # Note: encryption_version = 0 means unencrypted (legacy)
+    #       encryption_version = 1 means encrypted with hybrid system
+
 def init_db() -> None:
     with db() as conn:
         # Detect legacy encrypted schema early and fail loudly to avoid silently
@@ -98,6 +121,21 @@ def init_db() -> None:
             FOREIGN KEY(session_id) REFERENCES sessions(id) ON DELETE CASCADE
         );
         """)
+
+        # Encryption tables (hybrid encryption system)
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS keychain (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            encrypted_master_key TEXT NOT NULL,
+            salt TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            version INTEGER DEFAULT 1
+        );
+        """)
+
+        # Add encryption columns to sessions table (migration-safe)
+        _migrate_sessions_for_encryption(conn)
 
 
 

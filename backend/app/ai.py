@@ -9,8 +9,24 @@ import httpx
 
 from app.db import db
 
+# Security: Whitelist of allowed AI provider base URLs
+ALLOWED_AI_PROVIDERS = {
+    "https://openrouter.ai/api/v1",
+    "https://api.openai.com/v1",
+    "https://api.anthropic.com/v1",
+}
+
 def _utcnow() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+def _validate_ai_provider_url(base_url: str) -> bool:
+    """
+    Validate that the AI provider URL is in the whitelist.
+    Returns True if valid, False otherwise.
+    """
+    # Normalize URL (remove trailing slash)
+    normalized_url = base_url.rstrip("/")
+    return normalized_url in ALLOWED_AI_PROVIDERS
 
 def _build_prompt(compare_result: Dict[str, Any]) -> str:
     # Keep it non-explicit. Focus on consent, boundaries, planning.
@@ -51,6 +67,12 @@ async def openrouter_analyze(
     max_tokens: int,
     redact_free_text: bool,
 ) -> Dict[str, Any]:
+    # Security: Validate AI provider URL is whitelisted
+    if not _validate_ai_provider_url(base_url):
+        raise ValueError(
+            f"AI provider URL not allowed. Must be one of: {', '.join(ALLOWED_AI_PROVIDERS)}"
+        )
+
     payload_compare = redact(compare_result, drop_free_text=redact_free_text)
     prompt = _build_prompt(payload_compare)
 

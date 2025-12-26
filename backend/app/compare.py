@@ -37,8 +37,9 @@ def _load_scenarios() -> List[Dict[str, Any]]:
 
 def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, Any]) -> Dict[str, Any]:
     start = time.time()
-    scenarios = _load_scenarios()
-    result = _core_compare(template, resp_a, resp_b, scenarios=scenarios)
+    # Note: scenarios loading kept for potential future use
+    # scenarios = _load_scenarios()
+    result = _core_compare(template, resp_a, resp_b)
     duration = (time.time() - start) * 1000
     log_performance("compare_operation", duration,
                    template_id=template.get("id"),
