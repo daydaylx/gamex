@@ -62,7 +62,7 @@ class HelpAccordion(BoxLayout):
         if self.expanded:
             self.toggle_btn.text = "Hilfe ausblenden"
             self.body_label.opacity = 1
-            # Ensure label height is up-to-date
+            # Force Kivy to recompute the label's texture/height based on the current text
             self.body_label.text = self.body_label.text
         else:
             self.toggle_btn.text = "Was bedeutet das?"
