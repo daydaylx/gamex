@@ -124,9 +124,9 @@ Dann im Browser öffnen: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 Einschränkungen im Offline-Modus:
 - **Export** und **KI-Analyse** sind aktuell **nicht verfügbar** (Server-Endpoints).
 
-### Android App
+### Android App (Capacitor WebView)
 
-Für die native Android-App siehe die detaillierte Anleitung: [docs/APK_BUILD_GUIDE.md](docs/APK_BUILD_GUIDE.md)
+Für die Capacitor-basierte Android-App (WebView) siehe die detaillierte Anleitung: [docs/APK_BUILD_GUIDE.md](docs/APK_BUILD_GUIDE.md)
 
 **Kurzfassung:**
 ```bash
@@ -143,6 +143,36 @@ npx cap sync android
 
 # Android Studio öffnen
 npx cap open android
+```
+
+### Native Mobile App (Kivy)
+
+**Neu:** Eine native Kivy-basierte Android-App ohne WebView-Abhängigkeiten für bessere Performance und kleinere APK-Größe.
+
+**Vorteile:**
+- ✅ Schnellere Startzeit (kein WebView-Overhead)
+- ✅ Kleinerer APK (ca. 20-30 MB statt 50+ MB)
+- ✅ Vollständige Offline-Funktionalität
+- ✅ Native UI-Performance
+- ✅ Wiederverwendung der Backend-Logik
+
+Siehe detaillierte Dokumentation: [mobile/README.md](mobile/README.md)
+
+**Kurzfassung:**
+```bash
+cd mobile
+
+# Abhängigkeiten installieren
+pip install -r requirements.txt
+
+# Templates kopieren
+cp -r ../backend/templates/*.json assets/templates/
+
+# Debug APK bauen
+buildozer android debug
+
+# APK installieren
+adb install -r bin/gamex-1.0.0-debug.apk
 ```
 
 ## Dokumentation
