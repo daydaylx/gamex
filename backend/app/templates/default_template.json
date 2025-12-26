@@ -17,8 +17,8 @@
             "time",
             "stress"
           ],
-          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
-          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung."
+          "label": "Lasst uns besprechen: Wie viel Ruhe/Quality Time haben wir aktuell gefühlt.",
+          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "L02",
@@ -27,8 +27,8 @@
           "tags": [
             "coping"
           ],
-          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
-          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
+          "label": "Lasst uns besprechen: Wenn einer von uns gestresst ist: Was ist die beste Strategie.",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "options": [
             "Sex zur Entspannung hilft",
             "Lieber nur Kuscheln/Massage",
@@ -45,8 +45,8 @@
             "privacy",
             "digital"
           ],
-          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
-          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
+          "label": "Lasst uns besprechen: Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir.",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "options": [
             "Nichts digital speichern",
             "Verschlüsselt/Hidden Folder ok",
@@ -62,8 +62,8 @@
           "tags": [
             "time"
           ],
-          "label": "Minimale Zeit für Quality Time?",
-          "help": "Wie viel Zeit brauchen wir mindestens?",
+          "label": "Lasst uns besprechen: Minimale Zeit für Quality Time.",
+          "help": "Wie viel Zeit brauchen wir mindestens? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "options": [
             "30 Minuten",
             "1 Stunde",
@@ -80,8 +80,8 @@
             "privacy",
             "boundaries"
           ],
-          "label": "Privatsphäre: Wer darf was wissen?",
-          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos)."
+          "label": "Lasst uns besprechen: Privatsphäre: Wer darf was wissen.",
+          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         }
       ]
     },
@@ -97,8 +97,8 @@
           "tags": [
             "satisfaction"
           ],
-          "label": "Wie zufrieden bist du aktuell insgesamt mit eurem Sexleben?",
-          "help": "0 = gar nicht, 10 = sehr. Ein Stimmungsbild, keine Kritik."
+          "label": "Lasst uns besprechen: Wie zufrieden bist du aktuell insgesamt mit eurem Sexleben.",
+          "help": "0 = gar nicht, 10 = sehr. Ein Stimmungsbild, keine Kritik. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "Q02",
@@ -107,8 +107,8 @@
           "tags": [
             "communication"
           ],
-          "label": "Wie leicht fällt es dir, Wünsche auszusprechen?",
-          "help": "0 = sehr schwer (Scham/Angst), 10 = sehr leicht (offenes Buch)."
+          "label": "Lasst uns besprechen: Wie leicht fällt es dir, Wünsche auszusprechen.",
+          "help": "0 = sehr schwer (Scham/Angst), 10 = sehr leicht (offenes Buch). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "Q03",
@@ -117,8 +117,8 @@
           "tags": [
             "boundaries"
           ],
-          "label": "Wie leicht fällt es dir, 'Nein' zu sagen?",
-          "help": "0 = sehr schwer (Angst vor Ablehnung), 10 = sehr leicht."
+          "label": "Lasst uns besprechen: Wie leicht fällt es dir, 'Nein' zu sagen.",
+          "help": "0 = sehr schwer (Angst vor Ablehnung), 10 = sehr leicht. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "Q04",
@@ -127,8 +127,8 @@
           "tags": [
             "aftercare"
           ],
-          "label": "Was brauchst du nach intensiveren Momenten (Aftercare) eher?",
-          "help": "Wichtig, um emotional wieder zu landen.",
+          "label": "Lasst uns besprechen: Was brauchst du nach intensiveren Momenten (Aftercare) eher.",
+          "help": "Wichtig, um emotional wieder zu landen. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "options": [
             "Nähe/Kuscheln",
             "Reden/Feedback",
@@ -144,8 +144,8 @@
           "tags": [
             "safety"
           ],
-          "label": "Stop-Regel: Was soll ein Stop bedeuten?",
-          "help": "Sicherheit geht vor. Ein Stop muss sofort respektiert werden.",
+          "label": "Lasst uns besprechen: Stop-Regel: Was soll ein Stop bedeuten.",
+          "help": "Sicherheit geht vor. Ein Stop muss sofort respektiert werden. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "options": [
             "Sofort beenden",
             "Pause & Check-in",
@@ -167,8 +167,8 @@
           "tags": [
             "roles"
           ],
-          "label": "Welche Rolle fühlt sich für dich am natürlichsten an?",
-          "help": "Tendenz. Switch = Wechselt je nach Stimmung.",
+          "label": "Lasst uns besprechen: Welche Rolle fühlt sich für dich am natürlichsten an.",
+          "help": "Tendenz. Switch = Wechselt je nach Stimmung. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "options": [
             "Dominant (Führend)",
             "Devot (Empfangend)",
@@ -185,8 +185,8 @@
             "control",
             "lead"
           ],
-          "label": "Aktives Führen: Ich mag es, Entscheidungen zu treffen und das Tempo zu bestimmen.",
-          "help": "Verantwortung übernehmen, nicht 'Bossy' sein (außer gewünscht)."
+          "label": "Lasst uns besprechen: Aktives Führen: Ich mag es, Entscheidungen zu treffen und das Tempo zu bestimmen.",
+          "help": "Verantwortung übernehmen, nicht 'Bossy' sein (außer gewünscht). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "Q12",
@@ -196,8 +196,8 @@
             "control",
             "follow"
           ],
-          "label": "Hingabe: Ich mag es, Verantwortung abzugeben und mich führen zu lassen.",
-          "help": "Loslassen können. Erfordert Sicherheit, dass der andere achtsam ist."
+          "label": "Lasst uns besprechen: Hingabe: Ich mag es, Verantwortung abzugeben und mich führen zu lassen.",
+          "help": "Loslassen können. Erfordert Sicherheit, dass der andere achtsam ist. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "Q13",
@@ -206,8 +206,8 @@
           "tags": [
             "rules"
           ],
-          "label": "Regeln & Rituale (z.B. Belohnung, Kleiderordnung, Haltung).",
-          "help": "Strukturiert die Interaktion. Nur bei vollem Konsens spaßig."
+          "label": "Lasst uns besprechen: Regeln & Rituale (z.B. Belohnung, Kleiderordnung, Haltung).",
+          "help": "Strukturiert die Interaktion. Nur bei vollem Konsens spaßig. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         }
       ]
     },
@@ -224,8 +224,8 @@
             "sensual",
             "massage"
           ],
-          "label": "Ausführliche Massagen / Sinnliche Berührungen (Ganzkörper).",
-          "help": "Fokus auf Entspannung und Körpergefühl, kein Leistungsdruck."
+          "label": "Lasst uns besprechen: Ausführliche Massagen / Sinnliche Berührungen (Ganzkörper).",
+          "help": "Fokus auf Entspannung und Körpergefühl, kein Leistungsdruck. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "T02",
@@ -235,8 +235,8 @@
             "oral",
             "give"
           ],
-          "label": "Oralsex aktiv geben (dich verwöhnen).",
-          "help": "Bewerte, wie gerne du das tust."
+          "label": "Lasst uns besprechen: Oralsex aktiv geben (dich verwöhnen).",
+          "help": "Bewerte, wie gerne du das tust. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "T03",
@@ -246,8 +246,8 @@
             "oral",
             "receive"
           ],
-          "label": "Oralsex empfangen (verwöhnt werden).",
-          "help": "Bewerte, wie sehr du das genießt."
+          "label": "Lasst uns besprechen: Oralsex empfangen (verwöhnt werden).",
+          "help": "Bewerte, wie sehr du das genießt. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "T04",
@@ -256,8 +256,8 @@
           "tags": [
             "manual"
           ],
-          "label": "Manuelle Stimulation (Handjob / Fingern).",
-          "help": "Mit den Händen zum Höhepunkt bringen/gebracht werden."
+          "label": "Lasst uns besprechen: Manuelle Stimulation (Handjob / Fingern).",
+          "help": "Mit den Händen zum Höhepunkt bringen/gebracht werden. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "T05",
@@ -266,8 +266,8 @@
           "tags": [
             "roughness"
           ],
-          "label": "Etwas härtere Gangart (z.B. festes Zupacken, Haare ziehen).",
-          "help": "Grenze zu Schmerz beachten. 'Fest' ist subjektiv – vorher kalibrieren!"
+          "label": "Lasst uns besprechen: Etwas härtere Gangart (z.B. festes Zupacken, Haare ziehen).",
+          "help": "Grenze zu Schmerz beachten. 'Fest' ist subjektiv – vorher kalibrieren! Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         }
       ]
     },
@@ -284,8 +284,8 @@
             "toys",
             "vibrator"
           ],
-          "label": "Einsatz von Vibratoren / Sextoys.",
-          "help": "Zur gemeinsamen Stimulation."
+          "label": "Lasst uns besprechen: Einsatz von Vibratoren / Sextoys.",
+          "help": "Zur gemeinsamen Stimulation. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "Y02",
@@ -295,8 +295,8 @@
             "bondage",
             "soft"
           ],
-          "label": "Leichte Fesselungen / Fixierung (Soft Bondage).",
-          "help": "Seile, Tücher, Handschellen. WICHTIG: Niemals Blut abschnüren, Nervenbahnen schützen."
+          "label": "Lasst uns besprechen: Leichte Fesselungen / Fixierung (Soft Bondage).",
+          "help": "Seile, Tücher, Handschellen. WICHTIG: Niemals Blut abschnüren, Nervenbahnen schützen. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "Y03",
@@ -306,8 +306,8 @@
             "sensory",
             "blindfold"
           ],
-          "label": "Augen verbinden / Sinnesentzug.",
-          "help": "Verstärkt das Fühlen, erfordert aber mehr verbale Kommunikation."
+          "label": "Lasst uns besprechen: Augen verbinden / Sinnesentzug.",
+          "help": "Verstärkt das Fühlen, erfordert aber mehr verbale Kommunikation. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         }
       ]
     },
@@ -325,8 +325,8 @@
             "rimming",
             "massage"
           ],
-          "label": "Anale Stimulation außen / Massage / Rimming.",
-          "help": "Keine Penetration. Fokus auf Entspannung und Gefühl."
+          "label": "Lasst uns besprechen: Anale Stimulation außen / Massage / Rimming.",
+          "help": "Keine Penetration. Fokus auf Entspannung und Gefühl. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "AN02",
@@ -344,8 +344,8 @@
             "toys",
             "plug"
           ],
-          "label": "Anale Spielzeuge (Plugs, kleine Dildos).",
-          "help": "Nur mit Stop-Base (Sicherheitsrückholer)! Viel Gleitgel."
+          "label": "Lasst uns besprechen: Anale Spielzeuge (Plugs, kleine Dildos).",
+          "help": "Nur mit Stop-Base (Sicherheitsrückholer)! Viel Gleitgel. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "AN03",
@@ -362,8 +362,8 @@
             "anal",
             "penetration"
           ],
-          "label": "Anale Penetration (Penis).",
-          "help": "Erfordert viel Zeit, Vorbereitung und Entspannung. Kein 'Einfach rein'."
+          "label": "Lasst uns besprechen: Anale Penetration (Penis).",
+          "help": "Erfordert viel Zeit, Vorbereitung und Entspannung. Kein 'Einfach rein'. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         }
       ]
     },
@@ -380,8 +380,8 @@
             "spanking",
             "impact"
           ],
-          "label": "Spanking / Hauen (Hand oder Toys).",
-          "help": "Zonen beachten (Po ist sicher, Nieren/Rücken sind tabu). Safe-Word vereinbaren!"
+          "label": "Lasst uns besprechen: Spanking / Hauen (Hand oder Toys).",
+          "help": "Zonen beachten (Po ist sicher, Nieren/Rücken sind tabu). Safe-Word vereinbaren! Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "S02",
@@ -391,8 +391,8 @@
             "marking",
             "biting"
           ],
-          "label": "Beißen, Kratzen oder 'Markieren' (Knutschflecken).",
-          "help": "Soziale Folgen bedenken (sichtbare Flecken am Hals?)."
+          "label": "Lasst uns besprechen: Beißen, Kratzen oder 'Markieren' (Knutschflecken).",
+          "help": "Soziale Folgen bedenken (sichtbare Flecken am Hals?). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "S03",
@@ -401,8 +401,8 @@
           "tags": [
             "temperature"
           ],
-          "label": "Temperaturspiele (Eiswürfel, warmes Öl).",
-          "help": "Vorsicht vor Verbrennungen (Wachs) oder Kältebrand."
+          "label": "Lasst uns besprechen: Temperaturspiele (Eiswürfel, warmes Öl).",
+          "help": "Vorsicht vor Verbrennungen (Wachs) oder Kältebrand. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "BP01",
@@ -412,8 +412,8 @@
             "breathplay",
             "light"
           ],
-          "label": "Hand am Hals (nur Berührung, kein Druck)",
-          "help": "Nur äußerliche Berührung, keine Kompression."
+          "label": "Lasst uns besprechen: Hand am Hals (nur Berührung, kein Druck).",
+          "help": "Nur äußerliche Berührung, keine Kompression. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "BP02",
@@ -430,8 +430,8 @@
             "breathplay",
             "light"
           ],
-          "label": "Leichter Druck seitlich (NICHT am Kehlkopf)",
-          "help": "Nur seitlich, niemals vorne am Kehlkopf. Stop-Signal vereinbaren."
+          "label": "Lasst uns besprechen: Leichter Druck seitlich (NICHT am Kehlkopf).",
+          "help": "Nur seitlich, niemals vorne am Kehlkopf. Stop-Signal vereinbaren. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "BP03",
@@ -448,8 +448,8 @@
             "breathplay",
             "risk"
           ],
-          "label": "Würgespiele mit Druck (erfordert Kenntnisse)",
-          "help": "⚠️ HIGH RISK: Kehlkopf TABU. Nur seitlich. Non-verbales Stop-Signal (Klopfen). Erste-Hilfe-Kenntnisse empfohlen."
+          "label": "Lasst uns besprechen: Würgespiele mit Druck (erfordert Kenntnisse).",
+          "help": "⚠️ HIGH RISK: Kehlkopf TABU. Nur seitlich. Non-verbales Stop-Signal (Klopfen). Erste-Hilfe-Kenntnisse empfohlen. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         }
       ]
     },
@@ -465,8 +465,8 @@
           "tags": [
             "voyeurism"
           ],
-          "label": "Der Gedanke, andere zu beobachten / beim Sex gesehen zu werden.",
-          "help": "Unterscheide Fantasie (Kopfkino) vs. Realität (Club, Party)."
+          "label": "Lasst uns besprechen: Der Gedanke, andere zu beobachten / beim Sex gesehen zu werden.",
+          "help": "Unterscheide Fantasie (Kopfkino) vs. Realität (Club, Party). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "Q25",
@@ -477,8 +477,8 @@
             "group",
             "soft_swap"
           ],
-          "label": "Küssen/Anfassen mit Dritten (ohne Penetration).",
-          "help": "Soft-Swap mit klaren Regeln. Zwischen Fantasie und Sex ein Zwischenschritt.",
+          "label": "Lasst uns besprechen: Küssen/Anfassen mit Dritten (ohne Penetration).",
+          "help": "Soft-Swap mit klaren Regeln. Zwischen Fantasie und Sex ein Zwischenschritt. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "depends_on": {
             "id": "Q20",
             "values": [
@@ -495,8 +495,8 @@
             "threesome",
             "group"
           ],
-          "label": "Sex mit weiteren Personen (Dreier etc.).",
-          "help": "Großes emotionales Risiko (Eifersucht, Ausschluss). Nur bei sehr stabiler Basis. Fantasie ist safe.",
+          "label": "Lasst uns besprechen: Sex mit weiteren Personen (Dreier etc.).",
+          "help": "Großes emotionales Risiko (Eifersucht, Ausschluss). Nur bei sehr stabiler Basis. Fantasie ist safe. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "depends_on": {
             "id": "Q25",
             "values": [
@@ -527,8 +527,8 @@
             "fisting",
             "progression"
           ],
-          "label": "Erweiterte Dehnung mit 3-4 Fingern",
-          "help": "Schrittweise Steigerung. Viel Gleitgel, kein Zwang. Stop bei Schmerz."
+          "label": "Lasst uns besprechen: Erweiterte Dehnung mit 3-4 Fingern.",
+          "help": "Schrittweise Steigerung. Viel Gleitgel, kein Zwang. Stop bei Schmerz. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "F02",
@@ -545,8 +545,8 @@
             "fisting",
             "intense"
           ],
-          "label": "Fisting / Hand-Penetration (Erfordert Erfahrung)",
-          "help": "⚠️ HIGH RISK: Erfordert Profi-Wissen, viel Zeit und Hygiene. Verletzungsgefahr. Nur bei sehr erfahrenen Praktizierenden."
+          "label": "Lasst uns besprechen: Fisting / Hand-Penetration (Erfordert Erfahrung).",
+          "help": "⚠️ HIGH RISK: Erfordert Profi-Wissen, viel Zeit und Hygiene. Verletzungsgefahr. Nur bei sehr erfahrenen Praktizierenden. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "F03A",
@@ -556,8 +556,8 @@
             "watersports",
             "fluids"
           ],
-          "label": "Natursekt auf Körper/Kleidung (ohne Mund).",
-          "help": "Hygiene klären, Grenzen setzen, nichts trinken."
+          "label": "Lasst uns besprechen: Natursekt auf Körper/Kleidung (ohne Mund).",
+          "help": "Hygiene klären, Grenzen setzen, nichts trinken. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "F03",
@@ -567,8 +567,8 @@
             "watersports",
             "fluids"
           ],
-          "label": "Natursekt (im Mund / auf Schleimhäuten).",
-          "help": "Fortgeschritten: Hygiene, klare Grenzen und Stop-Signal.",
+          "label": "Lasst uns besprechen: Natursekt (im Mund / auf Schleimhäuten).",
+          "help": "Fortgeschritten: Hygiene, klare Grenzen und Stop-Signal. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
           "depends_on": {
             "id": "F03A",
             "values": [
@@ -585,8 +585,8 @@
             "feet",
             "bodyparts"
           ],
-          "label": "Fußfetisch / Körperteil-Worship.",
-          "help": "Fokus auf Füße, Hände etc."
+          "label": "Lasst uns besprechen: Fußfetisch / Körperteil-Worship.",
+          "help": "Fokus auf Füße, Hände etc. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "F05",
@@ -596,8 +596,8 @@
             "gear",
             "material"
           ],
-          "label": "Material-Fetisch (Latex, Leder, Lack, Nylon).",
-          "help": "Tragen von bestimmten Materialien."
+          "label": "Lasst uns besprechen: Material-Fetisch (Latex, Leder, Lack, Nylon).",
+          "help": "Tragen von bestimmten Materialien. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         }
       ]
     },
@@ -614,8 +614,8 @@
             "review",
             "repeat"
           ],
-          "label": "Bereits erlebt: Intensive Praktik wiederholen?",
-          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen?"
+          "label": "Lasst uns besprechen: Bereits erlebt: Intensive Praktik wiederholen.",
+          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "R03",
@@ -625,8 +625,8 @@
             "review",
             "less"
           ],
-          "label": "Drop-List: Was möchtest du aktuell WENIGER machen / pausieren?",
-          "help": "Ohne Rechtfertigung. Einfach 'Pause bei X'."
+          "label": "Lasst uns besprechen: Drop-List: Was möchtest du aktuell WENIGER machen / pausieren.",
+          "help": "Ohne Rechtfertigung. Einfach 'Pause bei X'. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "R04",
@@ -636,8 +636,8 @@
             "review",
             "highlight"
           ],
-          "label": "Highlight: Was war besonders schön und sollte öfter passieren?",
-          "help": "Positives Feedback bestärkt."
+          "label": "Lasst uns besprechen: Highlight: Was war besonders schön und sollte öfter passieren.",
+          "help": "Positives Feedback bestärkt. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "R06",
@@ -647,8 +647,8 @@
             "review",
             "friction"
           ],
-          "label": "Was hat nicht funktioniert?",
-          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt?"
+          "label": "Lasst uns besprechen: Was hat nicht funktioniert.",
+          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "R05",
@@ -658,8 +658,8 @@
             "review",
             "debrief"
           ],
-          "label": "Debrief-Log: Letzte 4 Experimente",
-          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht?"
+          "label": "Lasst uns besprechen: Debrief-Log: Letzte 4 Experimente.",
+          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         },
         {
           "id": "R02",
@@ -669,8 +669,8 @@
             "review",
             "notes"
           ],
-          "label": "Generelle Notizen / Wünsche an uns.",
-          "help": "Platz für alles, was sonst nirgends hinpasste."
+          "label": "Lasst uns besprechen: Generelle Notizen / Wünsche an uns.",
+          "help": "Platz für alles, was sonst nirgends hinpasste. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
         }
       ]
     }
