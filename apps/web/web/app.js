@@ -36,6 +36,9 @@ const state = {
   scenarios: [],
   scenarioDecks: [],
   activeDeck: null,
+  activeView: "dashboard",
+  activeSessionTab: "form",
+  formMode: "simple",
 };
 
 const ERROR_LOG_KEY = "intimacy:lastErrors";
@@ -120,6 +123,29 @@ function show(el, yes) {
   }
 }
 
+function setActiveNav(view) {
+  const navButtons = document.querySelectorAll('#primaryNav .nav-link');
+  navButtons.forEach((btn) => {
+    const nav = btn.dataset.nav;
+    const target = view === "session" ? "sessions" : view;
+    btn.classList.toggle("active", nav === target);
+  });
+}
+
+function setView(view) {
+  state.activeView = view;
+  document.querySelectorAll('[data-view-panel]').forEach((panel) => {
+    const panelView = panel.dataset.view;
+    const shouldShow = panelView === view || (view === "sessions" && panelView === "dashboard");
+    show(panel, shouldShow);
+  });
+  setActiveNav(view);
+
+  if (view === "sessions") {
+    document.getElementById("sessionsCard")?.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
 function msg(el, text, kind = "") {
   el.textContent = text || "";
   el.className = "msg" + (kind ? ` ${kind}` : "");
@@ -135,9 +161,15 @@ function showError(el, error, prefix = "Fehler") {
 
 function setSaveStatus(text, kind = "") {
   const el = $("saveStatus");
-  if (!el) return;
-  el.textContent = text || "";
-  el.className = "save-status" + (kind ? ` ${kind}` : "");
+  const chip = $("saveStatusChip");
+  if (el) {
+    el.textContent = text || "";
+    el.className = "save-status" + (kind ? ` ${kind}` : "");
+  }
+  if (chip) {
+    chip.textContent = text || "";
+    chip.className = "save-status chip" + (kind ? ` ${kind}` : "");
+  }
 }
 
 function setValidationSummary(text, kind = "") {
@@ -264,19 +296,12 @@ async function openSession(sessionId) {
   const info = await api(`/api/sessions/${sessionId}`);
   state.currentSession = info;
   state.currentTemplate = info.template;
-
-  show($("home"), false);
-  show($("create"), false);
-  show($("extras"), false); 
-  show($("sessionView"), true);
-  updateMobileNavVisibility();
+  setView("session");
 
   $("sessTitle").textContent = info.name;
   renderSessionMeta();
 
-  show($("panelForm"), false);
-  show($("panelCompare"), false);
-  show($("panelAI"), false);
+  setSessionTab("form");
   msg($("sessionMsg"), "");
   msg($("saveMsg"), "");
   setSaveStatus("");
@@ -322,11 +347,7 @@ function backHome() {
   if (window.LocalApi && typeof window.LocalApi.clearCache === "function") {
     window.LocalApi.clearCache();
   }
-  show($("sessionView"), false);
-  show($("scenarioView"), false);
-  show($("home"), true);
-  show($("create"), true);
-  show($("extras"), true);
+  setView("dashboard");
   updateSessionFlowUI();
   loadSessions();
 }
@@ -377,6 +398,36 @@ function updateSessionFlowUI() {
     btn.setAttribute("aria-disabled", String(!exportReady));
     btn.title = exportReady ? "" : "Export verfügbar, sobald mindestens eine Person gespeichert hat.";
   });
+}
+
+function setFormMode(mode) {
+  state.formMode = mode;
+  document.documentElement.setAttribute("data-form-mode", mode);
+  document
+    .querySelectorAll('.mode-toggle .chip')
+    .forEach((chip) => chip.classList.toggle('active', chip.dataset.mode === mode));
+}
+
+function setSessionTab(tab) {
+  state.activeSessionTab = tab;
+  document.querySelectorAll('#sessionTabs .tab-link').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.tab === tab);
+  });
+
+  show($("panelForm"), tab === "form");
+  show($("panelCompare"), tab === "compare");
+  show($("panelAI"), tab === "ai");
+  show($("panelScenarios"), tab === "scenarios");
+
+  if (tab === "compare" && state.currentSession) {
+    if (!state.compareData) {
+      doCompare().catch((e) => showError($("sessionMsg"), e, "Vergleich fehlgeschlagen"));
+    }
+  }
+
+  if (tab === "scenarios") {
+    loadScenarios({ hostId: "sessionScenarioHost", msgId: "sessionScenarioMsg", inline: true });
+  }
 }
 
 function escapeHtml(str) {
@@ -1036,9 +1087,13 @@ function collectForm() {
 }
 
 // Scenarios
-async function loadScenarios() {
+async function loadScenarios(options = {}) {
+  const { hostId = "scenarioHost", msgId = "scenarioMsg", inline = false } = options;
+  const hostEl = $(hostId);
+  const msgEl = $(msgId);
+  if (!hostEl) return;
   try {
-    msg($("scenarioMsg"), "");
+    msg(msgEl, "");
     const data = await api("/api/scenarios");
     // Handle both old format (array) and new format (object with decks)
     if (Array.isArray(data)) {
@@ -1053,21 +1108,18 @@ async function loadScenarios() {
       }
     }
     state.scenarioFilters = { category: "ALL", status: "ALL", gateOnly: false };
-    renderScenarios();
-    show($("home"), false);
-    show($("create"), false);
-    show($("extras"), false);
-    show($("scenarioView"), true);
+    renderScenarios(hostEl);
+    if (!inline) setView("scenarios");
   } catch(e) {
-    showError($("scenarioMsg"), e, "Szenarien konnten nicht geladen werden");
+    showError(msgEl, e, "Szenarien konnten nicht geladen werden");
   }
 }
 
-function renderScenarios() {
-  const host = $("scenarioHost");
-  host.innerHTML = "";
-  // Reset grid layout for scenarios to be a single column centered stream
-  host.className = ""; 
+function renderScenarios(host) {
+  const hostEl = host || $("scenarioHost");
+  if (!hostEl) return;
+  hostEl.innerHTML = "";
+  hostEl.className = "scenario-grid";
   
   let activeDeckData = null;
   if (state.scenarioDecks.length > 0) {
@@ -1083,12 +1135,12 @@ function renderScenarios() {
       btn.title = deck.description;
       btn.onclick = () => {
         state.activeDeck = deck.id;
-        renderScenarios();
+        renderScenarios(hostEl);
       };
       deckNav.appendChild(btn);
     });
-    
-    host.appendChild(deckNav);
+
+    hostEl.appendChild(deckNav);
     activeDeckData = decks.find(d => d.id === state.activeDeck) || null;
   }
   
@@ -1100,16 +1152,16 @@ function renderScenarios() {
   
   const getSaved = (id) => { const key = `SCENARIO_${id}`; return state.formResponses[key]?.choice; };
 
-  if (activeDeckData) {
-    const deckInfo = document.createElement("div");
-    deckInfo.className = "scenario-deck-info";
-    deckInfo.innerHTML = `
-      <div class="scenario-deck-title">${escapeHtml(activeDeckData.name)}</div>
-      <div class="scenario-deck-desc">${escapeHtml(activeDeckData.description || "")}</div>
-      ${activeDeckData.requires_safety_gate ? `<div class="badge risk-badge-C">Sicherheits-Gate empfohlen</div>` : ""}
-    `;
-    host.appendChild(deckInfo);
-  }
+    if (activeDeckData) {
+      const deckInfo = document.createElement("div");
+      deckInfo.className = "scenario-deck-info";
+      deckInfo.innerHTML = `
+        <div class="scenario-deck-title">${escapeHtml(activeDeckData.name)}</div>
+        <div class="scenario-deck-desc">${escapeHtml(activeDeckData.description || "")}</div>
+        ${activeDeckData.requires_safety_gate ? `<div class="badge risk-badge-C">Sicherheits-Gate empfohlen</div>` : ""}
+      `;
+      hostEl.appendChild(deckInfo);
+    }
 
   const totalCount = scenariosToShow.length;
   const answeredCount = scenariosToShow.filter(s => getSaved(s.id)).length;
@@ -1148,7 +1200,7 @@ function renderScenarios() {
   categorySelect.value = state.scenarioFilters.category || "ALL";
   categorySelect.onchange = () => {
     state.scenarioFilters.category = categorySelect.value;
-    renderScenarios();
+    renderScenarios(hostEl);
   };
 
   const statusSelect = document.createElement("select");
@@ -1171,7 +1223,7 @@ function renderScenarios() {
   statusSelect.value = state.scenarioFilters.status || "ALL";
   statusSelect.onchange = () => {
     state.scenarioFilters.status = statusSelect.value;
-    renderScenarios();
+    renderScenarios(hostEl);
   };
 
   const gateToggle = document.createElement("label");
@@ -1181,7 +1233,7 @@ function renderScenarios() {
   gateInput.checked = !!state.scenarioFilters.gateOnly;
   gateInput.onchange = () => {
     state.scenarioFilters.gateOnly = gateInput.checked;
-    renderScenarios();
+    renderScenarios(hostEl);
   };
   gateToggle.appendChild(gateInput);
   gateToggle.appendChild(document.createTextNode("Nur mit Sicherheits-Gate"));
@@ -1190,7 +1242,7 @@ function renderScenarios() {
   filters.appendChild(statusSelect);
   filters.appendChild(gateToggle);
   metaBar.appendChild(filters);
-  host.appendChild(metaBar);
+  hostEl.appendChild(metaBar);
 
   const filteredScenarios = scenariosToShow.filter(scen => {
     if (state.scenarioFilters.category !== "ALL" && scen.category !== state.scenarioFilters.category) return false;
@@ -1205,7 +1257,7 @@ function renderScenarios() {
   });
 
   if (filteredScenarios.length === 0) {
-    host.innerHTML += "<div style='text-align:center; padding:40px;'>Keine Szenarien gefunden.</div>";
+    hostEl.innerHTML += "<div style='text-align:center; padding:40px;'>Keine Szenarien gefunden.</div>";
     return;
   }
 
@@ -1353,7 +1405,7 @@ function renderScenarios() {
        }
     }
 
-    host.appendChild(card);
+    hostEl.appendChild(card);
   });
 }
 
@@ -1361,10 +1413,12 @@ function updateScenarioProgress() {
   const total = state.scenarioActiveIds.length;
   const answered = state.scenarioActiveIds.filter(id => state.formResponses[`SCENARIO_${id}`]?.choice).length;
   const pct = total ? Math.round((answered / total) * 100) : 0;
-  const textEl = document.querySelector(".scenario-progress-text");
-  const fillEl = document.querySelector(".scenario-progress-fill");
-  if (textEl) textEl.textContent = `${answered}/${total} beantwortet`;
-  if (fillEl) fillEl.style.width = `${pct}%`;
+  document.querySelectorAll(".scenario-progress-text").forEach((el) => {
+    el.textContent = `${answered}/${total} beantwortet`;
+  });
+  document.querySelectorAll(".scenario-progress-fill").forEach((el) => {
+    el.style.width = `${pct}%`;
+  });
 }
 
 // Helpers (Dependencies, Visibility)
@@ -2010,12 +2064,10 @@ async function startFill(person) {
         method: "POST", body: JSON.stringify({})
     });
     buildForm(state.currentTemplate, res.responses||{});
-    show($("panelForm"), true);
-    show($("panelCompare"), false);
+    setSessionTab("form");
     msg($("saveMsg"), "");
     setSaveStatus("Bereit");
     window.addEventListener('beforeunload', handleBeforeUnload);
-    updateMobileNavVisibility();
 }
 async function saveFill() {
     state.validationEnabled = true;
@@ -2151,9 +2203,7 @@ async function doCompare() {
     });
     state.compareFilters = { bucket: "ALL", riskOnly: false, flaggedOnly: false, query: "", moduleId: null };
     renderCompareView(res);
-    show($("panelCompare"), true);
-    show($("panelForm"), false);
-    updateMobileNavVisibility();
+    setSessionTab("compare");
 }
 
 function handlePrimaryFlow() {
@@ -2313,7 +2363,7 @@ $("btnCreate").onclick = async () => {
         await api("/api/sessions", {
             method:"POST",
             body: JSON.stringify({
-                name: $("newName").value, 
+                name: $("newName").value,
                 template_id: $("newTemplate").value
             })
         });
@@ -2321,18 +2371,21 @@ $("btnCreate").onclick = async () => {
         msg($("createMsg"), "Session erstellt.", "ok");
     } catch(e) { showError($("createMsg"), e, "Session konnte nicht erstellt werden"); }
 };
+
+$("btnStartNew").onclick = () => {
+  setView("sessions");
+  $("newName")?.focus();
+};
+$("btnScrollSessions").onclick = () => setView("sessions");
 $("btnBack").onclick = backHome;
 $("btnPrimaryFlow").onclick = () => handlePrimaryFlow();
 $("btnSaveForm").onclick = () => saveFill().catch((e) => showError($("saveMsg"), e, "Speichern fehlgeschlagen"));
-$("btnCloseForm").onclick = () => {
-    show($("panelForm"), false);
-    setNavOpen(false);
-};
 $("btnCompare").onclick = () => doCompare().catch((e) => showError($("sessionMsg"), e, "Vergleich fehlgeschlagen"));
-$("btnCloseCompare").onclick = () => show($("panelCompare"), false);
+$("btnCloseCompare").onclick = () => setSessionTab("form");
 $("btnScenarios").onclick = () => loadScenarios();
 $("btnScenarios").innerHTML = `${Icons.cards} Szenarien-Modus`;
-$("btnCloseScenarios").onclick = backHome;
+$("btnCloseScenarios").onclick = () => setView("dashboard");
+$("btnOpenScenarioFull").onclick = () => setView("scenarios");
 $("btnClearErrors").onclick = () => { writeErrorLog([]); renderErrorPanel([]); };
 $("btnValidate").onclick = () => {
     state.validationEnabled = true;
@@ -2346,144 +2399,29 @@ $("navBackdrop").onclick = () => setNavOpen(false);
 $("btnExportJson").onclick = () => exportSession("json").catch((e) => showError($("sessionMsg"), e, "Export fehlgeschlagen"));
 $("btnExportMd").onclick = () => exportSession("markdown").catch((e) => showError($("sessionMsg"), e, "Export fehlgeschlagen"));
 $("btnRunAI").onclick = () => runAIAnalysis().catch((e) => showError($("sessionMsg"), e, "KI-Analyse fehlgeschlagen"));
+
+document.querySelectorAll('#primaryNav .nav-link').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.nav;
+    if (target === "scenarios") {
+      loadScenarios();
+    } else {
+      setView(target);
+    }
+  });
+});
+
+document.querySelectorAll('#sessionTabs .tab-link').forEach((btn) => {
+  btn.addEventListener('click', () => setSessionTab(btn.dataset.tab));
+});
+
+document.querySelectorAll('.mode-toggle .chip').forEach((chip) => {
+  chip.addEventListener('click', () => setFormMode(chip.dataset.mode));
+});
+
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && state.navOpen) setNavOpen(false);
 });
-
-// Mobile Navigation
-function initMobileNavigation() {
-  const bottomNav = document.getElementById("mobileBottomNav");
-  const fab = document.getElementById("fab");
-  const navItems = bottomNav?.querySelectorAll(".mobile-nav-item");
-  const mobileNavCompare = document.getElementById("mobileNavCompare");
-  
-  // Bottom Nav Items
-  navItems?.forEach(item => {
-    item.addEventListener("click", () => {
-      const view = item.dataset.view;
-      if (!view) return;
-      
-      // Update active state
-      navItems.forEach(i => i.classList.remove("active"));
-      item.classList.add("active");
-      
-      // Handle navigation
-      if (view === "home") {
-        backHome();
-      } else if (view === "sessions") {
-        // Show sessions list (already visible on home)
-        backHome();
-      } else if (view === "form") {
-        // Show form panel if session is active
-        if (state.currentSession && state.currentPerson) {
-          show($("panelForm"), true);
-          show($("panelCompare"), false);
-        }
-      } else if (view === "compare") {
-        // Show compare panel if session is active
-        if (state.currentSession) {
-          if (!state.compareData) {
-            doCompare().catch((e) => showError($("sessionMsg"), e, "Vergleich fehlgeschlagen"));
-          } else {
-            show($("panelCompare"), true);
-            show($("panelForm"), false);
-          }
-        }
-      } else if (view === "scenarios") {
-        if ($("scenarioView")) {
-          show($("scenarioView"), true);
-          show($("home"), false);
-          show($("sessionView"), false);
-          loadScenarios();
-        }
-      }
-    });
-  });
-  
-  // FAB - Quick Actions
-  fab?.addEventListener("click", () => {
-    if (state.currentSession) {
-      // If in session, show compare or form actions
-      if ($("panelCompare") && !$("panelCompare").classList.contains("hidden")) {
-        // Show compare actions menu
-        showFABMenu();
-      } else if ($("panelForm") && !$("panelForm").classList.contains("hidden")) {
-        // Show form actions
-        showFABMenu(["save", "compare", "scenarios"]);
-      } else {
-        // Show session actions
-        showFABMenu(["compare", "export", "scenarios"]);
-      }
-    } else {
-      // Show create session
-      document.getElementById("create")?.scrollIntoView({ behavior: "smooth" });
-    }
-  });
-  
-  // Compare button in nav
-  mobileNavCompare?.addEventListener("click", () => {
-    if (state.currentSession) {
-      doCompare().catch((e) => showError($("sessionMsg"), e, "Vergleich fehlgeschlagen"));
-    }
-  });
-  
-  // Update nav visibility based on context
-  updateMobileNavVisibility();
-}
-
-function updateMobileNavVisibility() {
-  const bottomNav = document.getElementById("mobileBottomNav");
-  const fab = document.getElementById("fab");
-  const mobileNavCompare = document.getElementById("mobileNavCompare");
-  const mobileNavForm = document.getElementById("mobileNavForm");
-  const isMobile = window.innerWidth <= 768;
-  
-  // Show/hide based on current view
-  if (state.currentSession) {
-    bottomNav?.classList.add("in-session");
-    if (isMobile) {
-      fab?.style.setProperty("display", "flex");
-      mobileNavCompare?.style.setProperty("display", "flex");
-      mobileNavForm?.style.setProperty("display", state.currentPerson ? "flex" : "none");
-    }
-    
-    // Update active state
-    const navItems = bottomNav?.querySelectorAll(".mobile-nav-item");
-    navItems?.forEach(item => {
-      item.classList.remove("active");
-      const view = item.dataset.view;
-      if (view === "form" && $("panelForm") && !$("panelForm").classList.contains("hidden")) {
-        item.classList.add("active");
-      } else if (view === "compare" && $("panelCompare") && !$("panelCompare").classList.contains("hidden")) {
-        item.classList.add("active");
-      } else if (view === "home" && !state.currentSession) {
-        item.classList.add("active");
-      } else if (view === "scenarios" && $("scenarioView") && !$("scenarioView").classList.contains("hidden")) {
-        item.classList.add("active");
-      }
-    });
-  } else {
-    bottomNav?.classList.remove("in-session");
-    if (isMobile) {
-      fab?.style.setProperty("display", "flex");
-      mobileNavCompare?.style.setProperty("display", "none");
-      mobileNavForm?.style.setProperty("display", "none");
-    }
-    
-    // Set home as active
-    const homeItem = bottomNav?.querySelector('[data-view="home"]');
-    if (homeItem) {
-      bottomNav?.querySelectorAll(".mobile-nav-item").forEach(item => item.classList.remove("active"));
-      homeItem.classList.add("active");
-    }
-  }
-}
-
-function showFABMenu(actions = []) {
-  // Simple implementation - could be expanded to a proper menu
-  console.log("FAB Menu:", actions);
-  // For now, just show a simple action
-}
 
 // Native Android Features (Capacitor)
 function initNativeFeatures() {
@@ -2705,20 +2643,8 @@ async function restoreFromFileSystem() {
     await loadTemplates();
     await loadSessions();
     renderErrorPanel();
-    initMobileNavigation();
     initNativeFeatures();
     updateOfflineIndicator();
-    
-    // Update nav on view changes
-    const originalBackHome = backHome;
-    backHome = function() {
-      originalBackHome();
-      updateMobileNavVisibility();
-    };
-    
-    const originalOpenSession = openSession;
-    openSession = async function(sessionId) {
-      await originalOpenSession(sessionId);
-      updateMobileNavVisibility();
-    };
+    setView("dashboard");
+    setFormMode(state.formMode);
 })();
