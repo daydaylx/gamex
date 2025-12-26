@@ -1,0 +1,131 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ main, develop, claude/** ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Test Backend
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: Run linting (flake8)
+      run: |
+        cd backend
+        flake8 app/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 app/ tests/ --count --max-complexity=10 --max-line-length=120 --statistics
+
+    - name: Run type checking (mypy)
+      run: |
+        cd backend
+        mypy app/ --ignore-missing-imports --no-strict-optional
+
+    - name: Run tests with coverage
+      run: |
+        cd backend
+        pytest --cov=app --cov-report=xml --cov-report=term-missing --cov-fail-under=60
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./backend/coverage.xml
+        flags: backend
+        name: backend-coverage
+      continue-on-error: true
+
+    - name: Generate coverage report
+      if: always()
+      run: |
+        cd backend
+        pytest --cov=app --cov-report=html
+
+    - name: Upload coverage HTML
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-html-${{ matrix.python-version }}
+        path: backend/htmlcov/
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install bandit safety
+
+    - name: Run Bandit security scan
+      run: |
+        cd backend
+        bandit -r app/ -f json -o bandit-report.json || true
+        bandit -r app/ -ll -i
+
+    - name: Upload Bandit report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: bandit-report
+        path: backend/bandit-report.json
+
+    - name: Check dependencies for vulnerabilities
+      run: |
+        cd backend
+        safety check --json || true
+        safety check
+
+  lint-frontend:
+    name: Lint Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install ESLint
+      run: |
+        npm install -g eslint
+
+    - name: Lint JavaScript files
+      run: |
+        cd apps/web/web
+        # Basic linting for now (will improve with proper config)
+        find . -name "*.js" -not -path "./node_modules/*" | xargs -r eslint --no-eslintrc --env browser,es2022 || true
+      continue-on-error: true
