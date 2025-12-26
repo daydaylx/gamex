@@ -24,6 +24,8 @@ from kivy.properties import (
 from mobile.storage.sqlite_adapter import SqliteStorage
 from mobile.services.template_loader import TemplateLoader
 from mobile.services.compare_service import CompareService
+from mobile.questionnaire.adapter import flatten_template_questions
+from mobile.questionnaire.wizard_state import WizardState
 
 
 class AppStore(EventDispatcher):
@@ -95,6 +97,7 @@ class AppStore(EventDispatcher):
         self.storage = SqliteStorage(self._get_db_path())
         self.template_loader = TemplateLoader()
         self.compare_service = CompareService()
+        self._wizard = WizardState()
 
         # Bind to property changes for auto-save
         self.bind(form_responses=self._on_form_responses_changed)
@@ -396,18 +399,13 @@ class AppStore(EventDispatcher):
         if not self.current_template:
             raise ValueError("No template loaded")
 
-        # Flatten questions from all modules
-        questions = []
-        for module in self.current_template.get('modules', []):
-            for question in module.get('questions', []):
-                # Add module info to question
-                q = dict(question)
-                q['_module_name'] = module.get('name', '')
-                questions.append(q)
-
+        # Build structured question list (JSON-friendly dicts)
+        questions = flatten_template_questions(self.current_template)
         self.wizard_questions = questions
-        self.current_question_index = 0
-        self.wizard_started = True
+
+        self._wizard.start(questions)
+        self.current_question_index = self._wizard.index
+        self.wizard_started = self._wizard.started
 
         self.dispatch('on_wizard_started')
 
@@ -418,10 +416,9 @@ class AppStore(EventDispatcher):
         Returns:
             True if moved, False if already at last question
         """
-        if self.current_question_index < len(self.wizard_questions) - 1:
-            self.current_question_index += 1
-            return True
-        return False
+        moved = self._wizard.next()
+        self.current_question_index = self._wizard.index
+        return moved
 
     def previous_question(self) -> bool:
         """
@@ -430,10 +427,9 @@ class AppStore(EventDispatcher):
         Returns:
             True if moved, False if already at first question
         """
-        if self.current_question_index > 0:
-            self.current_question_index -= 1
-            return True
-        return False
+        moved = self._wizard.prev()
+        self.current_question_index = self._wizard.index
+        return moved
 
     def get_current_question(self) -> Optional[Dict[str, Any]]:
         """
@@ -442,21 +438,40 @@ class AppStore(EventDispatcher):
         Returns:
             Question dict or None if wizard not started
         """
-        if not self.wizard_started or not self.wizard_questions:
+        if not self.wizard_started:
             return None
 
-        if 0 <= self.current_question_index < len(self.wizard_questions):
-            return self.wizard_questions[self.current_question_index]
+        # Ensure internal wizard state matches Kivy properties without
+        # performing unnecessary copies on every call.
+        self._sync_wizard_state_from_properties()
+        return self._wizard.current()
 
-        return None
+    def _sync_wizard_state_from_properties(self) -> None:
+        """
+        Synchronize the internal wizard state from the public properties
+        in a lightweight way, avoiding redundant list copies and assignments.
+        """
+        # Keep questions list in sync only if the reference has changed.
+        if self._wizard.questions is not self.wizard_questions:
+            self._wizard.questions = list(self.wizard_questions or [])
 
+        # Ensure the started flag is consistent.
+        if not self._wizard.started and self.wizard_started:
+            self._wizard.started = True
+
+        # Sync the current index only when it differs.
+        desired_index = int(self.current_question_index)
+        if self._wizard.index != desired_index:
+            self._wizard.index = desired_index
     def is_last_question(self) -> bool:
         """Check if current question is the last one."""
-        return self.current_question_index == len(self.wizard_questions) - 1
+        if not self.wizard_questions:
+            return False
+        return int(self.current_question_index) == len(self.wizard_questions) - 1
 
     def is_first_question(self) -> bool:
         """Check if current question is the first one."""
-        return self.current_question_index == 0
+        return int(self.current_question_index) == 0
 
     def get_wizard_progress(self) -> Dict[str, int]:
         """
@@ -472,11 +487,12 @@ class AppStore(EventDispatcher):
         return {
             'current': self.current_question_index + 1,
             'total': len(self.wizard_questions),
-            'module_name': current_q.get('_module_name', '') if current_q else '',
+            'module_name': current_q.get('moduleName', '') if current_q else '',
         }
 
     def complete_wizard(self):
         """Mark wizard as completed and save."""
+        self._wizard.stop()
         self.wizard_started = False
         self.save_responses()
         self.dispatch('on_wizard_completed')

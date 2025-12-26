@@ -81,12 +81,15 @@ Note: Desktop mode is for development only. Some mobile-specific features may no
    - `package.domain` - Your domain (reverse DNS)
    - `version` - App version number
 
-2. **Prepare Assets**
+2. **Prepare Assets** (optional)
 
-   Copy template files to mobile assets:
+   The app can load templates directly from `backend/app/templates/`.
+   If you prefer bundling templates inside the APK, copy them into mobile assets:
+
    ```bash
    # From project root
-   cp -r backend/templates/*.json mobile/assets/templates/
+   mkdir -p mobile/assets/templates
+   cp -r backend/app/templates/*.json mobile/assets/templates/
    ```
 
 3. **Add App Icon** (optional)
