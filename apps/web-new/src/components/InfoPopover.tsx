@@ -30,12 +30,12 @@ export function InfoPopover({
       {/* Info Button */}
       <Button
         variant="ghost"
-        size="sm"
+        size="icon"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-6 w-6 p-0 rounded-full hover:bg-primary/10"
+        className="min-h-[44px] min-w-[44px] rounded-full hover:bg-primary/10"
         aria-label="Mehr Informationen"
       >
-        <Info className="h-4 w-4 text-primary" />
+        <Info className="h-5 w-5 text-primary" />
       </Button>
 
       {/* Popover Content */}
@@ -49,7 +49,7 @@ export function InfoPopover({
 
           {/* Popover Card */}
           <div className="absolute left-0 top-8 z-50 w-96 max-w-[90vw] max-h-[80vh] overflow-y-auto">
-            <Card className="shadow-lg border-2">
+            <Card variant="elevated" className="border-2">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-base font-semibold pr-8">
@@ -57,11 +57,11 @@ export function InfoPopover({
                   </CardTitle>
                   <Button
                     variant="ghost"
-                    size="sm"
+                    size="icon"
                     onClick={() => setIsOpen(false)}
-                    className="h-6 w-6 p-0 -mt-1 -mr-1"
+                    className="min-h-[44px] min-w-[44px]"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-5 w-5" />
                   </Button>
                 </div>
               </CardHeader>

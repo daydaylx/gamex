@@ -7,6 +7,7 @@ import { useState, useEffect } from "preact/hooks";
 import { Link, useRoute, useLocation } from "wouter-preact";
 import { ArrowLeft, User, Users, MessageSquare, ChevronRight } from "lucide-preact";
 import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { getSessionInfo } from "../services/api";
 import type { SessionInfo } from "../types/session";
 
@@ -100,7 +101,7 @@ export function SessionView() {
       {/* Primary Action: Interview Mode */}
       <section className="mb-6">
         <h2 className="text-sm font-medium text-muted-foreground mb-3">
-          Interview starten
+          Session beitreten
         </h2>
         <div className="space-y-2">
           <PersonActionCard
@@ -156,30 +157,32 @@ function PersonActionCard({ person, completed, onClick }: PersonActionCardProps)
   const Icon = person === "A" ? User : Users;
 
   return (
-    <button
+    <Card
+      variant={completed ? "elevated" : "default"}
+      padding="comfortable"
       onClick={onClick}
-      className="w-full p-4 rounded-xl bg-surface border border-border/50 flex items-center gap-4 card-interactive touch-feedback"
+      className="flex items-center gap-4"
     >
       <div
-        className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+        className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
           completed ? "bg-primary/20" : "bg-accent"
         }`}
       >
         <Icon className={`w-6 h-6 ${completed ? "text-primary" : ""}`} />
       </div>
-      <div className="flex-1 text-left">
-        <p className="font-medium">Person {person}</p>
+      <div className="flex-1 text-left min-w-0">
+        <p className="font-medium truncate">Person {person}</p>
         <p className="text-sm text-muted-foreground">
           {completed ? "Abgeschlossen – Erneut bearbeiten" : "Interview starten"}
         </p>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-shrink-0">
         {completed && (
-          <span className="w-2 h-2 rounded-full bg-primary" />
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
         )}
-        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
       </div>
-    </button>
+    </Card>
   );
 }
 
@@ -193,23 +196,26 @@ interface ActionCardProps {
 
 function ActionCard({ icon, title, description, disabled, onClick }: ActionCardProps) {
   return (
-    <button
+    <Card
+      variant="outlined"
+      padding="comfortable"
       onClick={disabled ? undefined : onClick}
-      disabled={disabled}
-      className={`w-full p-4 rounded-xl bg-surface/50 border border-border/30 flex items-center gap-4 text-left transition-all ${
+      className={`flex items-center gap-4 text-left transition-all ${
         disabled
           ? "opacity-50 cursor-not-allowed"
-          : "card-interactive touch-feedback"
+          : ""
       }`}
     >
       <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm">{title}</p>
-        <p className="text-xs text-muted-foreground truncate">{description}</p>
+        <p className="font-medium text-sm truncate">{title}</p>
+        <p className="text-xs text-muted-foreground line-clamp-2">{description}</p>
       </div>
-      {!disabled && <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
-    </button>
+      {!disabled && (
+        <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:translate-x-1 transition-transform" />
+      )}
+    </Card>
   );
 }

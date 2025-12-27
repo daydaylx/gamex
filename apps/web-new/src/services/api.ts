@@ -222,3 +222,86 @@ export async function loadScenarios(): Promise<ScenariosData> {
     throw err;
   }
 }
+
+export async function loadTemplate(filename: string): Promise<Template> {
+  try {
+    const response = await fetch(`/data/templates/${filename}`);
+    if (!response.ok) {
+      throw new Error(`Failed to load template ${filename}: ${response.status}`);
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(`Failed to load template ${filename}:`, err);
+    throw err;
+  }
+}
+
+/**
+ * Duplicate a session (creates a copy with same template)
+ */
+export async function duplicateSession(sessionId: string): Promise<SessionInfo> {
+  const originalSession = await getSessionInfo(sessionId);
+
+  const newSession = await createSession({
+    name: `${originalSession.name} (Kopie)`,
+    template_id: originalSession.template_id,
+  });
+
+  return newSession;
+}
+
+/**
+ * Archive a session (mark as archived)
+ */
+export async function archiveSession(sessionId: string): Promise<void> {
+  const sessions = await listSessions();
+  const session = sessions.find(s => s.id === sessionId);
+
+  if (session) {
+    (session as any).archived = true;
+    (session as any).archived_at = new Date().toISOString();
+    setStorage(SESSIONS_KEY, sessions);
+  }
+}
+
+/**
+ * Unarchive a session
+ */
+export async function unarchiveSession(sessionId: string): Promise<void> {
+  const sessions = await listSessions();
+  const session = sessions.find(s => s.id === sessionId);
+
+  if (session) {
+    (session as any).archived = false;
+    setStorage(SESSIONS_KEY, sessions);
+  }
+}
+
+/**
+ * Get archived sessions
+ */
+export async function getArchivedSessions(): Promise<SessionListItem[]> {
+  const sessions = await listSessions();
+  return sessions.filter(s => (s as any).archived === true);
+}
+
+/**
+ * Get active (non-archived) sessions
+ */
+export async function getActiveSessions(): Promise<SessionListItem[]> {
+  const sessions = await listSessions();
+  return sessions.filter(s => (s as any).archived !== true);
+}
+
+/**
+ * Delete a session permanently
+ */
+export async function deleteSession(sessionId: string): Promise<void> {
+  const sessions = await listSessions();
+  const filteredSessions = sessions.filter(s => s.id !== sessionId);
+  setStorage(SESSIONS_KEY, filteredSessions);
+
+  // Also delete responses
+  localStorage.removeItem(`${STORAGE_PREFIX}responses:${sessionId}:A`);
+  localStorage.removeItem(`${STORAGE_PREFIX}responses:${sessionId}:B`);
+}

@@ -8,11 +8,15 @@ import { Plus, ChevronRight, Clock, Heart } from "lucide-preact";
 import { Link, useLocation } from "wouter-preact";
 import { Button } from "../components/ui/button";
 import { CreateSessionDialog } from "../components/CreateSessionDialog";
-import { listSessions } from "../services/api";
+import { getActiveSessions, getArchivedSessions, duplicateSession } from "../services/api";
+import { getAnsweredCount } from "../services/interview-storage";
 import type { SessionListItem } from "../types/session";
+import { SessionCardSkeleton } from "../components/ui/skeleton";
 
 export function HomeScreen() {
   const [sessions, setSessions] = useState<SessionListItem[]>([]);
+  const [archivedSessions, setArchivedSessions] = useState<SessionListItem[]>([]);
+  const [showArchived, setShowArchived] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [, setLocation] = useLocation();
@@ -24,13 +28,23 @@ export function HomeScreen() {
   async function loadSessions() {
     setLoading(true);
     try {
-      const data = await listSessions();
+      const [active, archived] = await Promise.all([
+        getActiveSessions(),
+        getArchivedSessions()
+      ]);
+
       // Sort by most recent first
-      data.sort(
+      active.sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
-      setSessions(data);
+      archived.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+
+      setSessions(active);
+      setArchivedSessions(archived);
     } catch (err) {
       console.error("Failed to load sessions:", err);
     } finally {
@@ -64,7 +78,7 @@ export function HomeScreen() {
         {/* Primary CTA */}
         <Button
           size="lg"
-          className="w-full max-w-xs h-14 text-lg gap-3 animate-fade-in touch-feedback"
+          className="w-full max-w-sm sm:max-w-md h-14 text-lg gap-3 animate-fade-in"
           onClick={() => setShowCreateDialog(true)}
         >
           <Plus className="w-6 h-6" />
@@ -73,10 +87,10 @@ export function HomeScreen() {
 
         {/* Quick access to recent session */}
         {hasRecentSession && (
-          <div className="mt-6 w-full max-w-xs animate-fade-in" style={{ animationDelay: "0.1s" }}>
+          <div className="mt-6 w-full max-w-sm sm:max-w-md animate-fade-in" style={{ animationDelay: "0.1s" }}>
             <button
               onClick={() => setLocation(`/sessions/${latestSession.id}`)}
-              className="w-full p-4 rounded-xl bg-surface border border-border/50 flex items-center gap-3 card-interactive touch-feedback"
+              className="w-full p-4 rounded-xl bg-surface border border-border/50 flex items-center gap-3 card-interactive"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <Clock className="w-5 h-5 text-primary" />
@@ -97,32 +111,34 @@ export function HomeScreen() {
           <h2 className="text-sm font-medium text-muted-foreground mb-3 px-2">
             Alle Sessions ({sessions.length})
           </h2>
-          <div className="space-y-2">
-            {sessions.slice(1, 4).map((session, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {sessions.slice(1, 7).map((session, index) => (
               <Link key={session.id} href={`/sessions/${session.id}`}>
                 <a
-                  className="block p-3 rounded-lg bg-surface/50 border border-border/30 flex items-center gap-3 card-interactive touch-feedback animate-fade-in"
+                  className="block p-4 rounded-xl bg-surface/50 border border-border/30 flex items-center gap-3 card-interactive animate-fade-in"
                   style={{ animationDelay: `${(index + 2) * 0.05}s` }}
                 >
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm truncate">{session.name}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {formatDate(session.created_at)}
                     </p>
+                    <div className="flex gap-2 mt-2">
+                      <StatusDot complete={session.has_a} label="A" sessionId={session.id} />
+                      <StatusDot complete={session.has_b} label="B" sessionId={session.id} />
+                    </div>
                   </div>
-                  <div className="flex gap-1.5">
-                    <StatusDot complete={session.has_a} label="A" />
-                    <StatusDot complete={session.has_b} label="B" />
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 </a>
               </Link>
             ))}
 
-            {sessions.length > 4 && (
-              <p className="text-xs text-center text-muted-foreground py-2">
-                +{sessions.length - 4} weitere Sessions
-              </p>
+            {sessions.length > 7 && (
+              <div className="col-span-full">
+                <p className="text-xs text-center text-muted-foreground py-2">
+                  +{sessions.length - 7} weitere Sessions
+                </p>
+              </div>
             )}
           </div>
         </section>
@@ -137,12 +153,41 @@ export function HomeScreen() {
         </section>
       )}
 
+      {/* Archived Sessions Toggle */}
+      {archivedSessions.length > 0 && !loading && (
+        <section className="px-4 pb-6">
+          <button
+            onClick={() => setShowArchived(!showArchived)}
+            className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {showArchived ? "Archiv ausblenden" : `Archiv anzeigen (${archivedSessions.length})`}
+          </button>
+
+          {showArchived && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+              {archivedSessions.map((session) => (
+                <Link key={session.id} href={`/sessions/${session.id}`}>
+                  <a className="block p-4 rounded-xl bg-surface/30 border border-border/20 opacity-70 hover:opacity-100 transition-opacity">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{session.name}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {formatDate(session.created_at)} • Archiviert
+                      </p>
+                    </div>
+                  </a>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
       {/* Loading State */}
       {loading && (
-        <div className="px-6 pb-8 text-center">
-          <p className="text-sm text-muted-foreground animate-pulse">
-            Lädt Sessions...
-          </p>
+        <div className="px-4 pb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <SessionCardSkeleton />
+          <SessionCardSkeleton />
+          <SessionCardSkeleton />
         </div>
       )}
 
@@ -159,7 +204,9 @@ export function HomeScreen() {
   );
 }
 
-function StatusDot({ complete, label }: { complete: boolean; label: string }) {
+function StatusDot({ complete, label, sessionId }: { complete: boolean; label: string; sessionId: string }) {
+  const answeredCount = getAnsweredCount(sessionId, label as "A" | "B");
+
   return (
     <div
       className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
@@ -167,7 +214,7 @@ function StatusDot({ complete, label }: { complete: boolean; label: string }) {
           ? "bg-primary text-primary-foreground"
           : "bg-muted/50 text-muted-foreground"
       }`}
-      title={`Person ${label}: ${complete ? "Fertig" : "Ausstehend"}`}
+      title={`Person ${label}: ${complete ? `${answeredCount} Antworten` : "Ausstehend"}`}
     >
       {label}
     </div>

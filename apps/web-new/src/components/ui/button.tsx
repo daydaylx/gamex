@@ -6,7 +6,7 @@ import type { ComponentChildren } from "preact";
 import { cn } from "../../lib/utils";
 
 export interface ButtonProps {
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "yes" | "maybe" | "no";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
   children?: ComponentChildren;
@@ -15,6 +15,7 @@ export interface ButtonProps {
   type?: "button" | "submit" | "reset";
   "aria-label"?: string;
   title?: string;
+  ripple?: boolean; // Enable Android ripple effect
 }
 
 const variantClasses = {
@@ -30,6 +31,13 @@ const variantClasses = {
     "hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
   link:
     "text-primary underline-offset-4 hover:underline",
+  // Interview response buttons with semantic colors
+  yes:
+    "bg-[#22c55e] text-white hover:bg-[#16a34a] active:bg-[#15803d] font-semibold shadow-sm",
+  maybe:
+    "bg-[#f59e0b] text-black hover:bg-[#d97706] active:bg-[#b45309] font-semibold shadow-sm",
+  no:
+    "bg-[#ef4444] text-white hover:bg-[#dc2626] active:bg-[#b91c1c] font-semibold shadow-sm",
 };
 
 const sizeClasses = {
@@ -49,13 +57,17 @@ export function Button({
   type = "button",
   "aria-label": ariaLabel,
   title,
+  ripple = true, // Ripple enabled by default for yes/maybe/no buttons
 }: ButtonProps) {
+  // Auto-enable ripple for yes/maybe/no variants
+  const shouldRipple = ripple && (variant === "yes" || variant === "maybe" || variant === "no" || variant === "default");
+
   return (
     <button
       type={type}
       className={cn(
         // Base styles
-        "inline-flex items-center justify-center font-medium",
+        "inline-flex items-center justify-center gap-2 font-medium", // Added gap-2 for icon spacing
         "rounded-xl", // Consistent rounded corners
         "ring-offset-background transition-all duration-150",
         // Focus states
@@ -64,6 +76,10 @@ export function Button({
         "disabled:pointer-events-none disabled:opacity-50",
         // Touch feedback
         "touch-feedback",
+        // Android ripple effect
+        shouldRipple && "button-ripple",
+        // Touch target minimum size
+        "touch-target",
         // Variant and size
         variantClasses[variant],
         sizeClasses[size],

@@ -6,11 +6,13 @@
 import { Router, Route, Switch } from "wouter-preact";
 import { HomeScreen } from "./screens/HomeScreen";
 import { SessionView } from "./views/SessionView";
-import { InterviewScreen } from "./screens/InterviewScreen";
-import { useCapacitorBackButton } from "./platform/capacitor";
+import { UnifiedInterviewScreen } from "./screens/UnifiedInterviewScreen";
 import { Settings } from "lucide-preact";
 import { useState } from "preact/hooks";
 import { SettingsDialog } from "./components/SettingsDialog";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { OfflineIndicator } from "./components/OfflineIndicator";
+import { useCapacitorBackButton } from "./platform/capacitor";
 
 export function App() {
   const [showSettings, setShowSettings] = useState(false);
@@ -19,7 +21,8 @@ export function App() {
   useCapacitorBackButton();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <ThemeProvider>
+      <div className="min-h-screen bg-background text-foreground">
       {/* Fixed Header for Mobile */}
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-14 items-center justify-between px-4">
@@ -34,6 +37,9 @@ export function App() {
         </div>
       </header>
 
+      {/* Offline Indicator */}
+      <OfflineIndicator />
+
       {/* Main Content */}
       <main className="pb-safe">
         <Router>
@@ -42,7 +48,7 @@ export function App() {
             <Route path="/sessions/:sessionId" component={SessionView} />
             <Route path="/sessions/:sessionId/interview/:person">
               {(params: { sessionId?: string; person?: string } | undefined) => (
-                <InterviewScreen
+                <UnifiedInterviewScreen
                   sessionId={params?.sessionId || ""}
                   person={(params?.person as "A" | "B") || "A"}
                 />
@@ -62,7 +68,8 @@ export function App() {
         open={showSettings}
         onClose={() => setShowSettings(false)}
       />
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
 

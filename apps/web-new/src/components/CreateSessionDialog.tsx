@@ -90,15 +90,15 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
 
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" onClick={handleClose}>
-      <div 
-        className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-md"
+      <div
+        className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-md animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
-        <Card>
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="space-y-1">
-                <CardTitle>Neue Session erstellen</CardTitle>
+        <Card variant="elevated" padding="none">
+          <CardHeader padding="comfortable">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1 flex-1 min-w-0">
+                <CardTitle className="text-xl">Neue Session erstellen</CardTitle>
                 <CardDescription>
                   Wähle einen Namen und ein Fragebogen-Template aus
                 </CardDescription>
@@ -108,13 +108,13 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
                 size="icon"
                 onClick={handleClose}
                 disabled={loading}
-                className="h-6 w-6 rounded-md"
+                className="h-8 w-8 flex-shrink-0"
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent padding="comfortable">
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Name Input */}
               <div className="space-y-2">
@@ -167,18 +167,22 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
               )}
 
               {/* Actions */}
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-3 pt-4">
                 <Button
                   type="button"
                   variant="outline"
+                  size="lg"
                   onClick={handleClose}
                   disabled={loading}
+                  className="min-w-[100px]"
                 >
                   Abbrechen
                 </Button>
                 <Button
                   type="submit"
+                  size="lg"
                   disabled={loading || loadingTemplates || !name.trim() || !selectedTemplate}
+                  className="min-w-[120px]"
                 >
                   {loading ? 'Erstellt...' : 'Erstellen'}
                 </Button>

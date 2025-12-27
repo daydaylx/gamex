@@ -98,23 +98,23 @@ export function HomeView() {
               return (
                 <Link key={session.id} href={`/sessions/${session.id}`}>
                   <a className="block group">
-                    <Card className="transition-all hover:border-primary/50 hover:shadow-md">
-                      <CardHeader className="pb-2">
-                        <div className="flex justify-between items-start">
-                          <div className="space-y-1">
-                            <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                    <Card variant="default" className="transition-all hover:border-primary/50 hover:shadow-md card-interactive">
+                      <CardHeader padding="comfortable" className="pb-2">
+                        <div className="flex justify-between items-start gap-3">
+                          <div className="space-y-1 flex-1 min-w-0">
+                            <CardTitle className="text-lg group-hover:text-primary transition-colors truncate">
                               {session.name}
                             </CardTitle>
                             <CardDescription className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {new Date(session.created_at).toLocaleDateString('de-DE')}
+                              <Calendar className="h-3 w-3 flex-shrink-0" />
+                              <span className="text-xs">{new Date(session.created_at).toLocaleDateString('de-DE')}</span>
                             </CardDescription>
                           </div>
-                          <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                          <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
                         </div>
                       </CardHeader>
-                      <CardContent>
-                        <div className="flex gap-2 mt-2">
+                      <CardContent padding="comfortable">
+                        <div className="flex flex-wrap gap-2">
                           <Badge variant={progress.a === 100 ? "default" : "secondary"}>
                             Person A: {progress.a}%
                           </Badge>
@@ -130,13 +130,15 @@ export function HomeView() {
             })}
             
             {/* New Session Card */}
-            <button 
+            <Card
+              variant="outlined"
+              padding="none"
               onClick={() => setShowCreateDialog(true)}
-              className="flex h-full min-h-[140px] w-full flex-col items-center justify-center rounded-lg border border-dashed hover:bg-accent/50 transition-colors gap-2 text-muted-foreground hover:text-foreground"
+              className="flex h-full min-h-[140px] w-full flex-col items-center justify-center border-dashed gap-3 text-muted-foreground hover:text-foreground hover:border-primary/40"
             >
               <Plus className="h-8 w-8 opacity-50" />
-              <span className="font-medium">Neue Session erstellen</span>
-            </button>
+              <span className="font-medium text-sm">Neue Session erstellen</span>
+            </Card>
           </div>
         )}
       </section>

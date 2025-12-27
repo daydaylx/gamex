@@ -83,13 +83,13 @@ export function AIHelpDialog({
       {/* Help Button */}
       <Button
         variant="ghost"
-        size="sm"
+        size="icon"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-6 w-6 p-0 rounded-full hover:bg-primary/10"
+        className="min-h-[44px] min-w-[44px] rounded-full hover:bg-primary/10"
         aria-label="Frage an KI"
         title="Frage an KI stellen"
       >
-        <MessageCircle className="h-4 w-4 text-primary" />
+        <MessageCircle className="h-5 w-5 text-primary" />
       </Button>
 
       {/* Modal */}
@@ -103,7 +103,7 @@ export function AIHelpDialog({
 
           {/* Dialog Card */}
           <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl max-h-[90vh] overflow-hidden">
-            <Card className="shadow-lg border-2 flex flex-col max-h-[90vh]">
+            <Card variant="elevated" className="border-2 flex flex-col max-h-[90vh]">
               <CardHeader className="pb-3 flex-shrink-0">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -116,11 +116,11 @@ export function AIHelpDialog({
                   </div>
                   <Button
                     variant="ghost"
-                    size="sm"
+                    size="icon"
                     onClick={handleClose}
-                    className="h-6 w-6 p-0 -mt-1 -mr-1"
+                    className="min-h-[44px] min-w-[44px]"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-5 w-5" />
                   </Button>
                 </div>
               </CardHeader>

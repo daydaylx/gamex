@@ -259,3 +259,58 @@ export function getCombinedSession(sessionId: string): InterviewSession | null {
   return combined;
 }
 
+/**
+ * Find first incomplete question index
+ * Returns index of first question without an answer, or -1 if all are answered
+ */
+export function findFirstIncompleteIndex(
+  sessionId: string,
+  person: "A" | "B",
+  scenarioIds: string[]
+): number {
+  const session = loadInterviewSession(sessionId, person);
+  if (!session) return 0; // Start from beginning if no session
+
+  for (let i = 0; i < scenarioIds.length; i++) {
+    const answer = session.answers.find((a) => a.scenario_id === scenarioIds[i]);
+    if (!answer || answer.skipped || answer.primary === null || answer.primary === undefined) {
+      return i;
+    }
+  }
+
+  return -1; // All questions answered
+}
+
+/**
+ * Get completion percentage
+ */
+export function getCompletionPercentage(
+  sessionId: string,
+  person: "A" | "B",
+  totalQuestions: number
+): number {
+  const session = loadInterviewSession(sessionId, person);
+  if (!session) return 0;
+
+  const answeredCount = session.answers.filter(
+    (a) => !a.skipped && a.primary !== null && a.primary !== undefined
+  ).length;
+
+  return Math.round((answeredCount / totalQuestions) * 100);
+}
+
+/**
+ * Get answered question count
+ */
+export function getAnsweredCount(
+  sessionId: string,
+  person: "A" | "B"
+): number {
+  const session = loadInterviewSession(sessionId, person);
+  if (!session) return 0;
+
+  return session.answers.filter(
+    (a) => !a.skipped && a.primary !== null && a.primary !== undefined
+  ).length;
+}
+

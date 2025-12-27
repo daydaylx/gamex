@@ -8,6 +8,7 @@ import { ChevronDown, ChevronUp } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ScaleInput } from "../form/ScaleInput";
 import { EmotionChips } from "./EmotionChips";
+import { haptics } from "../../platform/capacitor";
 import type { InterviewAnswer, InterviewScenario } from "../../types/interview";
 
 interface InterviewMiniFormProps {
@@ -34,8 +35,18 @@ export function InterviewMiniForm({
   const conditions = answer?.conditions ?? "";
   const notes = answer?.notes ?? "";
 
-  function handlePrimaryChange(value: number | string) {
+  async function handlePrimaryChange(value: number | string) {
     onChange({ primary: value });
+    // Haptic feedback based on answer type
+    if (typeof value === "string") {
+      // Yes/Maybe/No - different feedback per choice
+      if (value === "ja") await haptics.success();
+      else if (value === "vielleicht") await haptics.light();
+      else if (value === "nein") await haptics.medium();
+    } else {
+      // Likert scale - light feedback
+      await haptics.light();
+    }
   }
 
   function handleComfortChange(value: number) {
@@ -72,10 +83,10 @@ export function InterviewMiniForm({
     }
 
     if (scenario.primary_answer_type === "yes_maybe_no") {
-      const options = [
-        { value: "ja", label: "Ja" },
-        { value: "vielleicht", label: "Vielleicht" },
-        { value: "nein", label: "Nein" },
+      const options: Array<{ value: string; label: string; variant: "yes" | "maybe" | "no" }> = [
+        { value: "ja", label: "Ja", variant: "yes" },
+        { value: "vielleicht", label: "Vielleicht", variant: "maybe" },
+        { value: "nein", label: "Nein", variant: "no" },
       ];
 
       return (
@@ -88,19 +99,17 @@ export function InterviewMiniForm({
                 <Button
                   key={opt.value}
                   type="button"
-                  variant={isSelected ? "default" : "outline"}
+                  variant={isSelected ? opt.variant : "outline"}
                   size="lg"
                   onClick={() => handlePrimaryChange(opt.value)}
                   disabled={disabled}
+                  ripple={isSelected}
                   className={`
-                    min-h-[56px] h-14 text-base font-semibold transition-all duration-150 touch-feedback
-                    ${isSelected 
-                      ? 'ring-2 ring-primary/50 shadow-lg shadow-primary/25 scale-[1.02]' 
+                    min-h-[56px] h-14 text-base transition-all duration-200
+                    ${isSelected
+                      ? 'ring-2 ring-offset-2 ring-offset-background scale-[1.02]'
                       : 'active:scale-95'
                     }
-                    ${opt.value === 'ja' && isSelected ? 'bg-emerald-600 hover:bg-emerald-500 border-emerald-600' : ''}
-                    ${opt.value === 'vielleicht' && isSelected ? 'bg-amber-500 hover:bg-amber-400 border-amber-500' : ''}
-                    ${opt.value === 'nein' && isSelected ? 'bg-rose-600 hover:bg-rose-500 border-rose-600' : ''}
                   `}
                 >
                   {opt.label}

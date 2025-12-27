@@ -11,7 +11,7 @@ interface ChatBubbleProps {
 
 export function ChatBubble({ text, title, className = "" }: ChatBubbleProps) {
   return (
-    <div className={`flex gap-3 ${className}`}>
+    <div className={`flex gap-3 max-w-full ${className}`}>
       {/* Avatar */}
       <div className="flex-shrink-0">
         <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -20,11 +20,11 @@ export function ChatBubble({ text, title, className = "" }: ChatBubbleProps) {
       </div>
 
       {/* Message */}
-      <div className="flex-1 space-y-1">
+      <div className="flex-1 min-w-0 space-y-1">
         {title && (
           <div className="text-sm font-semibold text-foreground">Guide</div>
         )}
-        <div className="rounded-lg rounded-tl-none bg-muted px-4 py-3 text-foreground leading-relaxed whitespace-pre-wrap">
+        <div className="rounded-lg rounded-tl-none bg-muted px-4 py-3 text-sm sm:text-base text-foreground leading-relaxed landscape-compact-text break-words overflow-wrap-anywhere">
           {text}
         </div>
       </div>

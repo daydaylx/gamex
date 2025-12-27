@@ -18,9 +18,10 @@ interface QuestionnaireFormProps {
   person: "A" | "B";
   template: Template;
   onComplete?: () => void;
+  initialModuleId?: string;
 }
 
-export function QuestionnaireForm({ sessionId, person, template, onComplete }: QuestionnaireFormProps) {
+export function QuestionnaireForm({ sessionId, person, template, onComplete, initialModuleId }: QuestionnaireFormProps) {
   const [responses, setResponses] = useState<ResponseMap>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -129,12 +130,22 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
 
   const currentPhase = getModulePhase(currentModuleId);
   
+  // Muted phase colors for better theme integration
   const phaseColors: Record<string, string> = {
-    foundation: "bg-blue-500",
-    exploration: "bg-green-500",
-    advanced: "bg-yellow-500",
-    expert: "bg-red-500",
-    lifestyle: "bg-purple-500"
+    foundation: "bg-blue-500/80 text-blue-100",
+    exploration: "bg-emerald-500/80 text-emerald-100",
+    advanced: "bg-amber-500/80 text-amber-100",
+    expert: "bg-red-500/80 text-red-100",
+    lifestyle: "bg-purple-500/80 text-purple-100"
+  };
+
+  // Ring colors for active state
+  const phaseRings: Record<string, string> = {
+    foundation: "ring-blue-500/30",
+    exploration: "ring-emerald-500/30",
+    advanced: "ring-amber-500/30",
+    expert: "ring-red-500/30",
+    lifestyle: "ring-purple-500/30"
   };
 
   const phaseLabels: Record<string, string> = {
@@ -158,6 +169,16 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
   useEffect(() => {
     loadExistingResponses();
   }, [sessionId, person]);
+
+  // Jump to initial module if provided
+  useEffect(() => {
+    if (initialModuleId && template.modules) {
+      const mIdx = template.modules.findIndex(m => m.id === initialModuleId);
+      if (mIdx >= 0 && mIdx < moduleStartIndices.length) {
+        setCurrentIndex(moduleStartIndices[mIdx]);
+      }
+    }
+  }, [initialModuleId, template.modules]);
 
   // Update collapsible state when question changes
   useEffect(() => {
@@ -460,64 +481,45 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
 
   return (
     <div 
-      className="space-y-6"
+      className="space-y-6 pt-2"
       onTouchStart={handleTouchStart as any}
       onTouchMove={handleTouchMove as any}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Progress Bar with Module Info */}
-      <div className="space-y-2">
-        <div className="flex justify-between items-center text-sm">
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Person {person}</span>
-            {currentModule && (
-              <>
-                <span className="text-muted-foreground">•</span>
-                <span className="text-muted-foreground">{currentModule.name}</span>
-              </>
-            )}
+      {/* Zen Mode Progress - Subtle top bar */}
+      <div className="fixed top-0 left-0 w-full h-1 z-50 bg-background">
+        <div 
+          className={`h-full transition-all duration-500 ${phaseColors[currentPhase].split(' ')[0]}`}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      {/* Zen Header */}
+      <div className="flex justify-between items-center px-1">
+        <div className="flex items-center gap-3">
+          <div className={`px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wider ${phaseColors[currentPhase]}`}>
+            {phaseLabels[currentPhase] || "Exploration"}
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setShowModuleOverview(true)}
-            className="gap-1 h-8"
-          >
-            <Layers className="h-4 w-4" />
-            <span className="hidden sm:inline">Module</span>
-          </Button>
-        </div>
-
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <span>Frage {currentIndex + 1} von {allQuestions.length}</span>
-          <span>{progress}%</span>
-        </div>
-
-        {/* Enhanced Progress Bar */}
-        <div className="relative">
-          {/* Main progress bar */}
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div 
-              className={`h-full transition-all duration-300 ${phaseColors[currentPhase] || "bg-primary"}`}
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          {/* Module phase indicator */}
-          {totalModules > 1 && (
-            <div className="flex justify-between mt-2">
-              <div className="flex items-center gap-2">
-                <div className={`h-2 w-2 rounded-full ${phaseColors[currentPhase] || "bg-primary"}`} />
-                <span className="text-xs text-muted-foreground">
-                  {phaseLabels[currentPhase] || "Exploration"}
-                </span>
-              </div>
-              <span className="text-xs text-muted-foreground">
-                Modul {moduleIndex + 1} von {totalModules}
-              </span>
-            </div>
+          {currentModule && (
+            <span className="text-sm text-muted-foreground font-medium hidden sm:inline-block">
+               {currentModule.name}
+            </span>
           )}
         </div>
+        
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => setShowModuleOverview(true)}
+          className="text-muted-foreground hover:text-foreground h-8 w-8 p-0"
+        >
+          <Layers className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Current Question Indicator (Minimal) */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground px-1 -mt-4 mb-2">
+         <span>{currentModule?.name || "Allgemein"}</span>
       </div>
 
       {/* Question Card */}

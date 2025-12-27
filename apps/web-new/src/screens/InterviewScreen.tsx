@@ -1,15 +1,20 @@
 /**
- * Mobile-Optimized Interview Screen
- * Full-screen focus on current question
+ * Mobile-Optimized Interview Screen - ENHANCED
+ * Full-screen focus with swipe, undo, skip confirm, animations
  */
 
-import { useState, useEffect } from "preact/hooks";
-import { ChevronLeft, ChevronRight, SkipForward, MessageCircle, X } from "lucide-preact";
+import { useState, useEffect, useRef } from "preact/hooks";
+import { ChevronLeft, ChevronRight, SkipForward, MessageCircle, X, Undo2, FastForward } from "lucide-preact";
 import { useLocation } from "wouter-preact";
 import { Button } from "../components/ui/button";
 import { InterviewMiniForm } from "../components/interview/InterviewMiniForm";
 import { AskAIPopup } from "../components/interview/AskAIPopup";
 import { ReportView } from "../components/interview/ReportView";
+import { ConfirmDialog } from "../components/ui/confirm-dialog";
+import { InterviewQuestionSkeleton } from "../components/ui/skeleton";
+import { useSwipe } from "../hooks/useSwipe";
+import { useUndoStack } from "../hooks/useUndoStack";
+import { haptics } from "../platform/capacitor";
 import {
   loadInterviewScenarios,
   loadInterviewSession,
@@ -18,6 +23,7 @@ import {
   updateInterviewProgress,
   getInterviewAnswer,
   getCombinedSession,
+  findFirstIncompleteIndex,
 } from "../services/interview-storage";
 import type {
   InterviewScenario,
@@ -39,10 +45,29 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
   const [error, setError] = useState<string | null>(null);
   const [showAskAI, setShowAskAI] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState<Partial<InterviewAnswer>>({});
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
+
+  // Undo functionality
+  const undoStack = useUndoStack<{ index: number; answer: Partial<InterviewAnswer> }>(10);
 
   const currentScenario = scenarios[currentIndex];
   const progress = scenarios.length > 0 ? ((currentIndex + 1) / scenarios.length) * 100 : 0;
+
+  // Swipe navigation
+  useSwipe({
+    onSwipeLeft: () => {
+      if (currentIndex < scenarios.length - 1) {
+        handleNext();
+      }
+    },
+    onSwipeRight: () => {
+      if (currentIndex > 0) {
+        handlePrevious();
+      }
+    },
+  }, { threshold: 80 });
 
   useEffect(() => {
     loadData();
@@ -94,8 +119,11 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
     setCurrentAnswer((prev) => ({ ...prev, ...partialAnswer }));
   }
 
-  function handleNext() {
+  async function handleNext() {
     if (!currentScenario || !session) return;
+
+    // Save to undo stack
+    undoStack.push("answer", { index: currentIndex, answer: currentAnswer });
 
     if (currentAnswer.primary !== undefined && currentAnswer.primary !== null) {
       const answer: InterviewAnswer = {
@@ -115,25 +143,37 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
 
     const nextIndex = currentIndex + 1;
     if (nextIndex < scenarios.length) {
+      setSlideDirection("left");
+      await haptics.light();
       setCurrentIndex(nextIndex);
       updateInterviewProgress(sessionId, person, nextIndex);
       setCurrentAnswer({});
+      setTimeout(() => setSlideDirection(null), 300);
     } else {
       setShowReport(true);
     }
   }
 
-  function handlePrevious() {
+  async function handlePrevious() {
     if (currentIndex > 0) {
       const prevIndex = currentIndex - 1;
+      setSlideDirection("right");
+      await haptics.light();
       setCurrentIndex(prevIndex);
       updateInterviewProgress(sessionId, person, prevIndex);
       setCurrentAnswer({});
+      setTimeout(() => setSlideDirection(null), 300);
     }
   }
 
-  function handleSkip() {
+  async function handleSkip() {
+    setShowSkipConfirm(true);
+  }
+
+  async function confirmSkip() {
     if (!currentScenario || !session) return;
+
+    await haptics.medium();
 
     const answer: InterviewAnswer = {
       scenario_id: currentScenario.id,
@@ -146,11 +186,39 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
 
     const nextIndex = currentIndex + 1;
     if (nextIndex < scenarios.length) {
+      setSlideDirection("left");
       setCurrentIndex(nextIndex);
       updateInterviewProgress(sessionId, person, nextIndex);
       setCurrentAnswer({});
+      setTimeout(() => setSlideDirection(null), 300);
     } else {
       setShowReport(true);
+    }
+  }
+
+  async function handleUndo() {
+    const previous = undoStack.undo();
+    if (previous) {
+      await haptics.light();
+      setCurrentIndex(previous.data.index);
+      setCurrentAnswer(previous.data.answer);
+      updateInterviewProgress(sessionId, person, previous.data.index);
+    }
+  }
+
+  async function handleJumpToIncomplete() {
+    if (!session) return;
+
+    const incompleteIndex = findFirstIncompleteIndex(
+      sessionId,
+      person,
+      scenarios.map(s => s.id)
+    );
+
+    if (incompleteIndex >= 0) {
+      await haptics.medium();
+      setCurrentIndex(incompleteIndex);
+      updateInterviewProgress(sessionId, person, incompleteIndex);
     }
   }
 
@@ -160,14 +228,7 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center animate-fade-in">
-          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Lädt Interview...</p>
-        </div>
-      </div>
-    );
+    return <InterviewQuestionSkeleton />;
   }
 
   // Error state
@@ -227,34 +288,70 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
   return (
     <div className="flex flex-col min-h-[calc(100vh-56px)]">
       {/* Header with Progress */}
-      <header className="px-4 py-3 border-b border-border/40">
+      <header className="px-4 py-3 pt-safe landscape-compact-header border-b border-border/40 sticky top-0 bg-background/95 backdrop-blur-sm z-10">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <button
               onClick={handleClose}
-              className="p-1.5 -ml-1.5 rounded-lg hover:bg-accent transition-colors"
+              className="p-1.5 -ml-1.5 rounded-lg hover:bg-accent transition-colors touch-target"
               aria-label="Schließen"
             >
               <X className="w-5 h-5" />
             </button>
             <span className="text-sm font-medium">Person {person}</span>
           </div>
-          <span className="text-xs text-muted-foreground">
-            {currentIndex + 1}/{scenarios.length}
-          </span>
+          <div className="flex items-center gap-2">
+            {undoStack.canUndo && (
+              <button
+                onClick={handleUndo}
+                className="p-1.5 rounded-lg hover:bg-accent transition-colors touch-target"
+                aria-label="Rückgängig"
+              >
+                <Undo2 className="w-4 h-4 text-muted-foreground" />
+              </button>
+            )}
+            <button
+              onClick={handleJumpToIncomplete}
+              className="p-1.5 rounded-lg hover:bg-accent transition-colors touch-target"
+              aria-label="Zur ersten unvollständigen Frage"
+            >
+              <FastForward className="w-4 h-4 text-muted-foreground" />
+            </button>
+            <span className="text-xs text-muted-foreground">
+              {currentIndex + 1}/{scenarios.length}
+            </span>
+          </div>
         </div>
-        
-        {/* Progress Bar */}
+
+        {/* Progress Bar with Milestones */}
         <div className="progress-bar">
           <div
             className="progress-bar-fill"
             style={{ width: `${progress}%` }}
           />
         </div>
+        <div className="flex justify-between mt-1 px-0.5">
+          {[25, 50, 75, 100].map((milestone) => {
+            const reached = progress >= milestone;
+            return (
+              <span
+                key={milestone}
+                className={`text-[10px] transition-colors ${
+                  reached ? "text-primary font-medium" : "text-muted-foreground"
+                }`}
+              >
+                {milestone}%
+              </span>
+            );
+          })}
+        </div>
       </header>
 
       {/* Question Content - Full Screen Focus */}
-      <div className="flex-1 overflow-auto p-4 pb-32">
+      <div className={`flex-1 overflow-auto px-4 py-6 pb-32 landscape-compact-spacing ${
+        slideDirection === "left" ? "animate-slide-in-left" :
+        slideDirection === "right" ? "animate-slide-in-right" : ""
+      }`}>
         {/* Section Tag */}
         <div className="mb-4">
           <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
@@ -264,8 +361,10 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
 
         {/* Scenario Text - Chat Bubble Style */}
         <div className="mb-6 animate-fade-in">
-          <div className="bg-surface rounded-2xl rounded-tl-sm p-4 border border-border/50">
-            <p className="text-base leading-relaxed">{currentScenario.scenario_text}</p>
+          <div className="bg-surface rounded-2xl rounded-tl-sm p-4 sm:p-5 border border-border/50 max-w-prose mx-auto">
+            <p className="text-base sm:text-lg leading-relaxed landscape-compact-text">
+              {currentScenario.scenario_text}
+            </p>
           </div>
         </div>
 
@@ -343,7 +442,17 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
         open={showAskAI}
         onClose={() => setShowAskAI(false)}
       />
+
+      {/* Skip Confirmation Dialog */}
+      <ConfirmDialog
+        open={showSkipConfirm}
+        onClose={() => setShowSkipConfirm(false)}
+        onConfirm={confirmSkip}
+        title="Frage überspringen?"
+        description="Diese Frage wird als neutral (Vielleicht/3) markiert."
+        confirmText="Überspringen"
+        cancelText="Abbrechen"
+      />
     </div>
   );
 }
-

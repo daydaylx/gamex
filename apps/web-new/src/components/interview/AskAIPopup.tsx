@@ -77,7 +77,7 @@ export function AskAIPopup({
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl max-h-[80vh] flex flex-col">
+        <Card variant="elevated" className="w-full max-w-2xl max-h-[80vh] flex flex-col">
           <CardHeader className="flex-shrink-0">
             <div className="flex items-start justify-between">
               <div>
@@ -89,8 +89,8 @@ export function AskAIPopup({
                   Stelle eine Frage zu diesem Szenario
                 </CardDescription>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleClose}>
-                <X className="h-4 w-4" />
+              <Button variant="ghost" size="icon" onClick={handleClose} className="min-h-[44px] min-w-[44px]">
+                <X className="h-5 w-5" />
               </Button>
             </div>
           </CardHeader>

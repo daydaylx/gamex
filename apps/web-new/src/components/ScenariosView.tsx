@@ -7,6 +7,7 @@ import { loadScenarios } from "../services/api";
 interface ScenariosViewProps {
   sessionId?: string;
   onClose?: () => void;
+  initialDeckIndex?: number;
 }
 
 interface ScenarioOption {
@@ -51,28 +52,28 @@ interface ScenariosData {
   scenarios: Scenario[];
 }
 
-// Risk type colors for options
+// Risk type colors for options - Muted/Semantic
 const riskTypeColors: Record<string, string> = {
-  boundary: "bg-green-600 hover:bg-green-700 text-white",
-  fantasy_passive: "bg-blue-500 hover:bg-blue-600 text-white",
-  fantasy_active: "bg-blue-600 hover:bg-blue-700 text-white",
-  playful: "bg-yellow-500 hover:bg-yellow-600 text-black",
-  negotiation: "bg-orange-500 hover:bg-orange-600 text-white",
-  checkin: "bg-orange-400 hover:bg-orange-500 text-black",
-  safety: "bg-teal-500 hover:bg-teal-600 text-white",
-  conditional: "bg-purple-500 hover:bg-purple-600 text-white",
-  active: "bg-red-500 hover:bg-red-600 text-white",
-  submission: "bg-pink-600 hover:bg-pink-700 text-white",
-  explore: "bg-indigo-500 hover:bg-indigo-600 text-white",
-  passive: "bg-gray-500 hover:bg-gray-600 text-white",
-  hesitant: "bg-amber-400 hover:bg-amber-500 text-black",
-  soft: "bg-rose-400 hover:bg-rose-500 text-white",
-  masochism: "bg-red-700 hover:bg-red-800 text-white",
+  boundary: "bg-green-600/90 text-green-50",
+  fantasy_passive: "bg-blue-600/90 text-blue-50",
+  fantasy_active: "bg-indigo-600/90 text-indigo-50",
+  playful: "bg-amber-500/90 text-amber-50",
+  negotiation: "bg-orange-500/90 text-orange-50",
+  checkin: "bg-stone-500/90 text-stone-50",
+  safety: "bg-teal-600/90 text-teal-50",
+  conditional: "bg-purple-600/90 text-purple-50",
+  active: "bg-red-600/90 text-red-50",
+  submission: "bg-pink-600/90 text-pink-50",
+  explore: "bg-cyan-600/90 text-cyan-50",
+  passive: "bg-slate-500/90 text-slate-50",
+  hesitant: "bg-yellow-600/90 text-yellow-50",
+  soft: "bg-rose-500/90 text-rose-50",
+  masochism: "bg-red-800/90 text-red-100",
 };
 
-export function ScenariosView({ onClose }: ScenariosViewProps) {
+export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewProps) {
   const [scenariosData, setScenariosData] = useState<ScenariosData | null>(null);
-  const [currentDeckIndex, setCurrentDeckIndex] = useState(0);
+  const [currentDeckIndex, setCurrentDeckIndex] = useState(initialDeckIndex);
   const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -374,23 +375,33 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
 
   return (
     <div 
-      className="space-y-6"
+      className="space-y-6 pt-2"
       onTouchStart={handleTouchStart as any}
       onTouchMove={handleTouchMove as any}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between">
+       {/* Zen Mode Progress - Subtle top bar */}
+      <div className="fixed top-0 left-0 w-full h-1 z-50 bg-background">
+        <div 
+          className="h-full bg-primary/70 transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      {/* Zen Header */}
+      <div className="flex items-center justify-between px-1">
         <div>
-          <h2 className="text-2xl font-bold">Szenarien-Modus</h2>
-          <p className="text-sm text-muted-foreground">
-            {currentDeck?.name} • Karte {currentScenarioIndex + 1} von {scenariosInDeck.length}
-          </p>
+           <div className="flex items-center gap-2">
+             <h2 className="text-lg font-bold">{currentDeck?.name}</h2>
+             <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-accent">
+               Karte {currentScenarioIndex + 1}
+             </span>
+           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowDeckOverview(true)}>
+          <Button variant="ghost" size="sm" onClick={() => setShowDeckOverview(true)}>
             <Layers className="h-4 w-4 mr-2" />
-            Decks
+            <span className="hidden sm:inline">Decks</span>
           </Button>
           {onClose && (
             <Button variant="ghost" size="icon" onClick={onClose}>
@@ -400,28 +411,14 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="h-2 bg-muted rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-primary transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <span>Deck {currentDeckIndex + 1} von {scenariosData.decks.length}</span>
-          <span>{globalIndex + 1} / {totalScenarios} gesamt</span>
-        </div>
-      </div>
-
       {/* Scenario Card */}
       {currentScenario && (
-        <Card className="border-2">
+        <Card className="border-2 border-primary/20">
           <CardHeader>
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1">
                 {currentScenario.category && (
-                  <CardDescription className="mb-2 text-xs uppercase tracking-wide">
+                  <CardDescription className="mb-2 text-xs uppercase tracking-wide font-medium text-primary/70">
                     {currentScenario.category}
                   </CardDescription>
                 )}
@@ -450,10 +447,10 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
 
             {/* Info Card (collapsible) */}
             {showInfoCard && currentScenario.info_card && (
-              <div className="rounded-lg bg-muted/50 p-4 space-y-3 border">
+              <div className="rounded-lg bg-muted/50 p-4 space-y-3 border border-border/50">
                 {currentScenario.info_card.emotional_context && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1">💭 Emotionaler Kontext</h4>
+                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">💭 Emotionaler Kontext</h4>
                     <p className="text-sm text-muted-foreground">
                       {currentScenario.info_card.emotional_context}
                     </p>
@@ -461,7 +458,7 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
                 )}
                 {currentScenario.info_card.typical_risks && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1">⚠️ Typische Risiken</h4>
+                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">⚠️ Typische Risiken</h4>
                     <p className="text-sm text-muted-foreground">
                       {currentScenario.info_card.typical_risks}
                     </p>
@@ -469,7 +466,7 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
                 )}
                 {currentScenario.info_card.safety_gate && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1">🛡️ Sicherheitshinweis</h4>
+                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">🛡️ Sicherheitshinweis</h4>
                     <p className="text-sm text-muted-foreground">
                       {currentScenario.info_card.safety_gate}
                     </p>
@@ -488,22 +485,22 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
               </div>
             )}
 
-            {/* Person A Response with 4 Options */}
+            {/* Person A Response with 4 Options - Grid fix for mobile */}
             <div className="space-y-3">
-              <h3 className="font-medium">Person A</h3>
-              <div className="grid grid-cols-2 gap-2">
+              <h3 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">Person A</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {currentScenario.options.map((option) => (
                   <Button
                     key={option.id}
                     variant={currentAnswers?.a === option.id ? "default" : "outline"}
                     onClick={() => handleAnswer("a", option.id)}
-                    className={`w-full text-left h-auto py-3 px-4 whitespace-normal ${
+                    className={`w-full text-left h-auto py-3 px-4 whitespace-normal justify-start ${
                       currentAnswers?.a === option.id
                         ? riskTypeColors[option.risk_type] || 'bg-primary'
                         : ''
                     }`}
                   >
-                    <span className="font-semibold mr-2">{option.id}.</span>
+                    <span className="font-semibold mr-2 opacity-70">{option.id}.</span>
                     {option.label}
                   </Button>
                 ))}
@@ -512,20 +509,20 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
 
             {/* Person B Response with 4 Options */}
             <div className="space-y-3">
-              <h3 className="font-medium">Person B</h3>
-              <div className="grid grid-cols-2 gap-2">
+              <h3 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">Person B</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {currentScenario.options.map((option) => (
                   <Button
                     key={option.id}
                     variant={currentAnswers?.b === option.id ? "default" : "outline"}
                     onClick={() => handleAnswer("b", option.id)}
-                    className={`w-full text-left h-auto py-3 px-4 whitespace-normal ${
+                    className={`w-full text-left h-auto py-3 px-4 whitespace-normal justify-start ${
                       currentAnswers?.b === option.id
                         ? riskTypeColors[option.risk_type] || 'bg-primary'
                         : ''
                     }`}
                   >
-                    <span className="font-semibold mr-2">{option.id}.</span>
+                    <span className="font-semibold mr-2 opacity-70">{option.id}.</span>
                     {option.label}
                   </Button>
                 ))}
@@ -538,7 +535,7 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
                 {currentScenario.tags.map((tag, i) => (
                   <span 
                     key={i}
-                    className="px-2 py-1 text-xs rounded-full bg-muted text-muted-foreground"
+                    className="px-2 py-1 text-xs rounded-full bg-muted/50 text-muted-foreground border border-border/50"
                   >
                     {tag}
                   </span>
@@ -547,7 +544,7 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
             )}
 
             {/* Navigation */}
-            <div className="flex justify-between pt-6 border-t">
+            <div className="flex justify-between pt-6 border-t border-border/50">
               <Button
                 variant="outline"
                 onClick={goToPreviousScenario}
@@ -574,29 +571,9 @@ export function ScenariosView({ onClose }: ScenariosViewProps) {
         </Card>
       )}
 
-      {/* Stats */}
-      <Card className="border-dashed">
-        <CardContent className="pt-6">
-          <div className="flex justify-around text-center">
-            <div>
-              <p className="text-2xl font-bold">{currentScenarioIndex + 1}</p>
-              <p className="text-sm text-muted-foreground">Im Deck</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{Object.keys(answers).length}</p>
-              <p className="text-sm text-muted-foreground">Beantwortet</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{totalScenarios}</p>
-              <p className="text-sm text-muted-foreground">Gesamt</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Swipe hint */}
-      <p className="text-center text-xs text-muted-foreground">
-        💡 Wische nach links/rechts für Navigation
+      <p className="text-center text-xs text-muted-foreground/50 pb-4">
+        💡 Wische für Navigation
       </p>
     </div>
   );
