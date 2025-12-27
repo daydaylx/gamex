@@ -1,11 +1,14 @@
 import { useState, useEffect } from "preact/hooks";
 import { Filter, Search, X } from "lucide-preact";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
 import { ActionPlan } from "./ActionPlan";
-import { compareSession } from "../../services/api";
-import type { CompareResponse, ComparisonResult, MatchLevel } from "../../types/compare";
+import { AIReportSection } from "./AIReportSection";
+import { compareSession, getSessionInfo, loadResponses } from "../services/api";
+import type { CompareResponse, ComparisonResult, MatchLevel } from "../types/compare";
+import type { ResponseMap } from "../types/form";
+import type { SessionInfo } from "../types/session";
 
 interface ComparisonViewProps {
   sessionId: string;
@@ -23,6 +26,9 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
   const [data, setData] = useState<CompareResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
+  const [responsesA, setResponsesA] = useState<ResponseMap>({});
+  const [responsesB, setResponsesB] = useState<ResponseMap>({});
   
   // Filters
   const [bucketFilter, setBucketFilter] = useState<MatchLevel | "ALL">("ALL");
@@ -33,7 +39,21 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
 
   useEffect(() => {
     loadComparison();
+    loadSessionData();
   }, [sessionId]);
+
+  async function loadSessionData() {
+    try {
+      const session = await getSessionInfo(sessionId);
+      setSessionInfo(session);
+      const respA = await loadResponses(sessionId, 'A');
+      const respB = await loadResponses(sessionId, 'B');
+      setResponsesA(respA);
+      setResponsesB(respB);
+    } catch (err) {
+      console.error('Failed to load session data for AI report:', err);
+    }
+  }
 
   async function loadComparison() {
     setLoading(true);
@@ -126,7 +146,7 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
     );
   }
 
-  const summary = data.summary || {};
+  const summary = data.summary || { total: 0, match: 0, explore: 0, boundary: 0 };
 
   return (
     <div className="space-y-6">
@@ -308,6 +328,16 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
           ))
         )}
       </div>
+
+      {/* AI Report Section */}
+      {sessionInfo?.template && (
+        <AIReportSection
+          sessionId={sessionId}
+          template={sessionInfo.template}
+          responsesA={responsesA}
+          responsesB={responsesB}
+        />
+      )}
     </div>
   );
 }

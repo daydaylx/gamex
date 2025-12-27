@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef } from "preact/hooks";
-import { ChevronLeft, ChevronRight, Save, Check } from "lucide-preact";
+import { ChevronLeft, ChevronRight, Save, Check, ChevronDown, ChevronUp, Layers, CheckCircle } from "lucide-preact";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { ConsentRatingInput } from "./ConsentRatingInput";
 import { ScaleInput } from "./ScaleInput";
 import { EnumInput } from "./EnumInput";
 import { MultiInput } from "./MultiInput";
+import { TouchTextInput, QUICK_REPLIES } from "./TouchTextInput";
 import { InfoPopover } from "../InfoPopover";
+import { AIHelpDialog } from "../AIHelpDialog";
 import { loadResponses, saveResponses } from "../../services/api";
-import type { Template, Question } from "../../types";
-import type { ResponseMap, ResponseValue } from "../../types/form";
+import type { Template, Question, Module } from "../../types";
+import type { ResponseMap, ResponseValue, ConsentRatingValue } from "../../types/form";
 
 interface QuestionnaireFormProps {
   sessionId: string;
@@ -26,6 +28,14 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
   const [error, setError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const saveTimeoutRef = useRef<number | null>(null);
+  const [showNotes, setShowNotes] = useState(false);
+  const [showConditions, setShowConditions] = useState(false);
+  const [showModuleOverview, setShowModuleOverview] = useState(false);
+
+  // Swipe handling refs
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const minSwipeDistance = 50;
 
   // Helper to normalize options to { value, label } format
   function normalizeOptions(options: string[] | Array<{ value: string; label: string }>): Array<{ value: string; label: string }> {
@@ -38,13 +48,54 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
     return options as Array<{ value: string; label: string }>;
   }
 
-  // Flatten all questions from modules
-  const allQuestions: (Question & { moduleId?: string })[] = [];
+  // Get context-specific quick replies based on question tags
+  function getQuickRepliesForQuestion(question: Question): string[] {
+    const tags = question.tags || [];
+    const label = (question.label || question.text || '').toLowerCase();
+
+    // Check by tags first
+    if (tags.includes('hard_limits') || label.includes('hard limit') || label.includes('tabu')) {
+      return QUICK_REPLIES.hardLimits;
+    }
+    if (tags.includes('soft_limits') || label.includes('soft limit')) {
+      return QUICK_REPLIES.softLimits;
+    }
+    if (tags.includes('aftercare')) {
+      return QUICK_REPLIES.aftercare;
+    }
+    if (tags.includes('fantasy') || tags.includes('fantasies') || label.includes('fantasi')) {
+      return QUICK_REPLIES.fantasies;
+    }
+    if (tags.includes('safewords') || tags.includes('triggers') || label.includes('safeword') || label.includes('stop')) {
+      return QUICK_REPLIES.safewords;
+    }
+    if (tags.includes('allergies') || tags.includes('health') || label.includes('allergi') || label.includes('gesundheit')) {
+      return QUICK_REPLIES.allergies;
+    }
+    if (tags.includes('highlight') || label.includes('schön') || label.includes('öfter')) {
+      return QUICK_REPLIES.highlights;
+    }
+    if (tags.includes('less') || label.includes('weniger') || label.includes('pausieren')) {
+      return QUICK_REPLIES.pauseList;
+    }
+    
+    // Default quick replies
+    return QUICK_REPLIES.notes;
+  }
+
+  // Flatten all questions from modules with module tracking
+  const allQuestions: (Question & { moduleId?: string; moduleIndex?: number })[] = [];
+  const moduleStartIndices: number[] = [];
+  
   if (template.modules) {
-    for (const module of template.modules) {
+    let questionIndex = 0;
+    for (let mIdx = 0; mIdx < template.modules.length; mIdx++) {
+      const module = template.modules[mIdx];
+      moduleStartIndices.push(questionIndex);
       if (module.questions) {
         for (const q of module.questions) {
-          allQuestions.push({ ...q, moduleId: module.id });
+          allQuestions.push({ ...q, moduleId: module.id, moduleIndex: mIdx });
+          questionIndex++;
         }
       }
     }
@@ -56,21 +107,21 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
   // Calculate module progress for enhanced visualization
   const currentModuleId = currentQuestion?.moduleId;
   const currentModule = template.modules?.find(m => m.id === currentModuleId);
-  const moduleIndex = template.modules?.findIndex(m => m.id === currentModuleId) ?? 0;
+  const moduleIndex = currentQuestion?.moduleIndex ?? 0;
   const totalModules = template.modules?.length ?? 0;
 
   // Get module phases for color coding
   const getModulePhase = (moduleId: string | undefined): string => {
     if (!moduleId) return "foundation";
-    if (moduleId.includes("soft") || moduleId.includes("emotional") || moduleId.includes("logistics")) {
+    if (moduleId.includes("soft") || moduleId.includes("emotional") || moduleId.includes("logistics") || moduleId.includes("starter") || moduleId.includes("base")) {
       return "foundation";
-    } else if (moduleId.includes("touch") || moduleId.includes("sex") || moduleId.includes("sensory")) {
+    } else if (moduleId.includes("touch") || moduleId.includes("sex") || moduleId.includes("sensory") || moduleId.includes("activities")) {
       return "exploration";
-    } else if (moduleId.includes("power") || moduleId.includes("impact") || moduleId.includes("bondage")) {
+    } else if (moduleId.includes("power") || moduleId.includes("impact") || moduleId.includes("bondage") || moduleId.includes("roles")) {
       return "advanced";
-    } else if (moduleId.includes("risk") || moduleId.includes("extreme")) {
+    } else if (moduleId.includes("risk") || moduleId.includes("extreme") || moduleId.includes("fetish") || moduleId.includes("anal")) {
       return "expert";
-    } else if (moduleId.includes("future") || moduleId.includes("digital")) {
+    } else if (moduleId.includes("future") || moduleId.includes("digital") || moduleId.includes("review")) {
       return "lifestyle";
     }
     return "exploration";
@@ -78,7 +129,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
 
   const currentPhase = getModulePhase(currentModuleId);
   
-  const phaseColors = {
+  const phaseColors: Record<string, string> = {
     foundation: "bg-blue-500",
     exploration: "bg-green-500",
     advanced: "bg-yellow-500",
@@ -86,7 +137,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
     lifestyle: "bg-purple-500"
   };
 
-  const phaseLabels = {
+  const phaseLabels: Record<string, string> = {
     foundation: "Fundament",
     exploration: "Erkundung",
     advanced: "Vertiefung",
@@ -94,16 +145,52 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
     lifestyle: "Lebensstil"
   };
 
+  // Calculate answered questions per module
+  function getModuleStats(module: Module): { total: number; answered: number } {
+    const total = module.questions?.length || 0;
+    const answered = module.questions?.filter(q => {
+      const response = responses[q.id];
+      return response !== null && response !== undefined;
+    }).length || 0;
+    return { total, answered };
+  }
+
   useEffect(() => {
     loadExistingResponses();
   }, [sessionId, person]);
+
+  // Update collapsible state when question changes
+  useEffect(() => {
+    if (currentQuestion) {
+      const notesKey = `${currentQuestion.id}_notes`;
+      const conditionsKey = `${currentQuestion.id}_conditions`;
+      const notesResponse = responses[notesKey];
+      const conditionsResponse = responses[conditionsKey];
+      
+      // Show notes section if there's existing notes
+      if (notesResponse && typeof notesResponse === "object" && notesResponse !== null && "text" in notesResponse) {
+        const notesText = (notesResponse as { text: string }).text;
+        setShowNotes(notesText && notesText.trim().length > 0);
+      } else {
+        setShowNotes(false);
+      }
+      
+      // Show conditions section if there's existing conditions
+      if (conditionsResponse && typeof conditionsResponse === "object" && conditionsResponse !== null && "text" in conditionsResponse) {
+        const conditionsText = (conditionsResponse as { text: string }).text;
+        setShowConditions(conditionsText && conditionsText.trim().length > 0);
+      } else {
+        setShowConditions(false);
+      }
+    }
+  }, [currentQuestion?.id, responses]);
 
   async function loadExistingResponses() {
     setLoading(true);
     setError(null);
     try {
       const data = await loadResponses(sessionId, person);
-      setResponses(data.responses || {});
+      setResponses(data || {});
     } catch (err) {
       console.error('Failed to load responses:', err);
       setError(err instanceof Error ? err.message : 'Fehler beim Laden');
@@ -126,7 +213,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
     setSaving(true);
     setSaveSuccess(false);
     try {
-      await saveResponses(sessionId, person, { responses });
+      await saveResponses(sessionId, person, responses);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);
     } catch (err) {
@@ -145,6 +232,75 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
     scheduleAutoSave();
   }
 
+  function handleNotesChange(questionId: string, notes: string) {
+    const notesKey = `${questionId}_notes`;
+    setResponses(prev => ({
+      ...prev,
+      [notesKey]: { text: notes } as ResponseValue,
+    }));
+    scheduleAutoSave();
+  }
+
+  function handleConditionsChange(questionId: string, conditions: string) {
+    const conditionsKey = `${questionId}_conditions`;
+    setResponses(prev => ({
+      ...prev,
+      [conditionsKey]: { text: conditions } as ResponseValue,
+    }));
+    scheduleAutoSave();
+  }
+
+  // Check if main answer is valid for the current question
+  function isMainAnswerValid(question: Question, response: ResponseValue): boolean {
+    if (response === null || response === undefined) return false;
+
+    switch (question.schema) {
+      case "consent_rating": {
+        if (typeof response !== "object" || response === null) return false;
+        const consentValue = response as ConsentRatingValue;
+        return !!(consentValue.status && consentValue.interest !== null && consentValue.interest !== undefined);
+      }
+      case "scale":
+      case "slider":
+      case "scale_1_10": {
+        // Handle ScaleValue object
+        if (typeof response === "object" && response !== null && "value" in response) {
+          const scaleValue = response as { value: number | null };
+          return scaleValue.value !== null && scaleValue.value !== undefined && !isNaN(scaleValue.value);
+        }
+        return false;
+      }
+      case "enum": {
+        // Handle EnumValue object
+        if (typeof response === "object" && response !== null && "value" in response) {
+          const enumValue = response as { value: string | null };
+          return enumValue.value !== null && enumValue.value !== undefined && enumValue.value.length > 0;
+        }
+        return false;
+      }
+      case "multi": {
+        // Handle MultiValue object
+        if (typeof response === "object" && response !== null && "values" in response) {
+          const multiValue = response as { values: string[] };
+          return Array.isArray(multiValue.values) && multiValue.values.length > 0;
+        }
+        return false;
+      }
+      case "text": {
+        if (typeof response === "object" && response !== null && "text" in response) {
+          const textValue = response as { text: string };
+          return typeof textValue.text === "string" && textValue.text.trim().length > 0;
+        }
+        return false;
+      }
+      default:
+        return true;
+    }
+  }
+
+  const currentResponse = responses[currentQuestion?.id];
+  const isCurrentAnswerValid = currentQuestion ? isMainAnswerValid(currentQuestion, currentResponse) : false;
+
   function goToNext() {
     if (currentIndex < allQuestions.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -157,6 +313,39 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
+  }
+
+  function jumpToModule(mIdx: number) {
+    if (mIdx >= 0 && mIdx < moduleStartIndices.length) {
+      setCurrentIndex(moduleStartIndices[mIdx]);
+      setShowModuleOverview(false);
+    }
+  }
+
+  // Swipe handlers
+  function handleTouchStart(e: TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    touchEndX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd() {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && isCurrentAnswerValid) {
+      goToNext();
+    } else if (isRightSwipe) {
+      goToPrevious();
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
   }
 
   if (loading) {
@@ -179,11 +368,106 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
     );
   }
 
+  // Module Overview View
+  if (showModuleOverview) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold">Modul-Übersicht</h2>
+            <p className="text-sm text-muted-foreground">Person {person} • Springe zu einem Modul</p>
+          </div>
+          <Button variant="outline" onClick={() => setShowModuleOverview(false)}>
+            Zurück
+          </Button>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {template.modules?.map((module, mIdx) => {
+            const stats = getModuleStats(module);
+            const isComplete = stats.answered === stats.total && stats.total > 0;
+            const phase = getModulePhase(module.id);
+            const isCurrent = mIdx === moduleIndex;
+
+            return (
+              <Card
+                key={module.id}
+                className={`cursor-pointer transition-all hover:ring-2 hover:ring-primary ${
+                  isCurrent ? 'ring-2 ring-primary' : ''
+                } ${isComplete ? 'bg-green-500/10' : ''}`}
+                onClick={() => jumpToModule(mIdx)}
+              >
+                <CardHeader className="pb-2">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className={`h-3 w-3 rounded-full ${phaseColors[phase]}`} />
+                        <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                          {phaseLabels[phase]}
+                        </span>
+                        {isComplete && <CheckCircle className="h-4 w-4 text-green-500" />}
+                      </div>
+                      <CardTitle className="text-lg">{module.name}</CardTitle>
+                    </div>
+                    {isCurrent && (
+                      <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
+                        Aktuell
+                      </span>
+                    )}
+                  </div>
+                  <CardDescription className="text-sm">{module.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-300 ${phaseColors[phase]}`}
+                        style={{ width: `${stats.total > 0 ? (stats.answered / stats.total) * 100 : 0}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground text-right">
+                      {stats.answered} / {stats.total} Fragen beantwortet
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Overall stats */}
+        <Card className="border-dashed">
+          <CardContent className="pt-6">
+            <div className="flex justify-around text-center">
+              <div>
+                <p className="text-2xl font-bold">{Object.keys(responses).filter(k => !k.includes('_notes') && !k.includes('_conditions')).length}</p>
+                <p className="text-sm text-muted-foreground">Beantwortet</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{allQuestions.length}</p>
+                <p className="text-sm text-muted-foreground">Gesamt</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{progress}%</p>
+                <p className="text-sm text-muted-foreground">Fortschritt</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    <div 
+      className="space-y-6"
+      onTouchStart={handleTouchStart as any}
+      onTouchMove={handleTouchMove as any}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Progress Bar with Module Info */}
       <div className="space-y-2">
-        <div className="flex justify-between text-sm">
+        <div className="flex justify-between items-center text-sm">
           <div className="flex items-center gap-2">
             <span className="font-medium">Person {person}</span>
             {currentModule && (
@@ -193,9 +477,20 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
               </>
             )}
           </div>
-          <span className="text-muted-foreground">
-            Frage {currentIndex + 1} von {allQuestions.length} ({progress}%)
-          </span>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setShowModuleOverview(true)}
+            className="gap-1 h-8"
+          >
+            <Layers className="h-4 w-4" />
+            <span className="hidden sm:inline">Module</span>
+          </Button>
+        </div>
+
+        <div className="flex justify-between text-xs text-muted-foreground">
+          <span>Frage {currentIndex + 1} von {allQuestions.length}</span>
+          <span>{progress}%</span>
         </div>
 
         {/* Enhanced Progress Bar */}
@@ -203,7 +498,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
           {/* Main progress bar */}
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div 
-              className={`h-full transition-all duration-300 ${phaseColors[currentPhase as keyof typeof phaseColors] || "bg-primary"}`}
+              className={`h-full transition-all duration-300 ${phaseColors[currentPhase] || "bg-primary"}`}
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -212,9 +507,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
           {totalModules > 1 && (
             <div className="flex justify-between mt-2">
               <div className="flex items-center gap-2">
-                <div className={`h-2 w-2 rounded-full ${phaseColors[currentPhase as keyof typeof phaseColors] || "bg-primary"}`} />
+                <div className={`h-2 w-2 rounded-full ${phaseColors[currentPhase] || "bg-primary"}`} />
                 <span className="text-xs text-muted-foreground">
-                  Phase: {phaseLabels[currentPhase as keyof typeof phaseLabels] || "Exploration"}
+                  {phaseLabels[currentPhase] || "Exploration"}
                 </span>
               </div>
               <span className="text-xs text-muted-foreground">
@@ -232,19 +527,20 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
             <CardTitle className="text-xl flex-1">
               {currentQuestion.text || currentQuestion.label}
             </CardTitle>
-            {currentQuestion.info_details && (
+            <div className="flex items-center gap-2 flex-shrink-0">
               <InfoPopover
-                title="Hintergrund & Psychologie"
-                content={currentQuestion.info_details}
-                className="flex-shrink-0"
+                title="Informationen zur Frage"
+                infoDetails={currentQuestion.info_details}
+                help={currentQuestion.help}
+                examples={currentQuestion.examples}
               />
-            )}
+              <AIHelpDialog
+                question={currentQuestion}
+                sectionTitle={currentModule?.name}
+                currentAnswer={currentResponse}
+              />
+            </div>
           </div>
-          {currentQuestion.help && (
-            <CardDescription className="text-base">
-              {currentQuestion.help}
-            </CardDescription>
-          )}
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Render appropriate input based on schema */}
@@ -255,12 +551,12 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
             />
           )}
 
-          {(currentQuestion.schema === "scale" || currentQuestion.schema === "slider") && (
+          {(currentQuestion.schema === "scale" || currentQuestion.schema === "slider" || currentQuestion.schema === "scale_1_10") && (
             <ScaleInput
               value={responses[currentQuestion.id] as number}
-              onChange={(value) => handleAnswerChange(currentQuestion.id, value)}
-              min={currentQuestion.min}
-              max={currentQuestion.max}
+              onChange={(value) => handleAnswerChange(currentQuestion.id, { value } as ResponseValue)}
+              min={currentQuestion.schema === "scale_1_10" ? 1 : (currentQuestion.min || 1)}
+              max={currentQuestion.schema === "scale_1_10" ? 10 : (currentQuestion.max || 10)}
               labels={currentQuestion.labels}
             />
           )}
@@ -268,7 +564,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
           {currentQuestion.schema === "enum" && currentQuestion.options && (
             <EnumInput
               value={responses[currentQuestion.id] as string}
-              onChange={(value) => handleAnswerChange(currentQuestion.id, value)}
+              onChange={(value) => handleAnswerChange(currentQuestion.id, { value } as ResponseValue)}
               options={normalizeOptions(currentQuestion.options)}
             />
           )}
@@ -276,10 +572,85 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
           {currentQuestion.schema === "multi" && currentQuestion.options && (
             <MultiInput
               value={responses[currentQuestion.id] as string[]}
-              onChange={(value) => handleAnswerChange(currentQuestion.id, value)}
+              onChange={(value) => handleAnswerChange(currentQuestion.id, { values: value } as ResponseValue)}
               options={normalizeOptions(currentQuestion.options)}
             />
           )}
+
+          {currentQuestion.schema === "text" && (
+            <TouchTextInput
+              value={responses[currentQuestion.id] as { text: string }}
+              onChange={(value) => handleAnswerChange(currentQuestion.id, value)}
+              placeholder={currentQuestion.help || "Tippe auf eine Schnellantwort oder schreibe selbst..."}
+              quickReplies={getQuickRepliesForQuestion(currentQuestion)}
+            />
+          )}
+
+          {/* Optional Fields - Notes */}
+          <div className="space-y-3 pt-4 border-t">
+            <button
+              type="button"
+              onClick={() => setShowNotes(!showNotes)}
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {showNotes ? (
+                <>
+                  <ChevronUp className="h-4 w-4" />
+                  Notiz ausblenden
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4" />
+                  Notiz hinzufügen (optional)
+                </>
+              )}
+            </button>
+
+            {showNotes && (
+              <div className="pt-2">
+                <textarea
+                  value={(responses[`${currentQuestion.id}_notes`] as { text: string } | undefined)?.text || ""}
+                  onChange={(e) => handleNotesChange(currentQuestion.id, (e.target as HTMLTextAreaElement).value)}
+                  placeholder="Hier kannst du zusätzliche Notizen zu dieser Frage hinterlassen..."
+                  className="w-full min-h-[100px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  style={{ fontSize: '16px' }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Optional Fields - Conditions */}
+          <div className="space-y-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setShowConditions(!showConditions)}
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {showConditions ? (
+                <>
+                  <ChevronUp className="h-4 w-4" />
+                  Bedingungen/Grenzen ausblenden
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4" />
+                  Bedingungen/Grenzen hinzufügen (optional)
+                </>
+              )}
+            </button>
+
+            {showConditions && (
+              <div className="pt-2">
+                <textarea
+                  value={(responses[`${currentQuestion.id}_conditions`] as { text: string } | undefined)?.text || ""}
+                  onChange={(e) => handleConditionsChange(currentQuestion.id, (e.target as HTMLTextAreaElement).value)}
+                  placeholder="Hier kannst du Bedingungen oder Grenzen zu dieser Frage angeben..."
+                  className="w-full min-h-[100px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  style={{ fontSize: '16px' }}
+                />
+              </div>
+            )}
+          </div>
 
           {/* Navigation Buttons */}
           <div className="flex justify-between pt-6 border-t">
@@ -287,7 +658,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
               variant="outline"
               onClick={goToPrevious}
               disabled={currentIndex === 0}
-              className="gap-2"
+              className="gap-2 min-h-[48px]"
             >
               <ChevronLeft className="h-4 w-4" />
               Zurück
@@ -295,7 +666,8 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
 
             <Button
               onClick={goToNext}
-              className="gap-2"
+              disabled={!isCurrentAnswerValid}
+              className="gap-2 min-h-[48px]"
             >
               {currentIndex === allQuestions.length - 1 ? 'Fertig' : 'Weiter'}
               <ChevronRight className="h-4 w-4" />
@@ -332,7 +704,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
         </Button>
 
         <span className="text-muted-foreground text-xs">
-          Auto-Save aktiv
+          Auto-Save aktiv • Wische für Navigation
         </span>
       </div>
 
@@ -345,4 +717,3 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete }: Q
     </div>
   );
 }
-

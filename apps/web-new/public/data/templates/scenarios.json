@@ -1,0 +1,486 @@
+{
+  "decks": [
+    {
+      "id": "warmup",
+      "name": "Deck 1: Warm-Up",
+      "description": "Reden über Nähe, Initiation, Feedback, Aftercare, Grenzen. Kein 'Kink', nur Basis-Sicherheit.",
+      "scenarios": ["S01", "S02", "S03", "S04"],
+      "order": 1
+    },
+    {
+      "id": "roles",
+      "name": "Deck 2: Rollen & Dynamik",
+      "description": "Dominant/devot/switch, Kontrolle abgeben/nehmen, Regeln, Sprache, Tempo.",
+      "scenarios": ["S05", "S06", "S07", "S08"],
+      "order": 2
+    },
+    {
+      "id": "curiosity",
+      "name": "Deck 3: Neugier & Tabu",
+      "description": "Neue Settings, Spielzeuge, Beobachten/Beobachtet werden, Fantasie vs Umsetzung.",
+      "scenarios": ["S09", "S10", "S11", "S12"],
+      "order": 3
+    },
+    {
+      "id": "highrisk",
+      "name": "Deck 4: High-Risk",
+      "description": "Themen mit höherem körperlichen/psychischen Risiko. ⚠️ Sicherheits-Gate erforderlich.",
+      "scenarios": ["S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20"],
+      "order": 4,
+      "requires_safety_gate": true
+    }
+  ],
+  "scenarios": [
+  {
+    "id": "S01",
+    "title": "Die offene Tür",
+    "category": "Public/Voyeur",
+    "description": "Die kühle Nachtluft tut gut, du wolltest nur kurz dem Lärm der Party entfliehen. Doch aus dem halbdunklen Gartenhaus dringen Geräusche. Ein gedämpftes Stöhnen, das rhythmische Klatschen von Haut auf Haut. Durch den Spalt der Tür siehst du sie: Zwei Gäste, völlig ineinander verschlungen, die Kleidung hastig beiseite geschoben. Plötzlich trifft sein Blick deinen. Er hält nicht inne. Ein sündiges Lächeln umspielt seine Lippen, und er winkt dich mit einer fast unmerkbaren Kopfbewegung näher...",
+    "info_card": {
+      "emotional_context": "Oft geht's um den Kitzel des Verbotenen, Exhibitionismus, Macht über die Situation.",
+      "typical_risks": "Entdeckung, Scham, Consent-Drittpersonen (andere Gäste).",
+      "safety_gate": "Voraussetzungen: Privater Raum, keine unbeteiligten Dritten, klare Grenzen zu Voyeurismus."
+    },
+    "options": [
+      { "id": "A", "label": "Abwenden und gehen (Das ist mir zu privat)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur zusehen (Der Kitzel des Verbotenen, ohne Berührung)", "risk_type": "fantasy_passive" },
+      { "id": "C", "label": "Näher kommen, aber erst die Lage klären", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die Einladung annehmen und mitmachen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S02",
+    "title": "Kontrollverlust Light",
+    "category": "Power Dynamics",
+    "description": "Das Klirren des Bestecks im Restaurant scheint plötzlich weit weg. Er legt seine Hand auf deine, drückt sanft, aber bestimmt zu, bis du ihn ansiehst. Seine Stimme ist leise, ein gefährliches Schnurren: 'Hör mir gut zu. Ab jetzt triffst du keine Entscheidungen mehr. Nicht, was du isst. Nicht, wann wir gehen. Und schon gar nicht, was passiert, wenn wir zuhause sind. Du gibst die Verantwortung jetzt ab.' Ein Schauer läuft dir über den Rücken...",
+    "info_card": {
+      "emotional_context": "Machtgefälle kann intensiv sein, erfordert aber vertrauensvolle Kommunikation.",
+      "typical_risks": "Gefühl des Ausgeliefertseins, Angst vor Kontrollverlust, mangelnde Nachbesprechung.",
+      "safety_gate": "Voraussetzungen: Safeword vereinbart, klare Grenzen, nach der Szene ausführliche Nachbesprechung."
+    },
+    "options": [
+      { "id": "A", "label": "Den Griff lösen (Ich möchte meine Kontrolle behalten)", "risk_type": "boundary" },
+      { "id": "B", "label": "Spielerisch provozieren ('Du musst mich schon zwingen')", "risk_type": "playful" },
+      { "id": "C", "label": "Zustimmen, aber mit einem Safeword als Anker", "risk_type": "safety" },
+      { "id": "D", "label": "Sich völlig hingeben und die Führung genießen", "risk_type": "submission" }
+    ]
+  },
+  {
+    "id": "S03",
+    "title": "Das Foto-Dilemma",
+    "category": "Digital/Privacy",
+    "description": "Ihr liegt völlig erschöpft and entblößt in den Laken, das Licht fällt weich auf eurer Körper. Du fühlst dich sicher, geborgen. Plötzlich hörst du ein leises Klicken. Du öffnest die Augen und siehst, wie dein Gegenüber das Handy in der Hand hält, die Linse auf dich gerichtet. 'Das sah so wunderschön aus', murmelt er, den Finger noch über dem Auslöser. 'Ich musste das einfach festhalten.'",
+    "options": [
+      { "id": "A", "label": "Sofortiger Stopp (Keine Fotos von mir!)", "risk_type": "boundary" },
+      { "id": "B", "label": "Ansehen, aber danach sofort löschen", "risk_type": "conditional" },
+      { "id": "C", "label": "Nur ohne Gesicht und an einem sicheren Ort gespeichert", "risk_type": "safety" },
+      { "id": "D", "label": "Das Spiel mit der Kamera genießen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S04",
+    "title": "Schmerz als Impuls",
+    "category": "Impact/Sensation",
+    "description": "Es beginnt wie immer, vertraut und leidenschaftlich. Doch dann verändert sich der Griff. Seine Hände schließen sich fester um deinen Körper, fast grob. Ein Ruck geht durch dich, als er dich packt. Sein Blick ist plötzlich dunkel, fordernd, nicht mehr sanft. Du spürst den ersten, brennenden Schmerz auf deiner Haut, als er andeutet, härter zuzulangen. Es ist eine unausgesprochene Frage in der Luft.",
+    "options": [
+      { "id": "A", "label": "Abbrechen (Das ist mir zu viel Aggression)", "risk_type": "boundary" },
+      { "id": "B", "label": "Sanft zurücklenken (Lieber zärtlich bleiben)", "risk_type": "soft" },
+      { "id": "C", "label": "Vorsichtig testen, wie weit es gehen darf", "risk_type": "checkin" },
+      { "id": "D", "label": "Ermutigen und den Schmerz in Lust verwandeln", "risk_type": "masochism" }
+    ]
+  },
+  {
+    "id": "S05",
+    "title": "Der Rollentausch",
+    "category": "Roles",
+    "description": "Ihr liegt atemlos nebeneinander. Die übliche Dynamik ist wie ein warmes Nest, vertraut und sicher. Doch heute durchbricht sie die Stille: 'Ich will wissen, wie es sich für dich anfühlt', flüstert sie. 'Lass uns tauschen. Heute nimmst du meine Rolle ein. Sei du derjenige, der bestimmt.' Sie sieht dich erwartungsvoll an, bereit, die Kontrolle abzugeben – oder zu übernehmen, je nachdem, wo ihr steht.",
+    "options": [
+      { "id": "A", "label": "Nein (Ich fühle mich in meiner Rolle wohl)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur darüber reden, wie es wäre", "risk_type": "fantasy_active" },
+      { "id": "C", "label": "Einen kleinen Teil tauschen und sehen, wie es sich anfühlt", "risk_type": "negotiation" },
+      { "id": "D", "label": "Voll einsteigen und die neue Macht auskosten", "risk_type": "explore" }
+    ]
+  },
+  {
+    "id": "S06",
+    "title": "Dritte Person (Fantasie)",
+    "category": "Group/Fantasy",
+    "description": "Die Dunkelheit hüllt euch ein. Seine Lippen sind an deinem Ohr, sein Atem heiß. 'Stell dir vor...', beginnt er, und nennt dann einen Namen. Jemanden, den ihr beide kennt. 'Stell dir vor, sie wäre jetzt hier. Sie würde zur Tür hereinkommen, uns zusehen, und dann...' Die Bilder in deinem Kopf werden unweigerlich lebendig, die Grenze zwischen Realität und Fantasie beginnt zu verschwimmern.",
+    "options": [
+      { "id": "A", "label": "Thema wechseln (Das weckt Eifersucht in mir)", "risk_type": "boundary" },
+      { "id": "B", "label": "Zuhören und die Fantasie im Kopf genießen", "risk_type": "fantasy_passive" },
+      { "id": "C", "label": "Die Geschichte gemeinsam weiterspinnen", "risk_type": "fantasy_active" },
+      { "id": "D", "label": "Fragen, ob das mehr als nur eine Fantasie sein könnte", "risk_type": "checkin" }
+    ]
+  },
+  {
+    "id": "S07",
+    "title": "Das 'Nein'-Spiel (CNC)",
+    "category": "High Risk/CNC",
+    "description": "Ihr rauft spielerisch auf dem Teppich, ein Kräftemessen aus Lachen und Kitzeln. Du windest dich, rufst lachend 'Nein, hör auf!'. Doch er hält dich fest, drückt dich mit seinem Gewicht nach unten. Das Lachen in seinem Gesicht weicht einem intensiven Blick. Er macht nicht weiter, lässt aber auch nicht los. Du spürst seine Überlegenheit. 'Zwing mich doch, aufzuhören', raunt er.",
+    "info_card": {
+      "emotional_context": "CNC (Consensual Non-Consent) spielt mit dem Paradox der 'erzwungenen' Einwilligung. Erfordert höchstes Vertrauen.",
+      "typical_risks": "Grenzverletzung durch Missverständnisse, psychisches Trauma, Verlust des Gefühls von Sicherheit.",
+      "safety_gate": "Voraussetzungen: Safeword muss 100% respektiert werden, vorherige ausführliche Kommunikation, Erfahrung mit Power Dynamics."
+    },
+    "options": [
+      { "id": "A", "label": "Ernsthaft stoppen (Das Spiel ist vorbei)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur im verbalen Spiel bleiben", "risk_type": "playful" },
+      { "id": "C", "label": "Weiterkämpfen, solange das Safeword gilt", "risk_type": "safety" },
+      { "id": "D", "label": "Den Kitzel des 'Erzwungenen' voll auskosten", "risk_type": "submission" }
+    ]
+  },
+  {
+    "id": "S08",
+    "title": "Das sichtbare Zeichen",
+    "category": "Social Risk",
+    "description": "Die Leidenschaft ist auf dem Höhepunkt, alles ist Instinkt und Verlangen. Du spürst seine Zähne an deinem Hals, scharf und fordernd. 'Ich will, dass jeder sieht, wem du gehörst', keucht er. Er setzt an, um eine Marke zu hinterlassen, einen Fleck, der noch Tage sichtbar sein wird – auch morgen im Büro.",
+    "options": [
+      { "id": "A", "label": "Wegdrehen (Keine sichtbaren Spuren)", "risk_type": "boundary" },
+      { "id": "B", "label": "Stattdessen an einer verdeckten Stelle", "risk_type": "conditional" },
+      { "id": "C", "label": "Nur einen kleinen, unauffälligen Fleck erlauben", "risk_type": "negotiation" },
+      { "id": "D", "label": "Ja, markier mich mit Stolz", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S09",
+    "title": "Das ferngesteuerte Toy",
+    "category": "Public/Control",
+    "description": "Das Restaurant ist gut besucht, Stimmengewirr und Klaviermusik. Unter dem Tisch schiebt er dir unauffällig einen kleinen Gegenstand zu. 'Geh auf die Toilette und leg das an', flüstert er, und zeigt dir unter der Serviette die Fernbedienung in seiner Hand. 'Wir werden ein kleines Geheimnis haben, während wir hier sitzen und über das Wetter reden.'",
+    "options": [
+      { "id": "A", "label": "Ablehnen (Zu viel Angst, entdeckt zu werden)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur darüber reden, wie es wäre", "risk_type": "conditional" },
+      { "id": "C", "label": "Mitmachen, wenn ich die Kontrolle zurückfordern kann", "risk_type": "safety" },
+      { "id": "D", "label": "Den Nervenkitzel der Fernsteuerung genießen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S10",
+    "title": "Aftercare-Konflikt",
+    "category": "Emotion/Aftercare",
+    "description": "Der Sturm ist vorbei. Du liegst da, völlig offen, zitternd, Tränen laufen dir über das Gesicht – der 'Drop' trifft dich hart. Du brauchst Halt. Doch dein Gegenüber steht bereits auf, wirkt seltsam distanziert und erschöpft. 'Ich muss schlafen', murmelt er und dreht sich weg. Die Kälte im Raum ist fast greifbar.",
+    "options": [
+      { "id": "A", "label": "Sich still zurückziehen (Innerlich zumachen)", "risk_type": "passive" },
+      { "id": "B", "label": "Später darüber sprechen (Heute nur Ruhe)", "risk_type": "negotiation" },
+      { "id": "C", "label": "Kurz um eine Umarmung bitten, ohne Worte", "risk_type": "boundary" },
+      { "id": "D", "label": "Das Bedürfnis klar einfordern und Halt suchen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S11",
+    "title": "Die Überraschung",
+    "category": "Consent/Surprise",
+    "description": "Du schließt die Wohnungstür auf, müde vom Tag. Doch statt der üblichen Ruhe empfängt dich Kerzenschein. Im Wohnzimmer ist eine Szenerie aufgebaut – Seile hängen bereit, dein Outfit liegt parat. Er sitzt im Sessel, bereits voll in seiner dominanten Rolle. 'Zieh dich aus', befiehlt er ruhig. Ihr hattet für heute eigentlich nichts geplant.",
+    "options": [
+      { "id": "A", "label": "Abbrechen (Ich brauche Vorwarnung und Ruhe)", "risk_type": "boundary" },
+      { "id": "B", "label": "Erst mal ankommen und später entscheiden", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mitmachen, aber in einem langsamen Tempo", "risk_type": "safety" },
+      { "id": "D", "label": "Die Initiative feiern und sofort einsteigen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S12",
+    "title": "Dirty Talk & Tabus",
+    "category": "Verbal/Taboo",
+    "description": "Die Luft ist elektrisch, alles ist intensiv. Er beugt sich über dich, sein Mund ganz nah an deinem Ohr. Dann fällt das Wort. Ein Begriff, schmutzig, abwertend, ein Tabu, das ihr noch nie gebrochen habt. Es hängt im Raum, hart und unmissverständlich. Er wartet auf deine Reaktion.",
+    "options": [
+      { "id": "A", "label": "Stopp (Dieses Wort ist ein No-Go für mich)", "risk_type": "boundary" },
+      { "id": "B", "label": "Ignorieren und weitermachen", "risk_type": "passive" },
+      { "id": "C", "label": "Nur in diesem speziellen Moment erlauben", "risk_type": "checkin" },
+      { "id": "D", "label": "Voll darauf einsteigen und es erwidern", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S13",
+    "title": "Körperflüssigkeiten",
+    "category": "Sensation/Taboo",
+    "description": "Die Kontrolle entgleitet. Er hält dein Gesicht fest, zwingt dich, ihn anzusehen. Sein Atem geht stoßweise. Du merkst, dass er kurz vor dem Höhepunkt ist. 'Ich will dich markieren', keucht er, und deutet an, dir direkt ins Gesicht zu kommen oder zu spucken. Es ist keine Frage, es ist eine Ankündigung, die gleich Realität wird.",
+    "safety_gate": {
+      "required": ["safeword_agreed", "time_available", "no_surprises"],
+      "message": "Dieses Szenario erfordert: Safeword vereinbart, genug Zeit, keine Überraschungen."
+    },
+    "options": [
+      { "id": "A", "label": "Wegdrehen (Nicht im Gesicht)", "risk_type": "boundary" },
+      { "id": "B", "label": "Geschehen lassen, ohne aktiv zu werden", "risk_type": "passive" },
+      { "id": "C", "label": "Nur auf den Körper, nicht in den Mund", "risk_type": "negotiation" },
+      { "id": "D", "label": "Sich ihm völlig öffnen und es wollen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S14",
+    "title": "Der Spiegel",
+    "category": "Body Image",
+    "description": "Seine Hände führen dich vor den großen Wandspiegel. Das Licht ist gnadenlos hell. 'Sieh dich an', befiehlt er. Er drückt dich so, dass du deinen eigenen Körper sehen musst, jede Kurve, jede Bewegung, während er dich nimmt. Er kommentiert, wie 'dreckig' und 'geil' das aussieht, zwingt dich, Augenkontakt mit deinem Spiegelbild zu halten.",
+    "options": [
+      { "id": "A", "label": "Wegsehen oder Licht aus (Scham überwiegt)", "risk_type": "boundary" },
+      { "id": "B", "label": "Augen schließen und nur spüren", "risk_type": "hesitant" },
+      { "id": "C", "label": "Hinschauen, solange er mich dabei hält", "risk_type": "passive" },
+      { "id": "D", "label": "Sich selbst im Spiegel begehren", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S15",
+    "title": "Bezahlte Dienste (Rollenspiel)",
+    "category": "Roleplay/Power",
+    "description": "Das Ambiente ist kühl, fast geschäftlich. Er sitzt auf der Bettkante und legt ein Bündel Geldscheine auf den Nachttisch – Spielgeld, oder vielleicht echtes. 'Du weißt, wofür das ist', sagt er mit einer Stimme, die keinen Widerspruch duldet. 'Heute bist du hier, um zu dienen. Du wirst dafür bezahlt, also benimm dich auch so.' Das Gefühl, eine Ware zu sein, steht im Raum.",
+    "options": [
+      { "id": "A", "label": "Abbrechen (Das fühlt sich falsch an)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur darüber reden, ohne das Geld zu nutzen", "risk_type": "conditional" },
+      { "id": "C", "label": "Mitmachen, solange es nur ein Spiel bleibt", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die Objektifizierung als Tabubruch genießen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S16",
+    "title": "Die Fesseln (Restriktion)",
+    "category": "Restraint/Bondage",
+    "description": "Das Seil – oder vielleicht sind es Handschellen – klickt ins Schloss. Deine Hände sind fixiert, deine Bewegungsfreiheit ist gleich Null. Du liegst auf dem Bett, völlig offen, unfähig, dich zu schützen oder zu berühren. Er tritt einen Schritt zurück, betrachtet das Werk und lächelt. Du realisierst: Egal was jetzt passiert, du kannst nichts tun, außer es geschehen zu lassen.",
+    "info_card": {
+      "emotional_context": "Bondage kombiniert Kontrollverlust mit physischer Restriktion. Kann sehr intensiv sein.",
+      "typical_risks": "Klaustrophobie, Verletzungen durch falsche Technik, Panik bei zu viel Enge.",
+      "safety_gate": "Voraussetzungen: Kenntnis der Technik, non-verbales Stop-Signal vereinbart, Schere griffbereit, keine Enge am Hals."
+    },
+    "options": [
+      { "id": "A", "label": "Sofort lösen (Das Gefühl der Enge macht mir Angst)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur ganz leichte Fesseln (z.B. Seidentuch)", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mitmachen, solange ich das Safeword kenne", "risk_type": "safety" },
+      { "id": "D", "label": "Die totale Hilflosigkeit als Kick genießen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S17",
+    "title": "Die Dunkelheit (Sensory Deprivation)",
+    "category": "Sensory/Trust",
+    "description": "Das Band legt sich über deine Augen und die Welt verschwindet. Plötzlich existiert nur noch das Hören und Fühlen. Jedes Geräusch im Raum – das Rascheln von Stoff, ein Schritt, ein Atemzug – lässt deinen Puls rasen. Du weißt nicht, wann die nächste Berührung kommt, oder wo. Du wartest in der Dunkelheit, völlig abhängig von dem, was dein Gegenüber plant.",
+    "options": [
+      { "id": "A", "label": "Nein (Der Kontrollverlust ist zu groß)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur ein durchscheinendes Tuch (Halbdunkel)", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur wenn ich die Binde selbst abnehmen darf", "risk_type": "negotiation" },
+      { "id": "D", "label": "Völlige Dunkelheit und Überraschung genießen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S18",
+    "title": "Das Verbot (Orgasm Control)",
+    "category": "Power/Control",
+    "description": "Die Lust baut sich auf, eine Welle, die kurz davor ist, zu brechen. Du bist so nah dran, dein Körper schreit nach Erlösung. Doch plötzlich stoppt die Hand. 'Nein', flüstert eine Stimme streng. 'Noch nicht. Du kommst erst, wenn ich es dir erlaube.' Du wirst an der Kante gehalten, schwankend zwischen Frust und einer intensiven, verzweifelten Geilheit.",
+    "options": [
+      { "id": "A", "label": "Stopp (Das frustriert mich zu sehr)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur einmal kurz verzögern", "risk_type": "hesitant" },
+      { "id": "C", "label": "Als Spiel mit klarem 'Erlaubnis'-Signal", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die totale Kontrolle über meinen Höhepunkt abgeben", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S19",
+    "title": "Die Konsequenz (Discipline)",
+    "category": "Discipline/Impact",
+    "description": "Du warst frech, hast eine Regel gebrochen oder provoziert. Jetzt ist der Moment der Abrechnung. Die Stimmung ist nicht mehr nur spielerisch, sie ist streng. 'In die Ecke', oder 'Über das Knie', heißt die Anweisung. Es geht nicht um Sex im klassischen Sinne, sondern um Sühne. Die Strafe folgt auf den Fuß, und sie wird spürbar sein.",
+    "options": [
+      { "id": "A", "label": "Abbrechen (Das fühlt sich zu ernst an)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur als spielerische Andeutung", "risk_type": "playful" },
+      { "id": "C", "label": "Mit vorheriger Absprache der 'Strafen'", "risk_type": "negotiation" },
+      { "id": "D", "label": "Ernsthaftes Disziplin-Rollenspiel auskosten", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S20",
+    "title": "Die Hingabe (Worship)",
+    "category": "Devotion/Roles",
+    "description": "Er sitzt bequem, entspannt, vielleicht erhöht. Du kniest davor, den Blick gesenkt. Es geht heute nicht um deine Lust, sondern um die totale Verehrung. Du küsst die Füße, die Hände oder den Körper deines Gegenübers, wie einen Altar. Es ist ein Akt der tiefsten Demut, bei dem du dich völlig klein machst, um den anderen groß erscheinen zu lassen.",
+    "options": [
+      { "id": "A", "label": "Nein (Das liegt mir gar nicht)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur kurz als Einleitung nutzen", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur wenn wir danach die Rollen tauschen", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die demütige Verehrung voll ausleben", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S21",
+    "title": "Die Bar-Begegnung (Roleplay Light)",
+    "category": "Roleplay/Connection",
+    "description": "Ihr vereinbart, euch in einer Bar zu treffen und so zu tun, als würdet ihr euch nicht kennen. Einer von euch sitzt bereits da, als der andere hereinkommt. Flirten wie am ersten Tag. 'Ist hier noch frei?' - Der Nervenkitzel der Eroberung, ohne das Risiko des Scheiterns.",
+    "info_card": {
+      "emotional_context": "Reaktiviert die Anziehung durch Unbekanntheit und spielerisches Erobern. Durchbricht Routine.",
+      "typical_risks": "Eifersucht wenn Partner zu überzeugend mit 'Fremden' flirtet. Peinlichkeit bei Entdeckung.",
+      "safety_gate": "Vorher Grenzen klären: Wie weit geht das Spiel? Nur Flirten oder auch körperliche Nähe?"
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Ich mag unsere natürliche Dynamik)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur als Gedankenspiel / darüber reden", "risk_type": "fantasy_passive" },
+      { "id": "C", "label": "Ausprobieren, aber nur verbales Flirten", "risk_type": "negotiation" },
+      { "id": "D", "label": "Voll einsteigen bis zur 'Abschleppung'", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S22",
+    "title": "Das Slow-Motion Date",
+    "category": "Connection/Sensory",
+    "description": "Heute Abend ist alles in Zeitlupe. Kein Handy, keine Eile. Ihr nehmt euch 3 Stunden nur für euch: Gemeinsam kochen, dabei berühren, langsam essen und dabei in die Augen sehen. Jede Geste ist bewusst. Es geht nicht um Sex, sondern um pure Präsenz. Am Ende: Was auch immer sich richtig anfühlt.",
+    "info_card": {
+      "emotional_context": "Entschleunigung als Gegenmittel zu Alltagsstress. Achtsamkeit stärkt Verbindung.",
+      "typical_risks": "Ungeduld, Ablenkung durch Gedanken, Unbehagen mit Intensität der Nähe.",
+      "safety_gate": "Zeitfenster wirklich freihalten. Handy aus. Offenheit für Intimität ohne Erwartung."
+    },
+    "options": [
+      { "id": "A", "label": "Zu langsam für mich / Ich brauche Action", "risk_type": "boundary" },
+      { "id": "B", "label": "1 Stunde probieren statt 3", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit klarem Ende-Signal wenn es zu viel wird", "risk_type": "safety" },
+      { "id": "D", "label": "Vollständig einlassen auf die Langsamkeit", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S23",
+    "title": "Die Sinnesreise (Sensory Exploration)",
+    "category": "Sensory/Trust",
+    "description": "Eine Stunde, in der einer von euch nur empfängt, der andere nur gibt. Augen verbunden. Nacheinander kommen verschiedene Texturen auf die Haut: Seide, Eis, eine Feder, warmes Öl, eine sanfte Bürste. Kein Sex, nur Sinneseindrücke und die Frage: Was fühlt sich wie an?",
+    "info_card": {
+      "emotional_context": "Erweitert das Repertoire über Genitalität hinaus. Sensory Play als Achtsamkeitspraxis.",
+      "typical_risks": "Ungeduld ('Wann passiert endlich was?'), Kitzligkeit, Temperaturempfindlichkeit.",
+      "safety_gate": "Safeword vereinbart, keine allergenen Materialien, Raumtemperatur angenehm."
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Ich bin zu kitzlig / Berührungen sind schwierig)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur ohne Augenbinde", "risk_type": "hesitant" },
+      { "id": "C", "label": "Als Vorspiel, aber mit sexuellem Ausklang", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die volle Sinnesreise ohne Erwartung", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S24",
+    "title": "Der ehrliche Spiegel",
+    "category": "Vulnerability/Body",
+    "description": "Keine Sexszene, sondern ein Ritual: Ihr steht voreinander, nackt, in weichem Licht. Abwechselnd sagt jeder dem anderen: 'Was ich an deinem Körper schön finde...' und benennt drei Dinge. Keine Floskeln, nur Ehrlichkeit. Es darf verlegen sein. Es darf berühren.",
+    "info_card": {
+      "emotional_context": "Body Image und Scham heilen durch Wertschätzung. Nacktheit ohne Performance.",
+      "typical_risks": "Scham, Vergleiche mit Idealen, Verletzlichkeit kann überwältigen.",
+      "safety_gate": "Nur wenn beide bereit sind. Keine Kritik, nur Wertschätzung. Danach Nähe anbieten."
+    },
+    "options": [
+      { "id": "A", "label": "Zu verletzlich / Ich mag meinen Körper nicht genug", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur angezogen oder in Unterwäsche", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur wenn ich danach Zuspruch bekomme", "risk_type": "negotiation" },
+      { "id": "D", "label": "Mich der Verletzlichkeit stellen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S25",
+    "title": "Das Ja/Nein Experiment",
+    "category": "Communication/Consent",
+    "description": "10 Minuten Training: Einer fragt, der andere antwortet nur mit 'Ja' oder 'Nein'. 'Darf ich deine Hand nehmen?' - 'Ja.' 'Darf ich dich küssen?' - 'Nein.' Kein 'Vielleicht', kein Erklären. Nur klare Antworten. Dann Rollentausch. Ziel: Üben, Grenzen ohne Rechtfertigung zu setzen.",
+    "info_card": {
+      "emotional_context": "Consent Culture trainieren. 'Nein' sagen dürfen ohne Schuldgefühl.",
+      "typical_risks": "Zurückweisung kann sich hart anfühlen. Ängstlich Gebundene fürchten Ablehnung.",
+      "safety_gate": "Nachher besprechen: Wie hat sich das Neinsagen angefühlt? Und das Abgelehntwerden?"
+    },
+    "options": [
+      { "id": "A", "label": "Zu künstlich / Ich kann auch so Nein sagen", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur im nicht-körperlichen Bereich üben", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Nachbesprechung direkt danach", "risk_type": "safety" },
+      { "id": "D", "label": "Das volle Training durchziehen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S26",
+    "title": "Die Bucket List des Intimen",
+    "category": "Exploration/Future",
+    "description": "Setzt euch mit Stift und Papier zusammen. Jeder schreibt 5 Dinge auf, die er/sie gerne mal ausprobieren würde (von 'Sex im Freien' bis 'Gemeinsam Tanzen lernen'). Dann tauscht ihr aus und wählt gemeinsam 3 Dinge aus, die ihr in den nächsten 6 Monaten angeht. Ein Vertrag mit euch selbst.",
+    "info_card": {
+      "emotional_context": "Fantasien konkret machen. Von Träumen zu Plänen. Schafft Vorfreude.",
+      "typical_risks": "Inkompatible Wünsche können enttäuschen. Druck, 'interessant' sein zu müssen.",
+      "safety_gate": "Keine Verpflichtung - nur Inspiration. Bucket List ist keine To-Do-Liste."
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Ich will keinen Druck aufbauen)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur darüber reden, nicht aufschreiben", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur 'realistische' Dinge, nichts Extremes", "risk_type": "negotiation" },
+      { "id": "D", "label": "Alles aufschreiben - auch wilde Fantasien", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S27",
+    "title": "Der Massage-Vertrag",
+    "category": "Sensory/Service",
+    "description": "Heute Abend dient einer nur dem anderen. 45 Minuten Vollkörper-Massage mit Öl, in Stille oder mit Musik. Der Empfangende muss nichts zurückgeben, nur genießen. Kein Sex danach - außer der Empfangende will ausdrücklich. Das Geschenk ist die Hingabe selbst.",
+    "info_card": {
+      "emotional_context": "Geben ohne Erwartung. Nehmen ohne Schuld. Durchbricht Transaktions-Denken ('Ich gebe, also musst du auch').",
+      "typical_risks": "Ungeduld beim Gebenden. Schuldgefühl beim Nehmenden ('Ich müsste was zurückgeben').",
+      "safety_gate": "Vorher klären: Heute ist wirklich 'Nehmen-Abend', kein Zurückgeben erwartet."
+    },
+    "options": [
+      { "id": "A", "label": "Ungern nur nehmend / Ich muss zurückgeben", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 15-20 Minuten statt 45", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Option auf gegenseitige Massage", "risk_type": "negotiation" },
+      { "id": "D", "label": "Voll als Nehmende:r einlassen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S28",
+    "title": "Die Stille Berührung",
+    "category": "Intimacy/Meditation",
+    "description": "20 Minuten, kein Wort. Ihr liegt nebeneinander, angezogen oder nackt. Eine Hand ruht auf dem Herzen des anderen. Augen geschlossen. Nur Atem synchronisieren und die Wärme spüren. Keine Erwartung, kein Ziel. Nur Sein.",
+    "info_card": {
+      "emotional_context": "Intimität jenseits von Leistung und Stimulation. Oxytocin-Boost durch Berührung + Präsenz.",
+      "typical_risks": "Unruhe, Gedankenkreisen, Einschlafen. Kann emotional überwältigend sein.",
+      "safety_gate": "Vorher absprechen: Weinen ist ok. Abbrechen ist ok. Nachher optional darüber reden."
+    },
+    "options": [
+      { "id": "A", "label": "Zu esoterisch / Ich kann nicht so lange still sein", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 5 Minuten probieren", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Musik im Hintergrund", "risk_type": "negotiation" },
+      { "id": "D", "label": "Volle 20 Minuten in Stille", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S29",
+    "title": "Die Wunschliste der Berührungen",
+    "category": "Communication/Touch",
+    "description": "Jeder macht eine Liste mit 5 Arten von Berührungen, die er/sie sich mehr wünscht (z.B. 'Haare streicheln', 'Fester umarmen', 'Füße massieren', 'Nacken küssen'). Dann verbringt ihr eine Stunde damit, diese Wünsche zu erfüllen - ohne Erwartung von Sex. Nur Berührung als Sprache.",
+    "info_card": {
+      "emotional_context": "Non-genitale Intimität stärken. Berührungshunger stillen, der oft untergeht.",
+      "typical_risks": "Ungeduld ('Wann wird's sexuell?'), unerfüllte Erwartungen wenn Liste zu spezifisch.",
+      "safety_gate": "Klarmachen: Heute geht's nicht um Sex, sondern um Zärtlichkeit."
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Berührung außerhalb von Sex ist mir unwichtig)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 2-3 Wünsche statt 5", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Option, dass es sexuell werden darf", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die volle Wunschliste durchgehen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S30",
+    "title": "Das Dankbarkeits-Ritual",
+    "category": "Connection/Appreciation",
+    "description": "Jeden Abend, 7 Tage lang, vor dem Schlafengehen: Jeder sagt dem anderen eine Sache, für die er/sie heute dankbar war. Keine großen Worte, nur kleine Momente. 'Danke, dass du mir Kaffee gemacht hast.' 'Danke, dass du mich zum Lachen gebracht hast.' Aufmerksamkeit für das Gute.",
+    "info_card": {
+      "emotional_context": "Dankbarkeits-Praxis verschiebt den Fokus von Mangel zu Fülle. Stärkt Wertschätzung.",
+      "typical_risks": "Vergessen, künstlich wirken, wird zur Pflicht statt zum Ritual.",
+      "safety_gate": "Keine Erwartung an 'große' Dankbarkeiten. Auch Kleines zählt."
+    },
+    "options": [
+      { "id": "A", "label": "Zu kitschig / Fühlt sich unecht an", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 3 Tage statt 7", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur wenn wir beide dran denken (kein Druck)", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die vollen 7 Tage durchziehen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S31",
+    "title": "Die Fantasy-Beichte",
+    "category": "Vulnerability/Fantasy",
+    "description": "Dimmes Licht, ihr liegt nebeneinander. Einer von euch beginnt: 'Ich erzähl dir eine Fantasie, die ich noch nie jemandem erzählt habe.' Der andere hört nur zu, bewertet nicht, stellt maximal verständnisvolle Fragen. Dann Rollentausch. Danach: Kuscheln, egal wie 'krass' die Fantasien waren.",
+    "info_card": {
+      "emotional_context": "Fantasien teilen baut Vertrauen. Aber: Fantasie ≠ Wunsch nach Realität. Wichtig zu unterscheiden.",
+      "typical_risks": "Schock, Eifersucht, Scham. Fantasien können triggern (z.B. Ex-Partner, Gruppensex).",
+      "safety_gate": "Vorher klären: 'Das ist nur eine Fantasie, keine Forderung. Bist du bereit zuzuhören ohne zu urteilen?'"
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Manche Fantasien bleiben privat)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 'harmlose' Fantasien teilen", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Veto-Recht: Ich darf abbrechen", "risk_type": "safety" },
+      { "id": "D", "label": "Alles erzählen ohne Filter", "risk_type": "active" }
+    ]
+  }
+  ]
+}

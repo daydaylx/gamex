@@ -28,7 +28,7 @@ function setStorage<T>(key: string, value: T): void {
 
 // Generate unique IDs
 function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 }
 
 // Template loading (bundled JSON files)
@@ -37,14 +37,28 @@ let cachedTemplates: Template[] | null = null;
 async function loadBundledTemplates(): Promise<Template[]> {
   if (cachedTemplates) return cachedTemplates;
 
-  // Load from bundled JSON (adjust path based on build setup)
+  // Load all available templates
+  const templateFiles = [
+    'psycho_enhanced_v3.json',
+    'unified_template.json',
+    'default_template.json',
+    'comprehensive_v1.json'
+  ];
+
   try {
-    const response = await fetch('/data/templates/unified_template.json');
-    if (!response.ok) {
-      throw new Error(`Failed to load templates: ${response.status}`);
+    const templates: Template[] = [];
+    for (const file of templateFiles) {
+      try {
+        const response = await fetch(`/data/templates/${file}`);
+        if (response.ok) {
+          const template = await response.json();
+          templates.push(template);
+        }
+      } catch (err) {
+        console.warn(`Could not load template ${file}:`, err);
+      }
     }
-    const template = await response.json();
-    cachedTemplates = [template];
+    cachedTemplates = templates;
     return cachedTemplates;
   } catch (err) {
     console.error('Failed to load templates:', err);
@@ -153,7 +167,58 @@ export async function compareSession(sessionId: string): Promise<CompareResponse
   };
 }
 
-export async function loadScenarios(/* params TBD */): Promise<any> {
-  // Placeholder - implement based on ScenariosView requirements
-  return [];
+// Scenario types
+interface ScenarioOption {
+  id: string;
+  label: string;
+  risk_type: string;
+}
+
+interface InfoCard {
+  emotional_context?: string;
+  typical_risks?: string;
+  safety_gate?: string;
+}
+
+interface Scenario {
+  id: string;
+  title: string;
+  description: string;
+  category?: string;
+  tags?: string[];
+  info_card?: InfoCard;
+  options: ScenarioOption[];
+}
+
+interface Deck {
+  id: string;
+  name: string;
+  description: string;
+  scenarios: string[];
+  order: number;
+  requires_safety_gate?: boolean;
+}
+
+interface ScenariosData {
+  decks: Deck[];
+  scenarios: Scenario[];
+}
+
+let cachedScenarios: ScenariosData | null = null;
+
+export async function loadScenarios(): Promise<ScenariosData> {
+  if (cachedScenarios) return cachedScenarios;
+
+  try {
+    const response = await fetch('/data/scenarios.json');
+    if (!response.ok) {
+      throw new Error(`Failed to load scenarios: ${response.status}`);
+    }
+    const data = await response.json();
+    cachedScenarios = data as ScenariosData;
+    return cachedScenarios;
+  } catch (err) {
+    console.error('Failed to load scenarios:', err);
+    throw err;
+  }
 }

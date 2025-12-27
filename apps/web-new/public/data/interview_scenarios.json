@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "role_lead_01",
+      "section": "Rollen & Kontrolle",
+      "title": "Führung übernehmen",
+      "scenario_text": "Ihr seid intim zusammen. Dein Partner übernimmt klar die Führung (Tempo, Ablauf, Initiative). Wie fühlt sich das für dich an?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie sehr trifft das für dich zu?",
+      "help_text": "Hier geht es darum, ob klare Führung für dich angenehm oder unangenehm ist. Es ist kein 'richtig/falsch'.",
+      "examples": [
+        "Du magst klare Initiative und Struktur.",
+        "Du willst lieber mitbestimmen oder selbst führen.",
+        "Du findest es nur okay unter bestimmten Bedingungen."
+      ],
+      "tags": ["control", "lead"],
+      "risk_level": "low",
+      "followup_rules": {
+        "condition": "interest_high_comfort_low",
+        "followup_goal": "Welche Bedingungen würden es sicher/angenehm machen?"
+      }
+    },
+    {
+      "id": "communication_feedback_01",
+      "section": "Kommunikation & Feedback",
+      "title": "Direktes Feedback",
+      "scenario_text": "Während ihr intim seid, sagst du direkt, was dir gefällt und was nicht ('Mehr hier', 'Weniger Druck'). Wie fühlt sich das Sprechen an?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie angenehm ist direktes Feedback für dich?",
+      "help_text": "Viele Menschen finden es schwer, während der Intimität zu kommunizieren. Es gibt kein richtig oder falsch.",
+      "examples": [
+        "Du findest es wichtig und befreiend, deine Wünsche zu äußern.",
+        "Du schämst dich oder findest es unromantisch.",
+        "Du könntest es üben, brauchst aber Zeit."
+      ],
+      "tags": ["communication", "feedback"],
+      "risk_level": "low"
+    },
+    {
+      "id": "boundaries_safe_word_01",
+      "section": "Grenzen & Sicherheit",
+      "title": "Safeword vereinbaren",
+      "scenario_text": "Ihr vereinbart ein Safeword oder Stopp-Signal für Situationen, in denen einer von euch wirklich aufhören möchte. Wie wichtig ist dir das?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie wichtig ist dir ein Safeword?",
+      "help_text": "Ein Safeword ist ein Wort, das außerhalb der normalen Kommunikation liegt und sofortiges Stopp bedeutet.",
+      "examples": [
+        "Sehr wichtig - gibt mir Sicherheit.",
+        "Nützlich, aber nicht immer nötig.",
+        "Nicht so wichtig für mich."
+      ],
+      "tags": ["boundaries", "safety"],
+      "risk_level": "low"
+    },
+    {
+      "id": "aftercare_cuddling_01",
+      "section": "Nachsorge & Nähe",
+      "title": "Kuscheln nach der Intimität",
+      "scenario_text": "Nachdem ihr intim wart, legt ihr euch nebeneinander, kuschelt, redet oder seid einfach nur da. Wie wichtig ist dir diese Zeit?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie wichtig ist dir Aftercare?",
+      "help_text": "Aftercare ist die Zeit nach intensiven Momenten, um runterzukommen und Verbindung zu halten.",
+      "examples": [
+        "Sehr wichtig - ohne fühle ich mich verloren.",
+        "Nett, aber nicht immer nötig.",
+        "Ich brauche eher Abstand danach."
+      ],
+      "tags": ["aftercare", "intimacy"],
+      "risk_level": "low"
+    },
+    {
+      "id": "roles_switch_01",
+      "section": "Rollen & Kontrolle",
+      "title": "Rollen tauschen",
+      "scenario_text": "Ihr tauscht die Rollen - wer sonst führt, übernimmt diesmal die passive Rolle und umgekehrt. Wie interessant findest du das?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie interessant ist Rollentausch für dich?",
+      "help_text": "Viele Menschen sind neugierig, die andere Seite zu erleben, andere fühlen sich in ihrer Rolle wohler.",
+      "examples": [
+        "Sehr interessant - ich will beide Seiten erleben.",
+        "Vielleicht, aber nur als Experiment.",
+        "Nicht interessant für mich."
+      ],
+      "tags": ["roles", "switch"],
+      "risk_level": "low",
+      "followup_rules": {
+        "condition": "interest_high_comfort_low",
+        "followup_goal": "Was würde den Rollentausch sicherer machen?"
+      }
+    },
+    {
+      "id": "intensity_slow_01",
+      "section": "Intensität & Tempo",
+      "title": "Langsames Tempo",
+      "scenario_text": "Ihr nehmt euch viel Zeit, alles geht sehr langsam, jede Berührung wird bewusst wahrgenommen. Wie fühlt sich das für dich an?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie angenehm ist langsames Tempo?",
+      "help_text": "Langsames Tempo kann intensiv oder langweilig sein - beides ist in Ordnung.",
+      "examples": [
+        "Sehr angenehm - gibt Raum für Präsenz.",
+        "Okay, aber mir fehlt manchmal der Schwung.",
+        "Zu langsam für meinen Geschmack."
+      ],
+      "tags": ["intensity", "tempo"],
+      "risk_level": "low"
+    },
+    {
+      "id": "intensity_fast_01",
+      "section": "Intensität & Tempo",
+      "title": "Schnelles, intensives Tempo",
+      "scenario_text": "Ihr seid sehr energiegeladen, alles passiert schnell und intensiv, hohe Energie. Wie fühlt sich das für dich an?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie angenehm ist schnelles Tempo?",
+      "help_text": "Schnelles Tempo kann aufregend oder überwältigend sein.",
+      "examples": [
+        "Sehr aufregend - gibt mir einen Kick.",
+        "Okay, aber nicht immer.",
+        "Zu viel für mich - ich brauche mehr Kontrolle."
+      ],
+      "tags": ["intensity", "tempo"],
+      "risk_level": "low"
+    },
+    {
+      "id": "exploration_toys_01",
+      "section": "Erkundung & Spielzeug",
+      "title": "Spielzeug einbeziehen",
+      "scenario_text": "Ihr verwendet ein Spielzeug (z.B. Vibrator) während der Intimität. Wie interessant findest du das?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie interessant sind Spielzeuge für dich?",
+      "help_text": "Spielzeuge können Abwechslung und neue Reize bringen. Viele Menschen finden sie spannend, andere bevorzugen nur Hände.",
+      "examples": [
+        "Sehr interessant - erweitert die Möglichkeiten.",
+        "Vielleicht mal probieren.",
+        "Nicht interessant für mich."
+      ],
+      "tags": ["toys", "exploration"],
+      "risk_level": "low"
+    },
+    {
+      "id": "power_dynamics_rules_01",
+      "section": "Macht & Dynamik",
+      "title": "Regeln vereinbaren",
+      "scenario_text": "Ihr vereinbart kleine Regeln für die Intimität (z.B. 'Du fragst, bevor du weitergehst' oder 'Du entscheidest heute'). Wie interessant findest du das?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie interessant sind Regeln für dich?",
+      "help_text": "Regeln können Struktur und Spannung bringen, können aber auch als zu starr empfunden werden.",
+      "examples": [
+        "Sehr interessant - gibt mir ein Gefühl von Struktur.",
+        "Als Spiel okay, aber nicht zu ernst.",
+        "Zu künstlich für mich."
+      ],
+      "tags": ["power", "rules"],
+      "risk_level": "medium",
+      "followup_rules": {
+        "condition": "interest_high_comfort_low",
+        "followup_goal": "Welche Art von Regeln würden für dich funktionieren?"
+      }
+    },
+    {
+      "id": "sensory_exploration_01",
+      "section": "Sinneserfahrung",
+      "title": "Berührungen erkunden",
+      "scenario_text": "Ihr erkundet verschiedene Arten von Berührungen (leicht, fest, kitzelnd, streichelnd) und findet heraus, was wohltut. Wie interessant findest du das?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie interessant ist sensorische Erkundung?",
+      "help_text": "Sinneserfahrungen können sehr intensiv sein und neue Wege der Verbindung öffnen.",
+      "examples": [
+        "Sehr interessant - ich liebe es, neue Empfindungen zu entdecken.",
+        "Okay, aber nur manchmal.",
+        "Nicht so wichtig für mich."
+      ],
+      "tags": ["sensory", "exploration"],
+      "risk_level": "low"
+    },
+    {
+      "id": "variation_location_01",
+      "section": "Variation & Orte",
+      "title": "An anderen Orten intim sein",
+      "scenario_text": "Ihr seid an einem anderen Ort intim als gewohnt (z.B. Sofa, Küche, Bad). Wie interessant findest du das?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie interessant sind andere Orte?",
+      "help_text": "Ortswechsel kann Spannung und Abwechslung bringen, aber manche Menschen brauchen die Gewohnheit des Schlafzimmers.",
+      "examples": [
+        "Sehr interessant - bringt Abwechslung.",
+        "Okay, aber nicht überall.",
+        "Ich bleibe lieber im Schlafzimmer."
+      ],
+      "tags": ["variation", "location"],
+      "risk_level": "low"
+    },
+    {
+      "id": "connection_eye_contact_01",
+      "section": "Verbindung & Nähe",
+      "title": "Augenkontakt halten",
+      "scenario_text": "Während ihr intim seid, haltet ihr intensiv Augenkontakt. Wie fühlt sich das für dich an?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie angenehm ist intensiver Augenkontakt?",
+      "help_text": "Augenkontakt kann sehr intim und verbindend sein, aber auch überwältigend oder unangenehm.",
+      "examples": [
+        "Sehr intensiv und verbindend.",
+        "Okay, aber nicht die ganze Zeit.",
+        "Zu intim oder unangenehm für mich."
+      ],
+      "tags": ["connection", "intimacy"],
+      "risk_level": "low"
+    }
+  ]
+}
+

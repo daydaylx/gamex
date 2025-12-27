@@ -1,16 +1,20 @@
+/**
+ * Session View - Mobile Optimized
+ * Shows session details and actions
+ */
+
 import { useState, useEffect } from "preact/hooks";
-import { Link, useRoute } from "wouter-preact";
-import { ArrowLeft, User, Users, BarChart3, Layers } from "lucide-preact";
+import { Link, useRoute, useLocation } from "wouter-preact";
+import { ArrowLeft, User, Users, MessageSquare, ChevronRight } from "lucide-preact";
 import { Button } from "../components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
 import { getSessionInfo } from "../services/api";
 import type { SessionInfo } from "../types/session";
 
 export function SessionView() {
-  const [match, params] = useRoute("/sessions/:id");
-  const sessionId = match ? params!.id : "unknown";
-  
+  const [match, params] = useRoute<{ id: string }>("/sessions/:id");
+  const [, setLocation] = useLocation();
+  const sessionId = match && params ? params.id : "unknown";
+
   const [session, setSession] = useState<SessionInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,8 +32,10 @@ export function SessionView() {
       const data = await getSessionInfo(sessionId);
       setSession(data);
     } catch (err) {
-      console.error('Failed to load session:', err);
-      setError(err instanceof Error ? err.message : 'Fehler beim Laden der Session');
+      console.error("Failed to load session:", err);
+      setError(
+        err instanceof Error ? err.message : "Fehler beim Laden der Session"
+      );
     } finally {
       setLoading(false);
     }
@@ -37,15 +43,15 @@ export function SessionView() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
+      <div className="p-4">
+        <div className="flex items-center gap-3 mb-6">
           <Link href="/">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+            <button className="p-2 -ml-2 rounded-lg hover:bg-accent transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
           </Link>
-          <div>
-            <h1 className="text-2xl font-bold">Lädt...</h1>
+          <div className="animate-pulse">
+            <div className="h-6 w-32 bg-surface rounded" />
           </div>
         </div>
       </div>
@@ -54,173 +60,156 @@ export function SessionView() {
 
   if (error || !session) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
+      <div className="p-4">
+        <div className="flex items-center gap-3 mb-6">
           <Link href="/">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+            <button className="p-2 -ml-2 rounded-lg hover:bg-accent transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
           </Link>
-          <div>
-            <h1 className="text-2xl font-bold">Fehler</h1>
-          </div>
+          <h1 className="text-lg font-semibold">Fehler</h1>
         </div>
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
-          {error || 'Session nicht gefunden'}
+        <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
+          {error || "Session nicht gefunden"}
         </div>
       </div>
     );
   }
 
-  const canCompare = session.has_a && session.has_b;
-
   return (
-    <div className="space-y-6">
+    <div className="p-4 pb-safe animate-fade-in">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 mb-6">
         <Link href="/">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
+          <button className="p-2 -ml-2 rounded-lg hover:bg-accent transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </button>
         </Link>
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold">{session.name}</h1>
-          <p className="text-sm text-muted-foreground">
-            Erstellt am {new Date(session.created_at).toLocaleDateString('de-DE')}
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg font-semibold truncate">{session.name}</h1>
+          <p className="text-xs text-muted-foreground">
+            {new Date(session.created_at).toLocaleDateString("de-DE", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
           </p>
         </div>
       </div>
 
-      {/* Session Info Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Session-Übersicht</CardTitle>
-          <CardDescription>Template: {session.template.name || session.template.id}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            {/* Person A Status */}
-            <div className="flex items-start gap-3 p-4 rounded-lg border">
-              <User className="h-5 w-5 mt-0.5 text-muted-foreground" />
-              <div className="flex-1">
-                <h3 className="font-medium">Person A</h3>
-                <Badge variant={session.has_a ? "default" : "secondary"} className="mt-2">
-                  {session.has_a ? 'Abgeschlossen' : 'Ausstehend'}
-                </Badge>
-              </div>
-            </div>
+      {/* Primary Action: Interview Mode */}
+      <section className="mb-6">
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">
+          Interview starten
+        </h2>
+        <div className="space-y-2">
+          <PersonActionCard
+            person="A"
+            completed={session.has_a}
+            onClick={() => setLocation(`/sessions/${sessionId}/interview/A`)}
+          />
+          <PersonActionCard
+            person="B"
+            completed={session.has_b}
+            onClick={() => setLocation(`/sessions/${sessionId}/interview/B`)}
+          />
+        </div>
+      </section>
 
-            {/* Person B Status */}
-            <div className="flex items-start gap-3 p-4 rounded-lg border">
-              <Users className="h-5 w-5 mt-0.5 text-muted-foreground" />
-              <div className="flex-1">
-                <h3 className="font-medium">Person B</h3>
-                <Badge variant={session.has_b ? "default" : "secondary"} className="mt-2">
-                  {session.has_b ? 'Abgeschlossen' : 'Ausstehend'}
-                </Badge>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Secondary Actions */}
+      <section className="space-y-2">
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">
+          Weitere Optionen
+        </h2>
 
-      {/* Actions */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Questionnaire for Person A */}
-        <Card className="hover:border-primary/50 transition-colors cursor-pointer">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              <CardTitle className="text-lg">Fragebogen Person A</CardTitle>
-            </div>
-            <CardDescription>
-              {session.has_a ? 'Antworten ansehen oder bearbeiten' : 'Fragebogen ausfüllen'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href={`/sessions/${sessionId}/questionnaire/A`}>
-              <Button className="w-full" variant={session.has_a ? "outline" : "default"}>
-                {session.has_a ? 'Antworten bearbeiten' : 'Jetzt ausfüllen'}
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+        {/* Comparison - only enabled when both are done */}
+        <ActionCard
+          icon={<MessageSquare className="w-5 h-5" />}
+          title="Vergleich & Auswertung"
+          description={
+            session.has_a && session.has_b
+              ? "Ergebnisse vergleichen und besprechen"
+              : "Beide Personen müssen erst das Interview abschließen"
+          }
+          disabled={!session.has_a || !session.has_b}
+          onClick={() => setLocation(`/sessions/${sessionId}/compare`)}
+        />
+      </section>
 
-        {/* Questionnaire for Person B */}
-        <Card className="hover:border-primary/50 transition-colors cursor-pointer">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              <CardTitle className="text-lg">Fragebogen Person B</CardTitle>
-            </div>
-            <CardDescription>
-              {session.has_b ? 'Antworten ansehen oder bearbeiten' : 'Fragebogen ausfüllen'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href={`/sessions/${sessionId}/questionnaire/B`}>
-              <Button className="w-full" variant={session.has_b ? "outline" : "default"}>
-                {session.has_b ? 'Antworten bearbeiten' : 'Jetzt ausfüllen'}
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-
-        {/* Comparison View */}
-        <Card className={`${canCompare ? 'hover:border-primary/50 cursor-pointer' : 'opacity-60'} transition-colors`}>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              <CardTitle className="text-lg">Vergleich</CardTitle>
-            </div>
-            <CardDescription>
-              {canCompare ? 'Ergebnisse vergleichen und analysieren' : 'Beide Personen müssen den Fragebogen ausfüllen'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {canCompare ? (
-              <Link href={`/sessions/${sessionId}/compare`}>
-                <Button className="w-full">
-                  Vergleich anzeigen
-                </Button>
-              </Link>
-            ) : (
-              <Button className="w-full" disabled={!canCompare}>
-                Vergleich anzeigen
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Scenarios Mode */}
-        <Card className="hover:border-primary/50 transition-colors cursor-pointer">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Layers className="h-5 w-5" />
-              <CardTitle className="text-lg">Szenarien-Modus</CardTitle>
-            </div>
-            <CardDescription>
-              Karten-basierte Fragen erkunden
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href={`/sessions/${sessionId}/scenarios`}>
-              <Button className="w-full" variant="outline">
-                Szenarien öffnen
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+      {/* Privacy Note */}
+      <div className="mt-8 p-4 rounded-xl bg-surface/50 border border-border/30">
+        <p className="text-xs text-muted-foreground text-center">
+          🔒 Alle Daten bleiben auf deinem Gerät
+        </p>
       </div>
-
-      {/* Info Box */}
-      <Card className="border-dashed">
-        <CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground">
-            <strong>Hinweis:</strong> Alle Daten werden nur lokal auf deinem Gerät gespeichert und verlassen es nie.
-          </p>
-        </CardContent>
-      </Card>
     </div>
+  );
+}
+
+interface PersonActionCardProps {
+  person: "A" | "B";
+  completed: boolean;
+  onClick: () => void;
+}
+
+function PersonActionCard({ person, completed, onClick }: PersonActionCardProps) {
+  const Icon = person === "A" ? User : Users;
+
+  return (
+    <button
+      onClick={onClick}
+      className="w-full p-4 rounded-xl bg-surface border border-border/50 flex items-center gap-4 card-interactive touch-feedback"
+    >
+      <div
+        className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+          completed ? "bg-primary/20" : "bg-accent"
+        }`}
+      >
+        <Icon className={`w-6 h-6 ${completed ? "text-primary" : ""}`} />
+      </div>
+      <div className="flex-1 text-left">
+        <p className="font-medium">Person {person}</p>
+        <p className="text-sm text-muted-foreground">
+          {completed ? "Abgeschlossen – Erneut bearbeiten" : "Interview starten"}
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        {completed && (
+          <span className="w-2 h-2 rounded-full bg-primary" />
+        )}
+        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+      </div>
+    </button>
+  );
+}
+
+interface ActionCardProps {
+  icon: preact.ComponentChildren;
+  title: string;
+  description: string;
+  disabled?: boolean;
+  onClick: () => void;
+}
+
+function ActionCard({ icon, title, description, disabled, onClick }: ActionCardProps) {
+  return (
+    <button
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      className={`w-full p-4 rounded-xl bg-surface/50 border border-border/30 flex items-center gap-4 text-left transition-all ${
+        disabled
+          ? "opacity-50 cursor-not-allowed"
+          : "card-interactive touch-feedback"
+      }`}
+    >
+      <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-sm">{title}</p>
+        <p className="text-xs text-muted-foreground truncate">{description}</p>
+      </div>
+      {!disabled && <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+    </button>
   );
 }

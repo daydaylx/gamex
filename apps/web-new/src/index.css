@@ -1,0 +1,369 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   Design System: Intimacy Tool
+   Mobile-first, dark theme with pink accents
+   ============================================================================ */
+
+@theme {
+  /* Typography */
+  --font-family-display: "Outfit", "Inter", system-ui, sans-serif;
+  --font-family-body: "Inter", system-ui, sans-serif;
+
+  /* Spacing Scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Colors - Dark Theme */
+  --color-background: #0f0a0f;
+  --color-background-subtle: #1a121a;
+  --color-surface: #241a24;
+  --color-surface-elevated: #2d1f2d;
+  
+  --color-border: rgba(244, 114, 182, 0.15);
+  --color-border-strong: rgba(244, 114, 182, 0.3);
+
+  --color-primary: #f472b6;
+  --color-primary-hover: #f9a8d4;
+  --color-primary-muted: rgba(244, 114, 182, 0.2);
+  --color-primary-foreground: #0f0a0f;
+
+  --color-secondary: #3b2d3b;
+  --color-secondary-hover: #4a3a4a;
+  --color-secondary-foreground: #fafafa;
+
+  --color-accent: #2d1f2d;
+  --color-accent-foreground: #fafafa;
+
+  --color-muted: #4a3a4a;
+  --color-muted-foreground: #a1a1a1;
+
+  --color-foreground: #fafafa;
+  --color-foreground-muted: #d4d4d4;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fafafa;
+
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+
+  /* Cards */
+  --color-card: #1a121a;
+  --color-card-foreground: #fafafa;
+
+  /* Ring for focus states */
+  --color-ring: rgba(244, 114, 182, 0.5);
+  --ring-offset-background: #0f0a0f;
+
+  /* Input */
+  --color-input: rgba(244, 114, 182, 0.15);
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: var(--color-primary-muted);
+}
+
+html {
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+}
+
+/* Safe Area Insets for notched devices */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-muted);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* Focus Visible for Accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Typography Helpers */
+.text-display {
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Animation Utilities */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--color-primary-muted);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px var(--color-primary-muted);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Button Base Reset */
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Progress Bar */
+.progress-bar {
+  height: 6px;
+  background: var(--color-surface);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+  transition: width 0.3s ease;
+  border-radius: var(--radius-full);
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(26, 18, 26, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Touch Feedback */
+.touch-feedback {
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.touch-feedback:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* Card Styles */
+.card-interactive {
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-interactive:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.card-interactive:active {
+  transform: translateY(0);
+}
+
+/* Bottom Sheet Base */
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--color-surface);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 16px));
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* ============================================================================
+   Mobile Interview Optimizations
+   ============================================================================ */
+
+/* Touch-optimized button states */
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+/* Prevent text selection during swipe */
+.swipe-container {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+/* Smooth transitions for question changes */
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.2s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.2s ease-out;
+}
+
+/* Selection states with color coding */
+.selection-yes {
+  --selection-color: #22c55e;
+}
+
+.selection-maybe {
+  --selection-color: #f59e0b;
+}
+
+.selection-no {
+  --selection-color: #ef4444;
+}
+
+/* Fixed bottom navigation safe area */
+.nav-fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+/* Improved focus states for mobile */
+@media (hover: none) {
+  .touch-feedback:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+  }
+}
+
+/* Prevent overscroll on iOS */
+.no-overscroll {
+  overscroll-behavior: none;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+

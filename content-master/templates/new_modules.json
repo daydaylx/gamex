@@ -1,0 +1,368 @@
+{
+  "health": {
+    "id": "health",
+    "name": "Sexuelle Gesundheit & Safer Sex",
+    "description": "STI-Tests, Verhütung, körperliche Einschränkungen.",
+    "questions": [
+      {
+        "id": "H01",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["health", "sti", "safety"],
+        "label": "STI-Tests: Wie ist unser Status?",
+        "help": "Regelmäßige Tests sind wichtig für die Gesundheit.",
+        "options": ["Beide kürzlich getestet", "Einer getestet", "Steht noch aus", "Kein Bedarf (monogam)"]
+      },
+      {
+        "id": "H02",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["health", "contraception"],
+        "label": "Verhütung: Wer trägt Verantwortung?",
+        "options": ["Pille/Hormon", "Kondom", "Beide zusammen", "Andere Methode", "Kein Bedarf"]
+      },
+      {
+        "id": "H03",
+        "schema": "multi",
+        "risk_level": "A",
+        "tags": ["health", "limitations"],
+        "label": "Körperliche Einschränkungen?",
+        "help": "Wähle relevante Punkte aus.",
+        "options": ["Keine", "Rückenschmerzen", "Gelenkprobleme", "Asthma", "Allergien", "Herzprobleme", "Chronische Schmerzen", "Andere"]
+      }
+    ]
+  },
+  "relationship_format": {
+    "id": "relationship_format",
+    "name": "Beziehungsformat & Exklusivität",
+    "description": "Monogamie, offene Beziehung, Polyamorie, Grenzen.",
+    "questions": [
+      {
+        "id": "RF01",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["relationship", "format"],
+        "label": "Aktuelles Beziehungsformat",
+        "options": ["Strikt monogam", "Emotional monogam, sexuell offen", "Polyamor", "In Klärung", "Andere"]
+      },
+      {
+        "id": "RF02",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["relationship", "boundaries"],
+        "label": "Flirten mit anderen (ohne Körperlichkeit)",
+        "help": "Ist leichtes Flirten ok?"
+      },
+      {
+        "id": "RF03",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["relationship", "openness"],
+        "label": "Küssen/Körperlichkeit mit anderen (mit Absprache)",
+        "depends_on": {"id": "RF01", "values": ["Emotional monogam, sexuell offen", "Polyamor"]}
+      }
+    ]
+  },
+  "trauma_aware": {
+    "id": "trauma_aware",
+    "name": "Trigger & Trauma-Bewusstsein",
+    "description": "Sensible Bereiche, Trigger, Was hilft bei Überwältigung.",
+    "questions": [
+      {
+        "id": "TR01",
+        "schema": "multi",
+        "risk_level": "A",
+        "tags": ["triggers", "boundaries"],
+        "label": "Gibt es Körperbereiche, die tabu sind?",
+        "help": "Wähle aus oder ergänze optional.",
+        "options": ["Hals/Kehle", "Handgelenke", "Gesicht", "Haare", "Bauch", "Rücken", "Keine", "Andere"]
+      },
+      {
+        "id": "TR02",
+        "schema": "multi",
+        "risk_level": "A",
+        "tags": ["triggers", "awareness"],
+        "label": "Gibt es Worte/Situationen, die triggern könnten?",
+        "help": "Wähle bekannte Trigger oder 'Keine'.",
+        "options": ["Bestimmte Schimpfworte", "Festhalten/Fixieren", "Dunkelheit", "Überraschungen", "Laute Geräusche", "Bestimmte Positionen", "Keine bekannt", "Andere"]
+      },
+      {
+        "id": "TR03",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["triggers", "support"],
+        "label": "Wenn ich dissoziiere/einfriere, hilft mir...",
+        "options": ["Sofort stoppen + Stille", "Sanftes Sprechen", "Fester Griff/Erde", "Raum verlassen", "Weiß nicht"]
+      }
+    ]
+  },
+  "positions_places": {
+    "id": "positions_places",
+    "name": "Positionen, Orte & Settings",
+    "description": "Wo und wie - Lieblingspositionen und -orte.",
+    "questions": [
+      {
+        "id": "PP01",
+        "schema": "multi",
+        "risk_level": "A",
+        "tags": ["positions", "preferences"],
+        "label": "Lieblingspositionen",
+        "options": ["Missionarsstellung", "Doggy Style", "Reiterstellung", "Löffel/Spooning", "69", "Stehend", "Sitzend", "Rückwärts Reiten", "Seitenposition", "Andere"]
+      },
+      {
+        "id": "PP02",
+        "schema": "multi",
+        "risk_level": "A",
+        "tags": ["places", "locations"],
+        "label": "Orte, an denen ich Sex haben möchte",
+        "options": ["Bett", "Dusche/Badewanne", "Couch", "Küche", "Balkon/Garten", "Auto", "Natur/Wald", "Hotel", "Büro (wenn leer)", "Andere"]
+      },
+      {
+        "id": "PP03",
+        "schema": "consent_rating",
+        "risk_level": "C",
+        "tags": ["public", "risk"],
+        "label": "Semi-öffentlicher Sex (Risiko entdeckt zu werden)"
+      },
+      {
+        "id": "PP04",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["timing", "spontaneity"],
+        "label": "Präferenz: Spontan vs. Geplant",
+        "options": ["Nur spontan", "Meist spontan", "Beides gleich", "Meist geplant", "Nur geplant"]
+      },
+      {
+        "id": "PP05",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["timing", "duration"],
+        "label": "Präferenz: Quickie vs. Marathon",
+        "options": ["Nur Quickies", "Meist kurz (15-30min)", "Beides", "Meist lang (1h+)", "Marathon (mehrere Stunden)"]
+      }
+    ]
+  },
+  "body_practices": {
+    "id": "body_practices",
+    "name": "Körperliche Praktiken (Erweitert)",
+    "description": "Spezifische sexuelle Handlungen und Stimulationen.",
+    "questions": [
+      {
+        "id": "BP01",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["body", "stimulation"],
+        "label": "Nippel-Stimulation (Lecken, Saugen, Kneifen)"
+      },
+      {
+        "id": "BP02",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["body", "prostate"],
+        "label": "Prostatastimulation (Männer)",
+        "help": "Massage der Prostata für intensivere Orgasmen."
+      },
+      {
+        "id": "BP03",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["body", "gspot"],
+        "label": "G-Punkt Stimulation / Squirting"
+      },
+      {
+        "id": "BP04",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["body", "facesitting"],
+        "label": "Facesitting / Queening"
+      },
+      {
+        "id": "BP05",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["body", "deepthroat"],
+        "label": "Deepthroat",
+        "help": "Tiefe orale Aufnahme. Würgereflex beachten."
+      },
+      {
+        "id": "BP06",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["body", "pegging"],
+        "label": "Pegging (Frau penetriert Mann mit Strap-On)"
+      },
+      {
+        "id": "BP07",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["body", "mutual"],
+        "label": "Gegenseitige Masturbation"
+      },
+      {
+        "id": "BP08",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["body", "edging"],
+        "label": "Edging / Orgasmus hinauszögern"
+      },
+      {
+        "id": "BP09",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["body", "ruined"],
+        "label": "Ruinierter Orgasmus (Stimulation stoppen kurz vorher)"
+      },
+      {
+        "id": "BP10",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["body", "creampie"],
+        "label": "Creampie / Kommen im Partner",
+        "help": "Nur bei abgeklärter Verhütung/STI-Status."
+      },
+      {
+        "id": "BP11",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["body", "facial"],
+        "label": "Facial (Ins Gesicht kommen)"
+      }
+    ]
+  },
+  "extended_fetishes": {
+    "id": "extended_fetishes",
+    "name": "Erweiterte Fetische & Kinks",
+    "description": "Nischen-Interessen und speziellere Praktiken.",
+    "questions": [
+      {
+        "id": "EF01",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["fetish", "primal"],
+        "label": "Primal Play (Jagen/Gejagt werden, tierisch-instinktiv)",
+        "help": "Rollenspiel mit Jagd, Kratzen, Beißen, 'Beute fangen'"
+      },
+      {
+        "id": "EF02",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["fetish", "medical"],
+        "label": "Medical Play (Arzt/Patient, Untersuchung)"
+      },
+      {
+        "id": "EF03",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["fetish", "shibari"],
+        "label": "Shibari / Kunstvolles Fesseln mit Seilen",
+        "help": "Japanische Fesselkunst. Erfordert Training."
+      },
+      {
+        "id": "EF04",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["fetish", "wax"],
+        "label": "Wachs-Spiele (detailliert)",
+        "help": "Niedrigtemperatur-Kerzen auf Körper tropfen lassen"
+      },
+      {
+        "id": "EF05",
+        "schema": "consent_rating",
+        "risk_level": "C",
+        "tags": ["fetish", "knife"],
+        "label": "Knife Play (Messer auf Haut, OHNE schneiden)",
+        "help": "Nur stumpfe Klingen oder Rückseite. Psychologischer Kick."
+      },
+      {
+        "id": "EF06",
+        "schema": "consent_rating",
+        "risk_level": "C",
+        "tags": ["fetish", "cuckolding"],
+        "label": "Cuckolding / Hotwife (Partner mit anderen zusehen)"
+      },
+      {
+        "id": "EF07",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["fetish", "crossdressing"],
+        "label": "Crossdressing / Feminisierung"
+      },
+      {
+        "id": "EF08",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["fetish", "masks"],
+        "label": "Masken / Anonymität"
+      },
+      {
+        "id": "EF09",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["fetish", "scent"],
+        "label": "Geruchs-Fetisch (Körpergeruch, getragene Kleidung)"
+      },
+      {
+        "id": "EF10",
+        "schema": "consent_rating",
+        "risk_level": "C",
+        "tags": ["fetish", "freeuse"],
+        "label": "Free-Use Fantasy (jederzeit verfügbar sein)",
+        "help": "Vorherige Absprache erforderlich!"
+      },
+      {
+        "id": "EF11",
+        "schema": "consent_rating",
+        "risk_level": "B",
+        "tags": ["fetish", "sensory"],
+        "label": "Sensory Overload (Überreizung)"
+      }
+    ]
+  },
+  "sexuality_identity": {
+    "id": "sexuality_identity",
+    "name": "Sexuelle Orientierung & Identität",
+    "description": "Wer wir sind und wen wir begehren.",
+    "questions": [
+      {
+        "id": "SI01",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["identity", "orientation"],
+        "label": "Meine sexuelle Orientierung",
+        "options": ["Heterosexuell", "Homosexuell", "Bisexuell", "Pansexuell", "Heteroflexibel", "Homoflexibel", "Asexuell", "Demisexuell", "Queer", "In Erkundung", "Label-frei"]
+      },
+      {
+        "id": "SI02",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["identity", "kinsey"],
+        "label": "Kinsey-Skala (0=hetero, 6=homo)",
+        "options": ["0 - Ausschließlich heterosexuell", "1 - Vorwiegend hetero, gelegentlich homo", "2 - Vorwiegend hetero, mehr als gelegentlich homo", "3 - Bisexuell", "4 - Vorwiegend homo, mehr als gelegentlich hetero", "5 - Vorwiegend homo, gelegentlich hetero", "6 - Ausschließlich homosexuell"]
+      },
+      {
+        "id": "SI03",
+        "schema": "consent_rating",
+        "risk_level": "A",
+        "tags": ["identity", "samesex"],
+        "label": "Interesse an gleichgeschlechtlichen Erfahrungen"
+      },
+      {
+        "id": "SI04",
+        "schema": "enum",
+        "risk_level": "A",
+        "tags": ["identity", "gender"],
+        "label": "Meine Geschlechtsidentität",
+        "options": ["Cis-Mann", "Cis-Frau", "Trans-Mann", "Trans-Frau", "Non-binär", "Genderfluid", "Agender", "Andere"]
+      },
+      {
+        "id": "SI05",
+        "schema": "multi",
+        "risk_level": "A",
+        "tags": ["identity", "attraction"],
+        "label": "Was finde ich bei Partner:innen attraktiv?",
+        "options": ["Maskuline Züge", "Feminine Züge", "Androgyne Züge", "Bestimmter Körpertyp", "Stimme", "Intelligenz", "Humor", "Dominanz", "Sanftheit", "Andere"]
+      }
+    ]
+  }
+}
+

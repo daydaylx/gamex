@@ -39,6 +39,11 @@ export interface ScenarioValue {
   comfort?: number;
 }
 
+export interface QuestionNotes {
+  notes?: string;
+  conditions?: string;
+}
+
 export type ResponseValue =
   | ConsentRatingValue
   | ScaleValue

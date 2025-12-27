@@ -18,6 +18,8 @@ export interface Question {
   label: string;
   text?: string; // Alternative field for question text
   help?: string;
+  info_details?: string; // Detailed explanation for the question
+  examples?: string[]; // Examples to show in info popover
   options?: string[] | Array<{ value: string; label: string }>; // Support both formats
   min?: number; // For scale questions
   max?: number; // For scale questions
