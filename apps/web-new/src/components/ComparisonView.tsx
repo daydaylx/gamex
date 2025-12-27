@@ -61,12 +61,16 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
 
     // Risk filter
     if (riskOnly) {
-      filtered = filtered.filter((item: ComparisonResult) => item.flag_low_comfort_high_interest);
+      filtered = filtered.filter((item: ComparisonResult) =>
+        item.flags.includes('low_comfort_high_interest')
+      );
     }
 
     // Flagged filter
     if (flaggedOnly) {
-      filtered = filtered.filter((item: ComparisonResult) => item.flag_low_comfort_high_interest || item.flag_discomfort);
+      filtered = filtered.filter((item: ComparisonResult) =>
+        item.flags.length > 0
+      );
     }
 
     // Search filter

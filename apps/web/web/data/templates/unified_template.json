@@ -1,9 +1,221 @@
 {
   "id": "unified_v2",
-  "name": "Intimacy & Kink (v2 - Polished)",
-  "version": 2,
-  "description": "Der moderne Standard. Startet sanft (Rahmen, Kommunikation) und steigert sich modular zu Kink & BDSM. Fokus auf Konsens und psychologische Sicherheit.",
+  "name": "Intimacy & Kink (v3 - Enhanced)",
+  "version": 3,
+  "description": "Der erweiterte Standard. Beginnt mit emotionalem Fundament (Soft Start, Emotionale Verbindung), führt durch Rahmen & Kommunikation, erkundet Sinne & Intimität, und vertieft sich modular zu Kink & BDSM. Neu: Digitale Grenzen und Zukunftsplanung. Fokus auf Konsens und psychologische Sicherheit.",
   "modules": [
+    {
+      "id": "soft_start",
+      "name": "Soft Start: Verbindung aufbauen",
+      "description": "Bevor wir in tiefere Themen eintauchen: Lass uns unsere emotionale Verbindung stärken und einen sicheren Raum schaffen.",
+      "questions": [
+        {
+          "id": "SOFT01",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Was war unser bisher schönster gemeinsamer Moment?",
+          "help": "Nostalgie aktiviert positive Emotionen und erinnert uns an das 'Warum'.",
+          "tags": ["warmup", "nostalgia", "connection"]
+        },
+        {
+          "id": "SOFT02",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Eine Eigenschaft, die ich an dir besonders bewundere, ist...",
+          "help": "Wertschätzung auszusprechen stärkt die Bindung.",
+          "options": [
+            "Dein Humor",
+            "Deine Intelligenz",
+            "Dein Körper",
+            "Deine Fürsorge",
+            "Deine Ehrlichkeit",
+            "Deine Kreativität",
+            "Deine Stärke",
+            "Deine Sensibilität"
+          ],
+          "tags": ["warmup", "appreciation", "emotional"]
+        },
+        {
+          "id": "SOFT03",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Wie verbunden fühle ich mich zu dir aktuell?",
+          "help": "1 = Distanziert, 10 = Sehr verbunden. Ehrlichkeit hilft uns, zu verstehen wo wir stehen.",
+          "tags": ["warmup", "connection", "foundation"]
+        },
+        {
+          "id": "SOFT04",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Was macht dich aktuell glücklich in unserem Zusammensein?",
+          "help": "Positives bewusst zu machen hilft, es zu bewahren.",
+          "tags": ["warmup", "appreciation", "relationship"]
+        },
+        {
+          "id": "SOFT05",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Wenn ich an unsere Zukunft denke, fühle ich mich...",
+          "help": "Ein Check-in zu unserer emotionalen Ausrichtung.",
+          "options": [
+            "Aufgeregt und optimistisch",
+            "Zuversichtlich und sicher",
+            "Neutral / Abwartend",
+            "Unsicher oder ängstlich",
+            "Unterschiedlich je nach Tag"
+          ],
+          "tags": ["warmup", "future", "emotional"]
+        },
+        {
+          "id": "SOFT06",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Was wünsche ich mir mehr von uns als Paar?",
+          "help": "Wünsche äußern ohne Vorwürfe - ein Geschenk für beide.",
+          "tags": ["warmup", "wishes", "communication"]
+        },
+        {
+          "id": "SOFT07",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Wie sicher fühle ich mich, mit dir über schwierige Themen zu sprechen?",
+          "help": "1 = Unsicher/Angst vor Konflikten, 10 = Sehr sicher/vollstes Vertrauen.",
+          "tags": ["warmup", "safety", "communication", "trust"]
+        }
+      ]
+    },
+    {
+      "id": "emotional_foundation",
+      "name": "Emotionales Fundament: Konflikt & Stress",
+      "description": "Wie gehen wir mit Stress, Konflikten und emotionalen Bedürfnissen um? Das emotionale Fundament unserer Beziehung.",
+      "questions": [
+        {
+          "id": "EMO01",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Wenn wir streiten: Was hilft mir am meisten, um wieder runterzukommen?",
+          "help": "Jeder hat unterschiedliche Deeskalationsstrategien.",
+          "options": [
+            "Kurze Pause, dann weitersprechen",
+            "Körperliche Nähe (Umarmung)",
+            "Räumliche Distanz (erstmal allein sein)",
+            "Aktiv über Gefühle reden",
+            "Ablenkung / Später nochmal reden"
+          ],
+          "tags": ["emotional", "conflict", "coping", "communication"]
+        },
+        {
+          "id": "EMO02",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Wie gut können wir aktuell Konflikte lösen, ohne verletzend zu werden?",
+          "help": "1 = Sehr schwierig/eskaliert oft, 10 = Wir bleiben immer respektvoll.",
+          "tags": ["emotional", "conflict", "communication", "safety"]
+        },
+        {
+          "id": "EMO03",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Wenn ich überfordert bin: Was brauche ich am meisten?",
+          "help": "Überforderung betrifft alle Bereiche - auch Intimität.",
+          "options": [
+            "Jemanden zum Zuhören (ohne Ratschläge)",
+            "Praktische Hilfe / Taten",
+            "Allein sein und mich zurückziehen",
+            "Ablenkung und gemeinsame Aktivitäten",
+            "Körperliche Nähe ohne Worte"
+          ],
+          "tags": ["emotional", "stress", "needs", "support"]
+        },
+        {
+          "id": "EMO04",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Ein Verhalten von dir, das mich emotional verletzt (ohne Vorwurf):",
+          "help": "Ehrlichkeit hilft uns zu wachsen. Formuliere als 'Ich fühle mich..., wenn...'",
+          "tags": ["emotional", "vulnerability", "communication", "boundaries"]
+        },
+        {
+          "id": "EMO05",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Meine primäre Liebessprache ist:",
+          "help": "Wie ich Liebe am stärksten spüre (nach Gary Chapman).",
+          "options": [
+            "Lob & Anerkennung (Worte)",
+            "Quality Time (gemeinsame Aufmerksamkeit)",
+            "Geschenke (Gesten der Zuwendung)",
+            "Hilfsbereitschaft (Taten)",
+            "Körperliche Nähe (Berührung)"
+          ],
+          "tags": ["emotional", "love_languages", "connection", "needs"],
+          "info_details": "Die 5 Liebessprachen nach Gary Chapman helfen zu verstehen, wie Menschen Liebe geben und empfangen. Wenn Partner unterschiedliche primäre Sprachen haben, kann das zu Missverständnissen führen ('Ich zeige dir doch, dass ich dich liebe!' - 'Aber ich spüre es nicht!'). Wichtig: Alle 5 sind gültig, keine ist 'besser'. Die eigene Sprache zu kennen und die des Partners zu lernen, ist der Schlüssel zu emotionaler Verbundenheit."
+        },
+        {
+          "id": "EMO06",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Was ich von dir mehr bräuchte, um mich geliebt zu fühlen:",
+          "help": "Konkrete Wünsche sind besser als unausgesprochene Erwartungen.",
+          "options": [
+            "Mehr verbale Bestätigung / Komplimente",
+            "Mehr gemeinsame Zeit ohne Ablenkung",
+            "Mehr kleine Aufmerksamkeiten / Gesten",
+            "Mehr praktische Unterstützung im Alltag",
+            "Mehr körperliche Zuneigung (Kuscheln, Küsse)",
+            "Eigentlich fühle ich mich schon geliebt"
+          ],
+          "tags": ["emotional", "love_languages", "needs", "communication"]
+        },
+        {
+          "id": "EMO07",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Ein konkretes Szenario, in dem ich mich besonders gesehen/geliebt gefühlt habe:",
+          "help": "Beispiele helfen, abstrakte Konzepte greifbar zu machen.",
+          "tags": ["emotional", "appreciation", "love_languages", "connection"]
+        },
+        {
+          "id": "EMO08",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Nach einem intensiven Erlebnis (emotional oder sexuell): Was brauche ich?",
+          "help": "Erweiterung von Aftercare auf alle intensiven Momente.",
+          "options": [
+            "Gespräch & Verarbeitung",
+            "Stille Nähe / Kuscheln",
+            "Allein sein & Raum",
+            "Normalität / Ablenken",
+            "Unterschiedlich - kommt drauf an"
+          ],
+          "tags": ["emotional", "aftercare", "processing", "needs"]
+        },
+        {
+          "id": "EMO09",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Wie gut fühle ich mich emotional 'gehalten' in unserer Beziehung?",
+          "help": "1 = Ich fühle mich oft allein mit meinen Gefühlen, 10 = Ich fühle mich vollkommen getragen.",
+          "tags": ["emotional", "attachment", "safety", "connection"]
+        },
+        {
+          "id": "EMO10",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Wenn ich Angst oder Unsicherheit in der Beziehung spüre, reagiere ich meist:",
+          "help": "Bindungsmuster erkennen hilft, sie zu verändern.",
+          "options": [
+            "Ich suche Nähe und Bestätigung (ängstlich)",
+            "Ich ziehe mich zurück und mache zu (vermeidend)",
+            "Ich spreche es offen an (sicher)",
+            "Ich werde kritisch oder kämpferisch (protest)",
+            "Unterschiedlich / Kommt drauf an"
+          ],
+          "tags": ["emotional", "attachment", "psychology", "patterns"],
+          "info_details": "Bindungsstile (nach Bowlby & Ainsworth) prägen, wie wir mit Nähe und Distanz umgehen. Sicher gebundene Menschen können Bedürfnisse ausdrücken und Nähe zulassen. Ängstlich gebundene fürchten Verlassenwerden und klammern. Vermeidend gebundene schützen sich durch Distanz. Erkennst du dein Muster? Bindungsstile sind nicht fix - sie können sich durch bewusste Arbeit und sichere Beziehungen heilen."
+        }
+      ]
+    },
     {
       "id": "logistics",
       "name": "Rahmen, Zeit & Logistik",
@@ -267,6 +479,117 @@
             "level1"
           ],
           "info_details": "Einfachste Form des Kontrollverlusts. Erfordert mehr verbale Kommunikation, da Körpersprache nicht gesehen wird."
+        }
+      ]
+    },
+    {
+      "id": "sensory_exploration",
+      "name": "Sinnesreise: Jenseits der Genitalität",
+      "description": "Berührung, Temperatur, Texturen - unser Körper kann so viel mehr spüren als nur sexuelle Stimulation. Eine Reise durch die Sinne.",
+      "questions": [
+        {
+          "id": "SENS01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Massage mit verschiedenen Ölen (Lavendel, Rosenöl, etc.)",
+          "help": "Aromatherapie kombiniert mit Berührung. Entspannend und sinnlich.",
+          "tags": ["sensory", "massage", "soft", "level1"]
+        },
+        {
+          "id": "SENS02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Blindfüttern: Essen mit geschlossenen Augen",
+          "help": "Geschmack und Textur intensivieren sich, wenn das Sehen ausgeschaltet ist.",
+          "tags": ["sensory", "trust", "playful", "level1"]
+        },
+        {
+          "id": "SENS03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Federn über die Haut streichen",
+          "help": "Sanfte, kitzelnde Berührungen, die die Sinne wecken.",
+          "tags": ["sensory", "soft", "touch", "level1"]
+        },
+        {
+          "id": "SENS04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Eiswürfel auf der Haut (nicht genital)",
+          "help": "Kältereiz auf Schultern, Nacken, Rücken, Bauch.",
+          "tags": ["sensory", "temperature", "sensation", "level1"]
+        },
+        {
+          "id": "SENS05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Seidentücher oder Samt über die Haut ziehen",
+          "help": "Verschiedene Texturen erforschen - was fühlt sich wie an?",
+          "tags": ["sensory", "materials", "soft", "level1"]
+        },
+        {
+          "id": "SENS06",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Haare waschen / Kopfmassage",
+          "help": "Oft unterschätzt: Berührung am Kopf kann extrem entspannend oder erregend sein.",
+          "tags": ["sensory", "massage", "care", "level1"]
+        },
+        {
+          "id": "SENS07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Pinsel oder Bürste (weich) über die Haut",
+          "help": "Neue Berührungsqualität: Nicht Hand, sondern Werkzeug.",
+          "tags": ["sensory", "tools", "sensation", "level2"]
+        },
+        {
+          "id": "SENS08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Warmes Wachs (Massage-Kerzen, niedrige Temperatur)",
+          "help": "Nur spezielle Massage-Kerzen verwenden! Normale Kerzen sind zu heiß.",
+          "tags": ["sensory", "temperature", "wax", "level2"],
+          "info_details": "Massage-Kerzen schmelzen bei 40-50°C (normale Kerzen bei 70-80°C!). Das warme Öl wird auf die Haut gegossen und verteilt. Wichtig: Immer erst auf der eigenen Hand testen. Nicht über Genitalien oder Gesicht. Kann sehr intim und entspannend sein."
+        },
+        {
+          "id": "SENS09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Ätherische Öle / Aromatherapie während Intimität",
+          "help": "Geruch ist stark mit Erinnerung und Emotion verbunden.",
+          "tags": ["sensory", "smell", "atmosphere", "level1"]
+        },
+        {
+          "id": "SENS10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Gemeinsam Baden / Duschen (nicht sexuell fokussiert)",
+          "help": "Waschen als Fürsorge-Akt. Sich umeinander kümmern.",
+          "tags": ["sensory", "care", "water", "intimacy", "level1"]
+        },
+        {
+          "id": "SENS11",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Musik während intimer Momente: Was ist deine Präferenz?",
+          "help": "Auditive Sinne beeinflussen Stimmung und Tempo.",
+          "options": [
+            "Stille bevorzugt",
+            "Leise Hintergrundmusik",
+            "Aktiv ausgewählte Playlist",
+            "Naturgeräusche (Regen, Wellen)",
+            "Kommt auf die Stimmung an"
+          ],
+          "tags": ["sensory", "sound", "atmosphere", "preference"]
+        },
+        {
+          "id": "SENS12",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Eine nicht-genitale Körperstelle, die bei mir unterschätzt wird:",
+          "help": "Nacken? Innenseite der Handgelenke? Hinter den Ohren? Teile deine Entdeckungen.",
+          "tags": ["sensory", "touch", "zones", "discovery"]
         }
       ]
     },
@@ -551,6 +874,150 @@
       ]
     },
     {
+      "id": "digital_boundaries",
+      "name": "Digitale Grenzen: Privacy & Technologie",
+      "description": "In Zeiten von Smartphones und Cloud: Wie gehen wir mit digitalen Spuren, Privacy und Technologie in unserer Intimität um?",
+      "questions": [
+        {
+          "id": "DIG01",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Fotos von mir (nicht-sexuell): Wie gehe ich damit um?",
+          "help": "Alltags-Fotos, auf denen ich erkennbar bin.",
+          "options": [
+            "Gar keine Fotos von mir",
+            "Nur mit meiner ausdrücklichen Erlaubnis",
+            "Ok, solange nicht öffentlich gepostet",
+            "Alles ok, auch Social Media",
+            "Kommt drauf an"
+          ],
+          "tags": ["digital", "privacy", "consent", "photos"]
+        },
+        {
+          "id": "DIG02",
+          "schema": "enum",
+          "risk_level": "C",
+          "label": "Intime/Sexuelle Fotos oder Videos: Meine Grenze ist:",
+          "help": "Dokumentation von intimen Momenten.",
+          "options": [
+            "Absolutes No-Go",
+            "Nur ohne Gesicht und verschlüsselt",
+            "Nur auf einem Gerät, nie Cloud",
+            "Ok, wenn beide einverstanden",
+            "Nach dem Anschauen sofort löschen"
+          ],
+          "tags": ["digital", "privacy", "photos", "recording", "risk"],
+          "info_details": "Revenge Porn ist real: 1 von 12 Menschen erfährt das Teilen intimer Bilder ohne Einwilligung. In vielen Ländern ist das mittlerweile strafbar. Schutzmaßnahmen: Nie Gesicht zeigen, verschlüsselte Ordner (z.B. VeraCrypt), niemals Cloud-Speicher, regelmäßig löschen. Wichtig: Du hast jederzeit das Recht zu verlangen, dass alle Bilder von dir gelöscht werden."
+        },
+        {
+          "id": "DIG03",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Zugriff auf mein Handy/Computer: Was ist ok?",
+          "help": "Vertrauen vs. Privatsphäre.",
+          "options": [
+            "Vollständiger Zugriff / Keine Geheimnisse",
+            "Zugriff nur nach Nachfrage",
+            "Bestimmte Apps/Ordner sind tabu",
+            "Gar kein Zugriff / Privatsphäre ist wichtig",
+            "Unterschiedlich je nach Situation"
+          ],
+          "tags": ["digital", "privacy", "trust", "boundaries"]
+        },
+        {
+          "id": "DIG04",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Passwörter teilen (Social Media, Banking, etc.)?",
+          "help": "Transparenz oder Privatsphäre?",
+          "options": [
+            "Alle Passwörter geteilt",
+            "Nur ausgewählte (z.B. gemeinsame Accounts)",
+            "Keine Passwörter geteilt",
+            "Im Notfall hinterlegt (versiegelt)",
+            "Noch nicht drüber nachgedacht"
+          ],
+          "tags": ["digital", "trust", "privacy", "security"]
+        },
+        {
+          "id": "DIG05",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Location-Sharing / Standort teilen: Meine Präferenz:",
+          "help": "Sicherheit oder Überwachung?",
+          "options": [
+            "Immer aktiv (z.B. Find My)",
+            "Nur auf Anfrage / In bestimmten Situationen",
+            "Nur bei Notfällen",
+            "Gar nicht / Fühlt sich wie Kontrolle an",
+            "Kommt drauf an"
+          ],
+          "tags": ["digital", "privacy", "trust", "location"]
+        },
+        {
+          "id": "DIG06",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Soziale Medien: Wie sichtbar darf unsere Beziehung sein?",
+          "help": "Öffentlichkeit vs. Privatsphäre.",
+          "options": [
+            "Gar nicht öffentlich / Privatsache",
+            "Beziehungsstatus ok, aber keine Details",
+            "Gelegentliche Paar-Posts",
+            "Sehr öffentlich / Volle Sichtbarkeit",
+            "Noch nicht besprochen"
+          ],
+          "tags": ["digital", "social", "privacy", "public"]
+        },
+        {
+          "id": "DIG07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Sexting: Nachrichten mit sexuellem Inhalt per Text/Bild",
+          "help": "Kann Vorfreude aufbauen, aber auch Risiken bergen.",
+          "tags": ["digital", "sexting", "communication", "risk"]
+        },
+        {
+          "id": "DIG08",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Ex-Partner in Social Media: Was ist ok?",
+          "help": "Eifersucht oder gesunde Grenzen?",
+          "options": [
+            "Kontakt ist völlig ok",
+            "Kontakt ok, aber keine privaten Chats",
+            "Nur öffentliche Interaktionen",
+            "Lieber kein Kontakt",
+            "Kommt auf den Ex an"
+          ],
+          "tags": ["digital", "social", "jealousy", "boundaries"]
+        },
+        {
+          "id": "DIG09",
+          "schema": "enum",
+          "risk_level": "C",
+          "label": "Wenn ich sterben würde: Digitaler Nachlass?",
+          "help": "Morbid, aber wichtig: Was soll mit meinen Daten passieren?",
+          "options": [
+            "Alles löschen (Accounts, Fotos, Chats)",
+            "Zugriff gewähren, aber persönliche Sachen löschen",
+            "Vollständiger Zugriff für Partner",
+            "Noch nicht drüber nachgedacht",
+            "Möchte das nicht besprechen"
+          ],
+          "tags": ["digital", "privacy", "future", "death"]
+        },
+        {
+          "id": "DIG10",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Eine digitale Grenze, die mir wichtig ist (aber vielleicht noch nicht klar kommuniziert):",
+          "help": "Jetzt ist der Moment, sie auszusprechen.",
+          "tags": ["digital", "boundaries", "communication", "clarity"]
+        }
+      ]
+    },
+    {
       "id": "risks",
       "name": "08. High Risk & Tabus (Optional)",
       "description": "Dinge, die besondere Vorsicht erfordern.",
@@ -698,6 +1165,178 @@
             "petplay"
           ],
           "info_details": "Psychologie: 'Headspace'. Urlaub vom Menschsein. Keine Worte, keine komplexen Gedanken, nur Instinkt und Gehorsam. Sehr meditativ und befreiend von Alltagssorgen."
+        }
+      ]
+    },
+    {
+      "id": "future_alignment",
+      "name": "Zukunft & Ausrichtung: Wohin gehen wir?",
+      "description": "Für Paare, die es ernst meinen: Große Lebensentscheidungen, Werte und die Frage, ob wir in die gleiche Richtung schauen.",
+      "questions": [
+        {
+          "id": "FUT01",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Zusammenziehen: Wo stehe ich aktuell?",
+          "help": "Einer der größten Schritte in einer Beziehung.",
+          "options": [
+            "Bin bereit / Möchte das bald",
+            "Noch zu früh, aber mittelfristig ja",
+            "Unsicher / Brauche mehr Zeit",
+            "Lieber getrennte Wohnungen",
+            "Wir wohnen bereits zusammen"
+          ],
+          "tags": ["future", "living", "commitment", "logistics"]
+        },
+        {
+          "id": "FUT02",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Heiraten: Ist das ein Ziel für mich?",
+          "help": "Manche sehen darin Sicherheit, andere nur Papier.",
+          "options": [
+            "Ja, definitiv wichtig für mich",
+            "Nett, aber nicht zwingend",
+            "Egal / Neutral",
+            "Eher nicht / Keine Priorität",
+            "Absolut nicht / Lehne Ehe ab"
+          ],
+          "tags": ["future", "marriage", "commitment", "values"]
+        },
+        {
+          "id": "FUT03",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Kinder: Meine Position ist:",
+          "help": "Eine der wichtigsten Kompatibilitätsfragen.",
+          "options": [
+            "Ja, möchte definitiv Kinder",
+            "Ja, aber nicht jetzt / später",
+            "Unsicher / Noch nicht entschieden",
+            "Eher nicht",
+            "Nein, definitiv keine Kinder"
+          ],
+          "tags": ["future", "children", "commitment", "values"],
+          "info_details": "Kinderwunsch-Diskrepanz ist einer der häufigsten Deal-Breaker. Wichtig: Diese Position kann sich ändern, aber darauf zu hoffen ist gefährlich. Wenn ein Partner Kinder will und der andere nicht, führt das oft zu Resentment ('Ich habe für dich verzichtet'). Ehrlichkeit ist wichtiger als Kompromiss in dieser Frage."
+        },
+        {
+          "id": "FUT04",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Wenn Kinder: Wie stelle ich mir Aufgabenteilung vor?",
+          "help": "Oft die größte Konfliktquelle nach der Geburt.",
+          "options": [
+            "50/50 Aufteilung",
+            "Einer Hauptbetreuung, anderer Ernährer",
+            "Beide arbeiten, externe Betreuung",
+            "Noch nicht durchdacht",
+            "Keine Kinder geplant"
+          ],
+          "tags": ["future", "children", "roles", "equality"],
+          "depends_on": {
+            "id": "FUT03",
+            "values": ["Ja, möchte definitiv Kinder", "Ja, aber nicht jetzt / später", "Unsicher / Noch nicht entschieden"]
+          }
+        },
+        {
+          "id": "FUT05",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Finanzen: Wie sehe ich das ideale Modell?",
+          "help": "Geld ist einer der größten Streitpunkte in Beziehungen.",
+          "options": [
+            "Alles gemeinsam (gemeinsames Konto)",
+            "Gemeinsame Ausgaben, Rest getrennt",
+            "Komplett getrennte Finanzen",
+            "Noch nicht besprochen",
+            "Unterschiedlich je nach Phase"
+          ],
+          "tags": ["future", "money", "logistics", "values"]
+        },
+        {
+          "id": "FUT06",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Wie wichtig ist mir Karriere vs. Beziehung?",
+          "help": "1 = Beziehung geht immer vor, 10 = Karriere hat Priorität.",
+          "tags": ["future", "values", "career", "priorities"]
+        },
+        {
+          "id": "FUT07",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Würde ich für die Beziehung umziehen (Stadt/Land)?",
+          "help": "Bereitschaft zu großen Veränderungen.",
+          "options": [
+            "Ja, ohne Weiteres",
+            "Ja, wenn Job/Leben dort passt",
+            "Nur innerhalb der Region",
+            "Schwierig / Unsicher",
+            "Nein, mein Ort ist mir zu wichtig"
+          ],
+          "tags": ["future", "living", "commitment", "flexibility"]
+        },
+        {
+          "id": "FUT08",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Umgang mit Schwiegereltern / Familie des Partners:",
+          "help": "Oft unterschätzt, aber enorm wichtig.",
+          "options": [
+            "Enger Kontakt ist mir wichtig",
+            "Regelmäßig, aber mit Grenzen",
+            "Gelegentlich / Bei Festen",
+            "So wenig wie möglich",
+            "Keine Familie vorhanden / Kein Kontakt"
+          ],
+          "tags": ["future", "family", "boundaries", "logistics"]
+        },
+        {
+          "id": "FUT09",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Religion / Spiritualität: Wie wichtig ist das für unsere Zukunft?",
+          "help": "Kann bei Kindererziehung oder Ritualen relevant werden.",
+          "options": [
+            "Sehr wichtig / Muss geteilt werden",
+            "Wichtig, aber respektvolle Differenz ok",
+            "Neutral / Spielt keine Rolle",
+            "Unterschiedlich ist bereichernd",
+            "Keine Religion / Spiritualität"
+          ],
+          "tags": ["future", "values", "religion", "compatibility"]
+        },
+        {
+          "id": "FUT10",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Ein Zukunftsthema, über das wir noch nicht ehrlich gesprochen haben:",
+          "help": "Jetzt ist der Moment, es anzusprechen.",
+          "tags": ["future", "communication", "honesty", "clarity"]
+        },
+        {
+          "id": "FUT11",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Offene Beziehung / Polyamorie: Ist das denkbar für mich?",
+          "help": "Monogamie ist nicht für alle selbstverständlich.",
+          "options": [
+            "Nein, Monogamie ist mir wichtig",
+            "Nicht jetzt, aber vielleicht später",
+            "Theoretisch offen, praktisch unsicher",
+            "Ja, interessiert mich",
+            "Leben bereits non-monogam"
+          ],
+          "tags": ["future", "monogamy", "boundaries", "values"],
+          "info_details": "Konsensuelle Non-Monogamie (Polyamorie, offene Beziehung) funktioniert für manche, aber erfordert extrem gute Kommunikation, klare Grenzen und emotionale Reife. Wichtig: Man kann nicht 'halb-offen' sein - entweder alle sind einverstanden, oder es ist Betrug. Etwa 4-5% praktizieren es offen, aber geschätzt 20% haben Interesse."
+        },
+        {
+          "id": "FUT12",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Kann ich mir ein Leben mit diesem Menschen in 10 Jahren vorstellen?",
+          "help": "1 = Nein/Sehr unsicher, 10 = Absolut ja.",
+          "tags": ["future", "commitment", "long-term", "vision"]
         }
       ]
     },

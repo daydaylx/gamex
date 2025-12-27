@@ -138,9 +138,11 @@ export function SessionView() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full" variant={session.has_a ? "outline" : "default"}>
-              {session.has_a ? 'Antworten bearbeiten' : 'Jetzt ausfüllen'}
-            </Button>
+            <Link href={`/sessions/${sessionId}/questionnaire/A`}>
+              <Button className="w-full" variant={session.has_a ? "outline" : "default"}>
+                {session.has_a ? 'Antworten bearbeiten' : 'Jetzt ausfüllen'}
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -156,9 +158,11 @@ export function SessionView() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full" variant={session.has_b ? "outline" : "default"}>
-              {session.has_b ? 'Antworten bearbeiten' : 'Jetzt ausfüllen'}
-            </Button>
+            <Link href={`/sessions/${sessionId}/questionnaire/B`}>
+              <Button className="w-full" variant={session.has_b ? "outline" : "default"}>
+                {session.has_b ? 'Antworten bearbeiten' : 'Jetzt ausfüllen'}
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -174,9 +178,17 @@ export function SessionView() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full" disabled={!canCompare}>
-              Vergleich anzeigen
-            </Button>
+            {canCompare ? (
+              <Link href={`/sessions/${sessionId}/compare`}>
+                <Button className="w-full">
+                  Vergleich anzeigen
+                </Button>
+              </Link>
+            ) : (
+              <Button className="w-full" disabled={!canCompare}>
+                Vergleich anzeigen
+              </Button>
+            )}
           </CardContent>
         </Card>
 
@@ -192,9 +204,11 @@ export function SessionView() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full" variant="outline">
-              Szenarien öffnen
-            </Button>
+            <Link href={`/sessions/${sessionId}/scenarios`}>
+              <Button className="w-full" variant="outline">
+                Szenarien öffnen
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
