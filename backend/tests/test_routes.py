@@ -398,8 +398,8 @@ class TestValidateResponses:
         
         assert len(errors) > 0
         
-    def test_validate_scale_0_10_range(self, sample_template):
-        """Test that scale_0_10 values are in valid range."""
+    def test_validate_scale_1_10_range(self, sample_template):
+        """Test that scale_1_10 values are in valid range."""
         responses = {
             "Q2": {
                 "value": 11  # Out of range

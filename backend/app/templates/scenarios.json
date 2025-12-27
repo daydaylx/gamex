@@ -294,6 +294,193 @@
       { "id": "C", "label": "Nur wenn wir danach die Rollen tauschen", "risk_type": "negotiation" },
       { "id": "D", "label": "Die demütige Verehrung voll ausleben", "risk_type": "active" }
     ]
+  },
+  {
+    "id": "S21",
+    "title": "Die Bar-Begegnung (Roleplay Light)",
+    "category": "Roleplay/Connection",
+    "description": "Ihr vereinbart, euch in einer Bar zu treffen und so zu tun, als würdet ihr euch nicht kennen. Einer von euch sitzt bereits da, als der andere hereinkommt. Flirten wie am ersten Tag. 'Ist hier noch frei?' - Der Nervenkitzel der Eroberung, ohne das Risiko des Scheiterns.",
+    "info_card": {
+      "emotional_context": "Reaktiviert die Anziehung durch Unbekanntheit und spielerisches Erobern. Durchbricht Routine.",
+      "typical_risks": "Eifersucht wenn Partner zu überzeugend mit 'Fremden' flirtet. Peinlichkeit bei Entdeckung.",
+      "safety_gate": "Vorher Grenzen klären: Wie weit geht das Spiel? Nur Flirten oder auch körperliche Nähe?"
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Ich mag unsere natürliche Dynamik)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur als Gedankenspiel / darüber reden", "risk_type": "fantasy_passive" },
+      { "id": "C", "label": "Ausprobieren, aber nur verbales Flirten", "risk_type": "negotiation" },
+      { "id": "D", "label": "Voll einsteigen bis zur 'Abschleppung'", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S22",
+    "title": "Das Slow-Motion Date",
+    "category": "Connection/Sensory",
+    "description": "Heute Abend ist alles in Zeitlupe. Kein Handy, keine Eile. Ihr nehmt euch 3 Stunden nur für euch: Gemeinsam kochen, dabei berühren, langsam essen und dabei in die Augen sehen. Jede Geste ist bewusst. Es geht nicht um Sex, sondern um pure Präsenz. Am Ende: Was auch immer sich richtig anfühlt.",
+    "info_card": {
+      "emotional_context": "Entschleunigung als Gegenmittel zu Alltagsstress. Achtsamkeit stärkt Verbindung.",
+      "typical_risks": "Ungeduld, Ablenkung durch Gedanken, Unbehagen mit Intensität der Nähe.",
+      "safety_gate": "Zeitfenster wirklich freihalten. Handy aus. Offenheit für Intimität ohne Erwartung."
+    },
+    "options": [
+      { "id": "A", "label": "Zu langsam für mich / Ich brauche Action", "risk_type": "boundary" },
+      { "id": "B", "label": "1 Stunde probieren statt 3", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit klarem Ende-Signal wenn es zu viel wird", "risk_type": "safety" },
+      { "id": "D", "label": "Vollständig einlassen auf die Langsamkeit", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S23",
+    "title": "Die Sinnesreise (Sensory Exploration)",
+    "category": "Sensory/Trust",
+    "description": "Eine Stunde, in der einer von euch nur empfängt, der andere nur gibt. Augen verbunden. Nacheinander kommen verschiedene Texturen auf die Haut: Seide, Eis, eine Feder, warmes Öl, eine sanfte Bürste. Kein Sex, nur Sinneseindrücke und die Frage: Was fühlt sich wie an?",
+    "info_card": {
+      "emotional_context": "Erweitert das Repertoire über Genitalität hinaus. Sensory Play als Achtsamkeitspraxis.",
+      "typical_risks": "Ungeduld ('Wann passiert endlich was?'), Kitzligkeit, Temperaturempfindlichkeit.",
+      "safety_gate": "Safeword vereinbart, keine allergenen Materialien, Raumtemperatur angenehm."
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Ich bin zu kitzlig / Berührungen sind schwierig)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur ohne Augenbinde", "risk_type": "hesitant" },
+      { "id": "C", "label": "Als Vorspiel, aber mit sexuellem Ausklang", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die volle Sinnesreise ohne Erwartung", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S24",
+    "title": "Der ehrliche Spiegel",
+    "category": "Vulnerability/Body",
+    "description": "Keine Sexszene, sondern ein Ritual: Ihr steht voreinander, nackt, in weichem Licht. Abwechselnd sagt jeder dem anderen: 'Was ich an deinem Körper schön finde...' und benennt drei Dinge. Keine Floskeln, nur Ehrlichkeit. Es darf verlegen sein. Es darf berühren.",
+    "info_card": {
+      "emotional_context": "Body Image und Scham heilen durch Wertschätzung. Nacktheit ohne Performance.",
+      "typical_risks": "Scham, Vergleiche mit Idealen, Verletzlichkeit kann überwältigen.",
+      "safety_gate": "Nur wenn beide bereit sind. Keine Kritik, nur Wertschätzung. Danach Nähe anbieten."
+    },
+    "options": [
+      { "id": "A", "label": "Zu verletzlich / Ich mag meinen Körper nicht genug", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur angezogen oder in Unterwäsche", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur wenn ich danach Zuspruch bekomme", "risk_type": "negotiation" },
+      { "id": "D", "label": "Mich der Verletzlichkeit stellen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S25",
+    "title": "Das Ja/Nein Experiment",
+    "category": "Communication/Consent",
+    "description": "10 Minuten Training: Einer fragt, der andere antwortet nur mit 'Ja' oder 'Nein'. 'Darf ich deine Hand nehmen?' - 'Ja.' 'Darf ich dich küssen?' - 'Nein.' Kein 'Vielleicht', kein Erklären. Nur klare Antworten. Dann Rollentausch. Ziel: Üben, Grenzen ohne Rechtfertigung zu setzen.",
+    "info_card": {
+      "emotional_context": "Consent Culture trainieren. 'Nein' sagen dürfen ohne Schuldgefühl.",
+      "typical_risks": "Zurückweisung kann sich hart anfühlen. Ängstlich Gebundene fürchten Ablehnung.",
+      "safety_gate": "Nachher besprechen: Wie hat sich das Neinsagen angefühlt? Und das Abgelehntwerden?"
+    },
+    "options": [
+      { "id": "A", "label": "Zu künstlich / Ich kann auch so Nein sagen", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur im nicht-körperlichen Bereich üben", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Nachbesprechung direkt danach", "risk_type": "safety" },
+      { "id": "D", "label": "Das volle Training durchziehen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S26",
+    "title": "Die Bucket List des Intimen",
+    "category": "Exploration/Future",
+    "description": "Setzt euch mit Stift und Papier zusammen. Jeder schreibt 5 Dinge auf, die er/sie gerne mal ausprobieren würde (von 'Sex im Freien' bis 'Gemeinsam Tanzen lernen'). Dann tauscht ihr aus und wählt gemeinsam 3 Dinge aus, die ihr in den nächsten 6 Monaten angeht. Ein Vertrag mit euch selbst.",
+    "info_card": {
+      "emotional_context": "Fantasien konkret machen. Von Träumen zu Plänen. Schafft Vorfreude.",
+      "typical_risks": "Inkompatible Wünsche können enttäuschen. Druck, 'interessant' sein zu müssen.",
+      "safety_gate": "Keine Verpflichtung - nur Inspiration. Bucket List ist keine To-Do-Liste."
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Ich will keinen Druck aufbauen)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur darüber reden, nicht aufschreiben", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur 'realistische' Dinge, nichts Extremes", "risk_type": "negotiation" },
+      { "id": "D", "label": "Alles aufschreiben - auch wilde Fantasien", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S27",
+    "title": "Der Massage-Vertrag",
+    "category": "Sensory/Service",
+    "description": "Heute Abend dient einer nur dem anderen. 45 Minuten Vollkörper-Massage mit Öl, in Stille oder mit Musik. Der Empfangende muss nichts zurückgeben, nur genießen. Kein Sex danach - außer der Empfangende will ausdrücklich. Das Geschenk ist die Hingabe selbst.",
+    "info_card": {
+      "emotional_context": "Geben ohne Erwartung. Nehmen ohne Schuld. Durchbricht Transaktions-Denken ('Ich gebe, also musst du auch').",
+      "typical_risks": "Ungeduld beim Gebenden. Schuldgefühl beim Nehmenden ('Ich müsste was zurückgeben').",
+      "safety_gate": "Vorher klären: Heute ist wirklich 'Nehmen-Abend', kein Zurückgeben erwartet."
+    },
+    "options": [
+      { "id": "A", "label": "Ungern nur nehmend / Ich muss zurückgeben", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 15-20 Minuten statt 45", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Option auf gegenseitige Massage", "risk_type": "negotiation" },
+      { "id": "D", "label": "Voll als Nehmende:r einlassen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S28",
+    "title": "Die Stille Berührung",
+    "category": "Intimacy/Meditation",
+    "description": "20 Minuten, kein Wort. Ihr liegt nebeneinander, angezogen oder nackt. Eine Hand ruht auf dem Herzen des anderen. Augen geschlossen. Nur Atem synchronisieren und die Wärme spüren. Keine Erwartung, kein Ziel. Nur Sein.",
+    "info_card": {
+      "emotional_context": "Intimität jenseits von Leistung und Stimulation. Oxytocin-Boost durch Berührung + Präsenz.",
+      "typical_risks": "Unruhe, Gedankenkreisen, Einschlafen. Kann emotional überwältigend sein.",
+      "safety_gate": "Vorher absprechen: Weinen ist ok. Abbrechen ist ok. Nachher optional darüber reden."
+    },
+    "options": [
+      { "id": "A", "label": "Zu esoterisch / Ich kann nicht so lange still sein", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 5 Minuten probieren", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Musik im Hintergrund", "risk_type": "negotiation" },
+      { "id": "D", "label": "Volle 20 Minuten in Stille", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S29",
+    "title": "Die Wunschliste der Berührungen",
+    "category": "Communication/Touch",
+    "description": "Jeder macht eine Liste mit 5 Arten von Berührungen, die er/sie sich mehr wünscht (z.B. 'Haare streicheln', 'Fester umarmen', 'Füße massieren', 'Nacken küssen'). Dann verbringt ihr eine Stunde damit, diese Wünsche zu erfüllen - ohne Erwartung von Sex. Nur Berührung als Sprache.",
+    "info_card": {
+      "emotional_context": "Non-genitale Intimität stärken. Berührungshunger stillen, der oft untergeht.",
+      "typical_risks": "Ungeduld ('Wann wird's sexuell?'), unerfüllte Erwartungen wenn Liste zu spezifisch.",
+      "safety_gate": "Klarmachen: Heute geht's nicht um Sex, sondern um Zärtlichkeit."
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Berührung außerhalb von Sex ist mir unwichtig)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 2-3 Wünsche statt 5", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Option, dass es sexuell werden darf", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die volle Wunschliste durchgehen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S30",
+    "title": "Das Dankbarkeits-Ritual",
+    "category": "Connection/Appreciation",
+    "description": "Jeden Abend, 7 Tage lang, vor dem Schlafengehen: Jeder sagt dem anderen eine Sache, für die er/sie heute dankbar war. Keine großen Worte, nur kleine Momente. 'Danke, dass du mir Kaffee gemacht hast.' 'Danke, dass du mich zum Lachen gebracht hast.' Aufmerksamkeit für das Gute.",
+    "info_card": {
+      "emotional_context": "Dankbarkeits-Praxis verschiebt den Fokus von Mangel zu Fülle. Stärkt Wertschätzung.",
+      "typical_risks": "Vergessen, künstlich wirken, wird zur Pflicht statt zum Ritual.",
+      "safety_gate": "Keine Erwartung an 'große' Dankbarkeiten. Auch Kleines zählt."
+    },
+    "options": [
+      { "id": "A", "label": "Zu kitschig / Fühlt sich unecht an", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 3 Tage statt 7", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur wenn wir beide dran denken (kein Druck)", "risk_type": "negotiation" },
+      { "id": "D", "label": "Die vollen 7 Tage durchziehen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S31",
+    "title": "Die Fantasy-Beichte",
+    "category": "Vulnerability/Fantasy",
+    "description": "Dimmes Licht, ihr liegt nebeneinander. Einer von euch beginnt: 'Ich erzähl dir eine Fantasie, die ich noch nie jemandem erzählt habe.' Der andere hört nur zu, bewertet nicht, stellt maximal verständnisvolle Fragen. Dann Rollentausch. Danach: Kuscheln, egal wie 'krass' die Fantasien waren.",
+    "info_card": {
+      "emotional_context": "Fantasien teilen baut Vertrauen. Aber: Fantasie ≠ Wunsch nach Realität. Wichtig zu unterscheiden.",
+      "typical_risks": "Schock, Eifersucht, Scham. Fantasien können triggern (z.B. Ex-Partner, Gruppensex).",
+      "safety_gate": "Vorher klären: 'Das ist nur eine Fantasie, keine Forderung. Bist du bereit zuzuhören ohne zu urteilen?'"
+    },
+    "options": [
+      { "id": "A", "label": "Nein (Manche Fantasien bleiben privat)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 'harmlose' Fantasien teilen", "risk_type": "hesitant" },
+      { "id": "C", "label": "Mit Veto-Recht: Ich darf abbrechen", "risk_type": "safety" },
+      { "id": "D", "label": "Alles erzählen ohne Filter", "risk_type": "active" }
+    ]
   }
   ]
 }

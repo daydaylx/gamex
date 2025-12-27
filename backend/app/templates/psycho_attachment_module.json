@@ -21,10 +21,10 @@
     },
     {
       "id": "ATT002",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "A",
       "label": "Nach intensivem Sex: Wie wichtig ist dir physische Nähe/Kuscheln?",
-      "help": "0 = Brauche Space, 10 = Brauche intensive Nähe",
+      "help": "1 = Brauche Space, 11 = Brauche intensive Nähe",
       "tags": ["aftercare", "attachment", "closeness"],
       "info_details": "Ängstlich gebundene brauchen oft mehr Rückversicherung nach Sex (Kuscheln = 'Du bist noch da, ich bin nicht allein'). Vermeidend gebundene brauchen Raum zur Selbstregulation ('Ich brauche meine Autonomie zurück'). Weder noch ist falsch - aber Partnermismatch kann Sub Drop verstärken. Wichtig: Bedürfnisse explizit kommunizieren."
     },
@@ -73,10 +73,10 @@
     },
     {
       "id": "ATT007",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "B",
       "label": "Eifersucht/Besitzdenken: Wie stark ist das bei mir?",
-      "help": "0 = Gar nicht eifersüchtig, 10 = Sehr eifersüchtig",
+      "help": "1 = Gar nicht eifersüchtig, 11 = Sehr eifersüchtig",
       "tags": ["attachment", "jealousy", "monogamy"],
       "info_details": "Eifersucht korreliert mit ängstlichem Bindungsstil (Verlustangst). Vermeidend gebundene zeigen weniger Eifersucht (emotionale Distanz schützt). Sicher gebundene haben gesundes Maß. Wichtig: Eifersucht ist nicht 'toxisch', sondern ein Signal für Unsicherheit. Bei hoher Eifersucht: Offene Beziehungen/Non-Monogamie können herausfordernd sein."
     },

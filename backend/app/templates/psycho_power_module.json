@@ -23,10 +23,10 @@
     },
     {
       "id": "POW003",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "A",
       "label": "Mein Control-Spektrum: Wie viel Kontrolle will ich abgeben/haben?",
-      "help": "0 = Ich will absolute Kontrolle abgeben (Total Submission), 10 = Ich will absolute Kontrolle haben (Total Dominance)",
+      "help": "1 = Ich will absolute Kontrolle abgeben (Total Submission), 11 = Ich will absolute Kontrolle haben (Total Dominance)",
       "tags": ["power", "control", "spectrum"],
       "info_details": "Control-Spektrum ist fluide, nicht binär. Manche switchen je nach Partner:in, Stimmung, Kontext. 'Power Bottom' (submissive, aber führend) vs. 'Service Top' (dominant, aber dienend) zeigen Komplexität. Wichtig: Spektrum ≠ Identität - du musst nicht 'nur Dom' oder 'nur Sub' sein. Viele Menschen sind 'switch' oder haben nuancierte Präferenzen (z.B. 'dominant im Alltag, submissiv im Bett')."
     },

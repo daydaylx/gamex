@@ -73,10 +73,10 @@
     },
     {
       "id": "AFC006",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "A",
       "label": "Nach intensivem Sex/BDSM: Wie wichtig ist mir Aftercare?",
-      "help": "0 = Brauche ich nicht, 10 = Absolut essentiell für mich",
+      "help": "1 = Brauche ich nicht, 11 = Absolut essentiell für mich",
       "tags": ["aftercare", "importance", "priority"],
       "info_details": "Manche Menschen brauchen kein Aftercare und fühlen sich sogar eingeengt davon. Andere kollabieren ohne. Beides ist okay. Wichtig: Partner:in muss dein Bedürfnis-Level kennen. Bei großem Mismatch (9 vs. 2) ist Kompromiss oder Vorbereitung nötig (z.B. Decke/Snacks bereitstellen, wenn Partner:in nicht kuscheln mag)."
     },

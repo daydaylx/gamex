@@ -15,5 +15,6 @@ def load_template(template_id: str) -> Dict[str, Any]:
       Normalization intentionally does not rewrite `id` to avoid behavior changes.
     """
     raw = _load_raw_template(template_id)
-    return normalize_template(raw)
+    normalized = normalize_template(raw)
+    return normalized
 

@@ -217,41 +217,116 @@ def _safe_int(v: Any) -> Optional[int]:
 
 def _generate_conversation_prompts(item: Dict[str, Any]) -> List[str]:
     """
-    Generiert 2-3 Gesprächs-Prompts für ein Item basierend auf Bucket, Flags und Bedingungen.
-    Regelbasiert, nicht KI-generiert.
+    Generiert 2-3 Gesprächs-Prompts für ein Item basierend auf Bucket, Flags, Tags und Bedingungen.
+    Regelbasiert, nicht KI-generiert. Enhanced mit kontextspezifischen Prompts.
     """
     prompts = []
     bucket = item.get("bucket", item.get("pair_status", "EXPLORE"))
     schema = item.get("schema")
     risk_level = item.get("risk_level", "A")
     flags = item.get("flags", [])
+    tags = set(item.get("tags", []))
     a = item.get("a", {})
     b = item.get("b", {})
     label = item.get("label", "")
     conditions_a = a.get("conditions", "").strip()
     conditions_b = b.get("conditions", "").strip()
     
+    # Context-specific prompts based on tags
+    tag_prompts = {
+        "warmup": [
+            "Eine gute Frage, um emotionale Nähe aufzubauen.",
+            "Nehmt euch Zeit für ehrliche Antworten - Nostalgie verbindet."
+        ],
+        "emotional": [
+            "Emotionale Themen brauchen einen sicheren Raum.",
+            "Hört einander zu ohne zu urteilen oder zu verteidigen."
+        ],
+        "conflict": [
+            "Konflikte sind normal - wie ihr damit umgeht, macht den Unterschied.",
+            "Sprecht über eure Deeskalations-Strategien."
+        ],
+        "love_languages": [
+            "Liebessprachen zu kennen hilft, sich geliebt zu fühlen.",
+            "Fragt nach: Wie kann ich dir besser zeigen, dass ich dich liebe?"
+        ],
+        "aftercare": [
+            "Aftercare ist nicht optional - es ist physiologisch notwendig.",
+            "Besprecht eure Bedürfnisse für danach, nicht nur für währenddessen."
+        ],
+        "breathplay": [
+            "⚠️ EXTREM HOHES RISIKO! Niemals allein, medizinisches Wissen erforderlich.",
+            "Nur mit non-verbalem Safeword (Klopfen). Niemals Kehlkopf."
+        ],
+        "bondage": [
+            "Schere bereit halten. Niemals allein lassen.",
+            "Auf Nervenbahnen achten - taube Finger = sofort lösen."
+        ],
+        "cnc": [
+            "CNC erfordert höchstes Vertrauen und ausführliche Vorbesprechung.",
+            "Safeword muss 100% respektiert werden, keine Ausnahmen."
+        ],
+        "digital": [
+            "Digitale Spuren sind dauerhaft - Privacy ernst nehmen.",
+            "Klärt, was mit Fotos/Videos passiert, bevor sie existieren."
+        ],
+        "future": [
+            "Große Entscheidungen brauchen Ehrlichkeit, keine Kompromisse aus Angst.",
+            "Inkompatibilität hier ist ok - besser jetzt wissen als später."
+        ],
+        "sensory": [
+            "Sensory Play erweitert Intimität über Genitalität hinaus.",
+            "Fragt nach: Welche Berührung möchtest du mehr spüren?"
+        ],
+        "children": [
+            "Kinderwunsch ist ein häufiger Deal-Breaker - Ehrlichkeit ist wichtiger als Hoffnung.",
+            "Wenn uneinig: Professionelle Paarberatung kann helfen."
+        ]
+    }
+    
     if bucket == "DOABLE NOW":
         prompts.append(f"Beide möchtet ihr '{label}'. Perfekt für den Einstieg!")
-        if risk_level == "B":
+        
+        # Add tag-specific context
+        if "warmup" in tags or "emotional" in tags:
+            prompts.append("Nehmt euch Zeit für dieses Gespräch - ohne Ablenkung.")
+        elif "sensory" in tags:
+            prompts.append("Plant einen ruhigen Moment dafür - ohne Zeitdruck.")
+        elif risk_level == "B":
             prompts.append("Da es mittleres Risiko ist, sprecht kurz über eure Erwartungen vorher.")
         else:
             prompts.append("Redet kurz über eure Erwartungen und genießt es!")
     
     elif bucket == "EXPLORE":
         prompts.append(f"Beide seid ihr interessiert an '{label}', aber es gibt noch Klärungsbedarf.")
+        
         if "low_comfort_high_interest" in flags:
             prompts.append("Ein*e von euch hat hohes Interesse aber niedrigen Komfort - sprecht darüber, wie ihr es sicherer machen könnt.")
+            
+            # Add specific safety questions for high-risk items
+            if risk_level == "C":
+                prompts.append("Fragt: Was bräuchte ich, um mich sicherer zu fühlen? Welche Vorbereitung hilft?")
+            elif "aftercare" in tags:
+                prompts.append("Klärt Aftercare-Bedürfnisse im Vorfeld - nicht erst hinterher.")
         else:
             prompts.append("Sprecht über eure Erwartungen und wie ihr es gemeinsam erkunden könnt.")
+            
         if conditions_a or conditions_b:
             conditions_text = f"{conditions_a} / {conditions_b}".strip(" /")
             prompts.append(f"Bedingungen: {conditions_text}")
     
     elif bucket == "TALK FIRST":
         prompts.append(f"'{label}' erfordert ein ausführliches Gespräch vorher.")
+        
         if risk_level == "C":
             prompts.append("⚠️ HIGH RISK: Plant ausreichend Zeit für Sicherheits-Gespräch und Vorbereitung ein.")
+            
+            # Risk-specific guidance
+            if "breathplay" in tags or "breath" in tags:
+                prompts.append("Breathplay ist lebensgefährlich. Erwägt professionelles Training oder verzichtet darauf.")
+            elif "blood" in tags or "needles" in tags:
+                prompts.append("Nur mit Fachwissen, sterilen Materialien und Desinfektionsprotokoll.")
+        
         if conditions_a or conditions_b:
             conditions_text = f"{conditions_a} / {conditions_b}".strip(" /")
             prompts.append(f"Besprecht eure Bedingungen: {conditions_text}")
@@ -260,11 +335,30 @@ def _generate_conversation_prompts(item: Dict[str, Any]) -> List[str]:
     
     elif bucket == "MISMATCH":
         prompts.append(f"Bei '{label}' gibt es eine Unstimmigkeit - einer möchte es, der/die andere nicht.")
+        
         if "hard_limit_violation" in flags:
             prompts.append("⚠️ WICHTIG: Einer hat ein Hard Limit - respektiert das absolut.")
-        prompts.append("Das ist ok! Sprecht darüber, warum es nicht passt, ohne Druck auszuüben.")
+        
+        # Context-specific mismatch guidance
+        if "children" in tags or "future" in tags:
+            prompts.append("Bei großen Lebensentscheidungen: Keine Kompromisse eingehen, die später zu Resentment führen.")
+        elif "emotional" in tags:
+            prompts.append("Emotional Mismatches können sich ändern - gebt euch Zeit und Raum.")
+        else:
+            prompts.append("Das ist ok! Sprecht darüber, warum es nicht passt, ohne Druck auszuüben.")
     
-    # Füge allgemeine Prompts hinzu wenn noch Platz
+    # Add tag-specific prompts if we still have space
+    if len(prompts) < 3:
+        for tag, tag_specific_prompts in tag_prompts.items():
+            if tag in tags:
+                # Pick a relevant prompt that hasn't been added yet
+                for tp in tag_specific_prompts:
+                    if tp not in prompts and len(prompts) < 3:
+                        prompts.append(tp)
+                        break
+                break
+    
+    # Fallback general prompts
     if len(prompts) < 2:
         if risk_level == "C":
             prompts.append("Erfordert viel Kommunikation und Sicherheits-Vorbereitung.")
@@ -498,7 +592,7 @@ def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, 
                         flags.append("big_delta")
                         summary["flags"]["big_delta"] += 1
 
-            elif schema == "scale_0_10":
+            elif schema == "scale_1_10":
                 va = _safe_int(a.get("value"))
                 vb = _safe_int(b.get("value"))
                 row["delta_value"] = _abs_delta(va, vb)

@@ -87,8 +87,8 @@ Fragen mit aktiv/passiv Varianten zeigen zwei Spalten:
 - **Aktiv (geben)**: Status, Interesse, Komfort
 - **Passiv (empfangen)**: Status, Interesse, Komfort
 
-### Skalen (scale_0_10)
-Für Fragen wie "Wie zufrieden bist du?" - Wert von 0-10.
+### Skalen (scale_1_10)
+Für Fragen wie "Wie zufrieden bist du?" - Wert von 1-10.
 
 ### Auswahl (enum)
 Für Fragen mit vordefinierten Optionen.
@@ -143,7 +143,7 @@ Sicherheitshinweise werden automatisch in den Help-Texten angezeigt:
 - **Version**: 1
 - **Fragenanzahl**: ~500+
 - **Module**: 17
-- **Schemas**: consent_rating, scale_0_10, enum, multi, text
+- **Schemas**: consent_rating, scale_1_10, enum, multi, text
 
 ## Konvertierung
 
@@ -152,6 +152,7 @@ Das Template wurde automatisch aus `fragebogen-umfassend.md` konvertiert mit:
 - Mapping von 7-Punkte-Skala auf consent_rating
 - Integration von Sicherheitshinweisen
 - Erkennung von Dom/Sub und Aktiv/Passiv Varianten
+
 
 
 

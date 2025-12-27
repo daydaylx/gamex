@@ -1,0 +1,133 @@
+{
+  "id": "emotional_foundation",
+  "name": "Emotionales Fundament: Konflikt & Stress",
+  "description": "Wie gehen wir mit Stress, Konflikten und emotionalen Bedürfnissen um? Das emotionale Fundament unserer Beziehung.",
+  "questions": [
+    {
+      "id": "EMO01",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Wenn wir streiten: Was hilft mir am meisten, um wieder runterzukommen?",
+      "help": "Jeder hat unterschiedliche Deeskalationsstrategien.",
+      "options": [
+        "Kurze Pause, dann weitersprechen",
+        "Körperliche Nähe (Umarmung)",
+        "Räumliche Distanz (erstmal allein sein)",
+        "Aktiv über Gefühle reden",
+        "Ablenkung / Später nochmal reden"
+      ],
+      "tags": ["emotional", "conflict", "coping", "communication"]
+    },
+    {
+      "id": "EMO02",
+      "schema": "scale_1_10",
+      "risk_level": "A",
+      "label": "Wie gut können wir aktuell Konflikte lösen, ohne verletzend zu werden?",
+      "help": "1 = Sehr schwierig/eskaliert oft, 10 = Wir bleiben immer respektvoll.",
+      "tags": ["emotional", "conflict", "communication", "safety"]
+    },
+    {
+      "id": "EMO03",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Wenn ich überfordert bin: Was brauche ich am meisten?",
+      "help": "Überforderung betrifft alle Bereiche - auch Intimität.",
+      "options": [
+        "Jemanden zum Zuhören (ohne Ratschläge)",
+        "Praktische Hilfe / Taten",
+        "Allein sein und mich zurückziehen",
+        "Ablenkung und gemeinsame Aktivitäten",
+        "Körperliche Nähe ohne Worte"
+      ],
+      "tags": ["emotional", "stress", "needs", "support"]
+    },
+    {
+      "id": "EMO04",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Ein Verhalten von dir, das mich emotional verletzt (ohne Vorwurf):",
+      "help": "Ehrlichkeit hilft uns zu wachsen. Formuliere als 'Ich fühle mich..., wenn...'",
+      "tags": ["emotional", "vulnerability", "communication", "boundaries"]
+    },
+    {
+      "id": "EMO05",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Meine primäre Liebessprache ist:",
+      "help": "Wie ich Liebe am stärksten spüre (nach Gary Chapman).",
+      "options": [
+        "Lob & Anerkennung (Worte)",
+        "Quality Time (gemeinsame Aufmerksamkeit)",
+        "Geschenke (Gesten der Zuwendung)",
+        "Hilfsbereitschaft (Taten)",
+        "Körperliche Nähe (Berührung)"
+      ],
+      "tags": ["emotional", "love_languages", "connection", "needs"],
+      "info_details": "Die 5 Liebessprachen nach Gary Chapman helfen zu verstehen, wie Menschen Liebe geben und empfangen. Wenn Partner unterschiedliche primäre Sprachen haben, kann das zu Missverständnissen führen ('Ich zeige dir doch, dass ich dich liebe!' - 'Aber ich spüre es nicht!'). Wichtig: Alle 5 sind gültig, keine ist 'besser'. Die eigene Sprache zu kennen und die des Partners zu lernen, ist der Schlüssel zu emotionaler Verbundenheit."
+    },
+    {
+      "id": "EMO06",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Was ich von dir mehr bräuchte, um mich geliebt zu fühlen:",
+      "help": "Konkrete Wünsche sind besser als unausgesprochene Erwartungen.",
+      "options": [
+        "Mehr verbale Bestätigung / Komplimente",
+        "Mehr gemeinsame Zeit ohne Ablenkung",
+        "Mehr kleine Aufmerksamkeiten / Gesten",
+        "Mehr praktische Unterstützung im Alltag",
+        "Mehr körperliche Zuneigung (Kuscheln, Küsse)",
+        "Eigentlich fühle ich mich schon geliebt"
+      ],
+      "tags": ["emotional", "love_languages", "needs", "communication"]
+    },
+    {
+      "id": "EMO07",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Ein konkretes Szenario, in dem ich mich besonders gesehen/geliebt gefühlt habe:",
+      "help": "Beispiele helfen, abstrakte Konzepte greifbar zu machen.",
+      "tags": ["emotional", "appreciation", "love_languages", "connection"]
+    },
+    {
+      "id": "EMO08",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Nach einem intensiven Erlebnis (emotional oder sexuell): Was brauche ich?",
+      "help": "Erweiterung von Aftercare auf alle intensiven Momente.",
+      "options": [
+        "Gespräch & Verarbeitung",
+        "Stille Nähe / Kuscheln",
+        "Allein sein & Raum",
+        "Normalität / Ablenken",
+        "Unterschiedlich - kommt drauf an"
+      ],
+      "tags": ["emotional", "aftercare", "processing", "needs"]
+    },
+    {
+      "id": "EMO09",
+      "schema": "scale_1_10",
+      "risk_level": "A",
+      "label": "Wie gut fühle ich mich emotional 'gehalten' in unserer Beziehung?",
+      "help": "1 = Ich fühle mich oft allein mit meinen Gefühlen, 10 = Ich fühle mich vollkommen getragen.",
+      "tags": ["emotional", "attachment", "safety", "connection"]
+    },
+    {
+      "id": "EMO10",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Wenn ich Angst oder Unsicherheit in der Beziehung spüre, reagiere ich meist:",
+      "help": "Bindungsmuster erkennen hilft, sie zu verändern.",
+      "options": [
+        "Ich suche Nähe und Bestätigung (ängstlich)",
+        "Ich ziehe mich zurück und mache zu (vermeidend)",
+        "Ich spreche es offen an (sicher)",
+        "Ich werde kritisch oder kämpferisch (protest)",
+        "Unterschiedlich / Kommt drauf an"
+      ],
+      "tags": ["emotional", "attachment", "psychology", "patterns"],
+      "info_details": "Bindungsstile (nach Bowlby & Ainsworth) prägen, wie wir mit Nähe und Distanz umgehen. Sicher gebundene Menschen können Bedürfnisse ausdrücken und Nähe zulassen. Ängstlich gebundene fürchten Verlassenwerden und klammern. Vermeidend gebundene schützen sich durch Distanz. Erkennst du dein Muster? Bindungsstile sind nicht fix - sie können sich durch bewusste Arbeit und sichere Beziehungen heilen."
+    }
+  ]
+}
+

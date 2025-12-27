@@ -160,8 +160,8 @@ class TestValidationEdgeCases:
         errors, warnings = validate_responses(template, responses_high)
         assert len(errors) > 0
         
-    def test_validate_scale_0_10_boundary_values(self):
-        """Test validation with boundary values for scale_0_10."""
+    def test_validate_scale_1_10_boundary_values(self):
+        """Test validation with boundary values for scale_1_10."""
         template = {
             "id": "test",
             "name": "Test",
@@ -171,7 +171,7 @@ class TestValidationEdgeCases:
                 "name": "Module",
                 "questions": [{
                     "id": "Q1",
-                    "schema": "scale_0_10",
+                    "schema": "scale_1_10",
                     "label": "Question 1",
                     "tags": []
                 }]
@@ -179,7 +179,7 @@ class TestValidationEdgeCases:
         }
         
         # Test minimum
-        responses_min = {"Q1": {"value": 0}}
+        responses_min = {"Q1": {"value": 1}}
         errors, warnings = validate_responses(template, responses_min)
         assert len(errors) == 0
         
@@ -188,8 +188,8 @@ class TestValidationEdgeCases:
         errors, warnings = validate_responses(template, responses_max)
         assert len(errors) == 0
         
-        # Test out of range (negative)
-        responses_neg = {"Q1": {"value": -1}}
+        # Test out of range (below range)
+        responses_neg = {"Q1": {"value": 0}}
         errors, warnings = validate_responses(template, responses_neg)
         assert len(errors) > 0
         
@@ -347,7 +347,7 @@ class TestValidationEdgeCases:
                     },
                     {
                         "id": "Q2",
-                        "schema": "scale_0_10",
+                        "schema": "scale_1_10",
                         "label": "Question 2",
                         "tags": []
                     },
@@ -370,4 +370,3 @@ class TestValidationEdgeCases:
         
         errors, warnings = validate_responses(template, responses)
         assert len(errors) == 0
-

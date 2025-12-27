@@ -5,10 +5,10 @@
   "questions": [
     {
       "id": "SHA001",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "A",
       "label": "Wie viel sexuelle Scham trage ich in mir?",
-      "help": "0 = Keine Scham, 10 = Extreme Scham bei meinen Fantasien/Wünschen",
+      "help": "1 = Keine Scham, 11 = Extreme Scham bei meinen Fantasien/Wünschen",
       "tags": ["shame", "psychology", "self_assessment"],
       "info_details": "Sexual Shame = gelernte negative Emotion um sexuelle Gefühle/Handlungen. Entsteht durch: kulturelle Botschaften, religiöse Erziehung, Körperscham, sexuelles Trauma. Scham hemmt die natürliche Erregungsantwort des Körpers - du gehst in 'closed state'. Forschung zeigt: Scham reduziert Arousal, Desire und Orgasmusfähigkeit. Wichtig: Du bist NICHT mit Scham geboren - sie wurde dir beigebracht."
     },
@@ -121,10 +121,10 @@
     },
     {
       "id": "SHA010",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "B",
       "label": "Wie sehr beeinflusst Scham mein sexuelles Erleben negativ?",
-      "help": "0 = Gar nicht, 10 = Blockiert mich komplett",
+      "help": "1 = Gar nicht, 11 = Blockiert mich komplett",
       "tags": ["shame", "impact", "sex"],
       "info_details": "Scham-Impact-Assessment: Bei 7+: Professionelle Hilfe erwägen (Sexualtherapeut:in). Scham kann Arousal blockieren, Orgasmus verhindern, Beziehungen sabotieren. Aber: Scham ist heilbar. Therapie, sichere Partner:innen, Community-Support, Selbstakzeptanz - alles hilft. Du musst nicht für immer mit Scham leben."
     },

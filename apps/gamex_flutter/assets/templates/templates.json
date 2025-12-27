@@ -1,0 +1,25 @@
+{
+  "templates": [
+    {
+      "id": "default_v2",
+      "name": "Intimit\u00e4t & Grenzen (v3 - Erweitert)",
+      "version": 3,
+      "description": "Ausgewogener Fragebogen mit umfassender Abdeckung: Intent & Grenzen, Kommunikation, Dynamiken, Aktivit\u00e4ten, Exploration, Aftercare, Sicherheit, Umgebung und Trigger.",
+      "asset": "assets/templates/default_template.json"
+    },
+    {
+      "id": "comprehensive_v1",
+      "name": "Umfassender Intimit\u00e4t & BDSM Fragebogen",
+      "version": 1,
+      "description": "Kombiniert aus GentleDom, QueerTopia und Gamex Fragebogen. ~200+ Fragen zu Sexualit\u00e4t, BDSM, Grenzen und Kommunikation.",
+      "asset": "assets/templates/comprehensive_v1.json"
+    },
+    {
+      "id": "psycho_enhanced_v3",
+      "name": "Intimacy & Kink v3 (Psychologisch vertieft)",
+      "version": 3,
+      "description": "Erweitert um wissenschaftlich fundierte psychologische Tiefe: Bindung, Subspace, Scham, Power Dynamics, Aftercare, Regulation. Kombiniert alle 9 Basis-Module mit 6 psychologischen Vertiefungs-Modulen.",
+      "asset": "assets/templates/psycho_enhanced_v3.json"
+    }
+  ]
+}

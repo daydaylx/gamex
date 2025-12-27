@@ -1,0 +1,112 @@
+{
+  "id": "sensory_exploration",
+  "name": "Sinnesreise: Jenseits der Genitalität",
+  "description": "Berührung, Temperatur, Texturen - unser Körper kann so viel mehr spüren als nur sexuelle Stimulation. Eine Reise durch die Sinne.",
+  "questions": [
+    {
+      "id": "SENS01",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "Massage mit verschiedenen Ölen (Lavendel, Rosenöl, etc.)",
+      "help": "Aromatherapie kombiniert mit Berührung. Entspannend und sinnlich.",
+      "tags": ["sensory", "massage", "soft", "level1"]
+    },
+    {
+      "id": "SENS02",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "Blindfüttern: Essen mit geschlossenen Augen",
+      "help": "Geschmack und Textur intensivieren sich, wenn das Sehen ausgeschaltet ist.",
+      "tags": ["sensory", "trust", "playful", "level1"]
+    },
+    {
+      "id": "SENS03",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "Federn über die Haut streichen",
+      "help": "Sanfte, kitzelnde Berührungen, die die Sinne wecken.",
+      "tags": ["sensory", "soft", "touch", "level1"]
+    },
+    {
+      "id": "SENS04",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "Eiswürfel auf der Haut (nicht genital)",
+      "help": "Kältereiz auf Schultern, Nacken, Rücken, Bauch.",
+      "tags": ["sensory", "temperature", "sensation", "level1"]
+    },
+    {
+      "id": "SENS05",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Seidentücher oder Samt über die Haut ziehen",
+      "help": "Verschiedene Texturen erforschen - was fühlt sich wie an?",
+      "tags": ["sensory", "materials", "soft", "level1"]
+    },
+    {
+      "id": "SENS06",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "Haare waschen / Kopfmassage",
+      "help": "Oft unterschätzt: Berührung am Kopf kann extrem entspannend oder erregend sein.",
+      "tags": ["sensory", "massage", "care", "level1"]
+    },
+    {
+      "id": "SENS07",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Pinsel oder Bürste (weich) über die Haut",
+      "help": "Neue Berührungsqualität: Nicht Hand, sondern Werkzeug.",
+      "tags": ["sensory", "tools", "sensation", "level2"]
+    },
+    {
+      "id": "SENS08",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Warmes Wachs (Massage-Kerzen, niedrige Temperatur)",
+      "help": "Nur spezielle Massage-Kerzen verwenden! Normale Kerzen sind zu heiß.",
+      "tags": ["sensory", "temperature", "wax", "level2"],
+      "info_details": "Massage-Kerzen schmelzen bei 40-50°C (normale Kerzen bei 70-80°C!). Das warme Öl wird auf die Haut gegossen und verteilt. Wichtig: Immer erst auf der eigenen Hand testen. Nicht über Genitalien oder Gesicht. Kann sehr intim und entspannend sein."
+    },
+    {
+      "id": "SENS09",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "Ätherische Öle / Aromatherapie während Intimität",
+      "help": "Geruch ist stark mit Erinnerung und Emotion verbunden.",
+      "tags": ["sensory", "smell", "atmosphere", "level1"]
+    },
+    {
+      "id": "SENS10",
+      "schema": "consent_rating",
+      "risk_level": "A",
+      "label": "Gemeinsam Baden / Duschen (nicht sexuell fokussiert)",
+      "help": "Waschen als Fürsorge-Akt. Sich umeinander kümmern.",
+      "tags": ["sensory", "care", "water", "intimacy", "level1"]
+    },
+    {
+      "id": "SENS11",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Musik während intimer Momente: Was ist deine Präferenz?",
+      "help": "Auditive Sinne beeinflussen Stimmung und Tempo.",
+      "options": [
+        "Stille bevorzugt",
+        "Leise Hintergrundmusik",
+        "Aktiv ausgewählte Playlist",
+        "Naturgeräusche (Regen, Wellen)",
+        "Kommt auf die Stimmung an"
+      ],
+      "tags": ["sensory", "sound", "atmosphere", "preference"]
+    },
+    {
+      "id": "SENS12",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Eine nicht-genitale Körperstelle, die bei mir unterschätzt wird:",
+      "help": "Nacken? Innenseite der Handgelenke? Hinter den Ohren? Teile deine Entdeckungen.",
+      "tags": ["sensory", "touch", "zones", "discovery"]
+    }
+  ]
+}
+

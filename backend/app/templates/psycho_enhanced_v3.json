@@ -11,14 +11,14 @@
       "questions": [
         {
           "id": "L01",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "A",
           "tags": [
             "time",
             "stress"
           ],
-          "label": "Lasst uns besprechen: Wie viel Ruhe/Quality Time haben wir aktuell gefühlt.",
-          "help": "0 = Nur Stress/Hektik, 10 = Wir nehmen uns viel Zeit ohne Ablenkung. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
+          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
+          "help": "1 = Nur Stress/Hektik, 11 = Wir nehmen uns viel Zeit ohne Ablenkung."
         },
         {
           "id": "L02",
@@ -27,8 +27,8 @@
           "tags": [
             "coping"
           ],
-          "label": "Lasst uns besprechen: Wenn einer von uns gestresst ist: Was ist die beste Strategie.",
-          "help": "Erwartungsmanagement hilft Frust zu vermeiden. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
           "options": [
             "Sex zur Entspannung hilft",
             "Lieber nur Kuscheln/Massage",
@@ -45,8 +45,8 @@
             "privacy",
             "digital"
           ],
-          "label": "Lasst uns besprechen: Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir.",
-          "help": "Sicherheit vor Leaks oder Zugriff Dritter. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
           "options": [
             "Nichts digital speichern",
             "Verschlüsselt/Hidden Folder ok",
@@ -62,8 +62,8 @@
           "tags": [
             "time"
           ],
-          "label": "Lasst uns besprechen: Minimale Zeit für Quality Time.",
-          "help": "Wie viel Zeit brauchen wir mindestens? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Minimale Zeit für Quality Time?",
+          "help": "Wie viel Zeit brauchen wir mindestens?",
           "options": [
             "30 Minuten",
             "1 Stunde",
@@ -80,8 +80,8 @@
             "privacy",
             "boundaries"
           ],
-          "label": "Lasst uns besprechen: Privatsphäre: Wer darf was wissen.",
-          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
+          "label": "Privatsphäre: Wer darf was wissen?",
+          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos)."
         }
       ]
     },
@@ -94,8 +94,8 @@
           "id": "REL00",
           "schema": "text",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Intention & Vibe.",
-          "help": "Warum machen wir das? (z.B. Neugier, Grenzen klären, Neues entdecken, Vertrauen vertiefen) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Intention & Vibe",
+          "help": "Warum machen wir das? (z.B. Neugier, Grenzen klären, Neues entdecken, Vertrauen vertiefen)",
           "tags": [
             "meta",
             "level1"
@@ -106,8 +106,8 @@
           "id": "SAF01",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Unser Safeword / Stop-Signal.",
-          "help": "Ein Wort, das IMMER den sofortigen Stopp bedeutet. (Klassiker: 'Rot' oder 'Pause'). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Unser Safeword / Stop-Signal",
+          "help": "Ein Wort, das IMMER den sofortigen Stopp bedeutet. (Klassiker: 'Rot' oder 'Pause').",
           "options": [
             "Ampelsystem (Rot/Gelb/Grün)",
             "Klares 'Stop'",
@@ -124,8 +124,8 @@
           "id": "SAF02",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Aftercare-Bedürfnis (Danach).",
-          "help": "Wenn das Adrenalin sinkt: Was brauchst du, um wieder 'zu landen'? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Aftercare-Bedürfnis (Danach)",
+          "help": "Wenn das Adrenalin sinkt: Was brauchst du, um wieder 'zu landen'?",
           "options": [
             "Kuscheln & physische Nähe (Hold me)",
             "Ruhe & Space (Leave me)",
@@ -143,8 +143,8 @@
           "id": "H01",
           "schema": "text",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Gesundheitliche 'Red Flags'.",
-          "help": "Gibt es etwas, das ich wissen MUSS, um dich nicht zu verletzen? (Asthma, Gelenke, Herz, Medikamente, Allergien) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Gesundheitliche 'Red Flags'",
+          "help": "Gibt es etwas, das ich wissen MUSS, um dich nicht zu verletzen? (Asthma, Gelenke, Herz, Medikamente, Allergien)",
           "tags": [
             "health",
             "safety",
@@ -162,8 +162,8 @@
           "id": "COM01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Dirty Talk (Worte während Sex).",
-          "help": "Magst du es, wenn gesprochen wird? Welche Art von Worten? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Dirty Talk (Worte während Sex)",
+          "help": "Magst du es, wenn gesprochen wird? Welche Art von Worten?",
           "tags": [
             "communication",
             "level1"
@@ -173,8 +173,8 @@
           "id": "COM02",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Anleitung & Feedback (in the moment).",
-          "help": "Darf ich sagen 'Mach das schneller' oder 'Fass mich da an'? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Anleitung & Feedback (in the moment)",
+          "help": "Darf ich sagen 'Mach das schneller' oder 'Fass mich da an'?",
           "tags": [
             "communication",
             "level1"
@@ -184,8 +184,8 @@
           "id": "COM03",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Lob & Bestätigung (Praising).",
-          "help": "'Gutes Mädchen', 'Braver Junge', 'Du machst das toll'. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Lob & Bestätigung (Praising)",
+          "help": "'Gutes Mädchen', 'Braver Junge', 'Du machst das toll'.",
           "tags": [
             "communication",
             "kink_light",
@@ -196,8 +196,8 @@
           "id": "COM04",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Erniedrigung / Degradierung (Verbal).",
-          "help": "Beleidigungen, Objektifizierung (natürlich nur im konsensuellen Rahmen). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Erniedrigung / Degradierung (Verbal)",
+          "help": "Beleidigungen, Objektifizierung (natürlich nur im konsensuellen Rahmen).",
           "tags": [
             "communication",
             "kink",
@@ -216,7 +216,7 @@
           "id": "SEN01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Sinnliche Massage (Öl, Federn).",
+          "label": "Sinnliche Massage (Öl, Federn)",
           "tags": [
             "sensory",
             "soft",
@@ -227,7 +227,7 @@
           "id": "SEN02",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Gehalten werden / Festhalten.",
+          "label": "Gehalten werden / Festhalten",
           "tags": [
             "intimacy",
             "level1"
@@ -237,8 +237,8 @@
           "id": "SEN03",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Kratzen / Nägel spüren.",
-          "help": "Leichtes Kratzen am Rücken oder Po. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Kratzen / Nägel spüren",
+          "help": "Leichtes Kratzen am Rücken oder Po.",
           "tags": [
             "sensation",
             "level1"
@@ -248,8 +248,8 @@
           "id": "SEN04",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Temperaturspiele (Eis / Warmes Wachs).",
-          "help": "Der Reiz von heiß/kalt auf der Haut. (Wachs nur Niedrigtemperatur!) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Temperaturspiele (Eis / Warmes Wachs)",
+          "help": "Der Reiz von heiß/kalt auf der Haut. (Wachs nur Niedrigtemperatur!)",
           "tags": [
             "sensation",
             "kink",
@@ -260,8 +260,8 @@
           "id": "SEN05",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Augen verbinden (Blindfold).",
-          "help": "Kontrolle über das Sehen abgeben. Verstärkt andere Sinne. Erfordert Vertrauen da man nicht sehen kann. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Augen verbinden (Blindfold)",
+          "help": "Kontrolle über das Sehen abgeben. Verstärkt andere Sinne. Erfordert Vertrauen da man nicht sehen kann.",
           "tags": [
             "sensory",
             "level1"
@@ -279,7 +279,7 @@
           "id": "SEX01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Oralsex (Geben).",
+          "label": "Oralsex (Geben)",
           "has_active_passive": false,
           "tags": [
             "sex",
@@ -292,7 +292,7 @@
           "id": "SEX02",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Oralsex (Empfangen).",
+          "label": "Oralsex (Empfangen)",
           "tags": [
             "sex",
             "oral",
@@ -304,7 +304,7 @@
           "id": "SEX03",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Vaginale Penetration.",
+          "label": "Vaginale Penetration",
           "tags": [
             "sex",
             "penetration",
@@ -315,8 +315,8 @@
           "id": "SEX04",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Anale Stimulation (Finger/Zunge/Toy).",
-          "help": "Vorsichtiges Tasten, Lecken oder Spielen am Eingang. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Anale Stimulation (Finger/Zunge/Toy)",
+          "help": "Vorsichtiges Tasten, Lecken oder Spielen am Eingang.",
           "tags": [
             "sex",
             "anal",
@@ -327,8 +327,8 @@
           "id": "SEX04B",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Anale Spielzeuge (kleine Plugs / Dildos).",
-          "help": "Nur mit Stop-Base, viel Gleitgel, langsam steigern. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Anale Spielzeuge (kleine Plugs / Dildos)",
+          "help": "Nur mit Stop-Base, viel Gleitgel, langsam steigern.",
           "tags": [
             "sex",
             "anal",
@@ -347,8 +347,8 @@
           "id": "SEX05",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Lasst uns besprechen: Anale Penetration (Penis / größere Toys).",
-          "help": "Erfordert Vorbereitung, Gleitgel und Entspannung. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Anale Penetration (Penis / größere Toys)",
+          "help": "Erfordert Vorbereitung, Gleitgel und Entspannung.",
           "tags": [
             "sex",
             "anal",
@@ -367,7 +367,7 @@
           "id": "SEX06",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Toys einbeziehen (Vibratoren, Dildos).",
+          "label": "Toys einbeziehen (Vibratoren, Dildos)",
           "tags": [
             "sex",
             "toys",
@@ -386,8 +386,8 @@
           "schema": "consent_rating",
           "has_dom_sub": true,
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Führen & Geführt werden (Generell).",
-          "help": "Magst du es, die Kontrolle zu haben (Dom) oder abzugeben (Sub)? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Führen & Geführt werden (Generell)",
+          "help": "Magst du es, die Kontrolle zu haben (Dom) oder abzugeben (Sub)?",
           "tags": [
             "ds",
             "core",
@@ -399,8 +399,8 @@
           "id": "DS02",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Gehorsam & Dienen (Service).",
-          "help": "Akt der Hingabe: 'Ich diene dir' zeigt tiefe Verbundenheit. Für viele ist es befreiend, Verantwortung abzugeben. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Gehorsam & Dienen (Service)",
+          "help": "Akt der Hingabe: 'Ich diene dir' zeigt tiefe Verbundenheit. Für viele ist es befreiend, Verantwortung abzugeben.",
           "info_details": "Akt der Hingabe: 'Ich diene dir' zeigt tiefe Verbundenheit. Für viele ist es befreiend, Verantwortung abzugeben. Psychologie: Service/Gehorsam erlaubt es, aus dem Alltagsstress auszubrechen ('Ich muss nichts entscheiden'). Attachment Theory: Struktur und klare Regeln können Sicherheit geben, besonders für ängstlich gebundene Personen. Macht als Dienstleistung: Dominanz ist Service ('Ich übernehme Verantwortung für unser Erlebnis').",
           "tags": [
             "ds",
@@ -421,8 +421,8 @@
           "id": "DS03",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Disziplinierung / Bestrafung.",
-          "help": "Struktur und Konsequenzen können Sicherheit geben, besonders für ängstlich gebundene Personen. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Disziplinierung / Bestrafung",
+          "help": "Struktur und Konsequenzen können Sicherheit geben, besonders für ängstlich gebundene Personen.",
           "info_details": "Struktur und Konsequenzen können Sicherheit geben, besonders für ängstlich gebundene Personen. Psychologie: Klare Regeln und vorhersehbare Konsequenzen reduzieren Unsicherheit. Attachment Theory: Ängstlich gebundene suchen oft Struktur ('Ich weiß, was passiert'). Wichtig: Immer abgesprochen und konsensuell. Unterschied zwischen 'Funishment' (spielerische Bestrafung) und echter Disziplinierung.",
           "tags": [
             "ds",
@@ -434,8 +434,8 @@
           "id": "DS04",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Orgasmuskontrolle / Verweigern.",
-          "help": "Du entscheidest, wann (und ob) der andere kommen darf. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Orgasmuskontrolle / Verweigern",
+          "help": "Du entscheidest, wann (und ob) der andere kommen darf.",
           "tags": [
             "ds",
             "control",
@@ -454,8 +454,8 @@
           "id": "IMP01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Spanking: Spaß & Lustvoll.",
-          "help": "Leichtes Hauen auf den Po, während dem Sex oder zum Flirten. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Spanking: Spaß & Lustvoll",
+          "help": "Leichtes Hauen auf den Po, während dem Sex oder zum Flirten.",
           "tags": [
             "impact",
             "fun",
@@ -466,8 +466,8 @@
           "id": "IMP02",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Spanking: Ernst & Strafe.",
-          "help": "Methodisches Hauen, um Schmerz zu erzeugen oder Dominanz zu zeigen. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Spanking: Ernst & Strafe",
+          "help": "Methodisches Hauen, um Schmerz zu erzeugen oder Dominanz zu zeigen.",
           "tags": [
             "impact",
             "punishment",
@@ -479,8 +479,8 @@
           "id": "IMP03",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Tools: Gerten, Paddles, Peitschen.",
-          "help": "Einsatz von Hilfsmitteln statt nur der Hand. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Tools: Gerten, Paddles, Peitschen",
+          "help": "Einsatz von Hilfsmitteln statt nur der Hand.",
           "tags": [
             "impact",
             "toys",
@@ -498,8 +498,8 @@
           "id": "IMP04",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Andere Zonen (Brüste, Oberschenkel).",
-          "help": "Po ist Standard. Darf es woanders hin? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Andere Zonen (Brüste, Oberschenkel)",
+          "help": "Po ist Standard. Darf es woanders hin?",
           "tags": [
             "impact",
             "zones",
@@ -517,8 +517,8 @@
           "id": "BND01",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Leichte Fixierung (Soft Bondage).",
-          "help": "Festhalten, Tücher, Krawatten. Man kann sich theoretisch befreien. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Leichte Fixierung (Soft Bondage)",
+          "help": "Festhalten, Tücher, Krawatten. Man kann sich theoretisch befreien.",
           "tags": [
             "bondage",
             "soft",
@@ -529,8 +529,8 @@
           "id": "BND02",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Feste Fesseln (Handschellen, Seile).",
-          "help": "Man ist wirklich fixiert und hilflos. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Feste Fesseln (Handschellen, Seile)",
+          "help": "Man ist wirklich fixiert und hilflos.",
           "tags": [
             "bondage",
             "hard",
@@ -542,8 +542,8 @@
           "id": "BND03",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Knebel (Gags).",
-          "help": "Ultimative Auslieferung, erfordert absolutes Vertrauen da Kommunikation eingeschränkt ist. Atmung muss IMMER frei bleiben! Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Knebel (Gags)",
+          "help": "Ultimative Auslieferung, erfordert absolutes Vertrauen da Kommunikation eingeschränkt ist. Atmung muss IMMER frei bleiben!",
           "info_details": "Ultimative Auslieferung, erfordert absolutes Vertrauen da Kommunikation eingeschränkt ist. Psychologie: Gibt Kontrolle über Sprache ab - sehr vulnerabler Akt. Attachment Theory: Erfordert extrem hohes Vertrauen. WICHTIG: Atmung muss IMMER frei bleiben! Non-verbales Safeword vereinbaren (Klopfen, Ball fallen lassen).",
           "tags": [
             "bondage",
@@ -562,8 +562,8 @@
           "id": "RSK01A",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Hand am Hals (nur Berührung, kein Druck).",
-          "help": "Nur Kontakt, niemals auf den Kehlkopf. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Hand am Hals (nur Berührung, kein Druck)",
+          "help": "Nur Kontakt, niemals auf den Kehlkopf.",
           "tags": [
             "risk",
             "breath",
@@ -574,8 +574,8 @@
           "id": "RSK01B",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Leichter Druck seitlich (kurz, nie Kehlkopf).",
-          "help": "Nur seitlich an den Halsschlagadern, sofort stoppen bei Unsicherheit. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Leichter Druck seitlich (kurz, nie Kehlkopf)",
+          "help": "Nur seitlich an den Halsschlagadern, sofort stoppen bei Unsicherheit.",
           "tags": [
             "risk",
             "breath",
@@ -593,8 +593,8 @@
           "id": "RSK01",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Lasst uns besprechen: Breathplay mit Druck / Choking.",
-          "help": "WARNUNG: Extrem hohes Risiko! Niemals allein. Niemals Kehlkopf. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Breathplay mit Druck / Choking",
+          "help": "WARNUNG: Extrem hohes Risiko! Niemals allein. Niemals Kehlkopf.",
           "tags": [
             "risk",
             "breath",
@@ -613,8 +613,8 @@
           "id": "RSK02A",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Nadeln (oberflächlich, steril).",
-          "help": "Nur sterile Einweg-Needles, Desinfektion, keine tiefen Stiche. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Nadeln (oberflächlich, steril)",
+          "help": "Nur sterile Einweg-Needles, Desinfektion, keine tiefen Stiche.",
           "tags": [
             "risk",
             "blood",
@@ -625,8 +625,8 @@
           "id": "RSK02",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Lasst uns besprechen: Cutting / Blut / tiefe Nadeln.",
-          "help": "WARNUNG: Infektionsrisiko. Nur mit Fachwissen. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Cutting / Blut / tiefe Nadeln",
+          "help": "WARNUNG: Infektionsrisiko. Nur mit Fachwissen.",
           "tags": [
             "risk",
             "blood",
@@ -644,8 +644,8 @@
           "id": "RSK03",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Andere Personen (Dreier / Gruppen).",
-          "help": "Hohes emotionales Risiko. Klare Regeln nötig. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Andere Personen (Dreier / Gruppen)",
+          "help": "Hohes emotionales Risiko. Klare Regeln nötig.",
           "tags": [
             "risk",
             "group",
@@ -663,8 +663,8 @@
           "id": "EXT01A",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Fisting Vorbereitung (3-4 Finger / Handrücken).",
-          "help": "Langsam dehnen, viel Gleitgel, Pausen einplanen. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Fisting Vorbereitung (3-4 Finger / Handrücken)",
+          "help": "Langsam dehnen, viel Gleitgel, Pausen einplanen.",
           "tags": [
             "extreme",
             "fisting",
@@ -675,8 +675,8 @@
           "id": "EXT01",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Lasst uns besprechen: Fisting (ganze Hand, vaginal/anal).",
-          "help": "Einführen der ganzen Hand. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Fisting (ganze Hand, vaginal/anal)",
+          "help": "Einführen der ganzen Hand.",
           "tags": [
             "extreme",
             "fisting"
@@ -694,8 +694,8 @@
           "id": "EXT02",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Petplay (Hund/Pony).",
-          "help": "Rollenspiel als Tier. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Petplay (Hund/Pony)",
+          "help": "Rollenspiel als Tier.",
           "tags": [
             "roleplay",
             "petplay"
@@ -713,8 +713,8 @@
           "id": "AFC001",
           "schema": "multi",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Meine physischen Aftercare-Bedürfnisse.",
-          "help": "Was braucht dein Körper nach intensivem Sex/BDSM? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine physischen Aftercare-Bedürfnisse",
+          "help": "Was braucht dein Körper nach intensivem Sex/BDSM?",
           "options": [
             "Wasser / Snacks (Blutzucker stabilisieren)",
             "Decke / Wärme",
@@ -734,8 +734,8 @@
           "id": "AFC002",
           "schema": "multi",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Meine emotionalen Aftercare-Bedürfnisse.",
-          "help": "Was brauchst du emotional, um wieder 'zu landen'? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine emotionalen Aftercare-Bedürfnisse",
+          "help": "Was brauchst du emotional, um wieder 'zu landen'?",
           "options": [
             "Kuscheln / Körperkontakt (Hold me)",
             "Verbal Reassurance ('Ich liebe dich', 'Du warst toll')",
@@ -755,8 +755,8 @@
           "id": "AFC003",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Zeitliche Dimension: Wie lange brauche ich Aftercare.",
-          "help": "Jeder Mensch braucht unterschiedlich lange Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Zeitliche Dimension: Wie lange brauche ich Aftercare?",
+          "help": "Jeder Mensch braucht unterschiedlich lange",
           "options": [
             "5-10 Minuten reichen",
             "30 Minuten bis 1 Stunde",
@@ -775,8 +775,8 @@
           "id": "AFC004",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Meine Warnzeichen für Sub/Dom Drop.",
-          "help": "Optional: Wie erkenne ich (oder mein:e Partner:in), dass ich droppe? (z.B. Weinen, Rückzug, Gereiztheit, Stille) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine Warnzeichen für Sub/Dom Drop",
+          "help": "Optional: Wie erkenne ich (oder mein:e Partner:in), dass ich droppe? (z.B. Weinen, Rückzug, Gereiztheit, Stille)",
           "tags": [
             "aftercare",
             "drop",
@@ -788,8 +788,8 @@
           "id": "AFC005",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Partner:in gibt mir Aftercare, obwohl ich 'nein danke' sage.",
-          "help": "Darf mein:e Partner:in meine 'Ich brauch nichts'-Aussage überstimmen? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Partner:in gibt mir Aftercare, obwohl ich 'nein danke' sage",
+          "help": "Darf mein:e Partner:in meine 'Ich brauch nichts'-Aussage überstimmen?",
           "tags": [
             "aftercare",
             "consent",
@@ -799,10 +799,10 @@
         },
         {
           "id": "AFC006",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Nach intensivem Sex/BDSM: Wie wichtig ist mir Aftercare.",
-          "help": "0 = Brauche ich nicht, 10 = Absolut essentiell für mich Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Nach intensivem Sex/BDSM: Wie wichtig ist mir Aftercare?",
+          "help": "1 = Brauche ich nicht, 11 = Absolut essentiell für mich",
           "tags": [
             "aftercare",
             "importance",
@@ -814,8 +814,8 @@
           "id": "AFC007",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Check-in am nächsten Tag (SMS/Anruf nach Session).",
-          "help": "Brauche ich Bestätigung, dass 'wir okay sind'? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Check-in am nächsten Tag (SMS/Anruf nach Session)",
+          "help": "Brauche ich Bestätigung, dass 'wir okay sind'?",
           "tags": [
             "aftercare",
             "followup",
@@ -827,8 +827,8 @@
           "id": "AFC008",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Wenn ich droppe: Was hilft MIR am meisten.",
-          "help": "Aus deiner Erfahrung: Was hat in der Vergangenheit geholfen? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wenn ich droppe: Was hilft MIR am meisten?",
+          "help": "Aus deiner Erfahrung: Was hat in der Vergangenheit geholfen?",
           "options": [
             "Physische Nähe & Kuscheln",
             "Gespräch & Reassurance",
@@ -848,8 +848,8 @@
           "id": "AFC009",
           "schema": "text",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Mein idealer Aftercare-Ablauf (Beschreibung).",
-          "help": "Optional: Beschreibe deinen Perfect-Scenario Aftercare (z.B. '10min Kuscheln, dann Wasser, dann Dusche zusammen, dann reden') Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Mein idealer Aftercare-Ablauf (Beschreibung)",
+          "help": "Optional: Beschreibe deinen Perfect-Scenario Aftercare (z.B. '10min Kuscheln, dann Wasser, dann Dusche zusammen, dann reden')",
           "tags": [
             "aftercare",
             "profile",
@@ -861,8 +861,8 @@
           "id": "AFC010",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Als Dom/Top: Ich brauche auch Aftercare.",
-          "help": "Auch die führende Person kann emotionale Erschöpfung erleben Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Als Dom/Top: Ich brauche auch Aftercare",
+          "help": "Auch die führende Person kann emotionale Erschöpfung erleben",
           "tags": [
             "aftercare",
             "dom_drop",
@@ -881,8 +881,8 @@
           "id": "ATT001",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Mein dominanter Bindungsstil in intimen Beziehungen.",
-          "help": "Kein Richtig/Falsch - nur Selbsterkenntnis Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Mein dominanter Bindungsstil in intimen Beziehungen",
+          "help": "Kein Richtig/Falsch - nur Selbsterkenntnis",
           "options": [
             "Sicher: Ich bin komfortabel mit Nähe und Autonomie",
             "Ängstlich: Ich sorge mich oft, verlassen zu werden",
@@ -899,10 +899,10 @@
         },
         {
           "id": "ATT002",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Nach intensivem Sex: Wie wichtig ist dir physische Nähe/Kuscheln.",
-          "help": "0 = Brauche Space, 10 = Brauche intensive Nähe Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Nach intensivem Sex: Wie wichtig ist dir physische Nähe/Kuscheln?",
+          "help": "1 = Brauche Space, 11 = Brauche intensive Nähe",
           "tags": [
             "aftercare",
             "attachment",
@@ -914,8 +914,8 @@
           "id": "ATT003",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Reassurance während Sex (z.B. 'Du bist schön', 'Ich will nur dich').",
-          "help": "Verbale Bestätigung gegen Verlustangst Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Reassurance während Sex (z.B. 'Du bist schön', 'Ich will nur dich')",
+          "help": "Verbale Bestätigung gegen Verlustangst",
           "tags": [
             "communication",
             "attachment",
@@ -927,8 +927,8 @@
           "id": "ATT004",
           "schema": "text",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Wenn ich mich nach Sex emotional zurückziehe, ist das weil.",
-          "help": "Optional: Was triggert deinen Rückzug? (z.B. Überwältigung, Scham, Autonomie-Bedürfnis) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wenn ich mich nach Sex emotional zurückziehe, ist das weil...",
+          "help": "Optional: Was triggert deinen Rückzug? (z.B. Überwältigung, Scham, Autonomie-Bedürfnis)",
           "tags": [
             "attachment",
             "boundaries",
@@ -940,8 +940,8 @@
           "id": "ATT005",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Bedürfnis nach 'Check-ins' am nächsten Tag (SMS/Anruf).",
-          "help": "Brauche ich Bestätigung, dass 'wir okay sind'? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Bedürfnis nach 'Check-ins' am nächsten Tag (SMS/Anruf)",
+          "help": "Brauche ich Bestätigung, dass 'wir okay sind'?",
           "tags": [
             "attachment",
             "aftercare",
@@ -953,8 +953,8 @@
           "id": "ATT006",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Wenn mein:e Partner:in nach Sex Space braucht, fühle ich.",
-          "help": "Wie reagierst du auf Rückzug? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wenn mein:e Partner:in nach Sex Space braucht, fühle ich...",
+          "help": "Wie reagierst du auf Rückzug?",
           "options": [
             "Entspannt - Jede:r braucht mal Space",
             "Leicht unsicher - Aber ich verstehe es",
@@ -971,10 +971,10 @@
         },
         {
           "id": "ATT007",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Eifersucht/Besitzdenken: Wie stark ist das bei mir.",
-          "help": "0 = Gar nicht eifersüchtig, 10 = Sehr eifersüchtig Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Eifersucht/Besitzdenken: Wie stark ist das bei mir?",
+          "help": "1 = Gar nicht eifersüchtig, 11 = Sehr eifersüchtig",
           "tags": [
             "attachment",
             "jealousy",
@@ -986,8 +986,8 @@
           "id": "ATT008",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Über Bindungs-Unsicherheiten sprechen.",
-          "help": "Kann ich sagen 'Ich bin ängstlich, dass du mich verlässt'? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Über Bindungs-Unsicherheiten sprechen",
+          "help": "Kann ich sagen 'Ich bin ängstlich, dass du mich verlässt'?",
           "tags": [
             "vulnerability",
             "attachment",
@@ -999,8 +999,8 @@
           "id": "ATT009",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Emotionale Intimität vs. Körperliche Intimität: Was fällt mir schwerer.",
-          "help": "Wo sind deine Herausforderungen? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Emotionale Intimität vs. Körperliche Intimität: Was fällt mir schwerer?",
+          "help": "Wo sind deine Herausforderungen?",
           "options": [
             "Emotionale Intimität (Gefühle zeigen, Verletzlichkeit)",
             "Körperliche Intimität (Berührung, Sex)",
@@ -1019,8 +1019,8 @@
           "id": "ATT010",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Meine größte Angst in intimer Nähe.",
-          "help": "Optional: Was ist dein tiefster Fear? (z.B. 'Verlassen werden', 'Zu viel zu sein', 'Autonomie zu verlieren') Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine größte Angst in intimer Nähe",
+          "help": "Optional: Was ist dein tiefster Fear? (z.B. 'Verlassen werden', 'Zu viel zu sein', 'Autonomie zu verlieren')",
           "tags": [
             "attachment",
             "fear",
@@ -1039,8 +1039,8 @@
           "id": "SUB001",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Habe ich schon mal 'Subspace' oder tranceähnliche Zustände erlebt.",
-          "help": "Subspace = Rauschzustand während/nach BDSM oder intensivem Sex Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Habe ich schon mal 'Subspace' oder tranceähnliche Zustände erlebt?",
+          "help": "Subspace = Rauschzustand während/nach BDSM oder intensivem Sex",
           "options": [
             "Ja, mehrfach - kenne das Gefühl gut",
             "Einmal - war intensiv/beängstigend",
@@ -1059,8 +1059,8 @@
           "id": "SUB002",
           "schema": "multi",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Welche dieser Subspace-Symptome habe ich erlebt.",
-          "help": "Mehrfachauswahl möglich Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Welche dieser Subspace-Symptome habe ich erlebt?",
+          "help": "Mehrfachauswahl möglich",
           "options": [
             "Zeitverzerrung (Stunden fühlen sich wie Minuten an)",
             "Schwebegefühl / Out-of-Body",
@@ -1083,8 +1083,8 @@
           "id": "SUB003",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Absichtlich in Trance/Flow-Zustände gehen (z.B. durch Schmerz, Wiederholung).",
-          "help": "Das 'Loslassen' des bewussten Denkens Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Absichtlich in Trance/Flow-Zustände gehen (z.B. durch Schmerz, Wiederholung)",
+          "help": "Das 'Loslassen' des bewussten Denkens",
           "tags": [
             "subspace",
             "trance",
@@ -1094,10 +1094,10 @@
         },
         {
           "id": "SUB004",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Wie gut kann ich in Subspace kommunizieren / Safeword sagen.",
-          "help": "0 = Komplett nonverbal, 10 = Voll bei Bewusstsein Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wie gut kann ich in Subspace kommunizieren / Safeword sagen?",
+          "help": "1 = Komplett nonverbal, 11 = Voll bei Bewusstsein",
           "tags": [
             "safety",
             "subspace",
@@ -1109,8 +1109,8 @@
           "id": "SUB005",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Meine Strategien, um aus Subspace zurückzukommen.",
-          "help": "Optional: Was hilft dir zu 'landen'? (z.B. Wasser trinken, Decke, sprechen, Realität checken) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine Strategien, um aus Subspace zurückzukommen",
+          "help": "Optional: Was hilft dir zu 'landen'? (z.B. Wasser trinken, Decke, sprechen, Realität checken)",
           "tags": [
             "aftercare",
             "subspace",
@@ -1122,8 +1122,8 @@
           "id": "SUB006",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Subspace ist für mich.",
-          "help": "Wie erlebst du diesen Zustand emotional? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Subspace ist für mich...",
+          "help": "Wie erlebst du diesen Zustand emotional?",
           "options": [
             "Befreiend & euphorisch - ich liebe es",
             "Intensiv aber manchmal beängstigend",
@@ -1142,8 +1142,8 @@
           "id": "SUB007",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Lasst uns besprechen: In tiefem Subspace weitermachen (wenn ich nonverbal bin).",
-          "help": "Darf Partner:in weitermachen, auch wenn ich nicht mehr antworten kann? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "In tiefem Subspace weitermachen (wenn ich nonverbal bin)",
+          "help": "Darf Partner:in weitermachen, auch wenn ich nicht mehr antworten kann?",
           "tags": [
             "subspace",
             "consent",
@@ -1155,8 +1155,8 @@
           "id": "SUB008",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Nach tiefem Subspace: Wie fühle ich mich meist.",
-          "help": "Was passiert, wenn du wieder 'hochkommst'? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Nach tiefem Subspace: Wie fühle ich mich meist?",
+          "help": "Was passiert, wenn du wieder 'hochkommst'?",
           "options": [
             "Glücklich & entspannt",
             "Verwirrt / Desorientiert",
@@ -1176,8 +1176,8 @@
           "id": "SUB009",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Mein 'Point of No Return' in Subspace.",
-          "help": "Optional: Woran erkenne ich (oder mein:e Partner:in), dass ich 'zu tief' gehe? (z.B. glasige Augen, keine Reaktion mehr, bestimmte Körperhaltung) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Mein 'Point of No Return' in Subspace",
+          "help": "Optional: Woran erkenne ich (oder mein:e Partner:in), dass ich 'zu tief' gehe? (z.B. glasige Augen, keine Reaktion mehr, bestimmte Körperhaltung)",
           "tags": [
             "subspace",
             "safety",
@@ -1194,10 +1194,10 @@
       "questions": [
         {
           "id": "REG001",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Wie gut erkenne ich meine eigenen emotionalen Grenzen.",
-          "help": "0 = Merke erst hinterher, dass es zu viel war, 10 = Spüre sofort, wenn es too much wird Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wie gut erkenne ich meine eigenen emotionalen Grenzen?",
+          "help": "1 = Merke erst hinterher, dass es zu viel war, 11 = Spüre sofort, wenn es too much wird",
           "tags": [
             "regulation",
             "boundaries",
@@ -1209,8 +1209,8 @@
           "id": "REG002",
           "schema": "multi",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Woran erkenne ich, dass ich emotional überwältigt bin.",
-          "help": "Mehrfachauswahl möglich Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Woran erkenne ich, dass ich emotional überwältigt bin?",
+          "help": "Mehrfachauswahl möglich",
           "options": [
             "Körper: Zittern, Atemnot, Herzrasen",
             "Dissoziation: Fühle mich 'weg' oder taub",
@@ -1232,8 +1232,8 @@
           "id": "REG003",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Meine Strategien, um emotional 'runterzukommen'.",
-          "help": "Optional: Was hilft dir, wenn es zu viel wird? (z.B. Atmen, Raum verlassen, Safe Person anrufen, kaltes Wasser) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine Strategien, um emotional 'runterzukommen'",
+          "help": "Optional: Was hilft dir, wenn es zu viel wird? (z.B. Atmen, Raum verlassen, Safe Person anrufen, kaltes Wasser)",
           "tags": [
             "regulation",
             "coping",
@@ -1245,8 +1245,8 @@
           "id": "REG004",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Intensität bewusst steigern (z.B. durch Edging, Denial, Overstimulation).",
-          "help": "Magst du es, an deine emotionalen Grenzen gebracht zu werden? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Intensität bewusst steigern (z.B. durch Edging, Denial, Overstimulation)",
+          "help": "Magst du es, an deine emotionalen Grenzen gebracht zu werden?",
           "tags": [
             "regulation",
             "intensity",
@@ -1258,8 +1258,8 @@
           "id": "REG005",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Wenn ich überfordert bin, zeige ich das.",
-          "help": "Wie kommunizierst du Überforderung? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wenn ich überfordert bin, zeige ich das...",
+          "help": "Wie kommunizierst du Überforderung?",
           "options": [
             "Sofort & klar (Safeword / Stopp-Signal)",
             "Nonverbal (Erstarren, Weinen, Körpersprache)",
@@ -1276,10 +1276,10 @@
         },
         {
           "id": "REG006",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Meine 'Window of Tolerance' für emotionale Intensität.",
-          "help": "0 = Sehr schmales Fenster (schnell überfordert), 10 = Sehr breites Fenster (kann viel aushalten) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine 'Window of Tolerance' für emotionale Intensität",
+          "help": "1 = Sehr schmales Fenster (schnell überfordert), 11 = Sehr breites Fenster (kann viel aushalten)",
           "tags": [
             "regulation",
             "tolerance",
@@ -1291,8 +1291,8 @@
           "id": "REG007",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Partner:in 'liest' meine Grenzen (ohne dass ich sie sage).",
-          "help": "Soll mein:e Partner:in an meiner Körpersprache erkennen, wann Stopp ist? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Partner:in 'liest' meine Grenzen (ohne dass ich sie sage)",
+          "help": "Soll mein:e Partner:in an meiner Körpersprache erkennen, wann Stopp ist?",
           "tags": [
             "regulation",
             "consent",
@@ -1304,8 +1304,8 @@
           "id": "REG008",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Meine Trigger (Dinge, die mich instant überfordern).",
-          "help": "Optional: Was sind absolute No-Gos, weil sie dich emotional destabilisieren? (z.B. bestimmte Worte, Situationen, Körperstellen) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine Trigger (Dinge, die mich instant überfordern)",
+          "help": "Optional: Was sind absolute No-Gos, weil sie dich emotional destabilisieren? (z.B. bestimmte Worte, Situationen, Körperstellen)",
           "tags": [
             "regulation",
             "triggers",
@@ -1317,8 +1317,8 @@
           "id": "REG009",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Nach emotional intensiven Sessions: Wie verarbeite ich das.",
-          "help": "Was ist deine typische Reaktion in den Stunden/Tagen danach? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Nach emotional intensiven Sessions: Wie verarbeite ich das?",
+          "help": "Was ist deine typische Reaktion in den Stunden/Tagen danach?",
           "options": [
             "Schnelle Integration - bin schnell wieder 'normal'",
             "Brauche Zeit allein zum Nachdenken",
@@ -1343,10 +1343,10 @@
       "questions": [
         {
           "id": "SHA001",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Wie viel sexuelle Scham trage ich in mir.",
-          "help": "0 = Keine Scham, 10 = Extreme Scham bei meinen Fantasien/Wünschen Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wie viel sexuelle Scham trage ich in mir?",
+          "help": "1 = Keine Scham, 11 = Extreme Scham bei meinen Fantasien/Wünschen",
           "tags": [
             "shame",
             "psychology",
@@ -1358,8 +1358,8 @@
           "id": "SHA002",
           "schema": "multi",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Wo kommt meine sexuelle Scham her? (Mehrfachauswahl).",
-          "help": "Versuch zu identifizieren, woher deine Scham stammt Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wo kommt meine sexuelle Scham her? (Mehrfachauswahl)",
+          "help": "Versuch zu identifizieren, woher deine Scham stammt",
           "options": [
             "Religiöse Erziehung / Moralvorstellungen",
             "Kulturelle Tabus / Familie",
@@ -1381,8 +1381,8 @@
           "id": "SHA003",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Eine Fantasie, für die ich mich schäme (aber die mich trotzdem erregt).",
-          "help": "Optional & vertraulich. Nur wenn du möchtest. Muss nicht spezifisch sein ('Submission' reicht z.B.). Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Eine Fantasie, für die ich mich schäme (aber die mich trotzdem erregt)",
+          "help": "Optional & vertraulich. Nur wenn du möchtest. Muss nicht spezifisch sein ('Submission' reicht z.B.).",
           "tags": [
             "shame",
             "fantasy",
@@ -1394,8 +1394,8 @@
           "id": "SHA004",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Über meine 'verbotenen' Fantasien sprechen.",
-          "help": "Kann ich sie aussprechen, ohne zu implodieren? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Über meine 'verbotenen' Fantasien sprechen",
+          "help": "Kann ich sie aussprechen, ohne zu implodieren?",
           "tags": [
             "communication",
             "shame",
@@ -1407,8 +1407,8 @@
           "id": "SHA005",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Nach dem Sex: Schämst du dich manchmal für das, was passiert ist.",
-          "help": "Der 'Klarheitsmoment' danach Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Nach dem Sex: Schämst du dich manchmal für das, was passiert ist?",
+          "help": "Der 'Klarheitsmoment' danach",
           "options": [
             "Nie - fühle mich frei und gut",
             "Selten - nur bei sehr intensiven Dingen",
@@ -1427,8 +1427,8 @@
           "id": "SHA006",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Meine Scham ist am stärksten bei.",
-          "help": "In welchem Kontext fühlst du die meiste Scham? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine Scham ist am stärksten bei...",
+          "help": "In welchem Kontext fühlst du die meiste Scham?",
           "options": [
             "Fantasien (Dinge, die ich mir vorstelle)",
             "Masturbation (Selbstbefriedigung)",
@@ -1450,8 +1450,8 @@
           "id": "SHA007",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Scham als Teil des Spiels (Consensual Humiliation).",
-          "help": "Kann kontrollierte Scham (z.B. Degradierung) befreiend sein? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Scham als Teil des Spiels (Consensual Humiliation)",
+          "help": "Kann kontrollierte Scham (z.B. Degradierung) befreiend sein?",
           "tags": [
             "shame",
             "kink",
@@ -1463,8 +1463,8 @@
           "id": "SHA008",
           "schema": "enum",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Wenn jemand meine Fantasien/Wünsche ablehnt, fühle ich.",
-          "help": "Wie reagierst du auf Ablehnung deiner sexuellen Seite? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wenn jemand meine Fantasien/Wünsche ablehnt, fühle ich...",
+          "help": "Wie reagierst du auf Ablehnung deiner sexuellen Seite?",
           "options": [
             "Entspannt - Nicht jede:r muss alles mögen",
             "Leicht verletzt - Aber ich verstehe es",
@@ -1484,8 +1484,8 @@
           "id": "SHA009",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Mein größter Moral-Konflikt in meiner Sexualität.",
-          "help": "Optional: 'Ich will X, aber ich glaube, dass X falsch/schlecht/sündig ist' Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Mein größter Moral-Konflikt in meiner Sexualität",
+          "help": "Optional: 'Ich will X, aber ich glaube, dass X falsch/schlecht/sündig ist'",
           "tags": [
             "shame",
             "moral",
@@ -1495,10 +1495,10 @@
         },
         {
           "id": "SHA010",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Wie sehr beeinflusst Scham mein sexuelles Erleben negativ.",
-          "help": "0 = Gar nicht, 10 = Blockiert mich komplett Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Wie sehr beeinflusst Scham mein sexuelles Erleben negativ?",
+          "help": "1 = Gar nicht, 11 = Blockiert mich komplett",
           "tags": [
             "shame",
             "impact",
@@ -1510,8 +1510,8 @@
           "id": "SHA011",
           "schema": "consent_rating",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: An meiner Scham arbeiten (Therapie, Selbstreflexion, Gespräche).",
-          "help": "Bin ich bereit, meine Scham anzuschauen und zu heilen? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "An meiner Scham arbeiten (Therapie, Selbstreflexion, Gespräche)",
+          "help": "Bin ich bereit, meine Scham anzuschauen und zu heilen?",
           "tags": [
             "shame",
             "healing",
@@ -1530,8 +1530,8 @@
           "id": "POW001",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Warum reizt mich Machtabgabe/Submission.",
-          "help": "Optional: Was ist das Appeal von 'Kontrolle abgeben'? (z.B. Kopf ausschalten, Vertrauen, Befreiung) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Warum reizt mich Machtabgabe/Submission?",
+          "help": "Optional: Was ist das Appeal von 'Kontrolle abgeben'? (z.B. Kopf ausschalten, Vertrauen, Befreiung)",
           "tags": [
             "power",
             "submission",
@@ -1543,8 +1543,8 @@
           "id": "POW002",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Warum reizt mich Kontrolle/Dominanz.",
-          "help": "Optional: Was ist das Appeal von 'Macht haben'? (z.B. Verantwortung, Führung, Partner:in zum Vergnügen bringen) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Warum reizt mich Kontrolle/Dominanz?",
+          "help": "Optional: Was ist das Appeal von 'Macht haben'? (z.B. Verantwortung, Führung, Partner:in zum Vergnügen bringen)",
           "tags": [
             "power",
             "dominance",
@@ -1554,10 +1554,10 @@
         },
         {
           "id": "POW003",
-          "schema": "scale_0_10",
+          "schema": "scale_1_10",
           "risk_level": "A",
-          "label": "Lasst uns besprechen: Mein Control-Spektrum: Wie viel Kontrolle will ich abgeben/haben.",
-          "help": "0 = Ich will absolute Kontrolle abgeben (Total Submission), 10 = Ich will absolute Kontrolle haben (Total Dominance) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Mein Control-Spektrum: Wie viel Kontrolle will ich abgeben/haben?",
+          "help": "1 = Ich will absolute Kontrolle abgeben (Total Submission), 11 = Ich will absolute Kontrolle haben (Total Dominance)",
           "tags": [
             "power",
             "control",
@@ -1569,8 +1569,8 @@
           "id": "POW004",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Protokolle & Rituale (z.B. Kniend begrüßen, Anrede-Regeln, Positionierung).",
-          "help": "Strukturierte Power-Symbole im Alltag/Sex Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Protokolle & Rituale (z.B. Kniend begrüßen, Anrede-Regeln, Positionierung)",
+          "help": "Strukturierte Power-Symbole im Alltag/Sex",
           "tags": [
             "power",
             "protocols",
@@ -1582,8 +1582,8 @@
           "id": "POW005",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Power Exchange in meinem Alltag: Wie weit geht es.",
-          "help": "Wo endet/beginnt die Machtdynamik? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Power Exchange in meinem Alltag: Wie weit geht es?",
+          "help": "Wo endet/beginnt die Machtdynamik?",
           "options": [
             "Nur in sexuellen Momenten (Bedroom only)",
             "In intimen Situationen, aber nicht im Alltag",
@@ -1603,8 +1603,8 @@
           "id": "POW006",
           "schema": "consent_rating",
           "risk_level": "C",
-          "label": "Lasst uns besprechen: 24/7 Total Power Exchange (TPE): Absolute Machtabgabe in allen Lebensbereichen.",
-          "help": "WARNUNG: Extrem fortgeschritten, erfordert tiefes Vertrauen, Exit-Strategie, rechtliche Absicherung Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "24/7 Total Power Exchange (TPE): Absolute Machtabgabe in allen Lebensbereichen",
+          "help": "WARNUNG: Extrem fortgeschritten, erfordert tiefes Vertrauen, Exit-Strategie, rechtliche Absicherung",
           "tags": [
             "power",
             "TPE",
@@ -1617,8 +1617,8 @@
           "id": "POW007",
           "schema": "enum",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Macht in meiner Beziehung: Wer entscheidet über Sex.",
-          "help": "Wie wird sexuelle Macht verteilt? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Macht in meiner Beziehung: Wer entscheidet über Sex?",
+          "help": "Wie wird sexuelle Macht verteilt?",
           "options": [
             "Gemeinsam & gleichberechtigt (Switch/Egalitarian)",
             "Ich entscheide meistens (Dominant/Top)",
@@ -1638,8 +1638,8 @@
           "id": "POW008",
           "schema": "text",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Meine größte Angst bei Machtabgabe/Machtausübung.",
-          "help": "Optional: Was beunruhigt dich? (z.B. Missbrauch, Verantwortung, Verlust von Selbst, zu weit gehen) Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Meine größte Angst bei Machtabgabe/Machtausübung",
+          "help": "Optional: Was beunruhigt dich? (z.B. Missbrauch, Verantwortung, Verlust von Selbst, zu weit gehen)",
           "tags": [
             "power",
             "fear",
@@ -1651,8 +1651,8 @@
           "id": "POW009",
           "schema": "consent_rating",
           "risk_level": "B",
-          "label": "Lasst uns besprechen: Macht als 'Service' verstehen (Dom dient den Bedürfnissen des Sub).",
-          "help": "Sehe ich Dominanz als Dienstleistung, nicht als Egotrip? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?",
+          "label": "Macht als 'Service' verstehen (Dom dient den Bedürfnissen des Sub)",
+          "help": "Sehe ich Dominanz als Dienstleistung, nicht als Egotrip?",
           "tags": [
             "power",
             "service",
@@ -1675,8 +1675,8 @@
             "review",
             "repeat"
           ],
-          "label": "Lasst uns besprechen: Bereits erlebt: Intensive Praktik wiederholen.",
-          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
+          "label": "Bereits erlebt: Intensive Praktik wiederholen?",
+          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen?"
         },
         {
           "id": "REV002",
@@ -1686,8 +1686,8 @@
             "review",
             "less"
           ],
-          "label": "Lasst uns besprechen: Was wollen wir weniger machen.",
-          "help": "Praktiken oder Dynamiken, die wir reduzieren oder pausieren möchten. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
+          "label": "Was wollen wir weniger machen?",
+          "help": "Praktiken oder Dynamiken, die wir reduzieren oder pausieren möchten."
         },
         {
           "id": "REV003",
@@ -1697,8 +1697,8 @@
             "review",
             "highlight"
           ],
-          "label": "Lasst uns besprechen: Was war ein Highlight, das wir wiederholen sollten.",
-          "help": "Besonders positive Erfahrungen, die wir gerne wiederholen möchten. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
+          "label": "Was war ein Highlight, das wir wiederholen sollten?",
+          "help": "Besonders positive Erfahrungen, die wir gerne wiederholen möchten."
         },
         {
           "id": "REV004",
@@ -1708,8 +1708,8 @@
             "review",
             "friction"
           ],
-          "label": "Lasst uns besprechen: Was hat nicht funktioniert.",
-          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
+          "label": "Was hat nicht funktioniert?",
+          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt?"
         },
         {
           "id": "REV005",
@@ -1719,8 +1719,8 @@
             "review",
             "debrief"
           ],
-          "label": "Lasst uns besprechen: Debrief-Log: Letzte 4 Experimente.",
-          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht? Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
+          "label": "Debrief-Log: Letzte 4 Experimente",
+          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht?"
         },
         {
           "id": "REV006",
@@ -1730,8 +1730,8 @@
             "review",
             "notes"
           ],
-          "label": "Lasst uns besprechen: Generelle Notizen / Wünsche an uns.",
-          "help": "Platz für alles, was sonst nirgends hinpasst. Reflexion: Was nehmen wir jeweils wahr und was wünschen wir uns hier voneinander?"
+          "label": "Generelle Notizen / Wünsche an uns.",
+          "help": "Platz für alles, was sonst nirgends hinpasst."
         }
       ]
     }

@@ -198,7 +198,7 @@ class TestCompareConsentRating:
 
 
 class TestCompareScale010:
-    """Tests for compare function with scale_0_10 schema."""
+    """Tests for compare function with scale_1_10 schema."""
     
     def test_compare_scale_match(self, sample_template):
         """Test MATCH for close values."""
@@ -226,7 +226,7 @@ class TestCompareScale010:
         
     def test_compare_scale_big_delta_flag(self, sample_template):
         """Test big delta flag for scale."""
-        resp_a = {"Q2": {"value": 0}}
+        resp_a = {"Q2": {"value": 1}}
         resp_b = {"Q2": {"value": 5}}
         
         result = compare(sample_template, resp_a, resp_b)
@@ -455,4 +455,3 @@ class TestCompareFull:
             current_order = order_map.get(items[i]["pair_status"], 9)
             next_order = order_map.get(items[i + 1]["pair_status"], 9)
             assert current_order <= next_order
-

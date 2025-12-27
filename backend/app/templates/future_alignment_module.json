@@ -1,0 +1,173 @@
+{
+  "id": "future_alignment",
+  "name": "Zukunft & Ausrichtung: Wohin gehen wir?",
+  "description": "Für Paare, die es ernst meinen: Große Lebensentscheidungen, Werte und die Frage, ob wir in die gleiche Richtung schauen.",
+  "questions": [
+    {
+      "id": "FUT01",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Zusammenziehen: Wo stehe ich aktuell?",
+      "help": "Einer der größten Schritte in einer Beziehung.",
+      "options": [
+        "Bin bereit / Möchte das bald",
+        "Noch zu früh, aber mittelfristig ja",
+        "Unsicher / Brauche mehr Zeit",
+        "Lieber getrennte Wohnungen",
+        "Wir wohnen bereits zusammen"
+      ],
+      "tags": ["future", "living", "commitment", "logistics"]
+    },
+    {
+      "id": "FUT02",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Heiraten: Ist das ein Ziel für mich?",
+      "help": "Manche sehen darin Sicherheit, andere nur Papier.",
+      "options": [
+        "Ja, definitiv wichtig für mich",
+        "Nett, aber nicht zwingend",
+        "Egal / Neutral",
+        "Eher nicht / Keine Priorität",
+        "Absolut nicht / Lehne Ehe ab"
+      ],
+      "tags": ["future", "marriage", "commitment", "values"]
+    },
+    {
+      "id": "FUT03",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Kinder: Meine Position ist:",
+      "help": "Eine der wichtigsten Kompatibilitätsfragen.",
+      "options": [
+        "Ja, möchte definitiv Kinder",
+        "Ja, aber nicht jetzt / später",
+        "Unsicher / Noch nicht entschieden",
+        "Eher nicht",
+        "Nein, definitiv keine Kinder"
+      ],
+      "tags": ["future", "children", "commitment", "values"],
+      "info_details": "Kinderwunsch-Diskrepanz ist einer der häufigsten Deal-Breaker. Wichtig: Diese Position kann sich ändern, aber darauf zu hoffen ist gefährlich. Wenn ein Partner Kinder will und der andere nicht, führt das oft zu Resentment ('Ich habe für dich verzichtet'). Ehrlichkeit ist wichtiger als Kompromiss in dieser Frage."
+    },
+    {
+      "id": "FUT04",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Wenn Kinder: Wie stelle ich mir Aufgabenteilung vor?",
+      "help": "Oft die größte Konfliktquelle nach der Geburt.",
+      "options": [
+        "50/50 Aufteilung",
+        "Einer Hauptbetreuung, anderer Ernährer",
+        "Beide arbeiten, externe Betreuung",
+        "Noch nicht durchdacht",
+        "Keine Kinder geplant"
+      ],
+      "tags": ["future", "children", "roles", "equality"],
+      "depends_on": {
+        "id": "FUT03",
+        "values": ["Ja, möchte definitiv Kinder", "Ja, aber nicht jetzt / später", "Unsicher / Noch nicht entschieden"]
+      }
+    },
+    {
+      "id": "FUT05",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Finanzen: Wie sehe ich das ideale Modell?",
+      "help": "Geld ist einer der größten Streitpunkte in Beziehungen.",
+      "options": [
+        "Alles gemeinsam (gemeinsames Konto)",
+        "Gemeinsame Ausgaben, Rest getrennt",
+        "Komplett getrennte Finanzen",
+        "Noch nicht besprochen",
+        "Unterschiedlich je nach Phase"
+      ],
+      "tags": ["future", "money", "logistics", "values"]
+    },
+    {
+      "id": "FUT06",
+      "schema": "scale_1_10",
+      "risk_level": "A",
+      "label": "Wie wichtig ist mir Karriere vs. Beziehung?",
+      "help": "1 = Beziehung geht immer vor, 10 = Karriere hat Priorität.",
+      "tags": ["future", "values", "career", "priorities"]
+    },
+    {
+      "id": "FUT07",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Würde ich für die Beziehung umziehen (Stadt/Land)?",
+      "help": "Bereitschaft zu großen Veränderungen.",
+      "options": [
+        "Ja, ohne Weiteres",
+        "Ja, wenn Job/Leben dort passt",
+        "Nur innerhalb der Region",
+        "Schwierig / Unsicher",
+        "Nein, mein Ort ist mir zu wichtig"
+      ],
+      "tags": ["future", "living", "commitment", "flexibility"]
+    },
+    {
+      "id": "FUT08",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Umgang mit Schwiegereltern / Familie des Partners:",
+      "help": "Oft unterschätzt, aber enorm wichtig.",
+      "options": [
+        "Enger Kontakt ist mir wichtig",
+        "Regelmäßig, aber mit Grenzen",
+        "Gelegentlich / Bei Festen",
+        "So wenig wie möglich",
+        "Keine Familie vorhanden / Kein Kontakt"
+      ],
+      "tags": ["future", "family", "boundaries", "logistics"]
+    },
+    {
+      "id": "FUT09",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Religion / Spiritualität: Wie wichtig ist das für unsere Zukunft?",
+      "help": "Kann bei Kindererziehung oder Ritualen relevant werden.",
+      "options": [
+        "Sehr wichtig / Muss geteilt werden",
+        "Wichtig, aber respektvolle Differenz ok",
+        "Neutral / Spielt keine Rolle",
+        "Unterschiedlich ist bereichernd",
+        "Keine Religion / Spiritualität"
+      ],
+      "tags": ["future", "values", "religion", "compatibility"]
+    },
+    {
+      "id": "FUT10",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Ein Zukunftsthema, über das wir noch nicht ehrlich gesprochen haben:",
+      "help": "Jetzt ist der Moment, es anzusprechen.",
+      "tags": ["future", "communication", "honesty", "clarity"]
+    },
+    {
+      "id": "FUT11",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Offene Beziehung / Polyamorie: Ist das denkbar für mich?",
+      "help": "Monogamie ist nicht für alle selbstverständlich.",
+      "options": [
+        "Nein, Monogamie ist mir wichtig",
+        "Nicht jetzt, aber vielleicht später",
+        "Theoretisch offen, praktisch unsicher",
+        "Ja, interessiert mich",
+        "Leben bereits non-monogam"
+      ],
+      "tags": ["future", "monogamy", "boundaries", "values"],
+      "info_details": "Konsensuelle Non-Monogamie (Polyamorie, offene Beziehung) funktioniert für manche, aber erfordert extrem gute Kommunikation, klare Grenzen und emotionale Reife. Wichtig: Man kann nicht 'halb-offen' sein - entweder alle sind einverstanden, oder es ist Betrug. Etwa 4-5% praktizieren es offen, aber geschätzt 20% haben Interesse."
+    },
+    {
+      "id": "FUT12",
+      "schema": "scale_1_10",
+      "risk_level": "A",
+      "label": "Kann ich mir ein Leben mit diesem Menschen in 10 Jahren vorstellen?",
+      "help": "1 = Nein/Sehr unsicher, 10 = Absolut ja.",
+      "tags": ["future", "commitment", "long-term", "vision"]
+    }
+  ]
+}
+

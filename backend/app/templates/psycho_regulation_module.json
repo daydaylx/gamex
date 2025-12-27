@@ -5,10 +5,10 @@
   "questions": [
     {
       "id": "REG001",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "A",
       "label": "Wie gut erkenne ich meine eigenen emotionalen Grenzen?",
-      "help": "0 = Merke erst hinterher, dass es zu viel war, 10 = Spüre sofort, wenn es too much wird",
+      "help": "1 = Merke erst hinterher, dass es zu viel war, 11 = Spüre sofort, wenn es too much wird",
       "tags": ["regulation", "boundaries", "awareness"],
       "info_details": "Trauma-Forschung: Schwierigkeiten in Emotionsregulation sind dokumentierte Folge von Kindheitstrauma. Wenn dein Nervensystem gelernt hat, dass Selbstausdruck riskant ist (Grenzen wurden ignoriert), verlierst du die Verbindung zu deinen eigenen Signalen. Interozeption (innere Wahrnehmung) kann trainiert werden: Körper-Scan, Mindfulness, 'Check-in mit mir selbst' während Sex."
     },
@@ -67,10 +67,10 @@
     },
     {
       "id": "REG006",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "B",
       "label": "Meine 'Window of Tolerance' für emotionale Intensität",
-      "help": "0 = Sehr schmales Fenster (schnell überfordert), 10 = Sehr breites Fenster (kann viel aushalten)",
+      "help": "1 = Sehr schmales Fenster (schnell überfordert), 11 = Sehr breites Fenster (kann viel aushalten)",
       "tags": ["regulation", "tolerance", "capacity"],
       "info_details": "Window of Tolerance (Trauma-Therapie-Konzept): Der Bereich, in dem du funktionieren kannst ohne Hyper-Arousal (Panik) oder Hypo-Arousal (Shutdown). Trauma verkleinert das Fenster. Sichere Beziehungen erweitern es. BDSM kann therapeutisch wirken (kontrollierte Grenzerfahrung), ABER nur mit trauma-informiertem Ansatz. Kein Ersatz für Therapie."
     },

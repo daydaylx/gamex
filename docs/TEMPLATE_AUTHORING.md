@@ -103,23 +103,23 @@ Für Fragen mit Ja/Nein/Vielleicht + Interesse/Komfort-Bewertung.
 - `contextFlags`: Array von Strings (z.B. ["only_with_preparation", "only_with_aftercare"])
 - `confidence`: 1-5 (getrennt von comfort)
 
-### scale_0_10
+### scale_1_10
 
-Für Fragen mit Skala von 0-10.
+Für Fragen mit Skala von 1-10.
 
 ```json
 {
   "id": "Q02",
-  "schema": "scale_0_10",
+  "schema": "scale_1_10",
   "risk_level": "A",
   "tags": ["satisfaction"],
   "label": "Wie zufrieden bist du?",
-  "help": "0 = gar nicht, 10 = sehr"
+  "help": "1 = gar nicht, 10 = sehr"
 }
 ```
 
 **Antwort-Struktur:**
-- `value`: 0-10
+- `value`: 1-10
 
 ### enum
 
@@ -327,4 +327,3 @@ Wenn du ein Template aktualisierst:
 3. Stelle sicher, dass alte Antworten weiterhin funktionieren (Normalisierung)
 
 Die Normalisierungs-Funktion in `template_store.py` stellt sicher, dass fehlende Felder mit Standardwerten gefüllt werden.
-

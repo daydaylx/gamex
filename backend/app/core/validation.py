@@ -51,15 +51,15 @@ def validate_responses(template: Dict[str, Any], responses: Dict[str, Any]) -> T
 
         if schema == "consent_rating":
             _validate_consent_rating(qid, resp_data, label, risk_level, errors, warnings)
-        elif schema == "scale_0_10":
+        elif schema == "scale_1_10":
             value = resp_data.get("value")
-            if value is not None and (value < 0 or value > 10):
+            if value is not None and (value < 1 or value > 10):
                 errors.append(
                     {
                         "question_id": qid,
                         "question_label": label,
                         "field": "value",
-                        "message": "Wert muss zwischen 0 und 10 liegen",
+                        "message": "Wert muss zwischen 1 und 10 liegen",
                         "type": "range_error",
                     }
                 )
@@ -260,4 +260,3 @@ def _validate_consent_rating(
                     "type": "high_risk_missing_conditions",
                 }
             )
-

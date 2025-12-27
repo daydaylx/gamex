@@ -1,0 +1,142 @@
+name: Android APK Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+env:
+  JAVA_VERSION: '17'
+  NODE_VERSION: '20'
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: apps/mobile/package-lock.json
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      
+      - name: Install Dependencies (Mobile)
+        working-directory: apps/mobile
+        run: npm ci
+      
+      - name: Install Dependencies (Web)
+        working-directory: apps/web-new
+        run: npm ci
+      
+      - name: Build Web Frontend
+        working-directory: apps/web-new
+        run: npm run build
+      
+      - name: Capacitor Sync
+        working-directory: apps/mobile
+        run: npx cap sync android
+      
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          mkdir -p android/keystore
+          echo "$KEYSTORE_BASE64" | base64 -d > android/keystore/release.keystore
+      
+      - name: Build Release APK
+        working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease \
+            -PkeystorePassword="$KEYSTORE_PASSWORD" \
+            -PkeyPassword="$KEY_PASSWORD" \
+            -PkeystoreAlias="release" \
+            -PkeystorePath="../android/keystore/release.keystore"
+      
+      - name: Get Version Info
+        id: version
+        run: |
+          VERSION_NAME=$(grep "^versionName=" android/version.properties | cut -d'=' -f2)
+          VERSION_CODE=$(grep "^versionCode=" android/version.properties | cut -d'=' -f2)
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+      
+      - name: Rename APK
+        run: |
+          mv android/app/build/outputs/apk/release/app-release.apk \
+             intimacy-tool-v${{ steps.version.outputs.version_name }}.apk
+      
+      - name: Generate SHA256
+        run: sha256sum intimacy-tool-v${{ steps.version.outputs.version_name }}.apk > checksums.txt
+      
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: intimacy-tool-apk
+          path: |
+            intimacy-tool-v*.apk
+            checksums.txt
+          retention-days: 30
+      
+      - name: Create Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            intimacy-tool-v${{ steps.version.outputs.version_name }}.apk
+            checksums.txt
+          body: |
+            ## Intimacy Tool v${{ steps.version.outputs.version_name }}
+            
+            ### Installation
+            1. APK herunterladen
+            2. Auf Android-Gerät übertragen
+            3. "Installation aus unbekannten Quellen" erlauben
+            4. APK installieren
+            
+            ### SHA256 Checksumme
+            ```
+            $(cat checksums.txt)
+            ```
+          draft: false
+          prerelease: false

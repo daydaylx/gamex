@@ -1,0 +1,81 @@
+{
+  "id": "soft_start",
+  "name": "Soft Start: Verbindung aufbauen",
+  "description": "Bevor wir in tiefere Themen eintauchen: Lass uns unsere emotionale Verbindung stärken und einen sicheren Raum schaffen.",
+  "questions": [
+    {
+      "id": "SOFT01",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Was war unser bisher schönster gemeinsamer Moment?",
+      "help": "Nostalgie aktiviert positive Emotionen und erinnert uns an das 'Warum'.",
+      "tags": ["warmup", "nostalgia", "connection"]
+    },
+    {
+      "id": "SOFT02",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Eine Eigenschaft, die ich an dir besonders bewundere, ist...",
+      "help": "Wertschätzung auszusprechen stärkt die Bindung.",
+      "options": [
+        "Dein Humor",
+        "Deine Intelligenz",
+        "Dein Körper",
+        "Deine Fürsorge",
+        "Deine Ehrlichkeit",
+        "Deine Kreativität",
+        "Deine Stärke",
+        "Deine Sensibilität"
+      ],
+      "tags": ["warmup", "appreciation", "emotional"]
+    },
+    {
+      "id": "SOFT03",
+      "schema": "scale_1_10",
+      "risk_level": "A",
+      "label": "Wie verbunden fühle ich mich zu dir aktuell?",
+      "help": "1 = Distanziert, 10 = Sehr verbunden. Ehrlichkeit hilft uns, zu verstehen wo wir stehen.",
+      "tags": ["warmup", "connection", "foundation"]
+    },
+    {
+      "id": "SOFT04",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Was macht dich aktuell glücklich in unserem Zusammensein?",
+      "help": "Positives bewusst zu machen hilft, es zu bewahren.",
+      "tags": ["warmup", "appreciation", "relationship"]
+    },
+    {
+      "id": "SOFT05",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Wenn ich an unsere Zukunft denke, fühle ich mich...",
+      "help": "Ein Check-in zu unserer emotionalen Ausrichtung.",
+      "options": [
+        "Aufgeregt und optimistisch",
+        "Zuversichtlich und sicher",
+        "Neutral / Abwartend",
+        "Unsicher oder ängstlich",
+        "Unterschiedlich je nach Tag"
+      ],
+      "tags": ["warmup", "future", "emotional"]
+    },
+    {
+      "id": "SOFT06",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Was wünsche ich mir mehr von uns als Paar?",
+      "help": "Wünsche äußern ohne Vorwürfe - ein Geschenk für beide.",
+      "tags": ["warmup", "wishes", "communication"]
+    },
+    {
+      "id": "SOFT07",
+      "schema": "scale_1_10",
+      "risk_level": "A",
+      "label": "Wie sicher fühle ich mich, mit dir über schwierige Themen zu sprechen?",
+      "help": "1 = Unsicher/Angst vor Konflikten, 10 = Sehr sicher/vollstes Vertrauen.",
+      "tags": ["warmup", "safety", "communication", "trust"]
+    }
+  ]
+}
+

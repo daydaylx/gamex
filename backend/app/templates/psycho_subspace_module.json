@@ -50,10 +50,10 @@
     },
     {
       "id": "SUB004",
-      "schema": "scale_0_10",
+      "schema": "scale_1_10",
       "risk_level": "B",
       "label": "Wie gut kann ich in Subspace kommunizieren / Safeword sagen?",
-      "help": "0 = Komplett nonverbal, 10 = Voll bei Bewusstsein",
+      "help": "1 = Komplett nonverbal, 11 = Voll bei Bewusstsein",
       "tags": ["safety", "subspace", "communication"],
       "info_details": "WICHTIG: In tiefem Subspace ist Einwilligungsfähigkeit eingeschränkt (ähnlich Alkohol-Rausch). Hypofrontalität = präfrontaler Kortex (Entscheidung, Sprache) reduziert. Partner:in muss auf non-verbale Signale achten: Körperhaltung, Atemmuster, Gesichtsausdruck. Vorab Check-in: 'Wie erkenne ich, dass du zu weit weg bist?' Falls nonverbal: Non-verbales Safeword (Klopfen, Ball fallen lassen)."
     },

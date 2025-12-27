@@ -1,0 +1,145 @@
+{
+  "id": "digital_boundaries",
+  "name": "Digitale Grenzen: Privacy & Technologie",
+  "description": "In Zeiten von Smartphones und Cloud: Wie gehen wir mit digitalen Spuren, Privacy und Technologie in unserer Intimität um?",
+  "questions": [
+    {
+      "id": "DIG01",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Fotos von mir (nicht-sexuell): Wie gehe ich damit um?",
+      "help": "Alltags-Fotos, auf denen ich erkennbar bin.",
+      "options": [
+        "Gar keine Fotos von mir",
+        "Nur mit meiner ausdrücklichen Erlaubnis",
+        "Ok, solange nicht öffentlich gepostet",
+        "Alles ok, auch Social Media",
+        "Kommt drauf an"
+      ],
+      "tags": ["digital", "privacy", "consent", "photos"]
+    },
+    {
+      "id": "DIG02",
+      "schema": "enum",
+      "risk_level": "C",
+      "label": "Intime/Sexuelle Fotos oder Videos: Meine Grenze ist:",
+      "help": "Dokumentation von intimen Momenten.",
+      "options": [
+        "Absolutes No-Go",
+        "Nur ohne Gesicht und verschlüsselt",
+        "Nur auf einem Gerät, nie Cloud",
+        "Ok, wenn beide einverstanden",
+        "Nach dem Anschauen sofort löschen"
+      ],
+      "tags": ["digital", "privacy", "photos", "recording", "risk"],
+      "info_details": "Revenge Porn ist real: 1 von 12 Menschen erfährt das Teilen intimer Bilder ohne Einwilligung. In vielen Ländern ist das mittlerweile strafbar. Schutzmaßnahmen: Nie Gesicht zeigen, verschlüsselte Ordner (z.B. VeraCrypt), niemals Cloud-Speicher, regelmäßig löschen. Wichtig: Du hast jederzeit das Recht zu verlangen, dass alle Bilder von dir gelöscht werden."
+    },
+    {
+      "id": "DIG03",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Zugriff auf mein Handy/Computer: Was ist ok?",
+      "help": "Vertrauen vs. Privatsphäre.",
+      "options": [
+        "Vollständiger Zugriff / Keine Geheimnisse",
+        "Zugriff nur nach Nachfrage",
+        "Bestimmte Apps/Ordner sind tabu",
+        "Gar kein Zugriff / Privatsphäre ist wichtig",
+        "Unterschiedlich je nach Situation"
+      ],
+      "tags": ["digital", "privacy", "trust", "boundaries"]
+    },
+    {
+      "id": "DIG04",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Passwörter teilen (Social Media, Banking, etc.)?",
+      "help": "Transparenz oder Privatsphäre?",
+      "options": [
+        "Alle Passwörter geteilt",
+        "Nur ausgewählte (z.B. gemeinsame Accounts)",
+        "Keine Passwörter geteilt",
+        "Im Notfall hinterlegt (versiegelt)",
+        "Noch nicht drüber nachgedacht"
+      ],
+      "tags": ["digital", "trust", "privacy", "security"]
+    },
+    {
+      "id": "DIG05",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Location-Sharing / Standort teilen: Meine Präferenz:",
+      "help": "Sicherheit oder Überwachung?",
+      "options": [
+        "Immer aktiv (z.B. Find My)",
+        "Nur auf Anfrage / In bestimmten Situationen",
+        "Nur bei Notfällen",
+        "Gar nicht / Fühlt sich wie Kontrolle an",
+        "Kommt drauf an"
+      ],
+      "tags": ["digital", "privacy", "trust", "location"]
+    },
+    {
+      "id": "DIG06",
+      "schema": "enum",
+      "risk_level": "A",
+      "label": "Soziale Medien: Wie sichtbar darf unsere Beziehung sein?",
+      "help": "Öffentlichkeit vs. Privatsphäre.",
+      "options": [
+        "Gar nicht öffentlich / Privatsache",
+        "Beziehungsstatus ok, aber keine Details",
+        "Gelegentliche Paar-Posts",
+        "Sehr öffentlich / Volle Sichtbarkeit",
+        "Noch nicht besprochen"
+      ],
+      "tags": ["digital", "social", "privacy", "public"]
+    },
+    {
+      "id": "DIG07",
+      "schema": "consent_rating",
+      "risk_level": "B",
+      "label": "Sexting: Nachrichten mit sexuellem Inhalt per Text/Bild",
+      "help": "Kann Vorfreude aufbauen, aber auch Risiken bergen.",
+      "tags": ["digital", "sexting", "communication", "risk"]
+    },
+    {
+      "id": "DIG08",
+      "schema": "enum",
+      "risk_level": "B",
+      "label": "Ex-Partner in Social Media: Was ist ok?",
+      "help": "Eifersucht oder gesunde Grenzen?",
+      "options": [
+        "Kontakt ist völlig ok",
+        "Kontakt ok, aber keine privaten Chats",
+        "Nur öffentliche Interaktionen",
+        "Lieber kein Kontakt",
+        "Kommt auf den Ex an"
+      ],
+      "tags": ["digital", "social", "jealousy", "boundaries"]
+    },
+    {
+      "id": "DIG09",
+      "schema": "enum",
+      "risk_level": "C",
+      "label": "Wenn ich sterben würde: Digitaler Nachlass?",
+      "help": "Morbid, aber wichtig: Was soll mit meinen Daten passieren?",
+      "options": [
+        "Alles löschen (Accounts, Fotos, Chats)",
+        "Zugriff gewähren, aber persönliche Sachen löschen",
+        "Vollständiger Zugriff für Partner",
+        "Noch nicht drüber nachgedacht",
+        "Möchte das nicht besprechen"
+      ],
+      "tags": ["digital", "privacy", "future", "death"]
+    },
+    {
+      "id": "DIG10",
+      "schema": "text",
+      "risk_level": "A",
+      "label": "Eine digitale Grenze, die mir wichtig ist (aber vielleicht noch nicht klar kommuniziert):",
+      "help": "Jetzt ist der Moment, sie auszusprechen.",
+      "tags": ["digital", "boundaries", "communication", "clarity"]
+    }
+  ]
+}
+

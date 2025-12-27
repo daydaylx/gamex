@@ -52,7 +52,7 @@ def sample_template() -> Dict[str, Any]:
                     },
                     {
                         "id": "Q2",
-                        "schema": "scale_0_10",
+                        "schema": "scale_1_10",
                         "risk_level": "A",
                         "label": "Test Question 2",
                         "help": "Scale question",

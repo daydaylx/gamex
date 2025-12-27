@@ -1,0 +1,1736 @@
+{
+  "id": "psycho_enhanced_v3",
+  "name": "Intimacy & Kink v3 (Psychologisch vertieft)",
+  "version": 3,
+  "description": "Erweitert um wissenschaftlich fundierte psychologische Tiefe: Bindung, Subspace, Scham, Power Dynamics, Aftercare, Regulation. Kombiniert alle 9 Basis-Module mit 6 psychologischen Vertiefungs-Modulen.",
+  "modules": [
+    {
+      "id": "logistics",
+      "name": "Rahmen, Zeit & Logistik",
+      "description": "Bevor es zur Sache geht: Stressfaktoren, Zeitfenster und Privatsphäre klären.",
+      "questions": [
+        {
+          "id": "L01",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "tags": [
+            "time",
+            "stress"
+          ],
+          "label": "Wie viel Ruhe/Quality Time haben wir aktuell gefühlt?",
+          "help": "1 = Nur Stress/Hektik, 11 = Wir nehmen uns viel Zeit ohne Ablenkung."
+        },
+        {
+          "id": "L02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "coping"
+          ],
+          "label": "Wenn einer von uns gestresst ist: Was ist die beste Strategie?",
+          "help": "Erwartungsmanagement hilft Frust zu vermeiden.",
+          "options": [
+            "Sex zur Entspannung hilft",
+            "Lieber nur Kuscheln/Massage",
+            "Komplette Ruhe/Absage",
+            "Reden statt Tun",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": [
+            "privacy",
+            "digital"
+          ],
+          "label": "Digitale Spuren (Chats, Fotos, Videos): Wie strikt sind wir?",
+          "help": "Sicherheit vor Leaks oder Zugriff Dritter.",
+          "options": [
+            "Nichts digital speichern",
+            "Verschlüsselt/Hidden Folder ok",
+            "Nur auf einem Gerät (Offline)",
+            "Alles ok (Cloud etc.)",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": [
+            "time"
+          ],
+          "label": "Minimale Zeit für Quality Time?",
+          "help": "Wie viel Zeit brauchen wir mindestens?",
+          "options": [
+            "30 Minuten",
+            "1 Stunde",
+            "2 Stunden",
+            "Open End",
+            "Kommt drauf an"
+          ]
+        },
+        {
+          "id": "L05",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "privacy",
+            "boundaries"
+          ],
+          "label": "Privatsphäre: Wer darf was wissen?",
+          "help": "Klärt, wer von euren Praktiken wissen darf (Freunde, Community, online, Fotos)."
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "name": "01. Das Fundament: Wir & Rahmen",
+      "description": "Bevor wir über Praktiken reden: Wie wollen wir miteinander umgehen? Was ist unsere emotionale Basis?",
+      "questions": [
+        {
+          "id": "REL00",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Intention & Vibe",
+          "help": "Warum machen wir das? (z.B. Neugier, Grenzen klären, Neues entdecken, Vertrauen vertiefen)",
+          "tags": [
+            "meta",
+            "level1"
+          ],
+          "info_details": "Es hilft extrem, das 'Warum' zu kennen. Geht es um Spaß? Um tiefe Verbindung? Um Grenzaustestung? Wenn einer nur Spaß will und der andere eine spirituelle Erfahrung sucht, gibt es Missverständnisse."
+        },
+        {
+          "id": "SAF01",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Unser Safeword / Stop-Signal",
+          "help": "Ein Wort, das IMMER den sofortigen Stopp bedeutet. (Klassiker: 'Rot' oder 'Pause').",
+          "options": [
+            "Ampelsystem (Rot/Gelb/Grün)",
+            "Klares 'Stop'",
+            "Besonderes Wort (z.B. 'Flugzeug')",
+            "Non-verbal (2x Klopfen)"
+          ],
+          "tags": [
+            "safety",
+            "essential",
+            "level1"
+          ]
+        },
+        {
+          "id": "SAF02",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Aftercare-Bedürfnis (Danach)",
+          "help": "Wenn das Adrenalin sinkt: Was brauchst du, um wieder 'zu landen'?",
+          "options": [
+            "Kuscheln & physische Nähe (Hold me)",
+            "Ruhe & Space (Leave me)",
+            "Aktives Gespräch / Feedback (Talk to me)",
+            "Essen/Trinken & Erdung",
+            "Unterschiedlich / Kommt drauf an"
+          ],
+          "tags": [
+            "aftercare",
+            "level1"
+          ],
+          "info_details": "Aftercare ist kein 'Bonus', sondern physiologisch notwendig. Nach intensivem Sex oder BDSM fällt der Hormonspiegel (Adrenalin/Endorphine) rapid ab ('Sub Drop'). Das kann zu Weinen, Zittern oder Traurigkeit führen. Wichtig: Auch Dom Drop ist real - Tops erleben Schuldgefühle, Erschöpfung, Sorge um die:den Sub. Forschung zeigt: 68% der BDSM-Community schätzen offene Kommunikation + Aftercare als zentral. Aftercare hat 3 Dimensionen: Physisch (Wasser, Wärme), Emotional (Nähe/Space), Temporal (Minuten bis Tage)."
+        },
+        {
+          "id": "H01",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Gesundheitliche 'Red Flags'",
+          "help": "Gibt es etwas, das ich wissen MUSS, um dich nicht zu verletzen? (Asthma, Gelenke, Herz, Medikamente, Allergien)",
+          "tags": [
+            "health",
+            "safety",
+            "level1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "comms",
+      "name": "02. Kommunikation & Dynamik",
+      "description": "Wie wir währenddessen reden (oder schweigen).",
+      "questions": [
+        {
+          "id": "COM01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Dirty Talk (Worte während Sex)",
+          "help": "Magst du es, wenn gesprochen wird? Welche Art von Worten?",
+          "tags": [
+            "communication",
+            "level1"
+          ]
+        },
+        {
+          "id": "COM02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Anleitung & Feedback (in the moment)",
+          "help": "Darf ich sagen 'Mach das schneller' oder 'Fass mich da an'?",
+          "tags": [
+            "communication",
+            "level1"
+          ]
+        },
+        {
+          "id": "COM03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Lob & Bestätigung (Praising)",
+          "help": "'Gutes Mädchen', 'Braver Junge', 'Du machst das toll'.",
+          "tags": [
+            "communication",
+            "kink_light",
+            "level2"
+          ]
+        },
+        {
+          "id": "COM04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Erniedrigung / Degradierung (Verbal)",
+          "help": "Beleidigungen, Objektifizierung (natürlich nur im konsensuellen Rahmen).",
+          "tags": [
+            "communication",
+            "kink",
+            "level2"
+          ],
+          "info_details": "Psychologie: Für viele ist es befreiend, 'wertlos' zu sein, weil damit auch jede Verantwortung abfällt. Es ist oft eine Flucht vor dem Leistungsdruck des Alltags. Scham-Processing: Paradoxerweise kann das Aussprechen von Scham ('Du bist eine Schlampe') Scham reduzieren - weil sie kontrolliert & konsensuell erlebt wird. Das Tabu verliert Macht. ABER: Bei internalisierter Scham kann es Trigger sein. Wichtig: Immer zwischen Rolle und Mensch trennen. Aftercare mit Reassurance ('Das war nur Spiel, du bist wertvoll')."
+        }
+      ]
+    },
+    {
+      "id": "touch",
+      "name": "03. Berührung & Sinnlichkeit",
+      "description": "Von sanft bis intensiv. Was darf dein Körper spüren?",
+      "questions": [
+        {
+          "id": "SEN01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Sinnliche Massage (Öl, Federn)",
+          "tags": [
+            "sensory",
+            "soft",
+            "level1"
+          ]
+        },
+        {
+          "id": "SEN02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Gehalten werden / Festhalten",
+          "tags": [
+            "intimacy",
+            "level1"
+          ]
+        },
+        {
+          "id": "SEN03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Kratzen / Nägel spüren",
+          "help": "Leichtes Kratzen am Rücken oder Po.",
+          "tags": [
+            "sensation",
+            "level1"
+          ]
+        },
+        {
+          "id": "SEN04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Temperaturspiele (Eis / Warmes Wachs)",
+          "help": "Der Reiz von heiß/kalt auf der Haut. (Wachs nur Niedrigtemperatur!)",
+          "tags": [
+            "sensation",
+            "kink",
+            "level2"
+          ]
+        },
+        {
+          "id": "SEN05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Augen verbinden (Blindfold)",
+          "help": "Kontrolle über das Sehen abgeben. Verstärkt andere Sinne.",
+          "tags": [
+            "sensory",
+            "level1"
+          ],
+          "info_details": "Einfachste Form des Kontrollverlusts. Erfordert mehr verbale Kommunikation, da Körpersprache nicht gesehen wird."
+        }
+      ]
+    },
+    {
+      "id": "sex_basic",
+      "name": "04. Sex & Genitales",
+      "description": "Die Klassiker. Was gefällt uns im Bett?",
+      "questions": [
+        {
+          "id": "SEX01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Oralsex (Geben)",
+          "has_active_passive": false,
+          "tags": [
+            "sex",
+            "oral",
+            "give",
+            "level1"
+          ]
+        },
+        {
+          "id": "SEX02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Oralsex (Empfangen)",
+          "tags": [
+            "sex",
+            "oral",
+            "receive",
+            "level1"
+          ]
+        },
+        {
+          "id": "SEX03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Vaginale Penetration",
+          "tags": [
+            "sex",
+            "penetration",
+            "level1"
+          ]
+        },
+        {
+          "id": "SEX04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Anale Stimulation (Finger/Zunge/Toy)",
+          "help": "Vorsichtiges Tasten, Lecken oder Spielen am Eingang.",
+          "tags": [
+            "sex",
+            "anal",
+            "level2"
+          ]
+        },
+        {
+          "id": "SEX04B",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Anale Spielzeuge (kleine Plugs / Dildos)",
+          "help": "Nur mit Stop-Base, viel Gleitgel, langsam steigern.",
+          "tags": [
+            "sex",
+            "anal",
+            "toys",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "SEX04",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "SEX05",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Anale Penetration (Penis / größere Toys)",
+          "help": "Erfordert Vorbereitung, Gleitgel und Entspannung.",
+          "tags": [
+            "sex",
+            "anal",
+            "hard",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "SEX04B",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "SEX06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Toys einbeziehen (Vibratoren, Dildos)",
+          "tags": [
+            "sex",
+            "toys",
+            "level1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "power",
+      "name": "05. Macht & Dynamik (D/s)",
+      "description": "Wer führt? Wer lässt los? Psychologische Spiele.",
+      "questions": [
+        {
+          "id": "DS01",
+          "schema": "consent_rating",
+          "has_dom_sub": true,
+          "risk_level": "A",
+          "label": "Führen & Geführt werden (Generell)",
+          "help": "Magst du es, die Kontrolle zu haben (Dom) oder abzugeben (Sub)?",
+          "tags": [
+            "ds",
+            "core",
+            "level2"
+          ],
+          "info_details": "Psychologie: Machtabgabe (Submission) ist oft ein Akt der Stärke ('Ich vertraue dir so sehr, dass ich loslasse'). Dominanz ist Dienstleistung ('Ich übernehme die Verantwortung für unser Erlebnis'). 2024-Forschung zeigt: BDSM ist primär über Machtdynamiken, weniger über Schmerz. Attachment-Korrelation: Sichere & vermeidende Bindung → Dominanz; Submissive → höhere Trennungsangst (60,5% weibliche Subs). Konsens & Safewords unterscheiden BDSM klar von Gewalt."
+        },
+        {
+          "id": "DS02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Gehorsam & Dienen (Service)",
+          "help": "Getränke bringen, Aufgaben erfüllen, 'zu Diensten sein'.",
+          "tags": [
+            "ds",
+            "service",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "DS01",
+            "conditions": [
+              {
+                "operator": "!=",
+                "value": "NO"
+              }
+            ]
+          }
+        },
+        {
+          "id": "DS03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Disziplinierung / Bestrafung",
+          "help": "Wenn Regeln gebrochen werden, folgt eine Konsequenz (abgesprochen!).",
+          "tags": [
+            "ds",
+            "punishment",
+            "level2"
+          ]
+        },
+        {
+          "id": "DS04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Orgasmuskontrolle / Verweigern",
+          "help": "Du entscheidest, wann (und ob) der andere kommen darf.",
+          "tags": [
+            "ds",
+            "control",
+            "level2"
+          ],
+          "info_details": "Erzeugt immense Spannung und Frustration, die sich in intensiverer Lust entladen kann. Erfordert viel Vertrauen, da es tief in die körperliche Autonomie eingreift."
+        }
+      ]
+    },
+    {
+      "id": "impact",
+      "name": "06. Impact & Spanking",
+      "description": "Wenn es klatschen darf.",
+      "questions": [
+        {
+          "id": "IMP01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Spanking: Spaß & Lustvoll",
+          "help": "Leichtes Hauen auf den Po, während dem Sex oder zum Flirten.",
+          "tags": [
+            "impact",
+            "fun",
+            "level1"
+          ]
+        },
+        {
+          "id": "IMP02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Spanking: Ernst & Strafe",
+          "help": "Methodisches Hauen, um Schmerz zu erzeugen oder Dominanz zu zeigen.",
+          "tags": [
+            "impact",
+            "punishment",
+            "level2"
+          ],
+          "info_details": "Schmerz setzt Endorphine frei (körpereigene Drogen). Das kann zu einem rauschähnlichen Zustand ('Subspace') führen. Neuroscience: 2016-Studie zeigt 'transiente Hypofrontalität' - reduzierte Aktivität im präfrontalen Kortex während Subspace (ähnlich Meditation). Neurochemie: Adrenalin, Cortisol, Endorphine, Dopamin, Oxytocin, Endocannabinoide involviert. Drei Subspace-Typen: Endorphin-, Noradrenalin-, Serotonin-mediiert. Wichtig: Unterscheide 'guten Schmerz' (dumpf, Po) von 'schlechtem Schmerz' (Gelenke, Organe)."
+        },
+        {
+          "id": "IMP03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Tools: Gerten, Paddles, Peitschen",
+          "help": "Einsatz von Hilfsmitteln statt nur der Hand.",
+          "tags": [
+            "impact",
+            "toys",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "IMP02",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "IMP04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Andere Zonen (Brüste, Oberschenkel)",
+          "help": "Po ist Standard. Darf es woanders hin?",
+          "tags": [
+            "impact",
+            "zones",
+            "level2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "restraint",
+      "name": "07. Bondage & Fixierung",
+      "description": "Die Kunst des Fesselns.",
+      "questions": [
+        {
+          "id": "BND01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Leichte Fixierung (Soft Bondage)",
+          "help": "Festhalten, Tücher, Krawatten. Man kann sich theoretisch befreien.",
+          "tags": [
+            "bondage",
+            "soft",
+            "level1"
+          ]
+        },
+        {
+          "id": "BND02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Feste Fesseln (Handschellen, Seile)",
+          "help": "Man ist wirklich fixiert und hilflos.",
+          "tags": [
+            "bondage",
+            "hard",
+            "level2"
+          ],
+          "info_details": "Gefühl der völligen Auslieferung. Kann sehr entspannend wirken, weil man 'nichts mehr tun muss'. Attachment Theory: Fesseln erzeugt extreme Vulnerabilität - funktioniert nur mit sicherem Bindungsstil oder sehr hohem Vertrauen. Ängstlich gebundene können in Panik geraten (Trigger: Hilflosigkeit). Psychologie: Paradox der Freiheit durch Einschränkung. Sicherheit: Niemals allein lassen. Schere bereit halten. Auf Nervenbahnen achten (taube Finger = sofort lösen!)."
+        },
+        {
+          "id": "BND03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Knebel (Gags)",
+          "help": "Den Mund verschließen. (Atmung muss immer frei sein!)",
+          "tags": [
+            "bondage",
+            "gag",
+            "level2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "risks",
+      "name": "08. High Risk & Tabus (Optional)",
+      "description": "Dinge, die besondere Vorsicht erfordern.",
+      "questions": [
+        {
+          "id": "RSK01A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Hand am Hals (nur Berührung, kein Druck)",
+          "help": "Nur Kontakt, niemals auf den Kehlkopf.",
+          "tags": [
+            "risk",
+            "breath",
+            "level2"
+          ]
+        },
+        {
+          "id": "RSK01B",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Leichter Druck seitlich (kurz, nie Kehlkopf)",
+          "help": "Nur seitlich an den Halsschlagadern, sofort stoppen bei Unsicherheit.",
+          "tags": [
+            "risk",
+            "breath",
+            "level2"
+          ],
+          "depends_on": {
+            "id": "RSK01A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "RSK01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Breathplay mit Druck / Choking",
+          "help": "WARNUNG: Extrem hohes Risiko! Niemals allein. Niemals Kehlkopf.",
+          "tags": [
+            "risk",
+            "breath",
+            "level3"
+          ],
+          "info_details": "Psychologie: Das Spiel mit der Urangst (Ersticken) und dem ultimativen Vertrauen ('Du hast mein Leben in der Hand'). Panic-Hormone Cascade: Adrenalin-Spike → Cortisol-Anstieg → bei Freigabe: Endorphin-Flood + Dopamin-Rush = extreme Euphorie. ABER: Physisch EXTREM gefährlich - Hirnschäden möglich bei 30+ Sekunden Sauerstoffmangel, Herzstillstand-Risiko, Tod möglich. Nur Carotiden (seitlich), NIEMALS Kehlkopf. Nur für Expert:innen mit medizinischem Wissen. Safeword muss non-verbal sein (Klopfen).",
+          "depends_on": {
+            "id": "RSK01B",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "RSK02A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Nadeln (oberflächlich, steril)",
+          "help": "Nur sterile Einweg-Needles, Desinfektion, keine tiefen Stiche.",
+          "tags": [
+            "risk",
+            "blood",
+            "level2"
+          ]
+        },
+        {
+          "id": "RSK02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Cutting / Blut / tiefe Nadeln",
+          "help": "WARNUNG: Infektionsrisiko. Nur mit Fachwissen.",
+          "tags": [
+            "risk",
+            "blood",
+            "level3"
+          ],
+          "depends_on": {
+            "id": "RSK02A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "RSK03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Andere Personen (Dreier / Gruppen)",
+          "help": "Hohes emotionales Risiko. Klare Regeln nötig.",
+          "tags": [
+            "risk",
+            "group",
+            "level2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "extreme",
+      "name": "09. Extreme Praktiken & Tiefe",
+      "description": "Für Fortgeschrittene.",
+      "questions": [
+        {
+          "id": "EXT01A",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Fisting Vorbereitung (3-4 Finger / Handrücken)",
+          "help": "Langsam dehnen, viel Gleitgel, Pausen einplanen.",
+          "tags": [
+            "extreme",
+            "fisting",
+            "prep"
+          ]
+        },
+        {
+          "id": "EXT01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Fisting (ganze Hand, vaginal/anal)",
+          "help": "Einführen der ganzen Hand.",
+          "tags": [
+            "extreme",
+            "fisting"
+          ],
+          "info_details": "Psychologie: Die ultimative Öffnung und das 'Füllen' der Leere. Erfordert extremes Vertrauen und Loslassen. Physisch ein sehr langsamer Prozess des Dehnens (Stunden!). Führt oft in einen tiefen Trance-Zustand (Subspace). Neuroscience: Transiente Hypofrontalität - präfrontaler Kortex schaltet ab, nur noch Körpergefühl bleibt. Endorphin-Flood + Depersonalisation. Wichtig: Niemals erzwingen, immer Gleitgel (auf Wasserbasis), langsame Dekompression nach dem Entfernen.",
+          "depends_on": {
+            "id": "EXT01A",
+            "values": [
+              "YES",
+              "MAYBE"
+            ]
+          }
+        },
+        {
+          "id": "EXT02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Petplay (Hund/Pony)",
+          "help": "Rollenspiel als Tier.",
+          "tags": [
+            "roleplay",
+            "petplay"
+          ],
+          "info_details": "Psychologie: 'Headspace'. Urlaub vom Menschsein. Keine Worte, keine komplexen Gedanken, nur Instinkt und Gehorsam. Sehr meditativ und befreiend von Alltagssorgen."
+        }
+      ]
+    },
+    {
+      "id": "psycho_aftercare",
+      "name": "Aftercare-Profile & Drop-Physiologie",
+      "description": "Was dein Körper & Geist nach intensiven Erfahrungen braucht",
+      "questions": [
+        {
+          "id": "AFC001",
+          "schema": "multi",
+          "risk_level": "A",
+          "label": "Meine physischen Aftercare-Bedürfnisse",
+          "help": "Was braucht dein Körper nach intensivem Sex/BDSM?",
+          "options": [
+            "Wasser / Snacks (Blutzucker stabilisieren)",
+            "Decke / Wärme",
+            "Kühle / Frische Luft",
+            "Shower / Baden",
+            "Wundversorgung / Erste Hilfe",
+            "Nichts Physisches nötig"
+          ],
+          "tags": [
+            "aftercare",
+            "physical",
+            "needs"
+          ],
+          "info_details": "Aftercare hat 3 Dimensionen: Physisch, Emotional, Temporal. Physiologie: Nach BDSM plummern Adrenalin, Dopamin, Endorphine. Das kann Zittern, Kälte, Hunger auslösen. Blutzucker fällt (daher das Schokolade-Cliché). Wasser ist wichtig, da intensive Aktivität dehydriert."
+        },
+        {
+          "id": "AFC002",
+          "schema": "multi",
+          "risk_level": "A",
+          "label": "Meine emotionalen Aftercare-Bedürfnisse",
+          "help": "Was brauchst du emotional, um wieder 'zu landen'?",
+          "options": [
+            "Kuscheln / Körperkontakt (Hold me)",
+            "Verbal Reassurance ('Ich liebe dich', 'Du warst toll')",
+            "Aktives Gespräch / Debrief über die Session",
+            "Stille Präsenz (keine Worte, nur da sein)",
+            "Raum & Alleinsein (Space, no touch)",
+            "Humor / Leichtigkeit bringen"
+          ],
+          "tags": [
+            "aftercare",
+            "emotional",
+            "needs"
+          ],
+          "info_details": "Attachment Style beeinflusst Aftercare: Ängstlich gebundene brauchen Reassurance + Nähe ('Du bist noch da'). Vermeidend gebundene brauchen Space zur Selbstregulation. Sub Drop verstärkt sich bei Mismatch (Sub will Nähe, Dom will Space). Forschung zeigt: 68% der BDSM-Community schätzen offene Kommunikation + Aftercare als zentral."
+        },
+        {
+          "id": "AFC003",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Zeitliche Dimension: Wie lange brauche ich Aftercare?",
+          "help": "Jeder Mensch braucht unterschiedlich lange",
+          "options": [
+            "5-10 Minuten reichen",
+            "30 Minuten bis 1 Stunde",
+            "Mehrere Stunden (z.B. bis zum Einschlafen)",
+            "Nächste Tage (Check-ins nötig)",
+            "Sehr individuell / Situationsabhängig"
+          ],
+          "tags": [
+            "aftercare",
+            "temporal",
+            "duration"
+          ],
+          "info_details": "Sub Drop kann Stunden bis TAGE dauern (sehr individuell). Forschung: 46% Frauen, 41% Männer berichten mindestens einmal post-koitale Dysphorie (Traurigkeit/Scham nach Sex). Bei BDSM ist der Drop durch Hormon-Crash intensiver. Dom Drop ist auch real: Schuldgefühle, Traurigkeit, Überwältigung. Aftercare eliminiert Drop nicht, reduziert nur Intensität."
+        },
+        {
+          "id": "AFC004",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Meine Warnzeichen für Sub/Dom Drop",
+          "help": "Optional: Wie erkenne ich (oder mein:e Partner:in), dass ich droppe? (z.B. Weinen, Rückzug, Gereiztheit, Stille)",
+          "tags": [
+            "aftercare",
+            "drop",
+            "warning_signs"
+          ],
+          "info_details": "Typische Sub Drop Symptome: Weinen ohne Traurigkeit, Zittern, Schüttelfrost, emotionaler Rückzug, Selbstzweifel, Scham. Dom Drop Symptome: Schuldgefühle ('Hab ich zu viel gemacht?'), Traurigkeit, Erschöpfung, Sorge um die:den Sub. Wichtig: Partner:in vorher darüber informieren, damit sie:er die Zeichen erkennt."
+        },
+        {
+          "id": "AFC005",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Partner:in gibt mir Aftercare, obwohl ich 'nein danke' sage",
+          "help": "Darf mein:e Partner:in meine 'Ich brauch nichts'-Aussage überstimmen?",
+          "tags": [
+            "aftercare",
+            "consent",
+            "override"
+          ],
+          "info_details": "Komplexe Frage: In Subspace ist Urteilsvermögen eingeschränkt (ähnlich Alkohol). Manche Tops überstimmen 'Ich brauch nichts', weil sie wissen, dass Drop in 1h kommt. Wichtig: Vorherige Vereinbarung nötig ('Wenn du X sagst, ignoriere ich das und gebe dir Y'). Ohne Absprache ist Override grenzüberschreitend. Empfehlung: Aftercare-Plan VOR der Session besprechen."
+        },
+        {
+          "id": "AFC006",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Nach intensivem Sex/BDSM: Wie wichtig ist mir Aftercare?",
+          "help": "1 = Brauche ich nicht, 11 = Absolut essentiell für mich",
+          "tags": [
+            "aftercare",
+            "importance",
+            "priority"
+          ],
+          "info_details": "Manche Menschen brauchen kein Aftercare und fühlen sich sogar eingeengt davon. Andere kollabieren ohne. Beides ist okay. Wichtig: Partner:in muss dein Bedürfnis-Level kennen. Bei großem Mismatch (9 vs. 2) ist Kompromiss oder Vorbereitung nötig (z.B. Decke/Snacks bereitstellen, wenn Partner:in nicht kuscheln mag)."
+        },
+        {
+          "id": "AFC007",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Check-in am nächsten Tag (SMS/Anruf nach Session)",
+          "help": "Brauche ich Bestätigung, dass 'wir okay sind'?",
+          "tags": [
+            "aftercare",
+            "followup",
+            "communication"
+          ],
+          "info_details": "Temporal Aftercare: Manche brauchen Next-Day Check-in ('Wie geht's dir heute?'). Ängstlich gebundene zeigen höheres Bedürfnis nach post-sex Kontakt. Vermeidend gebundene empfinden das als Klammerung. Wichtig: Bedürfnisse offen kommunizieren, nicht erwarten. Sub Drop kann verzögert auftreten (24-48h später)."
+        },
+        {
+          "id": "AFC008",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Wenn ich droppe: Was hilft MIR am meisten?",
+          "help": "Aus deiner Erfahrung: Was hat in der Vergangenheit geholfen?",
+          "options": [
+            "Physische Nähe & Kuscheln",
+            "Gespräch & Reassurance",
+            "Ablenkung (Film, Essen, Spaziergang)",
+            "Zeit & Ruhe allein",
+            "Schlafen",
+            "Noch nie Drop erlebt / Weiß nicht"
+          ],
+          "tags": [
+            "aftercare",
+            "drop",
+            "recovery"
+          ],
+          "info_details": "Drop-Recovery ist individuell. Manche brauchen oxytocin-boost durch Kuscheln. Andere brauchen Cortisol-Abbau durch Ruhe. Wieder andere brauchen Ablenkung, um aus der Grübel-Spirale rauszukommen. Wichtig: Mit Partner:in teilen, BEVOR es passiert. Im Drop selbst ist Kommunikation schwer."
+        },
+        {
+          "id": "AFC009",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Mein idealer Aftercare-Ablauf (Beschreibung)",
+          "help": "Optional: Beschreibe deinen Perfect-Scenario Aftercare (z.B. '10min Kuscheln, dann Wasser, dann Dusche zusammen, dann reden')",
+          "tags": [
+            "aftercare",
+            "profile",
+            "planning"
+          ],
+          "info_details": "Aftercare-Profil erstellen: Hilft, Partner:in konkrete Anleitung zu geben. Beispiel: '1. Decke über mich legen, 2. Wasser reichen, 3. Neben mir sitzen (kein Reden), 4. Nach 15min fragen ob ich reden will.' Je spezifischer, desto besser kann Partner:in deine Needs erfüllen."
+        },
+        {
+          "id": "AFC010",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Als Dom/Top: Ich brauche auch Aftercare",
+          "help": "Auch die führende Person kann emotionale Erschöpfung erleben",
+          "tags": [
+            "aftercare",
+            "dom_drop",
+            "top_care"
+          ],
+          "info_details": "Dom Drop ist real aber oft unsichtbar. Tops fühlen sich manchmal schuldig für Intensität ('War das okay?') oder erschöpft von der Verantwortung. Forschung zeigt: Dominants erleben auch Hormon-Schwankungen. Wichtig: Subs sollten auch Tops Aftercare geben (Reassurance, Dankbarkeit, physische Nähe falls gewünscht). Macht ist Dienstleistung - Dienstleister:innen brauchen Anerkennung."
+        }
+      ]
+    },
+    {
+      "id": "psycho_attachment",
+      "name": "Bindung & Emotionale Basis",
+      "description": "Wie dein Bindungsstil deine Intimität beeinflusst (basiert auf Attachment Theory)",
+      "questions": [
+        {
+          "id": "ATT001",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Mein dominanter Bindungsstil in intimen Beziehungen",
+          "help": "Kein Richtig/Falsch - nur Selbsterkenntnis",
+          "options": [
+            "Sicher: Ich bin komfortabel mit Nähe und Autonomie",
+            "Ängstlich: Ich sorge mich oft, verlassen zu werden",
+            "Vermeidend: Ich halte emotionale Distanz, um unabhängig zu bleiben",
+            "Desorganisiert/Gemischt: Wechselt je nach Situation",
+            "Weiß nicht / Kann nicht einschätzen"
+          ],
+          "tags": [
+            "psychology",
+            "attachment",
+            "foundation"
+          ],
+          "info_details": "Attachment Theory (Bowlby/Ainsworth): Dein Bindungsstil aus Kindheit prägt, wie du mit Nähe/Distanz in Erwachsenenbeziehungen umgehst. Sicher gebundene fühlen sich wohl mit Intimität UND Autonomie. Ängstlich gebundene fürchten Verlassenwerden und suchen konstante Nähe. Vermeidend gebundene schützen Autonomie durch emotionale Distanz. Forschung zeigt: Vermeidender Bindungsstil korreliert negativ mit Intimität und Beziehungszufriedenheit."
+        },
+        {
+          "id": "ATT002",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Nach intensivem Sex: Wie wichtig ist dir physische Nähe/Kuscheln?",
+          "help": "1 = Brauche Space, 11 = Brauche intensive Nähe",
+          "tags": [
+            "aftercare",
+            "attachment",
+            "closeness"
+          ],
+          "info_details": "Ängstlich gebundene brauchen oft mehr Rückversicherung nach Sex (Kuscheln = 'Du bist noch da, ich bin nicht allein'). Vermeidend gebundene brauchen Raum zur Selbstregulation ('Ich brauche meine Autonomie zurück'). Weder noch ist falsch - aber Partnermismatch kann Sub Drop verstärken. Wichtig: Bedürfnisse explizit kommunizieren."
+        },
+        {
+          "id": "ATT003",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Reassurance während Sex (z.B. 'Du bist schön', 'Ich will nur dich')",
+          "help": "Verbale Bestätigung gegen Verlustangst",
+          "tags": [
+            "communication",
+            "attachment",
+            "reassurance"
+          ],
+          "info_details": "Ängstlich gebundene profitieren stark von Reassurance-Kommunikation. Sätze wie 'Du bist genug', 'Ich bin bei dir' reduzieren Trennungsangst während vulnerabler Momente. Sicher gebundene brauchen es weniger, schätzen es aber. Vermeidend gebundene können es als 'zu viel' empfinden. Kommunikation: 'Magst du, wenn ich dir sage, dass...?'"
+        },
+        {
+          "id": "ATT004",
+          "schema": "text",
+          "risk_level": "A",
+          "label": "Wenn ich mich nach Sex emotional zurückziehe, ist das weil...",
+          "help": "Optional: Was triggert deinen Rückzug? (z.B. Überwältigung, Scham, Autonomie-Bedürfnis)",
+          "tags": [
+            "attachment",
+            "boundaries",
+            "reflection"
+          ],
+          "info_details": "Rückzug kann viele Gründe haben: Vermeidend gebundene brauchen Space ('Deactivating strategy'). Ängstlich gebundene ziehen sich aus Scham zurück ('Ich war zu viel'). Trauma-Überlebende dissoziieren manchmal post-sex. Wichtig: Partner:in vorher erklären, DASS du dich zurückziehst (nicht warum im Moment). Reduziert Missverständnisse."
+        },
+        {
+          "id": "ATT005",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Bedürfnis nach 'Check-ins' am nächsten Tag (SMS/Anruf)",
+          "help": "Brauche ich Bestätigung, dass 'wir okay sind'?",
+          "tags": [
+            "attachment",
+            "aftercare",
+            "communication"
+          ],
+          "info_details": "Ängstlich gebundene zeigen höheres Bedürfnis nach post-sex Kontakt. Forschung: 60,5% submissive Frauen zeigten höchste Trennungsangst-Werte. Vermeidend gebundene empfinden Check-ins als Klammerung. Wichtig: Bedürfnisse vorher kommunizieren ('Ich brauche ein kurzes \\\"Hey, wie geht's dir?\\\" am nächsten Tag'), nicht erwarten."
+        },
+        {
+          "id": "ATT006",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Wenn mein:e Partner:in nach Sex Space braucht, fühle ich...",
+          "help": "Wie reagierst du auf Rückzug?",
+          "options": [
+            "Entspannt - Jede:r braucht mal Space",
+            "Leicht unsicher - Aber ich verstehe es",
+            "Ängstlich - 'Hab ich was falsch gemacht?'",
+            "Verletzt - Fühlt sich an wie Ablehnung",
+            "Erleichtert - Ich brauche auch Space"
+          ],
+          "tags": [
+            "attachment",
+            "anxiety",
+            "rejection"
+          ],
+          "info_details": "Ängstlich gebundene interpretieren Space als Ablehnung (Rejection Sensitivity). Vermeidend gebundene fühlen sich erleichtert (Autonomie wiederhergestellt). Sicher gebundene können beides akzeptieren. Wichtig: Partner:in sollte Space kommunizieren ('Ich brauch 20min für mich, dann bin ich wieder da') statt einfach zu verschwinden. Reduziert Angst."
+        },
+        {
+          "id": "ATT007",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "label": "Eifersucht/Besitzdenken: Wie stark ist das bei mir?",
+          "help": "1 = Gar nicht eifersüchtig, 11 = Sehr eifersüchtig",
+          "tags": [
+            "attachment",
+            "jealousy",
+            "monogamy"
+          ],
+          "info_details": "Eifersucht korreliert mit ängstlichem Bindungsstil (Verlustangst). Vermeidend gebundene zeigen weniger Eifersucht (emotionale Distanz schützt). Sicher gebundene haben gesundes Maß. Wichtig: Eifersucht ist nicht 'toxisch', sondern ein Signal für Unsicherheit. Bei hoher Eifersucht: Offene Beziehungen/Non-Monogamie können herausfordernd sein."
+        },
+        {
+          "id": "ATT008",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Über Bindungs-Unsicherheiten sprechen",
+          "help": "Kann ich sagen 'Ich bin ängstlich, dass du mich verlässt'?",
+          "tags": [
+            "vulnerability",
+            "attachment",
+            "communication"
+          ],
+          "info_details": "Earned Security: Auch ängstlich oder vermeidend gebundene können 'sicherer' werden durch: 1) Selbstreflexion (Bindungsstil kennen), 2) Kommunikation (Bedürfnisse aussprechen), 3) Partner:in, die konsistent reagiert. Forschung zeigt: Offene Kommunikation über Attachment-Ängste reduziert Beziehungsprobleme."
+        },
+        {
+          "id": "ATT009",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Emotionale Intimität vs. Körperliche Intimität: Was fällt mir schwerer?",
+          "help": "Wo sind deine Herausforderungen?",
+          "options": [
+            "Emotionale Intimität (Gefühle zeigen, Verletzlichkeit)",
+            "Körperliche Intimität (Berührung, Sex)",
+            "Beides gleich schwer",
+            "Beides gleich leicht",
+            "Situationsabhängig"
+          ],
+          "tags": [
+            "attachment",
+            "intimacy",
+            "vulnerability"
+          ],
+          "info_details": "Vermeidend gebundene finden emotionale Intimität oft schwerer als körperliche ('Sex ist okay, aber über Gefühle reden ist too much'). Ängstlich gebundene wollen emotionale Intimität, haben aber Angst vor Ablehnung. Sicher gebundene können beides integrieren. Wichtig: Mit Partner:in teilen, wo deine Herausforderung liegt."
+        },
+        {
+          "id": "ATT010",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Meine größte Angst in intimer Nähe",
+          "help": "Optional: Was ist dein tiefster Fear? (z.B. 'Verlassen werden', 'Zu viel zu sein', 'Autonomie zu verlieren')",
+          "tags": [
+            "attachment",
+            "fear",
+            "vulnerability"
+          ],
+          "info_details": "Core Wounds: Ängstlich gebundene fürchten Abandonment ('Ich werde verlassen'). Vermeidend gebundene fürchten Engulfment ('Ich verliere mich selbst'). Desorganisiert gebundene fürchten beides. Diese Ängste zu benennen ist der erste Schritt zur Heilung. Partner:in kann dann gezielt Sicherheit geben ('Ich gehe nicht weg' oder 'Du darfst eigenständig sein')."
+        }
+      ]
+    },
+    {
+      "id": "psycho_subspace",
+      "name": "Subspace, Trance & Neurologische Zustände",
+      "description": "Wie dein Gehirn auf intensive Erfahrungen reagiert (Endorphine, Trance, Flow)",
+      "questions": [
+        {
+          "id": "SUB001",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Habe ich schon mal 'Subspace' oder tranceähnliche Zustände erlebt?",
+          "help": "Subspace = Rauschzustand während/nach BDSM oder intensivem Sex",
+          "options": [
+            "Ja, mehrfach - kenne das Gefühl gut",
+            "Einmal - war intensiv/beängstigend",
+            "Vielleicht? Bin mir nicht sicher",
+            "Nein, noch nie bewusst",
+            "Weiß nicht, was das ist"
+          ],
+          "tags": [
+            "subspace",
+            "psychology",
+            "altered_states"
+          ],
+          "info_details": "Subspace ist ein neurochemischer Zustand: Sympathisches Nervensystem aktiviert sich (Adrenalin, Cortisol), dann kommen Endorphine, Oxytocin, Dopamin. 2016-Studie zeigt 'transiente Hypofrontalität' - reduzierte Aktivität im präfrontalen Kortex (wie bei Meditation). Kann zu Depersonalisation/Derealisation führen (in diesem Kontext positiv erlebt). Endocannabinoide ändern sich ebenfalls, Belohnungssystem involviert."
+        },
+        {
+          "id": "SUB002",
+          "schema": "multi",
+          "risk_level": "B",
+          "label": "Welche dieser Subspace-Symptome habe ich erlebt?",
+          "help": "Mehrfachauswahl möglich",
+          "options": [
+            "Zeitverzerrung (Stunden fühlen sich wie Minuten an)",
+            "Schwebegefühl / Out-of-Body",
+            "Taubheit / Schmerzunempfindlichkeit",
+            "Sprachschwierigkeiten / Nonverbal",
+            "Tunnel vision / Fokus nur auf eine Person",
+            "Euphorie / Lachanfall danach",
+            "Weinen ohne Traurigkeit",
+            "Zittern / Schüttelfrost",
+            "Nichts davon / Noch nie"
+          ],
+          "tags": [
+            "subspace",
+            "physiology",
+            "symptoms"
+          ],
+          "info_details": "Diese Symptome entstehen durch Neurochemie-Shifts. Zeitverzerrung = Dopamin-Effekt. Schmerzunempfindlichkeit = Endorphine (natürliche Opioide). Sprachschwierigkeiten = Hypofrontalität (Sprachzentrum teilweise offline). Weinen ohne Traurigkeit = Hormon-Release, emotionale Katharsis. Alle Symptome sind normal und verschwinden nach Minuten bis Stunden."
+        },
+        {
+          "id": "SUB003",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Absichtlich in Trance/Flow-Zustände gehen (z.B. durch Schmerz, Wiederholung)",
+          "help": "Das 'Loslassen' des bewussten Denkens",
+          "tags": [
+            "subspace",
+            "trance",
+            "control"
+          ],
+          "info_details": "Verschiedene Subspace-Wege: Endorphin-Subspace (Impact, Schmerz), Noradrenalin-Subspace (Adrenalin/Angst z.B. Breathplay), Serotonin-Subspace (meditative Wiederholung z.B. Petplay). Alle involvieren das Belohnungssystem (Dopamin, Endocannabinoide). Absichtlich Trance induzieren = fortgeschrittene Technik, erfordert Körperbewusstsein."
+        },
+        {
+          "id": "SUB004",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "label": "Wie gut kann ich in Subspace kommunizieren / Safeword sagen?",
+          "help": "1 = Komplett nonverbal, 11 = Voll bei Bewusstsein",
+          "tags": [
+            "safety",
+            "subspace",
+            "communication"
+          ],
+          "info_details": "WICHTIG: In tiefem Subspace ist Einwilligungsfähigkeit eingeschränkt (ähnlich Alkohol-Rausch). Hypofrontalität = präfrontaler Kortex (Entscheidung, Sprache) reduziert. Partner:in muss auf non-verbale Signale achten: Körperhaltung, Atemmuster, Gesichtsausdruck. Vorab Check-in: 'Wie erkenne ich, dass du zu weit weg bist?' Falls nonverbal: Non-verbales Safeword (Klopfen, Ball fallen lassen)."
+        },
+        {
+          "id": "SUB005",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Meine Strategien, um aus Subspace zurückzukommen",
+          "help": "Optional: Was hilft dir zu 'landen'? (z.B. Wasser trinken, Decke, sprechen, Realität checken)",
+          "tags": [
+            "aftercare",
+            "subspace",
+            "recovery"
+          ],
+          "info_details": "Grounding-Techniken: 5-4-3-2-1 Methode (5 Dinge sehen, 4 hören, 3 berühren, 2 riechen, 1 schmecken). Physische Erdung: Kaltes Wasser, fester Boden, Decke (Gewicht = Realität). Kognitive Erdung: Datum sagen, eigenen Namen sagen, einfache Mathe. Wichtig: Nicht zu schnell 'hochziehen' - sanfter Übergang reduziert Drop-Risiko."
+        },
+        {
+          "id": "SUB006",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Subspace ist für mich...",
+          "help": "Wie erlebst du diesen Zustand emotional?",
+          "options": [
+            "Befreiend & euphorisch - ich liebe es",
+            "Intensiv aber manchmal beängstigend",
+            "Unangenehm - mag Kontrollverlust nicht",
+            "Neutral - passiert einfach",
+            "Noch nie erlebt / Kann nicht beurteilen"
+          ],
+          "tags": [
+            "subspace",
+            "emotion",
+            "preference"
+          ],
+          "info_details": "Subspace ist nicht für alle positiv. Manche Menschen (besonders vermeidend gebundene oder Trauma-Überlebende) erleben Kontrollverlust als Panik-Trigger. Das ist völlig okay. Man MUSS nicht in Subspace gehen, um 'gutes BDSM' zu haben. Wichtig: Partner:in über deine Präferenz informieren."
+        },
+        {
+          "id": "SUB007",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "In tiefem Subspace weitermachen (wenn ich nonverbal bin)",
+          "help": "Darf Partner:in weitermachen, auch wenn ich nicht mehr antworten kann?",
+          "tags": [
+            "subspace",
+            "consent",
+            "risk"
+          ],
+          "info_details": "EXTREM kontrovers & risikoreich. Consent-Perspektive: Wenn du nonverbal bist, kannst du NICHT mehr einwilligen zu neuen Dingen. Pragmatische Perspektive: Manche möchten genau das ('Nimm mich, auch wenn ich weg bin'). Kompromiss: Vorab klare Vereinbarung ('Wenn ich in Subspace gehe, darfst du X machen, aber NICHT Y'). Partner:in muss extrem auf Körpersprache achten. WICHTIG: Im Zweifel STOPPEN."
+        },
+        {
+          "id": "SUB008",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Nach tiefem Subspace: Wie fühle ich mich meist?",
+          "help": "Was passiert, wenn du wieder 'hochkommst'?",
+          "options": [
+            "Glücklich & entspannt",
+            "Verwirrt / Desorientiert",
+            "Traurig / Weinerlich (Drop)",
+            "Energetisiert / High",
+            "Erschöpft / Need Sleep",
+            "Noch nie in tiefem Subspace gewesen"
+          ],
+          "tags": [
+            "subspace",
+            "aftercare",
+            "drop"
+          ],
+          "info_details": "Post-Subspace-Zustand ist individuell. Glücklich = Oxytocin + Dopamin noch aktiv. Traurig = Hormon-Crash (Sub Drop). Erschöpft = Cortisol-Abbau + körperliche Anstrengung. Wichtig: Partner:in sollte wissen, was bei DIR typisch ist, um entsprechende Aftercare zu geben."
+        },
+        {
+          "id": "SUB009",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Mein 'Point of No Return' in Subspace",
+          "help": "Optional: Woran erkenne ich (oder mein:e Partner:in), dass ich 'zu tief' gehe? (z.B. glasige Augen, keine Reaktion mehr, bestimmte Körperhaltung)",
+          "tags": [
+            "subspace",
+            "safety",
+            "awareness"
+          ],
+          "info_details": "Wichtig für Partner:in: Deine individuellen Warnzeichen kennen. Typische Signs: Pupillen erweitert, Blick 'leer', keine verbale Reaktion, Körper komplett entspannt oder steif, Atmung sehr flach oder sehr tief. Wenn Partner:in diese Signs sieht: Check-in ('Welche Farbe?' oder physischer Touch-Check). Bei keiner Reaktion: Session beenden, Aftercare starten."
+        }
+      ]
+    },
+    {
+      "id": "psycho_regulation",
+      "name": "Emotionale Grenzen & Regulation",
+      "description": "Wie du mit Überwältigung umgehst und emotionale Grenzen setzt",
+      "questions": [
+        {
+          "id": "REG001",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Wie gut erkenne ich meine eigenen emotionalen Grenzen?",
+          "help": "1 = Merke erst hinterher, dass es zu viel war, 11 = Spüre sofort, wenn es too much wird",
+          "tags": [
+            "regulation",
+            "boundaries",
+            "awareness"
+          ],
+          "info_details": "Trauma-Forschung: Schwierigkeiten in Emotionsregulation sind dokumentierte Folge von Kindheitstrauma. Wenn dein Nervensystem gelernt hat, dass Selbstausdruck riskant ist (Grenzen wurden ignoriert), verlierst du die Verbindung zu deinen eigenen Signalen. Interozeption (innere Wahrnehmung) kann trainiert werden: Körper-Scan, Mindfulness, 'Check-in mit mir selbst' während Sex."
+        },
+        {
+          "id": "REG002",
+          "schema": "multi",
+          "risk_level": "B",
+          "label": "Woran erkenne ich, dass ich emotional überwältigt bin?",
+          "help": "Mehrfachauswahl möglich",
+          "options": [
+            "Körper: Zittern, Atemnot, Herzrasen",
+            "Dissoziation: Fühle mich 'weg' oder taub",
+            "Weinen / Unkontrollierbare Emotionen",
+            "Panik / Freeze-Response",
+            "Wut / Aggression",
+            "Sprachverlust / Kann nicht mehr reden",
+            "Übelkeit / Körperliche Symptome",
+            "Weiß ich nicht / Erkenne es nicht"
+          ],
+          "tags": [
+            "regulation",
+            "overwhelm",
+            "symptoms"
+          ],
+          "info_details": "Trauma-informierter Ansatz: Freeze/Fawn-Response ist Überlebensstrategie, NICHT Consent. Dissoziation = Nervensystem schaltet ab zum Selbstschutz. Wichtig: Diese Reaktionen sind NICHT deine Schuld. Partner:in muss wissen: Wenn du X zeigst, bist du überfordert. Safeword-Alternative: Traffic Light System (Grün/Gelb/Rot) auch non-verbal (zeigen mit Fingern)."
+        },
+        {
+          "id": "REG003",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Meine Strategien, um emotional 'runterzukommen'",
+          "help": "Optional: Was hilft dir, wenn es zu viel wird? (z.B. Atmen, Raum verlassen, Safe Person anrufen, kaltes Wasser)",
+          "tags": [
+            "regulation",
+            "coping",
+            "strategies"
+          ],
+          "info_details": "Evidenz-basierte Techniken: Box Breathing (4 ein, 4 halten, 4 aus, 4 halten). Kaltes Wasser (Dive Reflex aktiviert Parasympathikus). Grounding (5-4-3-2-1). Bilateral Stimulation (abwechselnd linke/rechte Schulter klopfen). Wichtig: VOR der Session 2-3 Strategien mit Partner:in teilen, damit sie:er dich unterstützen kann."
+        },
+        {
+          "id": "REG004",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Intensität bewusst steigern (z.B. durch Edging, Denial, Overstimulation)",
+          "help": "Magst du es, an deine emotionalen Grenzen gebracht zu werden?",
+          "tags": [
+            "regulation",
+            "intensity",
+            "edging"
+          ],
+          "info_details": "Psychologie: Vorsätzliche Intensität (wie Orgasm Denial) trainiert emotionale Regulation - du lernst, mit Frustration/Überwältigung umzugehen. Window of Tolerance: Du erweiterst deine Kapazität für Arousal. ABER: Erfordert extrem sichere Basis, Vertrauen und Safeword-Commitment. Risiko: Wenn zu intensiv → Dissoziations-Trigger. Partner:in muss auf Signs achten."
+        },
+        {
+          "id": "REG005",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Wenn ich überfordert bin, zeige ich das...",
+          "help": "Wie kommunizierst du Überforderung?",
+          "options": [
+            "Sofort & klar (Safeword / Stopp-Signal)",
+            "Nonverbal (Erstarren, Weinen, Körpersprache)",
+            "Verzögert (Merke erst später, dass es zu viel war)",
+            "Gar nicht (Dissoziiere / Schalte ab)",
+            "Situationsabhängig / Kann variieren"
+          ],
+          "tags": [
+            "regulation",
+            "communication",
+            "signals"
+          ],
+          "info_details": "Wichtig für Partner:in: Wenn du 'abschaltest' (freeze/dissoziiere), ist das KEIN Consent für 'weitermachen'. Check-in Fragen während Session: 'Welche Farbe?' (Ampelsystem), 'Sag mir ein Wort' (Sprachfähigkeit testen), 'Zeig mir 3 Finger' (Motorik-Check). Bei keiner Reaktion: STOPP, Aftercare, Grounding."
+        },
+        {
+          "id": "REG006",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "label": "Meine 'Window of Tolerance' für emotionale Intensität",
+          "help": "1 = Sehr schmales Fenster (schnell überfordert), 11 = Sehr breites Fenster (kann viel aushalten)",
+          "tags": [
+            "regulation",
+            "tolerance",
+            "capacity"
+          ],
+          "info_details": "Window of Tolerance (Trauma-Therapie-Konzept): Der Bereich, in dem du funktionieren kannst ohne Hyper-Arousal (Panik) oder Hypo-Arousal (Shutdown). Trauma verkleinert das Fenster. Sichere Beziehungen erweitern es. BDSM kann therapeutisch wirken (kontrollierte Grenzerfahrung), ABER nur mit trauma-informiertem Ansatz. Kein Ersatz für Therapie."
+        },
+        {
+          "id": "REG007",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Partner:in 'liest' meine Grenzen (ohne dass ich sie sage)",
+          "help": "Soll mein:e Partner:in an meiner Körpersprache erkennen, wann Stopp ist?",
+          "tags": [
+            "regulation",
+            "consent",
+            "reading"
+          ],
+          "info_details": "Problematisch: Verlässt sich auf 'Gedankenlesen' statt Kommunikation. Kann schiefgehen (falsch interpretiert). ABER: In Subspace oder bei Sprachverlust ist es notwendig. Kompromiss: Vorab Körper-Signale definieren ('Wenn ich X mache, bin ich am Limit'). Partner:in sollte im Zweifel IMMER fragen oder stoppen. Wichtig: Physiologische Arousal (Erregung) ≠ Consent - Körper kann erregt sein trotz emotionaler Überforderung."
+        },
+        {
+          "id": "REG008",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Meine Trigger (Dinge, die mich instant überfordern)",
+          "help": "Optional: Was sind absolute No-Gos, weil sie dich emotional destabilisieren? (z.B. bestimmte Worte, Situationen, Körperstellen)",
+          "tags": [
+            "regulation",
+            "triggers",
+            "boundaries"
+          ],
+          "info_details": "Trigger sind oft trauma-related. Können unvorhersehbar sein. Wichtig: Partner:in VORHER mitteilen (soweit bekannt). Manche Trigger zeigen sich erst während Session - dann gilt: Safeword, sofort Stopp, kein Blame ('Warum hast du das nicht gesagt?'). Trauma-Trigger sind nicht 'Schwäche', sondern neurologische Realität."
+        },
+        {
+          "id": "REG009",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Nach emotional intensiven Sessions: Wie verarbeite ich das?",
+          "help": "Was ist deine typische Reaktion in den Stunden/Tagen danach?",
+          "options": [
+            "Schnelle Integration - bin schnell wieder 'normal'",
+            "Brauche Zeit allein zum Nachdenken",
+            "Brauche Gespräch mit Partner:in (Processing)",
+            "Fühle mich weird / dissoziiert für Tage",
+            "Vermeide Nachdenken / Verdränge es",
+            "Noch nie emotional intensive Session gehabt"
+          ],
+          "tags": [
+            "regulation",
+            "processing",
+            "integration"
+          ],
+          "info_details": "Integration ist Teil des Prozesses. Manche brauchen verbales Processing (Debrief), andere non-verbale Präsenz. Dissoziierte Nachwirkung kann verzögerter Drop sein. Verdrängung funktioniert kurzfristig, aber Emotionen kommen zurück. Gesunder Ansatz: Scheduled Debrief 24-48h nach Session ('Wie geht's dir? Was war gut? Was war schwierig?')."
+        }
+      ]
+    },
+    {
+      "id": "psycho_shame",
+      "name": "Scham, Tabus & Innere Konflikte",
+      "description": "Wie Scham deine Sexualität beeinflusst (und wie man damit umgeht)",
+      "questions": [
+        {
+          "id": "SHA001",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Wie viel sexuelle Scham trage ich in mir?",
+          "help": "1 = Keine Scham, 11 = Extreme Scham bei meinen Fantasien/Wünschen",
+          "tags": [
+            "shame",
+            "psychology",
+            "self_assessment"
+          ],
+          "info_details": "Sexual Shame = gelernte negative Emotion um sexuelle Gefühle/Handlungen. Entsteht durch: kulturelle Botschaften, religiöse Erziehung, Körperscham, sexuelles Trauma. Scham hemmt die natürliche Erregungsantwort des Körpers - du gehst in 'closed state'. Forschung zeigt: Scham reduziert Arousal, Desire und Orgasmusfähigkeit. Wichtig: Du bist NICHT mit Scham geboren - sie wurde dir beigebracht."
+        },
+        {
+          "id": "SHA002",
+          "schema": "multi",
+          "risk_level": "B",
+          "label": "Wo kommt meine sexuelle Scham her? (Mehrfachauswahl)",
+          "help": "Versuch zu identifizieren, woher deine Scham stammt",
+          "options": [
+            "Religiöse Erziehung / Moralvorstellungen",
+            "Kulturelle Tabus / Familie",
+            "Körperscham / Body Image",
+            "Frühere negative sexuelle Erfahrungen / Trauma",
+            "Gesellschaftliche Normen (Queerness, Kink, Geschlechterrollen)",
+            "Medien / Pornografie-Vergleiche",
+            "Keine spezifische Quelle / Weiß nicht",
+            "Trifft nicht zu / Habe keine Scham"
+          ],
+          "tags": [
+            "shame",
+            "origins",
+            "reflection"
+          ],
+          "info_details": "Drei Formen von Scham (Forschung): 1) Internalisierte Scham ('Ich bin schlecht'), 2) Relationale Scham ('Andere würden mich ablehnen'), 3) Sexual Inferiority ('Ich bin sexuell minderwertig'). Quellen zu identifizieren ist erster Schritt zur Heilung - du kannst Scham nicht bekämpfen, die du nicht verstehst."
+        },
+        {
+          "id": "SHA003",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Eine Fantasie, für die ich mich schäme (aber die mich trotzdem erregt)",
+          "help": "Optional & vertraulich. Nur wenn du möchtest. Muss nicht spezifisch sein ('Submission' reicht z.B.).",
+          "tags": [
+            "shame",
+            "fantasy",
+            "taboo"
+          ],
+          "info_details": "Fantasie ≠ Wunsch ≠ Identität. Du kannst von etwas erregt sein, das du niemals tun würdest. Das ist NORMAL. Forschung: Die meisten Menschen haben Fantasien, die sie niemals ausleben würden. Scham entsteht, wenn Moralemotionen (Schuld, Ekel) auf Erregung treffen. Wichtig: Akzeptanz der Fantasie reduziert Scham, nicht das Unterdrücken."
+        },
+        {
+          "id": "SHA004",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Über meine 'verbotenen' Fantasien sprechen",
+          "help": "Kann ich sie aussprechen, ohne zu implodieren?",
+          "tags": [
+            "communication",
+            "shame",
+            "vulnerability"
+          ],
+          "info_details": "Scham lebt vom Schweigen. Das Aussprechen (in sicherem Rahmen) bricht ihre Macht. Partner:innen-Reaktion ist kritisch: Urteil verstärkt Scham ('Das ist eklig'), Akzeptanz löst sie auf ('Ich urteile dich nicht', 'Danke fürs Vertrauen'). Wichtig: Wähle den richtigen Moment & Partner:in, die nicht schockiert reagiert."
+        },
+        {
+          "id": "SHA005",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Nach dem Sex: Schämst du dich manchmal für das, was passiert ist?",
+          "help": "Der 'Klarheitsmoment' danach",
+          "options": [
+            "Nie - fühle mich frei und gut",
+            "Selten - nur bei sehr intensiven Dingen",
+            "Manchmal - der 'Klarheitsmoment' danach fühlt sich weird an",
+            "Oft - Post-Sex-Schuld ist ein Muster bei mir",
+            "Immer - kämpfe mit post-koitaler Dysphorie"
+          ],
+          "tags": [
+            "shame",
+            "aftercare",
+            "post_sex"
+          ],
+          "info_details": "Post-koitale Dysphorie: 46% Frauen, 41% Männer berichten mindestens einmal Traurigkeit/Scham nach Sex (Journal of Sexual Medicine). Kann mit Scham-Internalisierung oder hormonal (Dopamin-Crash) zusammenhängen. Ist nicht deine Schuld. Bei chronischer post-sex Scham: Therapie erwägen. Aftercare mit Reassurance ('Das war schön', 'Ich schätze dich') hilft."
+        },
+        {
+          "id": "SHA006",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Meine Scham ist am stärksten bei...",
+          "help": "In welchem Kontext fühlst du die meiste Scham?",
+          "options": [
+            "Fantasien (Dinge, die ich mir vorstelle)",
+            "Masturbation (Selbstbefriedigung)",
+            "Mit Partner:in (Sex mit anderen)",
+            "Körper (Wie ich aussehe / Genitalien)",
+            "Kink/BDSM (Meine 'perversen' Wünsche)",
+            "Queerness (LGBTQ+ Identität)",
+            "Überall gleich",
+            "Keine Scham"
+          ],
+          "tags": [
+            "shame",
+            "context",
+            "reflection"
+          ],
+          "info_details": "Scham-Kontext identifizieren hilft bei gezielter Arbeit. Fantasie-Scham = internalisiert ('Ich bin schlecht für meine Gedanken'). Körper-Scham = Medien/Vergleiche. Kink-Scham = gesellschaftliche Stigma. Queerness-Scham = Diskriminierung. Jeder Kontext braucht eigenen Heilungsansatz (Therapie, Community, Akzeptanz)."
+        },
+        {
+          "id": "SHA007",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Scham als Teil des Spiels (Consensual Humiliation)",
+          "help": "Kann kontrollierte Scham (z.B. Degradierung) befreiend sein?",
+          "tags": [
+            "shame",
+            "kink",
+            "catharsis"
+          ],
+          "info_details": "Paradox: Manche nutzen BDSM, um Scham zu 'entmachten'. Consensual Humiliation = Du wählst, beschämt zu werden → Du kontrollierst die Scham → Scham verliert Macht. Aber: Bei tief internalisierter Scham kann es Trigger sein. Wichtig: Nur mit Partner:in, die zwischen Rolle und Mensch trennt. Aftercare mit Reassurance ('Das war nur Spiel, du bist wertvoll') ist ESSENTIELL."
+        },
+        {
+          "id": "SHA008",
+          "schema": "enum",
+          "risk_level": "A",
+          "label": "Wenn jemand meine Fantasien/Wünsche ablehnt, fühle ich...",
+          "help": "Wie reagierst du auf Ablehnung deiner sexuellen Seite?",
+          "options": [
+            "Entspannt - Nicht jede:r muss alles mögen",
+            "Leicht verletzt - Aber ich verstehe es",
+            "Tief verletzt - Fühlt sich an wie Ablehnung meiner Person",
+            "Beschämt - 'Ich bin falsch/pervers'",
+            "Erleichtert - Muss es nicht outen",
+            "Noch nie passiert / Weiß nicht"
+          ],
+          "tags": [
+            "shame",
+            "rejection",
+            "vulnerability"
+          ],
+          "info_details": "Rejection Sensitivity (Ablehnung-Sensibilität) ist höher bei Menschen mit Scham-Hintergrund. Wichtig zu verstehen: 'Ich mag das nicht' ≠ 'Du bist falsch'. Sexuelle Inkompatibilität ist okay. Aber: Wenn Partner:in dich für deine Fantasien verurteilt ('Das ist eklig'), ist das grenzüberschreitend. Du hast Recht auf kink-positive Partner:innen."
+        },
+        {
+          "id": "SHA009",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Mein größter Moral-Konflikt in meiner Sexualität",
+          "help": "Optional: 'Ich will X, aber ich glaube, dass X falsch/schlecht/sündig ist'",
+          "tags": [
+            "shame",
+            "moral",
+            "conflict"
+          ],
+          "info_details": "Kognitive Dissonanz: 'Ich will das' vs. 'Das ist falsch' = psychischer Stress. Quellen: Religion ('Sex ist Sünde'), Feminismus ('BDSM ist anti-feministisch'), Queerness ('Ich sollte nicht hetero-imitieren'). Heilung: 1) Erkenne, dass Moral subjektiv ist, 2) Suche Bestätigung in deiner Community, 3) Therapie bei tiefem Konflikt."
+        },
+        {
+          "id": "SHA010",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "label": "Wie sehr beeinflusst Scham mein sexuelles Erleben negativ?",
+          "help": "1 = Gar nicht, 11 = Blockiert mich komplett",
+          "tags": [
+            "shame",
+            "impact",
+            "sex"
+          ],
+          "info_details": "Scham-Impact-Assessment: Bei 7+: Professionelle Hilfe erwägen (Sexualtherapeut:in). Scham kann Arousal blockieren, Orgasmus verhindern, Beziehungen sabotieren. Aber: Scham ist heilbar. Therapie, sichere Partner:innen, Community-Support, Selbstakzeptanz - alles hilft. Du musst nicht für immer mit Scham leben."
+        },
+        {
+          "id": "SHA011",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "An meiner Scham arbeiten (Therapie, Selbstreflexion, Gespräche)",
+          "help": "Bin ich bereit, meine Scham anzuschauen und zu heilen?",
+          "tags": [
+            "shame",
+            "healing",
+            "growth"
+          ],
+          "info_details": "Scham-Arbeit ist mutig. Es bedeutet: 1) Scham benennen ('Ich schäme mich für X'), 2) Externalisieren ('Die Scham ist nicht ICH'), 3) Sichere Räume suchen (Therapie, vertrauensvolle Partner:in, Kink-Community), 4) Akzeptanz üben ('Ich habe diese Seite, und das ist okay'). Wichtig: Du musst Scham nicht 'lieben' - Akzeptanz reicht. Siehe: PSYCHOLOGIE_LEITFADEN.md Kapitel 3."
+        }
+      ]
+    },
+    {
+      "id": "psycho_power",
+      "name": "Power Dynamics & Machtaustausch",
+      "description": "Die Psychologie von Kontrolle, Hingabe und Macht in intimen Beziehungen",
+      "questions": [
+        {
+          "id": "POW001",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Warum reizt mich Machtabgabe/Submission?",
+          "help": "Optional: Was ist das Appeal von 'Kontrolle abgeben'? (z.B. Kopf ausschalten, Vertrauen, Befreiung)",
+          "tags": [
+            "power",
+            "submission",
+            "psychology"
+          ],
+          "info_details": "2024-Forschung zeigt: BDSM ist primär über Machtdynamiken, weniger über Schmerz. Submission-Appeal: 1) Kognitive Entlastung ('Kopf aus'), 2) Paradoxe Kontrolle (Du wählst, Kontrolle abzugeben = Du kontrollierst), 3) Vertrauens-Intimität (Vulnerabilität schafft Nähe), 4) Befreiung von Verantwortung. Attachment-Forschung: Submissive korreliert mit höherer Trennungsangst (60,5% weibliche Subs). Wichtig: Submission ist NICHT Schwäche - es ist aktive Wahl und erfordert Mut."
+        },
+        {
+          "id": "POW002",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Warum reizt mich Kontrolle/Dominanz?",
+          "help": "Optional: Was ist das Appeal von 'Macht haben'? (z.B. Verantwortung, Führung, Partner:in zum Vergnügen bringen)",
+          "tags": [
+            "power",
+            "dominance",
+            "psychology"
+          ],
+          "info_details": "Dominanz-Appeal: 1) Service-Orientierung ('Ich gebe dir, was du brauchst'), 2) Ästhetische Kontrolle (Jemanden 'in die richtige Form bringen'), 3) Emotionale Arbeit (Verantwortung für Safety), 4) Macht als Geschenk (Partner:in vertraut dir). Attachment-Forschung: Sichere & vermeidende Bindungsstile korrelieren mit Dominanz-Präferenz. Wichtig: Ethische Dominanz = Consent-basiert, nicht Exploitation. Macht ist Dienstleistung, keine Tyrannei."
+        },
+        {
+          "id": "POW003",
+          "schema": "scale_1_10",
+          "risk_level": "A",
+          "label": "Mein Control-Spektrum: Wie viel Kontrolle will ich abgeben/haben?",
+          "help": "1 = Ich will absolute Kontrolle abgeben (Total Submission), 11 = Ich will absolute Kontrolle haben (Total Dominance)",
+          "tags": [
+            "power",
+            "control",
+            "spectrum"
+          ],
+          "info_details": "Control-Spektrum ist fluide, nicht binär. Manche switchen je nach Partner:in, Stimmung, Kontext. 'Power Bottom' (submissive, aber führend) vs. 'Service Top' (dominant, aber dienend) zeigen Komplexität. Wichtig: Spektrum ≠ Identität - du musst nicht 'nur Dom' oder 'nur Sub' sein. Viele Menschen sind 'switch' oder haben nuancierte Präferenzen (z.B. 'dominant im Alltag, submissiv im Bett')."
+        },
+        {
+          "id": "POW004",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Protokolle & Rituale (z.B. Kniend begrüßen, Anrede-Regeln, Positionierung)",
+          "help": "Strukturierte Power-Symbole im Alltag/Sex",
+          "tags": [
+            "power",
+            "protocols",
+            "rituals"
+          ],
+          "info_details": "Protokolle = strukturierte Verhaltensweisen, die Machtdynamik sichtbar machen. Psychologie: Rituale schaffen 'containment' (sichere Grenzen für Power Exchange). Beispiele: Anrede ('Sir', 'Mistress'), Körperhaltung (knien), Ask-Permission ('Darf ich kommen?'). Wichtig: Protokolle sind verhandelbar - nicht jede:r mag sie. Können bei manchen befreiend wirken ('Ich weiß, was erwartet wird'), bei anderen einengend ('Zu viele Regeln')."
+        },
+        {
+          "id": "POW005",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Power Exchange in meinem Alltag: Wie weit geht es?",
+          "help": "Wo endet/beginnt die Machtdynamik?",
+          "options": [
+            "Nur in sexuellen Momenten (Bedroom only)",
+            "In intimen Situationen, aber nicht im Alltag",
+            "Im gemeinsamen Alltag (z.B. Entscheidungen, Planung)",
+            "Fast 24/7, aber mit Pausen/Safewords",
+            "Totale Power Exchange (TPE 24/7)",
+            "Weiß noch nicht / Situationsabhängig"
+          ],
+          "tags": [
+            "power",
+            "lifestyle",
+            "24/7"
+          ],
+          "info_details": "Lifestyle vs. Bedroom BDSM: Manche praktizieren nur im Sex, andere integrieren es in Alltag. Spectrum: 'Scenes' (zeitlich begrenzt) → 'Lifestyle' (immer aktiv, aber Pausen) → 'TPE' (keine Pausen, außer Notfall). Wichtig: 24/7 ist NICHT 'echter' oder 'besser' als Bedroom-Only. Jede Form hat eigene Herausforderungen & Rewards."
+        },
+        {
+          "id": "POW006",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "24/7 Total Power Exchange (TPE): Absolute Machtabgabe in allen Lebensbereichen",
+          "help": "WARNUNG: Extrem fortgeschritten, erfordert tiefes Vertrauen, Exit-Strategie, rechtliche Absicherung",
+          "tags": [
+            "power",
+            "TPE",
+            "extreme",
+            "24/7"
+          ],
+          "info_details": "TPE = Submissive gibt Kontrolle über ALLE Bereiche ab (Finanzen, Kleidung, Entscheidungen, Körper). Psychologie: Kann befreiend sein ('Ich muss nichts entscheiden'), ABER Risiko für Missbrauch ist hoch. WARNUNG: TPE ohne Exit-Plan ist gefährlich. Essentials: 1) Safeword bleibt IMMER gültig, 2) Rechtliche Grenzen (kein Vertrag macht illegale Handlungen legal), 3) Regelmäßige Check-ins ('Ist das noch gut für dich?'), 4) Exit-Strategie (finanzielle Unabhängigkeit, Support-Netzwerk). Viele 'TPE'-Beziehungen sind faktisch '23/7' mit Pausenmöglichkeiten."
+        },
+        {
+          "id": "POW007",
+          "schema": "enum",
+          "risk_level": "B",
+          "label": "Macht in meiner Beziehung: Wer entscheidet über Sex?",
+          "help": "Wie wird sexuelle Macht verteilt?",
+          "options": [
+            "Gemeinsam & gleichberechtigt (Switch/Egalitarian)",
+            "Ich entscheide meistens (Dominant/Top)",
+            "Partner:in entscheidet meistens (Submissive/Bottom)",
+            "Situationsabhängig / Fließend",
+            "Wir verhandeln jedes Mal neu (Consent-basiert)",
+            "Noch keine Partnerschaft / Weiß nicht"
+          ],
+          "tags": [
+            "power",
+            "decision_making",
+            "consent"
+          ],
+          "info_details": "Forschung: In gesunden BDSM-Beziehungen ist Macht verhandelt, nicht erzwungen. 'Consensual Non-Consent' (CNC) = Paradox der 'erzwungenen' Szenarien mit vorherigem Consent. Wichtig: Auch in D/s-Dynamik sollte Sub bei Meta-Entscheidungen Mitsprache haben ('Wollen wir diese Dynamik?', 'Sind die Grenzen okay?'). Unterschied: In-Scene-Macht vs. Meta-Ebene-Gleichberechtigung."
+        },
+        {
+          "id": "POW008",
+          "schema": "text",
+          "risk_level": "B",
+          "label": "Meine größte Angst bei Machtabgabe/Machtausübung",
+          "help": "Optional: Was beunruhigt dich? (z.B. Missbrauch, Verantwortung, Verlust von Selbst, zu weit gehen)",
+          "tags": [
+            "power",
+            "fear",
+            "boundaries"
+          ],
+          "info_details": "Häufige Ängste bei Submission: 1) Missbrauch ('Was, wenn sie:er zu weit geht?'), 2) Selbstverlust ('Verliere ich mich?'), 3) Verlassenheit ('Was, wenn sie:er mich danach verachtet?'). Häufige Ängste bei Dominanz: 1) Zu weit gehen ('Was, wenn ich verletze?'), 2) Ablehnung ('Was, wenn sie:er mich für Monster hält?'), 3) Verantwortung ('Ich muss alles richtig machen'). Heilung: Kommunikation, Safewords, Check-ins, Aftercare mit Reassurance."
+        },
+        {
+          "id": "POW009",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Macht als 'Service' verstehen (Dom dient den Bedürfnissen des Sub)",
+          "help": "Sehe ich Dominanz als Dienstleistung, nicht als Egotrip?",
+          "tags": [
+            "power",
+            "service",
+            "ethics"
+          ],
+          "info_details": "Service-Top-Konzept: Dominanz ist Arbeit für das Vergnügen/Wachstum des Sub. 'Selfish Dom' (nur eigene Lust) vs. 'Service Dom' (Sub's Bedürfnisse im Zentrum). Community-Weisheit: 'The sub has the power' - weil Sub durch Consent & Safeword die Meta-Kontrolle behält. Ethische Dominanz: 1) Sub's Grenzen respektieren, 2) Aftercare priorisieren, 3) Ego-Check ('Tue ich das für mich oder für uns?'), 4) Consent nie als selbstverständlich sehen."
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "name": "Review & Ausblick",
+      "description": "Was lernen wir aus der Vergangenheit? Was soll die Zukunft bringen?",
+      "questions": [
+        {
+          "id": "REV001",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": [
+            "review",
+            "repeat"
+          ],
+          "label": "Bereits erlebt: Intensive Praktik wiederholen?",
+          "help": "Bezieht sich auf Dinge, die wir schon gemacht haben. Wollen wir das weiterverfolgen?"
+        },
+        {
+          "id": "REV002",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "less"
+          ],
+          "label": "Was wollen wir weniger machen?",
+          "help": "Praktiken oder Dynamiken, die wir reduzieren oder pausieren möchten."
+        },
+        {
+          "id": "REV003",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "highlight"
+          ],
+          "label": "Was war ein Highlight, das wir wiederholen sollten?",
+          "help": "Besonders positive Erfahrungen, die wir gerne wiederholen möchten."
+        },
+        {
+          "id": "REV004",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "friction"
+          ],
+          "label": "Was hat nicht funktioniert?",
+          "help": "Ohne Schuldzuweisung: Was war schwierig oder hat sich nicht gut angefühlt?"
+        },
+        {
+          "id": "REV005",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "debrief"
+          ],
+          "label": "Debrief-Log: Letzte 4 Experimente",
+          "help": "Kurze Notizen zu den letzten Experimenten: Was hat funktioniert? Was nicht?"
+        },
+        {
+          "id": "REV006",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": [
+            "review",
+            "notes"
+          ],
+          "label": "Generelle Notizen / Wünsche an uns.",
+          "help": "Platz für alles, was sonst nirgends hinpasst."
+        }
+      ]
+    }
+  ]
+}
