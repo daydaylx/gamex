@@ -62,7 +62,8 @@ export function InterviewView({
 
   const currentScenario = scenarios[currentIndex];
   const progress = scenarios.length > 0 ? Math.round(((currentIndex + 1) / scenarios.length) * 100) : 0;
-  const isComplete = currentIndex >= scenarios.length;
+  const _isComplete = currentIndex >= scenarios.length;
+  void _isComplete; // Reserved for completion state handling
 
   // Load scenarios and session on mount
   useEffect(() => {
@@ -324,7 +325,8 @@ export function InterviewView({
   }
 
   const existingAnswer = getInterviewAnswer(sessionId, person, currentScenario.id);
-  const isAnswered = !!existingAnswer && !existingAnswer.skipped;
+  const _isAnswered = !!existingAnswer && !existingAnswer.skipped;
+  void _isAnswered; // Reserved for answer state visualization
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-120px)] relative">

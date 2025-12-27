@@ -109,7 +109,8 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
   const currentModuleId = currentQuestion?.moduleId;
   const currentModule = template.modules?.find(m => m.id === currentModuleId);
   const moduleIndex = currentQuestion?.moduleIndex ?? 0;
-  const totalModules = template.modules?.length ?? 0;
+  const _totalModules = template.modules?.length ?? 0;
+  void _totalModules; // Reserved for future module progress display
 
   // Get module phases for color coding
   const getModulePhase = (moduleId: string | undefined): string => {
@@ -139,14 +140,15 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
     lifestyle: "bg-purple-500/80 text-purple-100"
   };
 
-  // Ring colors for active state
-  const phaseRings: Record<string, string> = {
+  // Ring colors for active state (reserved for future use)
+  const _phaseRings: Record<string, string> = {
     foundation: "ring-blue-500/30",
     exploration: "ring-emerald-500/30",
     advanced: "ring-amber-500/30",
     expert: "ring-red-500/30",
     lifestyle: "ring-purple-500/30"
   };
+  void _phaseRings;
 
   const phaseLabels: Record<string, string> = {
     foundation: "Fundament",
@@ -191,7 +193,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
       // Show notes section if there's existing notes
       if (notesResponse && typeof notesResponse === "object" && notesResponse !== null && "text" in notesResponse) {
         const notesText = (notesResponse as { text: string }).text;
-        setShowNotes(notesText && notesText.trim().length > 0);
+        setShowNotes(Boolean(notesText && notesText.trim().length > 0));
       } else {
         setShowNotes(false);
       }
@@ -199,7 +201,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
       // Show conditions section if there's existing conditions
       if (conditionsResponse && typeof conditionsResponse === "object" && conditionsResponse !== null && "text" in conditionsResponse) {
         const conditionsText = (conditionsResponse as { text: string }).text;
-        setShowConditions(conditionsText && conditionsText.trim().length > 0);
+        setShowConditions(Boolean(conditionsText && conditionsText.trim().length > 0));
       } else {
         setShowConditions(false);
       }

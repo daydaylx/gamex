@@ -61,7 +61,8 @@ export async function callOpenRouter(
       clearTimeout(timeoutId);
       
       if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unknown error');
+        const _errorText = await response.text().catch(() => 'Unknown error');
+        void _errorText; // Reserved for detailed error logging
         let errorMessage = `OpenRouter API Fehler: ${response.status}`;
         
         // Handle specific error codes

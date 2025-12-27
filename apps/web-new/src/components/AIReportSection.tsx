@@ -1,5 +1,5 @@
-import { useState } from "preact/hooks";
-import { Sparkles, Loader2, X, AlertCircle } from "lucide-preact";
+import { useState, useEffect } from "preact/hooks";
+import { Sparkles, Loader2, X, AlertCircle, Clock } from "lucide-preact";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -8,12 +8,45 @@ import { hasAPIKey } from "../services/settings";
 import type { AIReportResponse } from "../types/ai";
 import type { Template } from "../types/template";
 import type { ResponseMap } from "../types/form";
+import type { ComparisonResult } from "../types/compare";
+
+const CACHE_PREFIX = "gamex:ai-report:";
+
+interface CachedReport {
+  report: AIReportResponse;
+  timestamp: string;
+}
+
+function getCachedReport(sessionId: string): CachedReport | null {
+  try {
+    const cached = localStorage.getItem(`${CACHE_PREFIX}${sessionId}`);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch {
+    // Ignore parse errors
+  }
+  return null;
+}
+
+function setCachedReport(sessionId: string, report: AIReportResponse): void {
+  try {
+    const cacheEntry: CachedReport = {
+      report,
+      timestamp: new Date().toISOString(),
+    };
+    localStorage.setItem(`${CACHE_PREFIX}${sessionId}`, JSON.stringify(cacheEntry));
+  } catch {
+    // Storage might be full
+  }
+}
 
 interface AIReportSectionProps {
   sessionId: string;
   template: Template;
   responsesA: ResponseMap;
   responsesB: ResponseMap;
+  scenarioComparisons?: ComparisonResult[];
 }
 
 export function AIReportSection({
@@ -21,12 +54,26 @@ export function AIReportSection({
   template,
   responsesA,
   responsesB,
+  scenarioComparisons,
 }: AIReportSectionProps) {
   const [report, setReport] = useState<AIReportResponse | null>(null);
   const [rawText, setRawText] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isCached, setIsCached] = useState(false);
+  const [cacheTimestamp, setCacheTimestamp] = useState<string | null>(null);
+
+  // Load cached report on mount
+  useEffect(() => {
+    const cached = getCachedReport(sessionId);
+    if (cached) {
+      setReport(cached.report);
+      setCacheTimestamp(cached.timestamp);
+      setIsCached(true);
+      setIsExpanded(true);
+    }
+  }, [sessionId]);
 
   async function handleGenerate() {
     if (!hasAPIKey()) {
@@ -38,12 +85,19 @@ export function AIReportSection({
     setError(null);
     setReport(null);
     setRawText(null);
+    setIsCached(false);
 
     try {
-      const result = await generateAIReport(template, responsesA, responsesB);
+      const result = await generateAIReport(template, responsesA, responsesB, scenarioComparisons);
       setReport(result.report);
       setRawText(result.rawText || null);
       setIsExpanded(true);
+
+      // Cache the report for later use
+      if (result.report) {
+        setCachedReport(sessionId, result.report);
+        setCacheTimestamp(new Date().toISOString());
+      }
     } catch (err) {
       console.error("AI Report error:", err);
       setError(err instanceof Error ? err.message : "Fehler bei KI-Auswertung");
@@ -57,6 +111,8 @@ export function AIReportSection({
     setReport(null);
     setRawText(null);
     setError(null);
+    setIsCached(false);
+    setCacheTimestamp(null);
   }
 
   return (
@@ -105,6 +161,23 @@ export function AIReportSection({
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Cached Indicator */}
+            {isCached && cacheTimestamp && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                <Clock className="h-3 w-3" />
+                <span>
+                  Gespeicherte Auswertung vom{" "}
+                  {new Date(cacheTimestamp).toLocaleDateString("de-DE", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+            )}
+
             {/* Error Display */}
             {error && (
               <div className="rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive flex items-start gap-2">

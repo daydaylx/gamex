@@ -1,10 +1,21 @@
 import { callOpenRouter, extractResponseText } from './openrouter';
 import { getAISettings } from '../settings';
-import type { AIReportRequest, AIReportResponse } from '../../types/ai';
+import type { AIReportResponse } from '../../types/ai';
 import type { Template, Question } from '../../types/template';
 import type { ResponseMap } from '../../types/form';
+import type { ComparisonResult } from '../../types/compare';
 
-const SYSTEM_PROMPT = `Du bist ein neutraler Auswertungs-Assistent für Fragebogen-Antworten von Paaren. Du fasst objektiv zusammen, beschreibst Unterschiede ohne Wertung, und gibst konkrete Gesprächsanlässe. Keine Diagnosen, keine Therapie, keine moralischen Urteile. Antworte als valides JSON im vorgegebenen Schema. Keine zusätzlichen Texte außerhalb des JSON.
+/**
+ * Extended report input with scenario comparisons
+ */
+export interface ExtendedReportInput {
+  template: Template;
+  responsesA: ResponseMap;
+  responsesB: ResponseMap;
+  scenarioComparisons?: ComparisonResult[];
+}
+
+const SYSTEM_PROMPT = `Du bist ein empathischer Auswertungs-Assistent für Paar-Fragebögen zu Intimität und Sexualität. Du fasst objektiv zusammen, beschreibst Unterschiede ohne Wertung, und gibst konkrete Gesprächsanlässe. Keine Diagnosen, keine Therapie, keine moralischen Urteile. Sei warm aber professionell. Antworte als valides JSON im vorgegebenen Schema. Keine zusätzlichen Texte außerhalb des JSON.
 
 Das JSON-Schema ist:
 {
@@ -80,13 +91,14 @@ function formatResponseValue(value: any, schema?: string): string {
 function buildReportContext(
   template: Template,
   responsesA: ResponseMap,
-  responsesB: ResponseMap
+  responsesB: ResponseMap,
+  scenarioComparisons?: ComparisonResult[]
 ): string {
   const parts: string[] = [];
-  
+
   parts.push(`Fragebogen: ${template.name} (Version ${template.version})`);
   parts.push('');
-  
+
   // Collect all questions from modules
   const allQuestions: (Question & { moduleName?: string })[] = [];
   if (template.modules) {
@@ -98,18 +110,18 @@ function buildReportContext(
       }
     }
   }
-  
-  parts.push(`Anzahl Fragen: ${allQuestions.length}`);
+
+  parts.push(`Anzahl Fragebogen-Fragen: ${allQuestions.length}`);
   parts.push('');
-  
+
   // Format questions and answers
   for (const question of allQuestions) {
     const answerA = responsesA[question.id];
     const answerB = responsesB[question.id];
-    
+
     const questionText = question.text || question.label;
     const moduleInfo = question.moduleName ? `[${question.moduleName}] ` : '';
-    
+
     parts.push(`${moduleInfo}Frage: ${questionText}`);
     parts.push(`  Schema: ${question.schema}`);
     if (question.tags && question.tags.length > 0) {
@@ -119,7 +131,68 @@ function buildReportContext(
     parts.push(`  Person B: ${formatResponseValue(answerB, question.schema)}`);
     parts.push('');
   }
-  
+
+  // Add scenario comparisons if available
+  if (scenarioComparisons && scenarioComparisons.length > 0) {
+    parts.push('---');
+    parts.push('SZENARIEN-VERGLEICH (Hypothetische Situationen und Interview-Antworten)');
+    parts.push(`Anzahl Szenarien: ${scenarioComparisons.length}`);
+    parts.push('');
+
+    for (const scenario of scenarioComparisons) {
+      const statusLabel = scenario.pair_status === 'MATCH' ? 'Übereinstimmung'
+        : scenario.pair_status === 'BOUNDARY' ? 'Grenze beachten'
+        : 'Unterschiedlich';
+
+      parts.push(`Szenario: ${scenario.label}`);
+      if (scenario.question_text) {
+        parts.push(`  Beschreibung: ${scenario.question_text.substring(0, 200)}...`);
+      }
+      parts.push(`  Status: ${statusLabel}`);
+      parts.push(`  Person A wählt: Option ${scenario.value_a || 'keine'}`);
+      parts.push(`  Person B wählt: Option ${scenario.value_b || 'keine'}`);
+      if (scenario.comfort_a !== null || scenario.comfort_b !== null) {
+        parts.push(`  Komfort: A=${scenario.comfort_a ?? '?'}/5, B=${scenario.comfort_b ?? '?'}/5`);
+      }
+
+      // Include detailed interview answer data if available
+      const answerA = scenario.a;
+      const answerB = scenario.b;
+
+      if (answerA || answerB) {
+        // Emotions
+        if (answerA?.emotion?.length > 0 || answerB?.emotion?.length > 0) {
+          parts.push(`  Emotionen:`);
+          if (answerA?.emotion?.length > 0) parts.push(`    A: ${answerA.emotion.join(', ')}`);
+          if (answerB?.emotion?.length > 0) parts.push(`    B: ${answerB.emotion.join(', ')}`);
+        }
+
+        // Conditions
+        if (answerA?.conditions || answerB?.conditions) {
+          parts.push(`  Bedingungen:`);
+          if (answerA?.conditions) parts.push(`    A: ${answerA.conditions}`);
+          if (answerB?.conditions) parts.push(`    B: ${answerB.conditions}`);
+        }
+
+        // Notes
+        if (answerA?.notes || answerB?.notes) {
+          parts.push(`  Notizen:`);
+          if (answerA?.notes) parts.push(`    A: ${answerA.notes}`);
+          if (answerB?.notes) parts.push(`    B: ${answerB.notes}`);
+        }
+
+        // Continue preference
+        if (answerA?.continue_preference || answerB?.continue_preference) {
+          parts.push(`  Weitermachen-Präferenz:`);
+          if (answerA?.continue_preference) parts.push(`    A: ${answerA.continue_preference}`);
+          if (answerB?.continue_preference) parts.push(`    B: ${answerB.continue_preference}`);
+        }
+      }
+
+      parts.push('');
+    }
+  }
+
   return parts.join('\n');
 }
 
@@ -192,15 +265,16 @@ function validateAndNormalizeReport(data: any): AIReportResponse {
 export async function generateAIReport(
   template: Template,
   responsesA: ResponseMap,
-  responsesB: ResponseMap
+  responsesB: ResponseMap,
+  scenarioComparisons?: ComparisonResult[]
 ): Promise<{ report: AIReportResponse; rawText?: string }> {
   const settings = getAISettings();
-  
+
   if (!settings.apiKey || settings.apiKey.trim().length === 0) {
     throw new Error('OpenRouter API-Key ist nicht konfiguriert. Bitte in den Einstellungen setzen.');
   }
-  
-  const context = buildReportContext(template, responsesA, responsesB);
+
+  const context = buildReportContext(template, responsesA, responsesB, scenarioComparisons);
   
   const userPrompt = `Bitte erstelle eine strukturierte Auswertung der folgenden Fragebogen-Antworten:\n\n${context}\n\nAntworte NUR mit validen JSON, keine zusätzlichen Texte.`;
   

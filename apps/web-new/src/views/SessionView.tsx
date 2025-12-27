@@ -6,7 +6,6 @@
 import { useState, useEffect } from "preact/hooks";
 import { Link, useRoute, useLocation } from "wouter-preact";
 import { ArrowLeft, User, Users, MessageSquare, ChevronRight } from "lucide-preact";
-import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { getSessionInfo } from "../services/api";
 import type { SessionInfo } from "../types/session";

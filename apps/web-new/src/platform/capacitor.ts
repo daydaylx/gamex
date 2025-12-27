@@ -3,7 +3,7 @@
  * Handles Android-specific features like back button navigation and haptics
  */
 
-import { useEffect, useCallback, useRef } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import { useLocation } from "wouter-preact";
 
 // Type definitions for Capacitor
@@ -56,10 +56,11 @@ async function getAppPlugin(): Promise<AppPlugin | null> {
 
 async function getHapticsPlugin(): Promise<HapticsPlugin | null> {
   if (hapticsPlugin) return hapticsPlugin;
-  
+
   try {
     const module = await import("@capacitor/haptics");
-    hapticsPlugin = module.Haptics;
+    // Cast to our interface - Capacitor's types are compatible
+    hapticsPlugin = module.Haptics as unknown as HapticsPlugin;
     return hapticsPlugin;
   } catch {
     // Running in browser or haptics not available

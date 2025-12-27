@@ -3,7 +3,7 @@
  * Structured answer form with primary, comfort, emotion, conditions, notes
  */
 
-import { useState, useEffect } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { ChevronDown, ChevronUp } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ScaleInput } from "../form/ScaleInput";
@@ -22,10 +22,11 @@ interface InterviewMiniFormProps {
 export function InterviewMiniForm({
   scenario,
   answer,
-  person,
+  person: _person,
   onChange,
   disabled = false,
 }: InterviewMiniFormProps) {
+  void _person; // Reserved for person-specific styling
   const [showOptional, setShowOptional] = useState(false);
 
   // Initialize form values from answer or defaults

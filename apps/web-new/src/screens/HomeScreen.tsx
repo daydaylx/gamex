@@ -8,7 +8,7 @@ import { Plus, ChevronRight, Clock, Heart } from "lucide-preact";
 import { Link, useLocation } from "wouter-preact";
 import { Button } from "../components/ui/button";
 import { CreateSessionDialog } from "../components/CreateSessionDialog";
-import { getActiveSessions, getArchivedSessions, duplicateSession } from "../services/api";
+import { getActiveSessions, getArchivedSessions } from "../services/api";
 import { getAnsweredCount } from "../services/interview-storage";
 import type { SessionListItem } from "../types/session";
 import { SessionCardSkeleton } from "../components/ui/skeleton";

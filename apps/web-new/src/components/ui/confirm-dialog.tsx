@@ -6,7 +6,6 @@
 import type { ComponentChildren } from "preact";
 import { AlertCircle, X } from "lucide-preact";
 import { Button } from "./button";
-import { cn } from "../../lib/utils";
 
 interface ConfirmDialogProps {
   open: boolean;

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "preact/hooks";
-import { Settings, X, Save, Download, Upload, Trash2, ShieldAlert, Sun, Moon } from "lucide-preact";
+import { Settings, X, Save, Download, Upload, ShieldAlert, Sun, Moon } from "lucide-preact";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { getAISettings, saveAISettings, validateSettings } from "../services/settings";

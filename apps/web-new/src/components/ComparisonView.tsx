@@ -1,14 +1,14 @@
 import { useState, useEffect } from "preact/hooks";
-import { Filter, Search, X, CheckCircle2, AlertCircle, Info, MessageSquare, ShieldCheck } from "lucide-preact";
+import { Search, X, CheckCircle2, AlertCircle, Info, MessageSquare, ShieldCheck, Sparkles } from "lucide-preact";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { ActionPlan } from "./ActionPlan";
 import { AIReportSection } from "./AIReportSection";
-import { compareSession, getSessionInfo, loadResponses, loadScenarios } from "../services/api";
+import { ComparisonAIPopup } from "./ComparisonAIPopup";
+import { compareSession, getSessionInfo, loadScenarios } from "../services/api";
 import { getCombinedSession } from "../services/interview-storage";
 import type { CompareResponse, ComparisonResult, MatchLevel } from "../types/compare";
-import type { ResponseMap } from "../types/form";
 import type { SessionInfo } from "../types/session";
 import type { InterviewAnswer } from "../types/interview";
 
@@ -35,7 +35,9 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
   const [bucketFilter, setBucketFilter] = useState<MatchLevel | "ALL">("ALL");
   const [riskOnly, setRiskOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
+
+  // AI Popup
+  const [aiPopupItem, setAiPopupItem] = useState<ComparisonResult | null>(null);
 
   useEffect(() => {
     loadAllComparisonData();
@@ -84,10 +86,17 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
             risk_level: 'B',
             module_id: 'scenarios',
             pair_status: isMatch ? 'MATCH' : 'EXPLORE',
-            value_a: pair.a?.primary || null,
-            value_b: pair.b?.primary || null,
-            comfort_a: pair.a?.comfort || null,
-            comfort_b: pair.b?.comfort || null,
+            value_a: pair.a?.primary ?? null,
+            value_b: pair.b?.primary ?? null,
+            comfort_a: pair.a?.comfort ?? null,
+            comfort_b: pair.b?.comfort ?? null,
+            // Required fields for ComparisonResult
+            status_a: null,
+            status_b: null,
+            interest_a: null,
+            interest_b: null,
+            delta_interest: null,
+            delta_comfort: null,
             flags: [],
             a: pair.a,
             b: pair.b
@@ -192,8 +201,8 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
       </div>
 
       {/* Action Plan Component */}
-      {data.action_plan && data.action_plan.length > 0 && (
-        <ActionPlan suggestions={data.action_plan} />
+      {filteredItems.length > 0 && (
+        <ActionPlan items={filteredItems.filter(i => i.pair_status !== 'BOUNDARY')} />
       )}
 
       {/* Filters Bar */}
@@ -243,7 +252,11 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
           </Card>
         ) : (
           filteredItems.map((item, index) => (
-            <ComparisonItemCard key={`${item.question_id}-${index}`} item={item} />
+            <ComparisonItemCard
+              key={`${item.question_id}-${index}`}
+              item={item}
+              onAskAI={() => setAiPopupItem(item)}
+            />
           ))
         )}
       </div>
@@ -255,6 +268,16 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
           template={sessionInfo.template}
           responsesA={data.items.reduce((acc, i) => ({ ...acc, [i.question_id]: i.a }), {})}
           responsesB={data.items.reduce((acc, i) => ({ ...acc, [i.question_id]: i.b }), {})}
+          scenarioComparisons={scenarioResults}
+        />
+      )}
+
+      {/* AI Popup for individual items */}
+      {aiPopupItem && (
+        <ComparisonAIPopup
+          item={aiPopupItem}
+          open={true}
+          onClose={() => setAiPopupItem(null)}
         />
       )}
     </div>
@@ -272,9 +295,8 @@ function StatCard({ label, value, color = "text-foreground" }: { label: string, 
   );
 }
 
-function ComparisonItemCard({ item }: { item: ComparisonResult }) {
+function ComparisonItemCard({ item, onAskAI }: { item: ComparisonResult; onAskAI?: () => void }) {
   const isMatch = item.pair_status === "MATCH";
-  const isBoundary = item.pair_status === "BOUNDARY";
   
   const statusConfig = {
     MATCH: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10", label: "Match" },
@@ -344,9 +366,27 @@ function ComparisonItemCard({ item }: { item: ComparisonResult }) {
               <MessageSquare className="h-3 w-3" />
               Gesprächsimpuls
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed pl-5 relative before:content-['\"'] before:absolute before:left-0 before:text-lg before:top-[-4px] before:opacity-20">
+            <p className="text-xs text-muted-foreground leading-relaxed pl-5 relative before:content-['\201C'] before:absolute before:left-0 before:text-lg before:top-[-4px] before:opacity-20">
               {item.prompts[0]}
             </p>
+          </div>
+        )}
+
+        {/* Ask AI Button */}
+        {onAskAI && (
+          <div className="pt-3 border-t border-border/20">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAskAI();
+              }}
+              className="w-full gap-2 text-xs text-muted-foreground hover:text-primary"
+            >
+              <Sparkles className="h-3 w-3" />
+              KI-Impuls zu diesem Thema
+            </Button>
           </div>
         )}
       </CardContent>

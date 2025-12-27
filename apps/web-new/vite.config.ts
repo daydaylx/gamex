@@ -17,6 +17,8 @@ export default defineConfig({
         theme_color: '#0f0a0f',
         background_color: '#0f0a0f',
         display: 'standalone',
+        start_url: './',
+        scope: './',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -35,7 +37,25 @@ export default defineConfig({
             purpose: 'any maskable'
           }
         ]
-      }
+      },
+      workbox: {
+        // Cache all static assets
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        // Cache JSON templates
+        runtimeCaching: [
+          {
+            urlPattern: /\.json$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'json-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+              },
+            },
+          },
+        ],
+      },
     })
   ],
   base: "./", // Important for Capacitor - relative paths

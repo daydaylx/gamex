@@ -1,6 +1,6 @@
 import { useState, useEffect } from "preact/hooks";
 import { useLocation } from "wouter-preact";
-import { Layers, MessageCircle, CheckCircle, ChevronLeft } from "lucide-preact";
+import { Layers, MessageCircle, ChevronLeft } from "lucide-preact";
 import { Button } from "../components/ui/button";
 import { InterviewMiniForm } from "../components/interview/InterviewMiniForm";
 import { ScenariosView } from "../components/ScenariosView";

@@ -3,7 +3,7 @@
  * Full-screen focus with swipe, undo, skip confirm, animations
  */
 
-import { useState, useEffect, useRef } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { ChevronLeft, ChevronRight, SkipForward, MessageCircle, X, Undo2, FastForward } from "lucide-preact";
 import { useLocation } from "wouter-preact";
 import { Button } from "../components/ui/button";

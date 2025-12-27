@@ -11,12 +11,16 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint src --ext ts,tsx"
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src"
   },
   "dependencies": {
     "@capacitor/haptics": "^8.0.0",
     "lucide-preact": "^0.562.0",
     "preact": "^10.28.1",
+    "web-vitals": "^5.1.0",
     "wouter-preact": "^3.9.0"
   },
   "devDependencies": {
@@ -25,7 +29,13 @@
     "@tailwindcss/vite": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/preact": "^3.2.4",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.50.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "jsdom": "^27.4.0",
+    "prettier": "^3.7.4",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.8.3",
     "vite": "^7.3.0",
