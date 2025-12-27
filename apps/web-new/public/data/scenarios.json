@@ -28,6 +28,13 @@
       "scenarios": ["S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20", "S33"],
       "order": 4,
       "requires_safety_gate": true
+    },
+    {
+      "id": "connection",
+      "name": "Deck 5: Tiefe & Verbindung",
+      "description": "Fokus auf Emotionen, Alltag, Accessibility und sanfte Intimität. Weniger Performance, mehr Sein.",
+      "scenarios": ["S34", "S35", "S36", "S37", "S38", "S39", "S40"],
+      "order": 5
     }
   ],
   "scenarios": [
@@ -514,6 +521,100 @@
       { "id": "B", "label": "Nur Fantasie - im Wachzustand darüber reden", "risk_type": "fantasy" },
       { "id": "C", "label": "Nur sanftes Wecken, kein Sex während Schlaf", "risk_type": "negotiation" },
       { "id": "D", "label": "Mit Vorabsprache - ja, weck mich so", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S34",
+    "title": "Lazy Sunday Morning",
+    "category": "Connection/Gentle",
+    "description": "Es ist Sonntagmorgen, kein Wecker, keine Termine. Ihr liegt noch im Bett, warm und träge. Es geht nicht um 'Performance' oder wilden Sex. Es geht um Kuscheln, Haut an Haut, sanfte Küsse und vielleicht langsamen Sex, bei dem man fast wieder einschläft. Alles darf, nichts muss.",
+    "info_card": {
+      "emotional_context": "Druck rausnehmen. Intimität aus der Ruhe heraus, nicht als To-Do.",
+      "typical_risks": "Langeweile bei Action-Suchenden. Einschlafen ;)",
+      "safety_gate": "Keine."
+    },
+    "options": [
+      { "id": "A", "label": "Ich werde lieber aktiv/wach", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur Kuscheln, kein Sex", "risk_type": "hesitant" },
+      { "id": "C", "label": "Gerne, aber mit Frühstück im Bett", "risk_type": "negotiation" },
+      { "id": "D", "label": "Genau das brauche ich: Slow Sex", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S35",
+    "title": "Das Video-Date (LDR)",
+    "category": "Digital/Connection",
+    "description": "Ihr seid räumlich getrennt, aber die Sehnsucht ist groß. Ihr verabredet euch zu einem Video-Call. Kein schnelles 'Zeig mal', sondern ein echtes Date. Vielleicht esst ihr zusammen, vielleicht zieht ihr euch langsam aus. Die Distanz ist da, aber die Verbindung auch.",
+    "options": [
+      { "id": "A", "label": "Nein, Video-Sex ist nichts für mich", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur reden, nicht ausziehen", "risk_type": "hesitant" },
+      { "id": "C", "label": "Okay, aber auf einer sicheren Plattform", "risk_type": "safety" },
+      { "id": "D", "label": "Voll dabei – Cam an!", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S36",
+    "title": "Rote Tage (Menstruation)",
+    "category": "Body/Comfort",
+    "description": "Die Periode ist da. Für manche ein No-Go, für andere kein Hindernis. Wie gehen wir damit um? Handtuch drunter und los? Oder lieber Fokus auf nicht-penetrative Dinge? Oder Massage gegen die Krämpfe? Ein Check-in über Bedürfnisse an diesen Tagen.",
+    "options": [
+      { "id": "A", "label": "Kein Sex während der Tage (Blut ist tabu)", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur Kuscheln/Wärmflasche", "risk_type": "comfort" },
+      { "id": "C", "label": "Alles außer Penetration", "risk_type": "negotiation" },
+      { "id": "D", "label": "Period Sex ist völlig okay (Handtuch her)", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S37",
+    "title": "Hand in Hand (Mutual Solo)",
+    "category": "Solo/Connection",
+    "description": "Ihr liegt nebeneinander, berührt euch vielleicht nur mit einer Hand oder seht euch an. Aber jeder kümmert sich um sich selbst. Gemeinsame Masturbation. Du siehst, was dem anderen gefällt, lernst seinen Rhythmus kennen, ohne den Leistungsdruck, ihn/sie 'bringen' zu müssen.",
+    "options": [
+      { "id": "A", "label": "Fühlt sich komisch/einsam an", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur wenn wir uns dabei küssen", "risk_type": "negotiation" },
+      { "id": "C", "label": "Gerne zusehen, aber nicht mitmachen", "risk_type": "voyeur" },
+      { "id": "D", "label": "Ich liebe es: Gemeinsam einsam", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S38",
+    "title": "Wiederentdeckung",
+    "category": "Long-Term/Rediscovery",
+    "description": "Der Alltag hat sich eingeschlichen. Ihr kennt jeden Handgriff. Heute Abend brechen wir aus: 'Wir tun so, als hätten wir uns 5 Jahre nicht gesehen.' Was würdest du fragen? Wie würdest du den anderen ansehen? Das Vertraute neu entdecken.",
+    "options": [
+      { "id": "A", "label": "Rollenspiele liegen mir nicht", "risk_type": "boundary" },
+      { "id": "B", "label": "Wir schauen uns alte Fotos an", "risk_type": "nostalgia" },
+      { "id": "C", "label": "Ein Abend an einem neuen Ort", "risk_type": "negotiation" },
+      { "id": "D", "label": "Vollgas: Das Wiedersehen feiern", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S39",
+    "title": "Komfort-Zone (Accessibility)",
+    "category": "Accessibility/Comfort",
+    "description": "Heute zwickt der Rücken, die Energie ist low, oder der Körper will nicht so wie der Kopf. Statt abzusagen, bauen wir ein Nest. Viele Kissen, stützende Positionen, vielleicht Sex im Löffelchen oder einfach nur Petting ohne Akrobatik. 'Barrierearmer Sex': Lust ohne Leistungssport.",
+    "options": [
+      { "id": "A", "label": "Wenn ich Schmerzen habe, will ich Ruhe", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur Massage, kein Sex", "risk_type": "comfort" },
+      { "id": "C", "label": "Gerne, wenn du die aktive Rolle nimmst", "risk_type": "negotiation" },
+      { "id": "D", "label": "Kissenburgen-Sex klingt super", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S40",
+    "title": "Der Compersion-Moment",
+    "category": "Emotion/Compersion",
+    "description": "Du erzählst von einem Moment, in dem du dich sexy gefühlt hast – vielleicht durch den Blick eines Fremden, oder ein Kompliment. Statt Eifersucht zu zeigen, freut sich dein Partner mit dir. 'Ich liebe es, zu sehen, wie sehr du strahlst.' Mitfreude statt Besitzanspruch.",
+    "info_card": {
+      "emotional_context": "Compersion ist das Gegenteil von Eifersucht: Freude am Glück des anderen.",
+      "typical_risks": "Kann Eifersucht triggern, wenn man sich selbst unsicher fühlt.",
+      "safety_gate": "Nur teilen, wenn die Basis sicher ist."
+    },
+    "options": [
+      { "id": "A", "label": "Eifersucht ist bei mir zu stark", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur kleine Komplimente teilen", "risk_type": "hesitant" },
+      { "id": "C", "label": "Ich versuche, mich mitzufreuen", "risk_type": "growth" },
+      { "id": "D", "label": "Ich feiere deine Attraktivität", "risk_type": "active" }
     ]
   }
   ]
