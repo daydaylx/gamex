@@ -87,6 +87,46 @@
       ]
     },
     {
+      "id": "digital",
+      "name": "Fernbeziehung & Digitale Intimität",
+      "description": "Intimität über Distanz und digitale Kanäle.",
+      "questions": [
+        {
+          "id": "DIG01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["digital", "texting", "level1"],
+          "label": "Sexting / Erotische Nachrichten",
+          "help": "Textnachrichten mit erotischem Inhalt austauschen."
+        },
+        {
+          "id": "DIG02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["digital", "video", "level2"],
+          "label": "Video-Sex / Cam-Play",
+          "help": "Sich gegenseitig per Video sehen/zeigen (Sicherheit beachten!).",
+          "info_details": "Datenschutz ist wichtig. Wählt sichere Plattformen."
+        },
+        {
+          "id": "DIG03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["digital", "audio", "level1"],
+          "label": "Audio-Nachrichten / Erotische Geschichten",
+          "help": "Sprachnachrichten oder Vorlesen."
+        },
+        {
+          "id": "DIG04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["digital", "toys", "level2"],
+          "label": "Teledildonics / Ferngesteuerte Toys",
+          "help": "Spielzeuge, die der Partner per App steuern kann."
+        }
+      ]
+    },
+    {
       "id": "intro",
       "name": "01. Das Fundament: Wir & Rahmen",
       "description": "Bevor wir über Praktiken reden: Wie wollen wir miteinander umgehen? Was ist unsere emotionale Basis?",
@@ -153,6 +193,48 @@
             "level1"
           ],
           "options": ["Keine bekannt", "Asthma/Atemprobleme", "Gelenkprobleme", "Herzprobleme", "Rückenschmerzen", "Allergien (Latex etc.)", "Medikamente beachten", "Epilepsie", "Chronische Schmerzen", "Anderes"]
+        }
+      ]
+    },
+    {
+      "id": "dynamics",
+      "name": "Dynamik & Bedürfnisse",
+      "description": "Wie wir zueinander finden: Initiative, Libido und Routine.",
+      "questions": [
+        {
+          "id": "DYN01",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["dynamics", "libido"],
+          "label": "Umgang mit unterschiedlicher Libido",
+          "help": "Wenn einer mehr will als der andere.",
+          "options": ["Der mit weniger Lust bestimmt das Tempo", "Kompromisse finden (z.B. Kuscheln statt Sex)", "Masturbation als Ventil ok", "Führt zu Stress/Druck", "Wir sind meist synchron"]
+        },
+        {
+          "id": "DYN02",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["dynamics", "initiation"],
+          "label": "Wer ergreift die Initiative?",
+          "help": "Wer startet meistens?",
+          "options": ["Ausgeglichen", "Meist Partner A", "Meist Partner B", "Wir wünschen uns beide mehr Initiative", "Wir planen es lieber fest"]
+        },
+        {
+          "id": "DYN03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["dynamics", "routine"],
+          "label": "Routine durchbrechen / Neues probieren",
+          "help": "Lust, gewohnte Pfade zu verlassen?"
+        },
+        {
+          "id": "DYN04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["dynamics", "dryspell"],
+          "label": "Umgang mit 'Dry Spells' (Phasen ohne Sex)",
+          "help": "Wie gehen wir damit um, wenn es mal länger ruhig ist?",
+          "options": ["Ist ok/normal", "Macht uns Sorgen", "Wir reden drüber", "Wir ignorieren es"]
         }
       ]
     },
@@ -376,6 +458,30 @@
             "toys",
             "level1"
           ]
+        },
+        {
+          "id": "SEX07",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sex", "period", "level1"],
+          "label": "Sex während der Periode",
+          "help": "Ist Intimität an diesen Tagen ok? (Handtuch unterlegen, Dusche, etc.)"
+        },
+        {
+          "id": "SEX08",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sex", "solo", "level1"],
+          "label": "Offenheit über Solo-Sex",
+          "help": "Dürfen wir uns erzählen, wann/wie wir masturbieren?"
+        },
+        {
+          "id": "SEX09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sex", "mutual_masturbation", "level1"],
+          "label": "Gemeinsame Masturbation (Nebeneinander)",
+          "help": "Sich selbst anfassen, während der andere zsieht oder dasselbe tut."
         }
       ]
     },
@@ -734,6 +840,24 @@
           "label": "Körperliche Einschränkungen?",
           "help": "Wähle relevante Punkte aus.",
           "options": ["Keine", "Rückenschmerzen", "Gelenkprobleme", "Asthma", "Allergien", "Herzprobleme", "Chronische Schmerzen", "Andere"]
+        },
+        {
+          "id": "HLT04",
+          "schema": "multi",
+          "risk_level": "A",
+          "tags": ["health", "accessibility", "energy"],
+          "label": "Energie-Level & Tagesform (Spoon Theory)",
+          "help": "Wie viel Energie haben wir heute? Gibt es chronische Erschöpfung?",
+          "options": ["Volle Energie", "Mittelmaß", "Wenig Energie / Low Spoons", "Brauche passive Rolle", "Nur Kuscheln"]
+        },
+        {
+          "id": "HLT05",
+          "schema": "multi",
+          "risk_level": "A",
+          "tags": ["health", "accessibility", "comfort"],
+          "label": "Positionshilfen & Komfort",
+          "help": "Was brauchen wir, damit es bequem ist?",
+          "options": ["Kissen/Stützen", "Kein Druck auf Knie", "Rückenlage bevorzugt", "Pausen einplanen", "Keine Einschränkungen"]
         }
       ]
     },
@@ -765,6 +889,23 @@
           "tags": ["relationship", "openness"],
           "label": "Küssen/Körperlichkeit mit anderen (mit Absprache)",
           "depends_on": {"id": "REL01", "values": ["Emotional monogam, sexuell offen", "Polyamor"]}
+        },
+        {
+          "id": "REL04",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["relationship", "jealousy"],
+          "label": "Umgang mit Eifersucht",
+          "help": "Wie reagieren wir, wenn Eifersucht aufkommt?",
+          "options": ["Sofort ansprechen", "Mit sich selbst ausmachen", "Ist ein No-Go-Gefühl", "Als Signal für Unsicherheit sehen", "Kommt selten vor"]
+        },
+        {
+          "id": "REL05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["relationship", "compersion"],
+          "label": "Compersion (Mitfreude)",
+          "help": "Kann ich mich freuen, wenn du Spaß (auch mit anderen/alleine) hast?"
         }
       ]
     },
