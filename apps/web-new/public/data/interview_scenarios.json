@@ -204,6 +204,54 @@
       ],
       "tags": ["connection", "intimacy"],
       "risk_level": "low"
+    },
+    {
+      "id": "emotional_checkin_01",
+      "section": "Emotionale Verbindung",
+      "title": "Emotionaler Check-in",
+      "scenario_text": "Bevor ihr intim werdet, fragt ihr euch gegenseitig: 'Wie geht es dir gerade emotional? Was brauchst du?'. Wie wichtig ist dir das?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie wichtig ist ein vorheriger Check-in?",
+      "help_text": "Ein kurzer Moment der Achtsamkeit kann Missverständnisse vermeiden.",
+      "examples": [
+        "Sehr wichtig - schafft Sicherheit.",
+        "Gut, aber nicht jedes Mal nötig.",
+        "Stört eher den Fluss."
+      ],
+      "tags": ["emotional", "communication"],
+      "risk_level": "low"
+    },
+    {
+      "id": "non_sexual_touch_01",
+      "section": "Zärtlichkeit & Alltag",
+      "title": "Berührung ohne Sex",
+      "scenario_text": "Ihr kuschelt oder berührt euch intensiv, aber mit der klaren Absprache: 'Heute kein Sex, nur Nähe'. Wie attraktiv findest du das?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie attraktiv ist reine Zärtlichkeit?",
+      "help_text": "Entlastet vom Leistungsdruck und fokussiert auf Geborgenheit.",
+      "examples": [
+        "Sehr schön - ich brauche das oft.",
+        "Okay, aber führt bei mir oft zu Lust.",
+        "Langweilig, ich will dann auch Sex."
+      ],
+      "tags": ["touch", "connection"],
+      "risk_level": "low"
+    },
+    {
+      "id": "digital_intimacy_01",
+      "section": "Digitale Nähe",
+      "title": "Digitale Verbindung",
+      "scenario_text": "Ihr schickt euch tagsüber kleine Nachrichten oder Fotos, die zeigen 'Ich denk an dich'. Wie wichtig ist dir diese Art der Verbindung?",
+      "primary_answer_type": "likert5",
+      "primary_label": "Wie wichtig ist digitale Aufmerksamkeit?",
+      "help_text": "Hält die Verbindung im Alltag oder über Distanz lebendig.",
+      "examples": [
+        "Sehr wichtig - ich brauche den Kontakt.",
+        "Nett, aber kein Muss.",
+        "Mich stört das eher bei der Arbeit."
+      ],
+      "tags": ["digital", "ldr"],
+      "risk_level": "low"
     }
   ]
 }

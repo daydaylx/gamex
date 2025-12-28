@@ -28,6 +28,13 @@
       "scenarios": ["S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20", "S33"],
       "order": 4,
       "requires_safety_gate": true
+    },
+    {
+      "id": "vanilla_romance",
+      "name": "Deck 5: Romantik & Alltag",
+      "description": "Sanfte Szenarien für Verbindung, Entspannung und kleine Abenteuer ohne Leistungsdruck.",
+      "scenarios": ["S34", "S35", "S36", "S37", "S38"],
+      "order": 5
     }
   ],
   "scenarios": [
@@ -514,6 +521,91 @@
       { "id": "B", "label": "Nur Fantasie - im Wachzustand darüber reden", "risk_type": "fantasy" },
       { "id": "C", "label": "Nur sanftes Wecken, kein Sex während Schlaf", "risk_type": "negotiation" },
       { "id": "D", "label": "Mit Vorabsprache - ja, weck mich so", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S34",
+    "title": "Das stille Date",
+    "category": "Connection/Sensory",
+    "description": "Ein Abendessen oder gemeinsames Liegen – aber ihr dürft 30 Minuten lang nicht sprechen. Nur Blicke, Gesten und Berührungen. Wenn die Sprache wegfällt, wird jede andere Kommunikation lauter.",
+    "info_card": {
+      "emotional_context": "Fördert non-verbale Verbindung und Achtsamkeit.",
+      "typical_risks": "Kann sich anfangs albern anfühlen.",
+      "safety_gate": "Einverständnis, das Schweigen auch wirklich durchzuhalten."
+    },
+    "options": [
+      { "id": "A", "label": "Das macht mich nervös / Reden ist mir wichtig", "risk_type": "boundary" },
+      { "id": "B", "label": "5 Minuten zum Probieren", "risk_type": "hesitant" },
+      { "id": "C", "label": "Gerne beim Kuscheln, nicht beim Essen", "risk_type": "negotiation" },
+      { "id": "D", "label": "Ich liebe die Stille mit dir", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S35",
+    "title": "Kochen als Vorspiel",
+    "category": "Sensory/Playful",
+    "description": "Ihr kocht gemeinsam etwas Neues. Aber es geht nicht ums Essen. Es geht ums Füttern, Riechen, Schmecken. Mal ein Stück Schokolade in den Mund des anderen legen, mal Sahne vom Finger lecken. Die Küche wird zum Spielplatz der Sinne.",
+    "info_card": {
+      "emotional_context": "Sinnlichkeit im Alltag integrieren, ohne direkten Sex-Fokus.",
+      "typical_risks": "Hygiene-Bedenken, Stress wenn Essen anbrennt.",
+      "safety_gate": "Kein Druck, dass es zu Sex führen MUSS."
+    },
+    "options": [
+      { "id": "A", "label": "Essen und Sex trenne ich lieber", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur 'saubere' Sachen füttern", "risk_type": "hesitant" },
+      { "id": "C", "label": "Wenn wir danach aufräumen helfen", "risk_type": "negotiation" },
+      { "id": "D", "label": "Ja, lass uns eine Sauerei machen", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S36",
+    "title": "Massage-Roulette",
+    "category": "Touch/Giving",
+    "description": "Einer liegt, der andere massiert. Aber: Der Empfänger darf nicht reden, nur Geräusche machen (Seufzen für 'gut', Brummen für 'nicht so'). Der Geber erkundet den Körper wie eine Landkarte, ohne Ziel, ohne 'erogene Zonen' Checkliste.",
+    "info_card": {
+      "emotional_context": "Fokus auf Geben und Empfangen ohne Leistungsdruck.",
+      "typical_risks": "Unsicherheit beim Geber ('Mache ich das richtig?').",
+      "safety_gate": "Klare Absprache: Es geht um Entspannung, nicht Orgasmus."
+    },
+    "options": [
+      { "id": "A", "label": "Ich werde lieber klassisch massiert", "risk_type": "boundary" },
+      { "id": "B", "label": "Nur Rücken/Schultern", "risk_type": "hesitant" },
+      { "id": "C", "label": "Gerne, wenn wir uns abwechseln", "risk_type": "negotiation" },
+      { "id": "D", "label": "Lass uns den ganzen Körper erkunden", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S37",
+    "title": "Digital Detox Abend",
+    "category": "Presence",
+    "description": "Handys aus, Laptop zu. Für einen ganzen Abend gibt es nur euch, Musik, Kerzen oder ein Brettspiel. Keine Ablenkung, keine Benachrichtigungen. Die pure Präsenz des anderen aushalten und genießen.",
+    "info_card": {
+      "emotional_context": "Bekämpft 'Phubbing' (Partner ignorieren für Handy).",
+      "typical_risks": "Langeweile, FOMO (Fear Of Missing Out).",
+      "safety_gate": "Notfall-Erreichbarkeit klären wenn nötig."
+    },
+    "options": [
+      { "id": "A", "label": "Ein ganzer Abend ist mir zu viel", "risk_type": "boundary" },
+      { "id": "B", "label": "Eine Stunde Handy-frei", "risk_type": "hesitant" },
+      { "id": "C", "label": "Gerne, wenn wir einen Plan haben (Film/Spiel)", "risk_type": "negotiation" },
+      { "id": "D", "label": "Ja, ich brauche dringend analoge Zeit", "risk_type": "active" }
+    ]
+  },
+  {
+    "id": "S38",
+    "title": "Die Fragen-Box",
+    "category": "Communication/DeepTalk",
+    "description": "Ihr zieht abwechselnd Fragen aus einer Box (oder App). 'Wann hast du dich zuletzt mutig gefühlt?' 'Was würdest du tun, wenn du keine Angst hättest?' Tiefe Gespräche statt Smalltalk über den Abwasch.",
+    "info_card": {
+      "emotional_context": "Intimität durch Verletzlichkeit und Wissen übereinander.",
+      "typical_risks": "Themen können emotional werden.",
+      "safety_gate": "Jeder darf 'Joker' sagen und eine Frage überspringen."
+    },
+    "options": [
+      { "id": "A", "label": "Heute lieber leichte Kost", "risk_type": "boundary" },
+      { "id": "B", "label": "Ein paar Fragen zum Ausprobieren", "risk_type": "hesitant" },
+      { "id": "C", "label": "Nur positive Fragen, keine Problem-Wälzung", "risk_type": "negotiation" },
+      { "id": "D", "label": "Ich will alles von dir wissen", "risk_type": "active" }
     ]
   }
   ]

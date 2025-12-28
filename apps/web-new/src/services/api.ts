@@ -42,7 +42,9 @@ async function loadBundledTemplates(): Promise<Template[]> {
     'psycho_enhanced_v3.json',
     'unified_template.json',
     'default_template.json',
-    'comprehensive_v1.json'
+    'comprehensive_v1.json',
+    'expanded_topics_v1.json',
+    'kink_exploration_v1.json'
   ];
 
   try {
