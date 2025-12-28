@@ -4,7 +4,15 @@
  */
 
 import { useState, useEffect } from "preact/hooks";
-import { ChevronLeft, ChevronRight, SkipForward, MessageCircle, X, Undo2, FastForward } from "lucide-preact";
+import {
+  ChevronLeft,
+  ChevronRight,
+  SkipForward,
+  MessageCircle,
+  X,
+  Undo2,
+  FastForward,
+} from "lucide-preact";
 import { useLocation } from "wouter-preact";
 import { Button } from "../components/ui/button";
 import { InterviewMiniForm } from "../components/interview/InterviewMiniForm";
@@ -25,11 +33,7 @@ import {
   getCombinedSession,
   findFirstIncompleteIndex,
 } from "../services/interview-storage";
-import type {
-  InterviewScenario,
-  InterviewSession,
-  InterviewAnswer,
-} from "../types/interview";
+import type { InterviewScenario, InterviewSession, InterviewAnswer } from "../types/interview";
 
 interface InterviewScreenProps {
   sessionId: string;
@@ -56,18 +60,21 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
   const progress = scenarios.length > 0 ? ((currentIndex + 1) / scenarios.length) * 100 : 0;
 
   // Swipe navigation
-  useSwipe({
-    onSwipeLeft: () => {
-      if (currentIndex < scenarios.length - 1) {
-        handleNext();
-      }
+  useSwipe(
+    {
+      onSwipeLeft: () => {
+        if (currentIndex < scenarios.length - 1) {
+          handleNext();
+        }
+      },
+      onSwipeRight: () => {
+        if (currentIndex > 0) {
+          handlePrevious();
+        }
+      },
     },
-    onSwipeRight: () => {
-      if (currentIndex > 0) {
-        handlePrevious();
-      }
-    },
-  }, { threshold: 80 });
+    { threshold: 80 }
+  );
 
   useEffect(() => {
     loadData();
@@ -212,7 +219,7 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
     const incompleteIndex = findFirstIncompleteIndex(
       sessionId,
       person,
-      scenarios.map(s => s.id)
+      scenarios.map((s) => s.id)
     );
 
     if (incompleteIndex >= 0) {
@@ -325,10 +332,7 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
 
         {/* Progress Bar with Milestones */}
         <div className="progress-bar">
-          <div
-            className="progress-bar-fill"
-            style={{ width: `${progress}%` }}
-          />
+          <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
         </div>
         <div className="flex justify-between mt-1 px-0.5">
           {[25, 50, 75, 100].map((milestone) => {
@@ -348,10 +352,15 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
       </header>
 
       {/* Question Content - Full Screen Focus */}
-      <div className={`flex-1 overflow-auto px-4 py-6 pb-32 landscape-compact-spacing ${
-        slideDirection === "left" ? "animate-slide-in-left" :
-        slideDirection === "right" ? "animate-slide-in-right" : ""
-      }`}>
+      <div
+        className={`flex-1 overflow-auto px-4 py-6 pb-32 landscape-compact-spacing ${
+          slideDirection === "left"
+            ? "animate-slide-in-left"
+            : slideDirection === "right"
+              ? "animate-slide-in-right"
+              : ""
+        }`}
+      >
         {/* Section Tag */}
         <div className="mb-4">
           <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
@@ -425,10 +434,7 @@ export function InterviewScreen({ sessionId, person }: InterviewScreenProps) {
           </Button>
 
           {/* Right: Next */}
-          <Button
-            onClick={handleNext}
-            className="flex-1 h-12 gap-2 text-base"
-          >
+          <Button onClick={handleNext} className="flex-1 h-12 gap-2 text-base">
             {currentIndex === scenarios.length - 1 ? "Auswerten" : "Weiter"}
             <ChevronRight className="w-5 h-5" />
           </Button>

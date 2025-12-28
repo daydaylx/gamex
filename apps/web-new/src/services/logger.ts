@@ -41,7 +41,7 @@ function storeLogs(logs: LogEntry[]): void {
     // Keep only the most recent entries
     const trimmed = logs.slice(-MAX_LOG_ENTRIES);
     localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(trimmed));
-  } catch (e) {
+  } catch {
     // Storage might be full, try to clear old logs
     try {
       localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(logs.slice(-10)));
@@ -74,7 +74,12 @@ function formatError(error: Error): LogEntry["error"] {
 /**
  * Log to console with appropriate styling
  */
-function logToConsole(level: LogLevel, message: string, error?: Error, context?: Record<string, unknown>): void {
+function logToConsole(
+  level: LogLevel,
+  message: string,
+  error?: Error,
+  context?: Record<string, unknown>
+): void {
   const timestamp = new Date().toISOString();
   const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
 
@@ -85,22 +90,40 @@ function logToConsole(level: LogLevel, message: string, error?: Error, context?:
     error: "color: #ef4444; font-weight: bold",
   };
 
-  const consoleMethod = {
-    debug: console.debug,
-    info: console.info,
-    warn: console.warn,
-    error: console.error,
-  }[level];
-
   if (IS_DEV) {
-    consoleMethod(`%c${prefix} ${message}`, styles[level]);
-    if (error) consoleMethod(error);
-    if (context) consoleMethod("Context:", context);
+    // Direct console calls to satisfy ESLint
+    switch (level) {
+      case "debug":
+        console.debug(`%c${prefix} ${message}`, styles[level]);
+        if (error) console.debug(error);
+        if (context) console.debug("Context:", context);
+        break;
+      case "info":
+        console.info(`%c${prefix} ${message}`, styles[level]);
+        if (error) console.info(error);
+        if (context) console.info("Context:", context);
+        break;
+      case "warn":
+        console.warn(`%c${prefix} ${message}`, styles[level]);
+        if (error) console.warn(error);
+        if (context) console.warn("Context:", context);
+        break;
+      case "error":
+        console.error(`%c${prefix} ${message}`, styles[level]);
+        if (error) console.error(error);
+        if (context) console.error("Context:", context);
+        break;
+    }
   } else {
     // Production: minimal logging
     if (level === "error" || level === "warn") {
-      consoleMethod(`${prefix} ${message}`);
-      if (error) consoleMethod(error.message);
+      if (level === "error") {
+        console.error(`${prefix} ${message}`);
+        if (error) console.error(error.message);
+      } else {
+        console.warn(`${prefix} ${message}`);
+        if (error) console.warn(error.message);
+      }
     }
   }
 }
@@ -168,7 +191,7 @@ export const logger = {
    * Get logs filtered by level
    */
   getLogsByLevel(level: LogLevel): LogEntry[] {
-    return getStoredLogs().filter(log => log.level === level);
+    return getStoredLogs().filter((log) => log.level === level);
   },
 
   /**
@@ -176,7 +199,7 @@ export const logger = {
    */
   getRecentErrors(count = 10): LogEntry[] {
     return getStoredLogs()
-      .filter(log => log.level === "error")
+      .filter((log) => log.level === "error")
       .slice(-count);
   },
 
@@ -206,9 +229,7 @@ if (typeof window !== "undefined") {
   });
 
   window.addEventListener("unhandledrejection", (event) => {
-    const error = event.reason instanceof Error
-      ? event.reason
-      : new Error(String(event.reason));
+    const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason));
 
     logger.error("Unhandled promise rejection", error);
   });

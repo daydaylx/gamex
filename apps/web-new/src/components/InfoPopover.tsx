@@ -12,18 +12,19 @@ interface InfoPopoverProps {
   className?: string;
 }
 
-export function InfoPopover({ 
+export function InfoPopover({
   title,
   content,
-  infoDetails, 
+  infoDetails,
   help,
   examples,
-  className = "" 
+  className = "",
 }: InfoPopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Fallback text when no info_details are provided
-  const explanation = content || infoDetails || "Für diese Frage sind keine zusätzlichen Informationen verfügbar.";
+  const explanation =
+    content || infoDetails || "Für diese Frage sind keine zusätzlichen Informationen verfügbar.";
 
   return (
     <div className={`relative inline-block ${className}`}>
@@ -42,10 +43,7 @@ export function InfoPopover({
       {isOpen && (
         <>
           {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/20 z-40"
-            onClick={() => setIsOpen(false)}
-          />
+          <div className="fixed inset-0 bg-black/20 z-40" onClick={() => setIsOpen(false)} />
 
           {/* Popover Card */}
           <div className="absolute left-0 top-8 z-50 w-96 max-w-[90vw] max-h-[80vh] overflow-y-auto">
@@ -106,4 +104,3 @@ export function InfoPopover({
     </div>
   );
 }
-

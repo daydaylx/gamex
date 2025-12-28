@@ -1,5 +1,14 @@
 import { useState, useEffect, useRef } from "preact/hooks";
-import { ChevronLeft, ChevronRight, Save, Check, ChevronDown, ChevronUp, Layers, CheckCircle } from "lucide-preact";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Save,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Layers,
+  CheckCircle,
+} from "lucide-preact";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { ConsentRatingInput } from "./ConsentRatingInput";
@@ -21,7 +30,13 @@ interface QuestionnaireFormProps {
   initialModuleId?: string;
 }
 
-export function QuestionnaireForm({ sessionId, person, template, onComplete, initialModuleId }: QuestionnaireFormProps) {
+export function QuestionnaireForm({
+  sessionId,
+  person,
+  template,
+  onComplete,
+  initialModuleId,
+}: QuestionnaireFormProps) {
   const [responses, setResponses] = useState<ResponseMap>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -39,47 +54,59 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
   const minSwipeDistance = 50;
 
   // Helper to normalize options to { value, label } format
-  function normalizeOptions(options: string[] | Array<{ value: string; label: string }>): Array<{ value: string; label: string }> {
+  function normalizeOptions(
+    options: string[] | Array<{ value: string; label: string }>
+  ): Array<{ value: string; label: string }> {
     if (options.length === 0) return [];
-    
-    if (typeof options[0] === 'string') {
-      return (options as string[]).map(opt => ({ value: opt, label: opt }));
+
+    if (typeof options[0] === "string") {
+      return (options as string[]).map((opt) => ({ value: opt, label: opt }));
     }
-    
+
     return options as Array<{ value: string; label: string }>;
   }
 
   // Get context-specific quick replies based on question tags
   function getQuickRepliesForQuestion(question: Question): string[] {
     const tags = question.tags || [];
-    const label = (question.label || question.text || '').toLowerCase();
+    const label = (question.label || question.text || "").toLowerCase();
 
     // Check by tags first
-    if (tags.includes('hard_limits') || label.includes('hard limit') || label.includes('tabu')) {
+    if (tags.includes("hard_limits") || label.includes("hard limit") || label.includes("tabu")) {
       return QUICK_REPLIES.hardLimits;
     }
-    if (tags.includes('soft_limits') || label.includes('soft limit')) {
+    if (tags.includes("soft_limits") || label.includes("soft limit")) {
       return QUICK_REPLIES.softLimits;
     }
-    if (tags.includes('aftercare')) {
+    if (tags.includes("aftercare")) {
       return QUICK_REPLIES.aftercare;
     }
-    if (tags.includes('fantasy') || tags.includes('fantasies') || label.includes('fantasi')) {
+    if (tags.includes("fantasy") || tags.includes("fantasies") || label.includes("fantasi")) {
       return QUICK_REPLIES.fantasies;
     }
-    if (tags.includes('safewords') || tags.includes('triggers') || label.includes('safeword') || label.includes('stop')) {
+    if (
+      tags.includes("safewords") ||
+      tags.includes("triggers") ||
+      label.includes("safeword") ||
+      label.includes("stop")
+    ) {
       return QUICK_REPLIES.safewords;
     }
-    if (tags.includes('allergies') || tags.includes('health') || label.includes('allergi') || label.includes('gesundheit')) {
+    if (
+      tags.includes("allergies") ||
+      tags.includes("health") ||
+      label.includes("allergi") ||
+      label.includes("gesundheit")
+    ) {
       return QUICK_REPLIES.allergies;
     }
-    if (tags.includes('highlight') || label.includes('schön') || label.includes('öfter')) {
+    if (tags.includes("highlight") || label.includes("schön") || label.includes("öfter")) {
       return QUICK_REPLIES.highlights;
     }
-    if (tags.includes('less') || label.includes('weniger') || label.includes('pausieren')) {
+    if (tags.includes("less") || label.includes("weniger") || label.includes("pausieren")) {
       return QUICK_REPLIES.pauseList;
     }
-    
+
     // Default quick replies
     return QUICK_REPLIES.notes;
   }
@@ -87,7 +114,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
   // Flatten all questions from modules with module tracking
   const allQuestions: (Question & { moduleId?: string; moduleIndex?: number })[] = [];
   const moduleStartIndices: number[] = [];
-  
+
   if (template.modules) {
     let questionIndex = 0;
     for (let mIdx = 0; mIdx < template.modules.length; mIdx++) {
@@ -103,11 +130,12 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
   }
 
   const currentQuestion = allQuestions[currentIndex];
-  const progress = allQuestions.length > 0 ? Math.round(((currentIndex + 1) / allQuestions.length) * 100) : 0;
+  const progress =
+    allQuestions.length > 0 ? Math.round(((currentIndex + 1) / allQuestions.length) * 100) : 0;
 
   // Calculate module progress for enhanced visualization
   const currentModuleId = currentQuestion?.moduleId;
-  const currentModule = template.modules?.find(m => m.id === currentModuleId);
+  const currentModule = template.modules?.find((m) => m.id === currentModuleId);
   const moduleIndex = currentQuestion?.moduleIndex ?? 0;
   const _totalModules = template.modules?.length ?? 0;
   void _totalModules; // Reserved for future module progress display
@@ -115,29 +143,54 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
   // Get module phases for color coding
   const getModulePhase = (moduleId: string | undefined): string => {
     if (!moduleId) return "foundation";
-    if (moduleId.includes("soft") || moduleId.includes("emotional") || moduleId.includes("logistics") || moduleId.includes("starter") || moduleId.includes("base")) {
+    if (
+      moduleId.includes("soft") ||
+      moduleId.includes("emotional") ||
+      moduleId.includes("logistics") ||
+      moduleId.includes("starter") ||
+      moduleId.includes("base")
+    ) {
       return "foundation";
-    } else if (moduleId.includes("touch") || moduleId.includes("sex") || moduleId.includes("sensory") || moduleId.includes("activities")) {
+    } else if (
+      moduleId.includes("touch") ||
+      moduleId.includes("sex") ||
+      moduleId.includes("sensory") ||
+      moduleId.includes("activities")
+    ) {
       return "exploration";
-    } else if (moduleId.includes("power") || moduleId.includes("impact") || moduleId.includes("bondage") || moduleId.includes("roles")) {
+    } else if (
+      moduleId.includes("power") ||
+      moduleId.includes("impact") ||
+      moduleId.includes("bondage") ||
+      moduleId.includes("roles")
+    ) {
       return "advanced";
-    } else if (moduleId.includes("risk") || moduleId.includes("extreme") || moduleId.includes("fetish") || moduleId.includes("anal")) {
+    } else if (
+      moduleId.includes("risk") ||
+      moduleId.includes("extreme") ||
+      moduleId.includes("fetish") ||
+      moduleId.includes("anal")
+    ) {
       return "expert";
-    } else if (moduleId.includes("future") || moduleId.includes("digital") || moduleId.includes("review")) {
+    } else if (
+      moduleId.includes("future") ||
+      moduleId.includes("digital") ||
+      moduleId.includes("review")
+    ) {
       return "lifestyle";
     }
     return "exploration";
   };
 
   const currentPhase = getModulePhase(currentModuleId);
-  
+
   // Muted phase colors for better theme integration
   const phaseColors: Record<string, string> = {
     foundation: "bg-blue-500/80 text-blue-100",
     exploration: "bg-emerald-500/80 text-emerald-100",
     advanced: "bg-amber-500/80 text-amber-100",
     expert: "bg-red-500/80 text-red-100",
-    lifestyle: "bg-purple-500/80 text-purple-100"
+    lifestyle: "bg-purple-500/80 text-purple-100",
   };
 
   // Ring colors for active state (reserved for future use)
@@ -146,7 +199,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
     exploration: "ring-emerald-500/30",
     advanced: "ring-amber-500/30",
     expert: "ring-red-500/30",
-    lifestyle: "ring-purple-500/30"
+    lifestyle: "ring-purple-500/30",
   };
   void _phaseRings;
 
@@ -155,16 +208,17 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
     exploration: "Erkundung",
     advanced: "Vertiefung",
     expert: "Expert:in",
-    lifestyle: "Lebensstil"
+    lifestyle: "Lebensstil",
   };
 
   // Calculate answered questions per module
   function getModuleStats(module: Module): { total: number; answered: number } {
     const total = module.questions?.length || 0;
-    const answered = module.questions?.filter(q => {
-      const response = responses[q.id];
-      return response !== null && response !== undefined;
-    }).length || 0;
+    const answered =
+      module.questions?.filter((q) => {
+        const response = responses[q.id];
+        return response !== null && response !== undefined;
+      }).length || 0;
     return { total, answered };
   }
 
@@ -175,7 +229,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
   // Jump to initial module if provided
   useEffect(() => {
     if (initialModuleId && template.modules) {
-      const mIdx = template.modules.findIndex(m => m.id === initialModuleId);
+      const mIdx = template.modules.findIndex((m) => m.id === initialModuleId);
       if (mIdx >= 0 && mIdx < moduleStartIndices.length) {
         setCurrentIndex(moduleStartIndices[mIdx]);
       }
@@ -189,17 +243,27 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
       const conditionsKey = `${currentQuestion.id}_conditions`;
       const notesResponse = responses[notesKey];
       const conditionsResponse = responses[conditionsKey];
-      
+
       // Show notes section if there's existing notes
-      if (notesResponse && typeof notesResponse === "object" && notesResponse !== null && "text" in notesResponse) {
+      if (
+        notesResponse &&
+        typeof notesResponse === "object" &&
+        notesResponse !== null &&
+        "text" in notesResponse
+      ) {
         const notesText = (notesResponse as { text: string }).text;
         setShowNotes(Boolean(notesText && notesText.trim().length > 0));
       } else {
         setShowNotes(false);
       }
-      
+
       // Show conditions section if there's existing conditions
-      if (conditionsResponse && typeof conditionsResponse === "object" && conditionsResponse !== null && "text" in conditionsResponse) {
+      if (
+        conditionsResponse &&
+        typeof conditionsResponse === "object" &&
+        conditionsResponse !== null &&
+        "text" in conditionsResponse
+      ) {
         const conditionsText = (conditionsResponse as { text: string }).text;
         setShowConditions(Boolean(conditionsText && conditionsText.trim().length > 0));
       } else {
@@ -215,8 +279,8 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
       const data = await loadResponses(sessionId, person);
       setResponses(data || {});
     } catch (err) {
-      console.error('Failed to load responses:', err);
-      setError(err instanceof Error ? err.message : 'Fehler beim Laden');
+      console.error("Failed to load responses:", err);
+      setError(err instanceof Error ? err.message : "Fehler beim Laden");
     } finally {
       setLoading(false);
     }
@@ -226,7 +290,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
-    
+
     saveTimeoutRef.current = window.setTimeout(() => {
       handleSave();
     }, 2000); // Auto-save after 2 seconds of inactivity
@@ -240,15 +304,15 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);
     } catch (err) {
-      console.error('Failed to save:', err);
-      setError(err instanceof Error ? err.message : 'Fehler beim Speichern');
+      console.error("Failed to save:", err);
+      setError(err instanceof Error ? err.message : "Fehler beim Speichern");
     } finally {
       setSaving(false);
     }
   }
 
   function handleAnswerChange(questionId: string, value: ResponseValue) {
-    setResponses(prev => ({
+    setResponses((prev) => ({
       ...prev,
       [questionId]: value,
     }));
@@ -257,7 +321,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
 
   function handleNotesChange(questionId: string, notes: string) {
     const notesKey = `${questionId}_notes`;
-    setResponses(prev => ({
+    setResponses((prev) => ({
       ...prev,
       [notesKey]: { text: notes } as ResponseValue,
     }));
@@ -266,7 +330,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
 
   function handleConditionsChange(questionId: string, conditions: string) {
     const conditionsKey = `${questionId}_conditions`;
-    setResponses(prev => ({
+    setResponses((prev) => ({
       ...prev,
       [conditionsKey]: { text: conditions } as ResponseValue,
     }));
@@ -281,7 +345,11 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
       case "consent_rating": {
         if (typeof response !== "object" || response === null) return false;
         const consentValue = response as ConsentRatingValue;
-        return !!(consentValue.status && consentValue.interest !== null && consentValue.interest !== undefined);
+        return !!(
+          consentValue.status &&
+          consentValue.interest !== null &&
+          consentValue.interest !== undefined
+        );
       }
       case "scale":
       case "slider":
@@ -289,7 +357,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
         // Handle ScaleValue object
         if (typeof response === "object" && response !== null && "value" in response) {
           const scaleValue = response as { value: number | null };
-          return scaleValue.value !== null && scaleValue.value !== undefined && !isNaN(scaleValue.value);
+          return (
+            scaleValue.value !== null && scaleValue.value !== undefined && !isNaN(scaleValue.value)
+          );
         }
         return false;
       }
@@ -297,7 +367,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
         // Handle EnumValue object
         if (typeof response === "object" && response !== null && "value" in response) {
           const enumValue = response as { value: string | null };
-          return enumValue.value !== null && enumValue.value !== undefined && enumValue.value.length > 0;
+          return (
+            enumValue.value !== null && enumValue.value !== undefined && enumValue.value.length > 0
+          );
         }
         return false;
       }
@@ -322,7 +394,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
   }
 
   const currentResponse = responses[currentQuestion?.id];
-  const isCurrentAnswerValid = currentQuestion ? isMainAnswerValid(currentQuestion, currentResponse) : false;
+  const isCurrentAnswerValid = currentQuestion
+    ? isMainAnswerValid(currentQuestion, currentResponse)
+    : false;
 
   function goToNext() {
     if (currentIndex < allQuestions.length - 1) {
@@ -356,7 +430,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
 
   function handleTouchEnd() {
     if (!touchStartX.current || !touchEndX.current) return;
-    
+
     const distance = touchStartX.current - touchEndX.current;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
@@ -398,7 +472,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold">Modul-Übersicht</h2>
-            <p className="text-sm text-muted-foreground">Person {person} • Springe zu einem Modul</p>
+            <p className="text-sm text-muted-foreground">
+              Person {person} • Springe zu einem Modul
+            </p>
           </div>
           <Button variant="outline" onClick={() => setShowModuleOverview(false)}>
             Zurück
@@ -416,8 +492,8 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
               <Card
                 key={module.id}
                 className={`cursor-pointer transition-all hover:ring-2 hover:ring-primary ${
-                  isCurrent ? 'ring-2 ring-primary' : ''
-                } ${isComplete ? 'bg-green-500/10' : ''}`}
+                  isCurrent ? "ring-2 ring-primary" : ""
+                } ${isComplete ? "bg-green-500/10" : ""}`}
                 onClick={() => jumpToModule(mIdx)}
               >
                 <CardHeader className="pb-2">
@@ -445,7 +521,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
                       <div
                         className={`h-full transition-all duration-300 ${phaseColors[phase]}`}
-                        style={{ width: `${stats.total > 0 ? (stats.answered / stats.total) * 100 : 0}%` }}
+                        style={{
+                          width: `${stats.total > 0 ? (stats.answered / stats.total) * 100 : 0}%`,
+                        }}
                       />
                     </div>
                     <p className="text-xs text-muted-foreground text-right">
@@ -463,7 +541,13 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
           <CardContent className="pt-6">
             <div className="flex justify-around text-center">
               <div>
-                <p className="text-2xl font-bold">{Object.keys(responses).filter(k => !k.includes('_notes') && !k.includes('_conditions')).length}</p>
+                <p className="text-2xl font-bold">
+                  {
+                    Object.keys(responses).filter(
+                      (k) => !k.includes("_notes") && !k.includes("_conditions")
+                    ).length
+                  }
+                </p>
                 <p className="text-sm text-muted-foreground">Beantwortet</p>
               </div>
               <div>
@@ -482,7 +566,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
   }
 
   return (
-    <div 
+    <div
       className="space-y-6 pt-2"
       onTouchStart={handleTouchStart as any}
       onTouchMove={handleTouchMove as any}
@@ -490,8 +574,8 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
     >
       {/* Zen Mode Progress - Subtle top bar */}
       <div className="fixed top-0 left-0 w-full h-1 z-50 bg-background">
-        <div 
-          className={`h-full transition-all duration-500 ${phaseColors[currentPhase].split(' ')[0]}`}
+        <div
+          className={`h-full transition-all duration-500 ${phaseColors[currentPhase].split(" ")[0]}`}
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -499,19 +583,21 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
       {/* Zen Header */}
       <div className="flex justify-between items-center px-1">
         <div className="flex items-center gap-3">
-          <div className={`px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wider ${phaseColors[currentPhase]}`}>
+          <div
+            className={`px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wider ${phaseColors[currentPhase]}`}
+          >
             {phaseLabels[currentPhase] || "Exploration"}
           </div>
           {currentModule && (
             <span className="text-sm text-muted-foreground font-medium hidden sm:inline-block">
-               {currentModule.name}
+              {currentModule.name}
             </span>
           )}
         </div>
-        
-        <Button 
-          variant="ghost" 
-          size="sm" 
+
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => setShowModuleOverview(true)}
           className="text-muted-foreground hover:text-foreground h-8 w-8 p-0"
         >
@@ -521,7 +607,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
 
       {/* Current Question Indicator (Minimal) */}
       <div className="flex items-center justify-between text-xs text-muted-foreground px-1 -mt-4 mb-2">
-         <span>{currentModule?.name || "Allgemein"}</span>
+        <span>{currentModule?.name || "Allgemein"}</span>
       </div>
 
       {/* Question Card */}
@@ -555,12 +641,16 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
             />
           )}
 
-          {(currentQuestion.schema === "scale" || currentQuestion.schema === "slider" || currentQuestion.schema === "scale_1_10") && (
+          {(currentQuestion.schema === "scale" ||
+            currentQuestion.schema === "slider" ||
+            currentQuestion.schema === "scale_1_10") && (
             <ScaleInput
               value={responses[currentQuestion.id] as number}
-              onChange={(value) => handleAnswerChange(currentQuestion.id, { value } as ResponseValue)}
-              min={currentQuestion.schema === "scale_1_10" ? 1 : (currentQuestion.min || 1)}
-              max={currentQuestion.schema === "scale_1_10" ? 10 : (currentQuestion.max || 10)}
+              onChange={(value) =>
+                handleAnswerChange(currentQuestion.id, { value } as ResponseValue)
+              }
+              min={currentQuestion.schema === "scale_1_10" ? 1 : currentQuestion.min || 1}
+              max={currentQuestion.schema === "scale_1_10" ? 10 : currentQuestion.max || 10}
               labels={currentQuestion.labels}
             />
           )}
@@ -568,7 +658,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
           {currentQuestion.schema === "enum" && currentQuestion.options && (
             <EnumInput
               value={responses[currentQuestion.id] as string}
-              onChange={(value) => handleAnswerChange(currentQuestion.id, { value } as ResponseValue)}
+              onChange={(value) =>
+                handleAnswerChange(currentQuestion.id, { value } as ResponseValue)
+              }
               options={normalizeOptions(currentQuestion.options)}
             />
           )}
@@ -576,7 +668,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
           {currentQuestion.schema === "multi" && currentQuestion.options && (
             <MultiInput
               value={responses[currentQuestion.id] as string[]}
-              onChange={(value) => handleAnswerChange(currentQuestion.id, { values: value } as ResponseValue)}
+              onChange={(value) =>
+                handleAnswerChange(currentQuestion.id, { values: value } as ResponseValue)
+              }
               options={normalizeOptions(currentQuestion.options)}
             />
           )}
@@ -585,7 +679,9 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
             <TouchTextInput
               value={responses[currentQuestion.id] as { text: string }}
               onChange={(value) => handleAnswerChange(currentQuestion.id, value)}
-              placeholder={currentQuestion.help || "Tippe auf eine Schnellantwort oder schreibe selbst..."}
+              placeholder={
+                currentQuestion.help || "Tippe auf eine Schnellantwort oder schreibe selbst..."
+              }
               quickReplies={getQuickRepliesForQuestion(currentQuestion)}
             />
           )}
@@ -613,11 +709,16 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
             {showNotes && (
               <div className="pt-2">
                 <textarea
-                  value={(responses[`${currentQuestion.id}_notes`] as { text: string } | undefined)?.text || ""}
-                  onChange={(e) => handleNotesChange(currentQuestion.id, (e.target as HTMLTextAreaElement).value)}
+                  value={
+                    (responses[`${currentQuestion.id}_notes`] as { text: string } | undefined)
+                      ?.text || ""
+                  }
+                  onChange={(e) =>
+                    handleNotesChange(currentQuestion.id, (e.target as HTMLTextAreaElement).value)
+                  }
                   placeholder="Hier kannst du zusätzliche Notizen zu dieser Frage hinterlassen..."
                   className="w-full min-h-[100px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  style={{ fontSize: '16px' }}
+                  style={{ fontSize: "16px" }}
                 />
               </div>
             )}
@@ -646,11 +747,19 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
             {showConditions && (
               <div className="pt-2">
                 <textarea
-                  value={(responses[`${currentQuestion.id}_conditions`] as { text: string } | undefined)?.text || ""}
-                  onChange={(e) => handleConditionsChange(currentQuestion.id, (e.target as HTMLTextAreaElement).value)}
+                  value={
+                    (responses[`${currentQuestion.id}_conditions`] as { text: string } | undefined)
+                      ?.text || ""
+                  }
+                  onChange={(e) =>
+                    handleConditionsChange(
+                      currentQuestion.id,
+                      (e.target as HTMLTextAreaElement).value
+                    )
+                  }
                   placeholder="Hier kannst du Bedingungen oder Grenzen zu dieser Frage angeben..."
                   className="w-full min-h-[100px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  style={{ fontSize: '16px' }}
+                  style={{ fontSize: "16px" }}
                 />
               </div>
             )}
@@ -673,7 +782,7 @@ export function QuestionnaireForm({ sessionId, person, template, onComplete, ini
               disabled={!isCurrentAnswerValid}
               className="gap-2 min-h-[48px]"
             >
-              {currentIndex === allQuestions.length - 1 ? 'Fertig' : 'Weiter'}
+              {currentIndex === allQuestions.length - 1 ? "Fertig" : "Weiter"}
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>

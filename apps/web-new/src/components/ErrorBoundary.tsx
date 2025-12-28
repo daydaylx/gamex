@@ -73,9 +73,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
             {/* Error Message */}
             <div className="space-y-2">
-              <h1 className="text-xl font-bold text-foreground">
-                Etwas ist schiefgelaufen
-              </h1>
+              <h1 className="text-xl font-bold text-foreground">Etwas ist schiefgelaufen</h1>
               <p className="text-sm text-muted-foreground">
                 Ein unerwarteter Fehler ist aufgetreten. Deine Daten sind sicher gespeichert.
               </p>
@@ -102,18 +100,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button
-                variant="outline"
-                onClick={this.handleGoHome}
-                className="gap-2"
-              >
+              <Button variant="outline" onClick={this.handleGoHome} className="gap-2">
                 <Home className="w-4 h-4" />
                 Zur Startseite
               </Button>
-              <Button
-                onClick={this.handleReload}
-                className="gap-2"
-              >
+              <Button onClick={this.handleReload} className="gap-2">
                 <RefreshCw className="w-4 h-4" />
                 Seite neu laden
               </Button>

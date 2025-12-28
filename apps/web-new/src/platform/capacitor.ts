@@ -42,14 +42,14 @@ let hapticsPlugin: HapticsPlugin | null = null;
 
 async function getAppPlugin(): Promise<AppPlugin | null> {
   if (appPlugin) return appPlugin;
-  
+
   try {
     const module = await import("@capacitor/app");
     appPlugin = module.App;
     return appPlugin;
   } catch {
     // Running in browser, not native
-    console.log("Capacitor App plugin not available (running in browser)");
+    console.warn("Capacitor App plugin not available (running in browser)");
     return null;
   }
 }
@@ -64,7 +64,7 @@ async function getHapticsPlugin(): Promise<HapticsPlugin | null> {
     return hapticsPlugin;
   } catch {
     // Running in browser or haptics not available
-    console.log("Capacitor Haptics plugin not available");
+    console.warn("Capacitor Haptics plugin not available");
     return null;
   }
 }
@@ -78,37 +78,37 @@ export const haptics = {
     const h = await getHapticsPlugin();
     if (h) await h.impact({ style: "Light" });
   },
-  
+
   /** Medium impact - for button presses */
   async medium() {
     const h = await getHapticsPlugin();
     if (h) await h.impact({ style: "Medium" });
   },
-  
+
   /** Heavy impact - for important actions */
   async heavy() {
     const h = await getHapticsPlugin();
     if (h) await h.impact({ style: "Heavy" });
   },
-  
+
   /** Success notification - for completed actions */
   async success() {
     const h = await getHapticsPlugin();
     if (h) await h.notification({ type: "Success" });
   },
-  
+
   /** Warning notification */
   async warning() {
     const h = await getHapticsPlugin();
     if (h) await h.notification({ type: "Warning" });
   },
-  
+
   /** Error notification */
   async error() {
     const h = await getHapticsPlugin();
     if (h) await h.notification({ type: "Error" });
   },
-  
+
   /** Selection feedback - for dragging/scrolling */
   async selection() {
     const h = await getHapticsPlugin();
@@ -193,7 +193,7 @@ export function useInterviewBackButton(
           // First press - set flag and provide feedback
           confirmExitRef.current = true;
           await haptics.warning();
-          
+
           // Reset after 2 seconds
           setTimeout(() => {
             confirmExitRef.current = false;
@@ -230,4 +230,3 @@ export function getPlatform(): "android" | "ios" | "web" {
   // @ts-expect-error - Capacitor global
   return window.Capacitor?.getPlatform?.() || "web";
 }
-

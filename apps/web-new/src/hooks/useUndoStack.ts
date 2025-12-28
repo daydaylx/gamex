@@ -15,29 +15,32 @@ export function useUndoStack<T>(maxStackSize = 10) {
   const [stack, setStack] = useState<UndoableAction<T>[]>([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
 
-  const push = useCallback((type: string, data: T) => {
-    setStack((prev) => {
-      // Remove any "future" actions after current index
-      const newStack = prev.slice(0, currentIndex + 1);
+  const push = useCallback(
+    (type: string, data: T) => {
+      setStack((prev) => {
+        // Remove any "future" actions after current index
+        const newStack = prev.slice(0, currentIndex + 1);
 
-      // Add new action
-      newStack.push({
-        type,
-        data,
-        timestamp: Date.now(),
-      });
+        // Add new action
+        newStack.push({
+          type,
+          data,
+          timestamp: Date.now(),
+        });
 
-      // Limit stack size
-      if (newStack.length > maxStackSize) {
-        newStack.shift();
-        setCurrentIndex(maxStackSize - 1);
+        // Limit stack size
+        if (newStack.length > maxStackSize) {
+          newStack.shift();
+          setCurrentIndex(maxStackSize - 1);
+          return newStack;
+        }
+
+        setCurrentIndex(newStack.length - 1);
         return newStack;
-      }
-
-      setCurrentIndex(newStack.length - 1);
-      return newStack;
-    });
-  }, [currentIndex, maxStackSize]);
+      });
+    },
+    [currentIndex, maxStackSize]
+  );
 
   const undo = useCallback(() => {
     if (currentIndex > 0) {

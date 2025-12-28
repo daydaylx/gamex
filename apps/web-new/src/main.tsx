@@ -7,5 +7,9 @@ import { initPerformanceMonitoring } from "./services/performance";
 initPerformanceMonitoring();
 
 // Initialize app
-render(<App />, document.getElementById("app")!);
-
+const appElement = document.getElementById("app");
+if (appElement) {
+  render(<App />, appElement);
+} else {
+  console.error("App root element not found");
+}

@@ -28,20 +28,11 @@ export function HomeScreen() {
   async function loadSessions() {
     setLoading(true);
     try {
-      const [active, archived] = await Promise.all([
-        getActiveSessions(),
-        getArchivedSessions()
-      ]);
+      const [active, archived] = await Promise.all([getActiveSessions(), getArchivedSessions()]);
 
       // Sort by most recent first
-      active.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-      archived.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
+      active.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      archived.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
       setSessions(active);
       setArchivedSessions(archived);
@@ -68,9 +59,7 @@ export function HomeScreen() {
         </div>
 
         {/* Headline */}
-        <h1 className="text-display text-3xl mb-3 gradient-text">
-          Intimacy. Structured.
-        </h1>
+        <h1 className="text-display text-3xl mb-3 gradient-text">Intimacy. Structured.</h1>
         <p className="text-muted-foreground text-base max-w-xs mb-8 text-balance">
           Ein sicherer Raum für ehrliche Gespräche über Wünsche und Grenzen.
         </p>
@@ -87,7 +76,10 @@ export function HomeScreen() {
 
         {/* Quick access to recent session */}
         {hasRecentSession && (
-          <div className="mt-6 w-full max-w-sm sm:max-w-md animate-fade-in" style={{ animationDelay: "0.1s" }}>
+          <div
+            className="mt-6 w-full max-w-sm sm:max-w-md animate-fade-in"
+            style={{ animationDelay: "0.1s" }}
+          >
             <button
               onClick={() => setLocation(`/sessions/${latestSession.id}`)}
               className="w-full p-4 rounded-xl bg-surface border border-border/50 flex items-center gap-3 card-interactive"
@@ -204,15 +196,21 @@ export function HomeScreen() {
   );
 }
 
-function StatusDot({ complete, label, sessionId }: { complete: boolean; label: string; sessionId: string }) {
+function StatusDot({
+  complete,
+  label,
+  sessionId,
+}: {
+  complete: boolean;
+  label: string;
+  sessionId: string;
+}) {
   const answeredCount = getAnsweredCount(sessionId, label as "A" | "B");
 
   return (
     <div
       className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
-        complete
-          ? "bg-primary text-primary-foreground"
-          : "bg-muted/50 text-muted-foreground"
+        complete ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground"
       }`}
       title={`Person ${label}: ${complete ? `${answeredCount} Antworten` : "Ausstehend"}`}
     >
@@ -224,9 +222,7 @@ function StatusDot({ complete, label, sessionId }: { complete: boolean; label: s
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
-  const diffDays = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) return "Heute";
   if (diffDays === 1) return "Gestern";
@@ -237,4 +233,3 @@ function formatDate(dateString: string): string {
     month: "short",
   });
 }
-

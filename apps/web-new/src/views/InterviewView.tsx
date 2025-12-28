@@ -11,9 +11,11 @@ import { Button } from "../components/ui/button";
 import { InterviewView as InterviewViewComponent } from "../components/interview/InterviewView";
 
 export function InterviewViewPage() {
-  const [match, params] = useRoute<{ sessionId: string; person: string }>("/sessions/:sessionId/interview/:person");
+  const [match, params] = useRoute<{ sessionId: string; person: string }>(
+    "/sessions/:sessionId/interview/:person"
+  );
   const [, setLocation] = useLocation();
-  
+
   if (!match || !params) {
     return (
       <div className="space-y-6">
@@ -36,18 +38,22 @@ export function InterviewViewPage() {
       {/* Compact Header */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between px-4 py-3 pt-safe">
-        <Link href={`/sessions/${sessionId}`}>
-            <Button variant="ghost" size="icon" className="min-w-[44px] min-h-[44px] touch-feedback">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-        </Link>
+          <Link href={`/sessions/${sessionId}`}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="min-w-[44px] min-h-[44px] touch-feedback"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
           <div className="text-center">
             <h1 className="text-lg font-bold">Interview</h1>
             <p className="text-xs text-muted-foreground">Person {person}</p>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={handleClose}
             className="min-w-[44px] min-h-[44px] touch-feedback"
           >
@@ -58,16 +64,15 @@ export function InterviewViewPage() {
 
       {/* Interview Component */}
       <div className="flex-1 px-4 py-2">
-      <InterviewViewComponent
-        sessionId={sessionId}
-        person={person}
-        onComplete={() => {
-          // Could navigate back or show completion message
-        }}
+        <InterviewViewComponent
+          sessionId={sessionId}
+          person={person}
+          onComplete={() => {
+            // Could navigate back or show completion message
+          }}
           onClose={handleClose}
-      />
+        />
       </div>
     </div>
   );
 }
-

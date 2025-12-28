@@ -136,11 +136,7 @@ export function AIReportSection({
       <CardContent className="space-y-4">
         {!isExpanded ? (
           <div className="space-y-3">
-            <Button
-              onClick={handleGenerate}
-              disabled={loading}
-              className="w-full gap-2"
-            >
+            <Button onClick={handleGenerate} disabled={loading} className="w-full gap-2">
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -242,11 +238,15 @@ export function AIReportSection({
                             <div className="font-medium text-sm mb-2">{diff.topic}</div>
                             <div className="grid md:grid-cols-2 gap-3 text-sm">
                               <div>
-                                <div className="font-medium text-muted-foreground mb-1">Person A:</div>
+                                <div className="font-medium text-muted-foreground mb-1">
+                                  Person A:
+                                </div>
                                 <div>{diff.personA}</div>
                               </div>
                               <div>
-                                <div className="font-medium text-muted-foreground mb-1">Person B:</div>
+                                <div className="font-medium text-muted-foreground mb-1">
+                                  Person B:
+                                </div>
                                 <div>{diff.personB}</div>
                               </div>
                             </div>
@@ -324,4 +324,3 @@ export function AIReportSection({
     </Card>
   );
 }
-

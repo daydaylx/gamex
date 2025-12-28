@@ -96,10 +96,7 @@ export function AIHelpDialog({
       {isOpen && (
         <>
           {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/20 z-40"
-            onClick={handleClose}
-          />
+          <div className="fixed inset-0 bg-black/20 z-40" onClick={handleClose} />
 
           {/* Dialog Card */}
           <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl max-h-[90vh] overflow-hidden">
@@ -107,11 +104,10 @@ export function AIHelpDialog({
               <CardHeader className="pb-3 flex-shrink-0">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-lg font-semibold">
-                      Frage an KI
-                    </CardTitle>
+                    <CardTitle className="text-lg font-semibold">Frage an KI</CardTitle>
                     <CardDescription className="mt-1">
-                      Stelle eine Frage zur aktuellen Fragebogen-Frage. Die KI hilft dir beim Verständnis, entscheidet aber nicht für dich.
+                      Stelle eine Frage zur aktuellen Fragebogen-Frage. Die KI hilft dir beim
+                      Verständnis, entscheidet aber nicht für dich.
                     </CardDescription>
                   </div>
                   <Button
@@ -129,9 +125,7 @@ export function AIHelpDialog({
                 {/* Question Context (read-only) */}
                 <div className="p-3 bg-muted rounded-md text-sm">
                   <div className="font-medium mb-1">Aktuelle Frage:</div>
-                  <div className="text-muted-foreground">
-                    {question.text || question.label}
-                  </div>
+                  <div className="text-muted-foreground">{question.text || question.label}</div>
                 </div>
 
                 {/* User Input */}
@@ -186,9 +180,7 @@ export function AIHelpDialog({
                   <div className="flex-1 overflow-y-auto flex-shrink min-h-0">
                     <div className="p-4 bg-muted rounded-md">
                       <div className="font-medium mb-2 text-sm">KI-Antwort:</div>
-                      <div className="text-sm whitespace-pre-wrap leading-relaxed">
-                        {answer}
-                      </div>
+                      <div className="text-sm whitespace-pre-wrap leading-relaxed">{answer}</div>
                     </div>
                   </div>
                 )}
@@ -207,4 +199,3 @@ export function AIHelpDialog({
     </div>
   );
 }
-

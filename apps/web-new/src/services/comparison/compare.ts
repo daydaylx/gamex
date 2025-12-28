@@ -3,34 +3,34 @@
  * Compares two people's responses and generates match/explore/boundary analysis
  */
 
-import type { Template, Question } from '../../types';
-import type { ResponseMap, ResponseValue, ConsentRatingValue } from '../../types/form';
-import type { CompareResponse, ComparisonResult, MatchLevel } from '../../types/compare';
+import type { Template, Question } from "../../types";
+import type { ResponseMap, ResponseValue, ConsentRatingValue } from "../../types/form";
+import type { CompareResponse, ComparisonResult, MatchLevel } from "../../types/compare";
 
 /**
  * Determines the pair status based on two consent statuses
  */
 function statusPair(a: string | undefined, b: string | undefined): MatchLevel {
-  const statusA = a || '';
-  const statusB = b || '';
+  const statusA = a || "";
+  const statusB = b || "";
 
   // BOUNDARY: One person has HARD_LIMIT
-  if (statusA === 'HARD_LIMIT' || statusB === 'HARD_LIMIT') {
-    return 'BOUNDARY';
+  if (statusA === "HARD_LIMIT" || statusB === "HARD_LIMIT") {
+    return "BOUNDARY";
   }
 
   // BOUNDARY: One YES, one NO
-  if ((statusA === 'YES' && statusB === 'NO') || (statusA === 'NO' && statusB === 'YES')) {
-    return 'BOUNDARY';
+  if ((statusA === "YES" && statusB === "NO") || (statusA === "NO" && statusB === "YES")) {
+    return "BOUNDARY";
   }
 
   // MATCH: Both YES
-  if (statusA === 'YES' && statusB === 'YES') {
-    return 'MATCH';
+  if (statusA === "YES" && statusB === "YES") {
+    return "MATCH";
   }
 
   // EXPLORE: Everything else (MAYBE combinations, NO+NO, etc.)
-  return 'EXPLORE';
+  return "EXPLORE";
 }
 
 /**
@@ -92,7 +92,7 @@ function generateActionPlan(items: ComparisonResult[]): string[] {
 
   for (const item of items) {
     // Only include MATCH items
-    if (item.pair_status !== 'MATCH') continue;
+    if (item.pair_status !== "MATCH") continue;
 
     // Both must have comfort >= 3
     const comfortA = item.comfort_a ?? 0;
@@ -107,7 +107,7 @@ function generateActionPlan(items: ComparisonResult[]): string[] {
     scored.push({
       label: item.label || item.question_id,
       score,
-      moduleId: item.module_id || '',
+      moduleId: item.module_id || "",
     });
   }
 
@@ -177,7 +177,7 @@ export function compare(
     const dataB = respB[qid];
 
     const schema = question.schema;
-    const riskLevel = question.risk_level || 'A';
+    const riskLevel = question.risk_level || "A";
     const label = question.label || qid;
     const moduleId = findModuleId(template, qid);
 
@@ -187,7 +187,7 @@ export function compare(
       schema,
       risk_level: riskLevel,
       module_id: moduleId,
-      pair_status: 'EXPLORE',
+      pair_status: "EXPLORE",
       status_a: null,
       status_b: null,
       interest_a: null,
@@ -201,17 +201,17 @@ export function compare(
       flags: [],
     };
 
-    if (schema === 'consent_rating') {
+    if (schema === "consent_rating") {
       handleConsentRating(entry, dataA, dataB);
-    } else if (schema === 'scale_1_10') {
+    } else if (schema === "scale_1_10") {
       handleScale(entry, dataA, dataB);
-    } else if (schema === 'enum') {
+    } else if (schema === "enum") {
       handleEnum(entry, dataA, dataB);
-    } else if (schema === 'multi') {
+    } else if (schema === "multi") {
       handleMulti(entry, dataA, dataB);
-    } else if (schema === 'text') {
+    } else if (schema === "text") {
       handleText(entry, dataA, dataB);
-    } else if (schema === 'scenario') {
+    } else if (schema === "scenario") {
       handleScenario(entry, dataA, dataB, scenarios || {});
     }
 
@@ -225,12 +225,12 @@ export function compare(
     const ay = order[y.pair_status];
     if (ax !== ay) return ax - ay;
 
-    const rx = x.risk_level === 'C' ? 0 : 1;
-    const ry = y.risk_level === 'C' ? 0 : 1;
+    const rx = x.risk_level === "C" ? 0 : 1;
+    const ry = y.risk_level === "C" ? 0 : 1;
     if (rx !== ry) return rx - ry;
 
-    const mx = x.module_id || '';
-    const my = y.module_id || '';
+    const mx = x.module_id || "";
+    const my = y.module_id || "";
     if (mx !== my) return mx.localeCompare(my);
 
     return x.question_id.localeCompare(y.question_id);
@@ -256,7 +256,7 @@ function findModuleId(template: Template, questionId: string): string {
       }
     }
   }
-  return '';
+  return "";
 }
 
 /**
@@ -267,8 +267,8 @@ function handleConsentRating(
   dataA: ResponseValue | undefined,
   dataB: ResponseValue | undefined
 ): void {
-  const objA = (typeof dataA === 'object' && dataA !== null ? dataA : {}) as ConsentRatingValue;
-  const objB = (typeof dataB === 'object' && dataB !== null ? dataB : {}) as ConsentRatingValue;
+  const objA = (typeof dataA === "object" && dataA !== null ? dataA : {}) as ConsentRatingValue;
+  const objB = (typeof dataB === "object" && dataB !== null ? dataB : {}) as ConsentRatingValue;
 
   // Detect variant
   const hasDomSubA = objA.dom_status || objA.sub_status;
@@ -311,19 +311,19 @@ function handleConsentRating(
 
   // Generate flags
   if (flagLowComfortHighInterest(entry)) {
-    entry.flags.push('low_comfort_high_interest');
+    entry.flags.push("low_comfort_high_interest");
   }
 
   if (entry.delta_interest !== null && entry.delta_interest >= 2) {
-    entry.flags.push('big_delta');
+    entry.flags.push("big_delta");
   }
 
-  if (entry.risk_level === 'C') {
-    entry.flags.push('high_risk');
+  if (entry.risk_level === "C") {
+    entry.flags.push("high_risk");
   }
 
-  if (entry.status_a === 'HARD_LIMIT' || entry.status_b === 'HARD_LIMIT') {
-    entry.flags.push('hard_limit_violation');
+  if (entry.status_a === "HARD_LIMIT" || entry.status_b === "HARD_LIMIT") {
+    entry.flags.push("hard_limit_violation");
   }
 }
 
@@ -335,8 +335,8 @@ function handleScale(
   dataA: ResponseValue | undefined,
   dataB: ResponseValue | undefined
 ): void {
-  const valA = typeof dataA === 'object' && dataA !== null && 'value' in dataA ? dataA.value : null;
-  const valB = typeof dataB === 'object' && dataB !== null && 'value' in dataB ? dataB.value : null;
+  const valA = typeof dataA === "object" && dataA !== null && "value" in dataA ? dataA.value : null;
+  const valB = typeof dataB === "object" && dataB !== null && "value" in dataB ? dataB.value : null;
 
   entry.value_a = safeInt(valA);
   entry.value_b = safeInt(valB);
@@ -344,13 +344,13 @@ function handleScale(
   // Match if both answered and values are close (delta <= 2)
   if (entry.value_a !== null && entry.value_b !== null) {
     const delta = Math.abs(entry.value_a - entry.value_b);
-    entry.pair_status = delta <= 2 ? 'MATCH' : 'EXPLORE';
+    entry.pair_status = delta <= 2 ? "MATCH" : "EXPLORE";
 
     if (delta >= 3) {
-      entry.flags.push('big_delta');
+      entry.flags.push("big_delta");
     }
   } else {
-    entry.pair_status = 'EXPLORE';
+    entry.pair_status = "EXPLORE";
   }
 }
 
@@ -362,17 +362,17 @@ function handleEnum(
   dataA: ResponseValue | undefined,
   dataB: ResponseValue | undefined
 ): void {
-  const valA = typeof dataA === 'object' && dataA !== null && 'value' in dataA ? dataA.value : null;
-  const valB = typeof dataB === 'object' && dataB !== null && 'value' in dataB ? dataB.value : null;
+  const valA = typeof dataA === "object" && dataA !== null && "value" in dataA ? dataA.value : null;
+  const valB = typeof dataB === "object" && dataB !== null && "value" in dataB ? dataB.value : null;
 
   entry.value_a = valA as ResponseValue;
   entry.value_b = valB as ResponseValue;
 
   // Match if both answered and same value
   if (valA !== null && valB !== null) {
-    entry.pair_status = valA === valB ? 'MATCH' : 'EXPLORE';
+    entry.pair_status = valA === valB ? "MATCH" : "EXPLORE";
   } else {
-    entry.pair_status = 'EXPLORE';
+    entry.pair_status = "EXPLORE";
   }
 }
 
@@ -384,8 +384,10 @@ function handleMulti(
   dataA: ResponseValue | undefined,
   dataB: ResponseValue | undefined
 ): void {
-  const arrA = typeof dataA === 'object' && dataA !== null && 'values' in dataA ? dataA.values : null;
-  const arrB = typeof dataB === 'object' && dataB !== null && 'values' in dataB ? dataB.values : null;
+  const arrA =
+    typeof dataA === "object" && dataA !== null && "values" in dataA ? dataA.values : null;
+  const arrB =
+    typeof dataB === "object" && dataB !== null && "values" in dataB ? dataB.values : null;
 
   entry.value_a = (Array.isArray(arrA) ? arrA : null) as ResponseValue;
   entry.value_b = (Array.isArray(arrB) ? arrB : null) as ResponseValue;
@@ -397,9 +399,9 @@ function handleMulti(
     const intersection = [...setA].filter((x) => setB.has(x));
 
     // Match if at least one common value
-    entry.pair_status = intersection.length > 0 ? 'MATCH' : 'EXPLORE';
+    entry.pair_status = intersection.length > 0 ? "MATCH" : "EXPLORE";
   } else {
-    entry.pair_status = 'EXPLORE';
+    entry.pair_status = "EXPLORE";
   }
 }
 
@@ -411,14 +413,14 @@ function handleText(
   dataA: ResponseValue | undefined,
   dataB: ResponseValue | undefined
 ): void {
-  const textA = typeof dataA === 'object' && dataA !== null && 'text' in dataA ? dataA.text : null;
-  const textB = typeof dataB === 'object' && dataB !== null && 'text' in dataB ? dataB.text : null;
+  const textA = typeof dataA === "object" && dataA !== null && "text" in dataA ? dataA.text : null;
+  const textB = typeof dataB === "object" && dataB !== null && "text" in dataB ? dataB.text : null;
 
   entry.value_a = textA as ResponseValue;
   entry.value_b = textB as ResponseValue;
 
   // Always EXPLORE for text (no automatic matching)
-  entry.pair_status = 'EXPLORE';
+  entry.pair_status = "EXPLORE";
 }
 
 /**
@@ -430,8 +432,14 @@ function handleScenario(
   dataB: ResponseValue | undefined,
   scenarios: Record<string, ResponseValue>
 ): void {
-  const scenarioIdA = typeof dataA === 'object' && dataA !== null && 'scenario_id' in dataA ? dataA.scenario_id : null;
-  const scenarioIdB = typeof dataB === 'object' && dataB !== null && 'scenario_id' in dataB ? dataB.scenario_id : null;
+  const scenarioIdA =
+    typeof dataA === "object" && dataA !== null && "scenario_id" in dataA
+      ? dataA.scenario_id
+      : null;
+  const scenarioIdB =
+    typeof dataB === "object" && dataB !== null && "scenario_id" in dataB
+      ? dataB.scenario_id
+      : null;
 
   entry.value_a = scenarioIdA as ResponseValue;
   entry.value_b = scenarioIdB as ResponseValue;
@@ -439,10 +447,10 @@ function handleScenario(
   // If both selected same scenario, compare that scenario's data
   if (scenarioIdA && scenarioIdB && scenarioIdA === scenarioIdB) {
     const scenarioData = scenarios[scenarioIdA as string];
-    if (scenarioData && typeof scenarioData === 'object' && 'status' in scenarioData) {
+    if (scenarioData && typeof scenarioData === "object" && "status" in scenarioData) {
       // Treat like consent_rating
-      const objA = typeof dataA === 'object' && dataA !== null ? dataA : {};
-      const objB = typeof dataB === 'object' && dataB !== null ? dataB : {};
+      const objA = typeof dataA === "object" && dataA !== null ? dataA : {};
+      const objB = typeof dataB === "object" && dataB !== null ? dataB : {};
 
       entry.status_a = (objA as Record<string, unknown>).status as string | null;
       entry.status_b = (objB as Record<string, unknown>).status as string | null;
@@ -454,12 +462,12 @@ function handleScenario(
       entry.pair_status = statusPair(entry.status_a || undefined, entry.status_b || undefined);
 
       if (flagLowComfortHighInterest(entry)) {
-        entry.flags.push('low_comfort_high_interest');
+        entry.flags.push("low_comfort_high_interest");
       }
     } else {
-      entry.pair_status = 'MATCH';
+      entry.pair_status = "MATCH";
     }
   } else {
-    entry.pair_status = 'EXPLORE';
+    entry.pair_status = "EXPLORE";
   }
 }

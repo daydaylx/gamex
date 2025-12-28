@@ -1,15 +1,15 @@
-import type { AISettings } from '../types/ai';
+import type { AISettings } from "../types/ai";
 
-const STORAGE_PREFIX = 'gamex:';
+const STORAGE_PREFIX = "gamex:";
 const SETTINGS_KEY = `${STORAGE_PREFIX}settings`;
 
 // No default API key - user must configure their own
-const DEFAULT_API_KEY = '';
+const DEFAULT_API_KEY = "";
 // Free, uncensored model for help popup (32k context, $0)
-const DEFAULT_HELP_MODEL = 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free';
+const DEFAULT_HELP_MODEL = "cognitivecomputations/dolphin-mistral-24b-venice-edition:free";
 // High-quality model for report generation (max quality, cost not a concern)
 // Note: If this model ID doesn't work, check OpenRouter for the exact identifier
-const DEFAULT_REPORT_MODEL = 'nousresearch/hermes-4-405b';
+const DEFAULT_REPORT_MODEL = "nousresearch/hermes-4-405b";
 
 function getStorage<T>(key: string): T | null {
   try {
@@ -34,7 +34,7 @@ function setStorage<T>(key: string, value: T): void {
  */
 export function getAISettings(): AISettings {
   const stored = getStorage<AISettings>(SETTINGS_KEY);
-  
+
   if (stored && stored.apiKey) {
     return {
       apiKey: stored.apiKey,
@@ -42,7 +42,7 @@ export function getAISettings(): AISettings {
       reportModel: stored.reportModel || DEFAULT_REPORT_MODEL,
     };
   }
-  
+
   // Return defaults if nothing stored
   return {
     apiKey: DEFAULT_API_KEY,
@@ -60,12 +60,12 @@ export function saveAISettings(settings: Partial<AISettings>): void {
     ...current,
     ...settings,
   };
-  
+
   // Validate API key format (basic check)
   if (updated.apiKey && updated.apiKey.trim().length === 0) {
-    throw new Error('API-Key darf nicht leer sein');
+    throw new Error("API-Key darf nicht leer sein");
   }
-  
+
   setStorage(SETTINGS_KEY, updated);
 }
 
@@ -80,24 +80,26 @@ export function hasAPIKey(): boolean {
 /**
  * Validate settings
  */
-export function validateSettings(settings: Partial<AISettings>): { valid: boolean; error?: string } {
+export function validateSettings(settings: Partial<AISettings>): {
+  valid: boolean;
+  error?: string;
+} {
   if (settings.apiKey !== undefined) {
     if (!settings.apiKey || settings.apiKey.trim().length === 0) {
-      return { valid: false, error: 'API-Key ist erforderlich' };
+      return { valid: false, error: "API-Key ist erforderlich" };
     }
-    if (!settings.apiKey.startsWith('sk-')) {
-      return { valid: false, error: 'API-Key scheint ungültig zu sein' };
+    if (!settings.apiKey.startsWith("sk-")) {
+      return { valid: false, error: "API-Key scheint ungültig zu sein" };
     }
   }
-  
+
   if (settings.helpModel !== undefined && !settings.helpModel.trim()) {
-    return { valid: false, error: 'Help-Modell ist erforderlich' };
+    return { valid: false, error: "Help-Modell ist erforderlich" };
   }
-  
+
   if (settings.reportModel !== undefined && !settings.reportModel.trim()) {
-    return { valid: false, error: 'Report-Modell ist erforderlich' };
+    return { valid: false, error: "Report-Modell ist erforderlich" };
   }
-  
+
   return { valid: true };
 }
-

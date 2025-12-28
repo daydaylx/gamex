@@ -11,9 +11,5 @@ interface VisuallyHiddenProps {
 }
 
 export function VisuallyHidden({ children, as: Tag = "span" }: VisuallyHiddenProps) {
-  return (
-    <Tag className="sr-only">
-      {children}
-    </Tag>
-  );
+  return <Tag className="sr-only">{children}</Tag>;
 }

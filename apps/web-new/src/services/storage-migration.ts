@@ -3,7 +3,7 @@
  * Handles bulk export/import of all application data from localStorage
  */
 
-const STORAGE_PREFIXES = ['gamex:', 'gamex_interview_v1'];
+const STORAGE_PREFIXES = ["gamex:", "gamex_interview_v1"];
 
 export interface ExportData {
   version: number;
@@ -18,12 +18,12 @@ export function exportAllData(): string {
   const result: ExportData = {
     version: 1,
     timestamp: new Date().toISOString(),
-    data: {}
+    data: {},
   };
 
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    if (key && STORAGE_PREFIXES.some(prefix => key.startsWith(prefix))) {
+    if (key && STORAGE_PREFIXES.some((prefix) => key.startsWith(prefix))) {
       try {
         const value = localStorage.getItem(key);
         if (value) {
@@ -45,10 +45,10 @@ export function exportAllData(): string {
 export function importAllData(jsonString: string): boolean {
   try {
     const parsed = JSON.parse(jsonString) as ExportData;
-    
+
     // Basic validation
-    if (!parsed.version || !parsed.data || typeof parsed.data !== 'object') {
-      throw new Error('Ungültiges Datenformat');
+    if (!parsed.version || !parsed.data || typeof parsed.data !== "object") {
+      throw new Error("Ungültiges Datenformat");
     }
 
     // Clear existing data (optional, but safer for full restore)
@@ -56,11 +56,11 @@ export function importAllData(jsonString: string): boolean {
     const keysToRemove: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && STORAGE_PREFIXES.some(prefix => key.startsWith(prefix))) {
+      if (key && STORAGE_PREFIXES.some((prefix) => key.startsWith(prefix))) {
         keysToRemove.push(key);
       }
     }
-    keysToRemove.forEach(k => localStorage.removeItem(k));
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
 
     // Import new data
     Object.entries(parsed.data).forEach(([key, value]) => {
@@ -69,7 +69,7 @@ export function importAllData(jsonString: string): boolean {
 
     return true;
   } catch (error) {
-    console.error('Import failed:', error);
+    console.error("Import failed:", error);
     throw error;
   }
 }

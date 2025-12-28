@@ -19,15 +19,8 @@ interface SwipeOptions {
   preventScroll?: boolean; // Prevent default scroll behavior
 }
 
-export function useSwipe(
-  handlers: SwipeHandlers,
-  options: SwipeOptions = {}
-) {
-  const {
-    threshold = 80,
-    velocityThreshold = 0.3,
-    preventScroll = false,
-  } = options;
+export function useSwipe(handlers: SwipeHandlers, options: SwipeOptions = {}) {
+  const { threshold = 80, velocityThreshold = 0.3, preventScroll = false } = options;
 
   const touchStart = useRef<{ x: number; y: number; time: number } | null>(null);
   const isSwiping = useRef(false);

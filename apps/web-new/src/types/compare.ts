@@ -1,4 +1,4 @@
-export type MatchLevel = 'MATCH' | 'EXPLORE' | 'BOUNDARY';
+export type MatchLevel = "MATCH" | "EXPLORE" | "BOUNDARY";
 
 export interface ComparisonResult {
   question_id: string;
@@ -33,8 +33,8 @@ export interface ComparisonResult {
   prompts?: string[];
 
   // Metadata
-  a?: any;  // Full response object A
-  b?: any;  // Full response object B
+  a?: any; // Full response object A
+  b?: any; // Full response object B
 }
 
 export interface CompareSummary {

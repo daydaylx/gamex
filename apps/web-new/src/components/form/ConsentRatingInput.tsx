@@ -68,8 +68,8 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
               disabled={disabled}
               className={`
                 px-4 py-3 rounded-lg font-medium text-white transition-all
-                ${status === option.value ? option.color + ' ring-2 ring-offset-2 ring-primary' : 'bg-muted text-muted-foreground hover:bg-muted/80'}
-                ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                ${status === option.value ? option.color + " ring-2 ring-offset-2 ring-primary" : "bg-muted text-muted-foreground hover:bg-muted/80"}
+                ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
               `}
             >
               {option.label}
@@ -80,9 +80,7 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
 
       {/* Interest Scale - Main Answer Part 2 */}
       <div className="space-y-3">
-        <label className="text-sm font-medium">
-          Interesse (1 = gering, 5 = hoch)
-        </label>
+        <label className="text-sm font-medium">Interesse (1 = gering, 5 = hoch)</label>
         <div className="flex gap-2">
           {SCALE_OPTIONS.map((num) => (
             <button
@@ -92,11 +90,12 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
               disabled={disabled}
               className={`
                 flex-1 h-12 rounded-lg font-semibold transition-all
-                ${interest === num 
-                  ? 'bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary' 
-                  : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                ${
+                  interest === num
+                    ? "bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary"
+                    : "bg-muted hover:bg-muted/80 text-muted-foreground"
                 }
-                ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
               `}
             >
               {num}
@@ -128,9 +127,7 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
 
         {showComfort && (
           <div className="space-y-3 pt-2">
-            <label className="text-sm font-medium">
-              Komfort (1 = unbehaglich, 5 = sehr wohl)
-            </label>
+            <label className="text-sm font-medium">Komfort (1 = unbehaglich, 5 = sehr wohl)</label>
             <div className="flex gap-2">
               {SCALE_OPTIONS.map((num) => (
                 <button
@@ -140,11 +137,12 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
                   disabled={disabled}
                   className={`
                     flex-1 h-12 rounded-lg font-semibold transition-all
-                    ${comfort === num 
-                      ? 'bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary' 
-                      : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                    ${
+                      comfort === num
+                        ? "bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary"
+                        : "bg-muted hover:bg-muted/80 text-muted-foreground"
                     }
-                    ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                    ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
                   `}
                 >
                   {num}
@@ -157,4 +155,3 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
     </div>
   );
 }
-

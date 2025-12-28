@@ -35,8 +35,8 @@ export function EmotionChips({ value = [], onChange, disabled }: EmotionChipsPro
     const newSelected = selected.includes(emotion)
       ? selected.filter((e) => e !== emotion)
       : selected.length < 2
-      ? [...selected, emotion]
-      : [selected[1], emotion]; // Replace last if already 2 selected
+        ? [...selected, emotion]
+        : [selected[1], emotion]; // Replace last if already 2 selected
 
     setSelected(newSelected);
     onChange(newSelected);
@@ -74,11 +74,8 @@ export function EmotionChips({ value = [], onChange, disabled }: EmotionChipsPro
         })}
       </div>
       {selected.length > 0 && (
-        <p className="text-xs text-muted-foreground">
-          Ausgewählt: {selected.join(", ")}
-        </p>
+        <p className="text-xs text-muted-foreground">Ausgewählt: {selected.join(", ")}</p>
       )}
     </div>
   );
 }
-

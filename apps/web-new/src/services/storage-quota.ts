@@ -97,9 +97,7 @@ export function safeSetItem(key: string, value: string): { success: boolean; err
     const currentInfo = getStorageInfo();
     const newSize = getStringSize(key) + getStringSize(value);
     const existingValue = localStorage.getItem(key);
-    const existingSize = existingValue
-      ? getStringSize(key) + getStringSize(existingValue)
-      : 0;
+    const existingSize = existingValue ? getStringSize(key) + getStringSize(existingValue) : 0;
     const projectedUsage = currentInfo.used - existingSize + newSize;
 
     if (projectedUsage > STORAGE_LIMIT_BYTES) {
@@ -146,10 +144,10 @@ export function safeSetItem(key: string, value: string): { success: boolean; err
 /**
  * Cleanup old/unused data to free space
  */
-export function cleanupStorage(options: {
-  keepRecentSessions?: number;
-  removeLogs?: boolean;
-}): { freed: number; itemsRemoved: number } {
+export function cleanupStorage(options: { keepRecentSessions?: number; removeLogs?: boolean }): {
+  freed: number;
+  itemsRemoved: number;
+} {
   const { keepRecentSessions = 10, removeLogs = false } = options;
 
   let freedBytes = 0;

@@ -2,7 +2,12 @@
  * OpenRouter Client for AI Help and Report Generation
  */
 
-import type { InterviewSession, InterviewSettings, ReportResult, ReportData } from "../types/interview";
+import type {
+  InterviewSession,
+  InterviewSettings,
+  ReportResult,
+  ReportData,
+} from "../types/interview";
 
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 const DEFAULT_HELP_MODEL = "cognitivecomputations/dolphin-mistral-24b-venice-edition:free";
@@ -256,7 +261,7 @@ Frage des Nutzers: ${userQuestion}`;
     ]);
 
     // Log without sensitive data
-    console.log("[OpenRouter Help] Response received");
+    console.warn("[OpenRouter Help] Response received");
     return content;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unbekannter Fehler";
@@ -292,7 +297,7 @@ export async function generateReport(session: InterviewSession): Promise<ReportR
     );
 
     // Log without sensitive data
-    console.log("[OpenRouter Report] Response received");
+    console.warn("[OpenRouter Report] Response received");
 
     return parseReportResponse(content);
   } catch (error) {
@@ -304,4 +309,3 @@ export async function generateReport(session: InterviewSession): Promise<ReportR
     };
   }
 }
-

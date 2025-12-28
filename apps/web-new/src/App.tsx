@@ -66,22 +66,16 @@ export function App() {
                   )}
                 </Route>
                 <Route>
-                  <div className="p-4 text-center text-muted-foreground">
-                    Seite nicht gefunden
-                  </div>
+                  <div className="p-4 text-center text-muted-foreground">Seite nicht gefunden</div>
                 </Route>
               </Switch>
             </Router>
           </main>
 
           {/* Settings Dialog */}
-          <SettingsDialog
-            open={showSettings}
-            onClose={() => setShowSettings(false)}
-          />
+          <SettingsDialog open={showSettings} onClose={() => setShowSettings(false)} />
         </div>
       </ThemeProvider>
     </ErrorBoundary>
   );
 }
-

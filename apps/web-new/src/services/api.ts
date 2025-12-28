@@ -1,11 +1,11 @@
-import type { SessionListItem, SessionInfo, CreateSessionRequest } from '../types/session';
-import type { TemplateListItem, Template } from '../types/template';
-import type { ResponseMap } from '../types/form';
-import type { CompareResponse } from '../types/compare';
-import { compare } from './comparison/compare';
+import type { SessionListItem, SessionInfo, CreateSessionRequest } from "../types/session";
+import type { TemplateListItem, Template } from "../types/template";
+import type { ResponseMap } from "../types/form";
+import type { CompareResponse } from "../types/compare";
+import { compare } from "./comparison/compare";
 
 // Storage helpers
-const STORAGE_PREFIX = 'gamex:';
+const STORAGE_PREFIX = "gamex:";
 const SESSIONS_KEY = `${STORAGE_PREFIX}sessions`;
 
 function getStorage<T>(key: string): T | null {
@@ -39,12 +39,13 @@ async function loadBundledTemplates(): Promise<Template[]> {
 
   // Load all available templates
   const templateFiles = [
-    'psycho_enhanced_v3.json',
-    'unified_template.json',
-    'default_template.json',
-    'comprehensive_v1.json',
-    'expanded_topics_v1.json',
-    'kink_exploration_v1.json'
+    "psycho_enhanced_v3.json",
+    "unified_template.json",
+    "default_template.json",
+    "comprehensive_v1.json",
+    "expanded_topics_v1.json",
+    "kink_exploration_v1.json",
+    "fetish_extended_v1.json",
   ];
 
   try {
@@ -63,7 +64,7 @@ async function loadBundledTemplates(): Promise<Template[]> {
     cachedTemplates = templates;
     return cachedTemplates;
   } catch (err) {
-    console.error('Failed to load templates:', err);
+    console.error("Failed to load templates:", err);
     return [];
   }
 }
@@ -75,15 +76,15 @@ export async function listSessions(): Promise<SessionListItem[]> {
 
 export async function getSessionInfo(sessionId: string): Promise<SessionInfo> {
   const sessions = await listSessions();
-  const session = sessions.find(s => s.id === sessionId);
+  const session = sessions.find((s) => s.id === sessionId);
   if (!session) {
-    throw new Error('Session not found');
+    throw new Error("Session not found");
   }
 
   const templates = await loadBundledTemplates();
-  const template = templates.find(t => t.id === session.template_id);
+  const template = templates.find((t) => t.id === session.template_id);
   if (!template) {
-    throw new Error('Template not found');
+    throw new Error("Template not found");
   }
 
   return {
@@ -115,21 +116,21 @@ export async function createSession(data: CreateSessionRequest): Promise<Session
 
 export async function listTemplates(): Promise<TemplateListItem[]> {
   const templates = await loadBundledTemplates();
-  return templates.map(t => ({
+  return templates.map((t) => ({
     id: t.id,
     name: t.name,
     version: t.version,
   }));
 }
 
-export async function loadResponses(sessionId: string, person: 'A' | 'B'): Promise<ResponseMap> {
+export async function loadResponses(sessionId: string, person: "A" | "B"): Promise<ResponseMap> {
   const key = `${STORAGE_PREFIX}responses:${sessionId}:${person}`;
   return getStorage<ResponseMap>(key) || {};
 }
 
 export async function saveResponses(
   sessionId: string,
-  person: 'A' | 'B',
+  person: "A" | "B",
   responses: ResponseMap
 ): Promise<void> {
   const key = `${STORAGE_PREFIX}responses:${sessionId}:${person}`;
@@ -137,9 +138,9 @@ export async function saveResponses(
 
   // Update session completion status
   const sessions = await listSessions();
-  const session = sessions.find(s => s.id === sessionId);
+  const session = sessions.find((s) => s.id === sessionId);
   if (session) {
-    if (person === 'A') {
+    if (person === "A") {
       session.has_a = Object.keys(responses).length > 0;
     } else {
       session.has_b = Object.keys(responses).length > 0;
@@ -150,17 +151,17 @@ export async function saveResponses(
 
 export async function compareSession(sessionId: string): Promise<CompareResponse> {
   const sessionInfo = await getSessionInfo(sessionId);
-  const respA = await loadResponses(sessionId, 'A');
-  const respB = await loadResponses(sessionId, 'B');
+  const respA = await loadResponses(sessionId, "A");
+  const respB = await loadResponses(sessionId, "B");
 
   const result = compare(sessionInfo.template, respA, respB);
 
   // Add summary statistics
   const summary = {
     total: result.items.length,
-    match: result.items.filter(i => i.pair_status === 'MATCH').length,
-    explore: result.items.filter(i => i.pair_status === 'EXPLORE').length,
-    boundary: result.items.filter(i => i.pair_status === 'BOUNDARY').length,
+    match: result.items.filter((i) => i.pair_status === "MATCH").length,
+    explore: result.items.filter((i) => i.pair_status === "EXPLORE").length,
+    boundary: result.items.filter((i) => i.pair_status === "BOUNDARY").length,
   };
 
   return {
@@ -212,7 +213,7 @@ export async function loadScenarios(): Promise<ScenariosData> {
   if (cachedScenarios) return cachedScenarios;
 
   try {
-    const response = await fetch('/data/scenarios.json');
+    const response = await fetch("/data/scenarios.json");
     if (!response.ok) {
       throw new Error(`Failed to load scenarios: ${response.status}`);
     }
@@ -220,7 +221,7 @@ export async function loadScenarios(): Promise<ScenariosData> {
     cachedScenarios = data as ScenariosData;
     return cachedScenarios;
   } catch (err) {
-    console.error('Failed to load scenarios:', err);
+    console.error("Failed to load scenarios:", err);
     throw err;
   }
 }
@@ -257,7 +258,7 @@ export async function duplicateSession(sessionId: string): Promise<SessionInfo> 
  */
 export async function archiveSession(sessionId: string): Promise<void> {
   const sessions = await listSessions();
-  const session = sessions.find(s => s.id === sessionId);
+  const session = sessions.find((s) => s.id === sessionId);
 
   if (session) {
     (session as any).archived = true;
@@ -271,7 +272,7 @@ export async function archiveSession(sessionId: string): Promise<void> {
  */
 export async function unarchiveSession(sessionId: string): Promise<void> {
   const sessions = await listSessions();
-  const session = sessions.find(s => s.id === sessionId);
+  const session = sessions.find((s) => s.id === sessionId);
 
   if (session) {
     (session as any).archived = false;
@@ -284,7 +285,7 @@ export async function unarchiveSession(sessionId: string): Promise<void> {
  */
 export async function getArchivedSessions(): Promise<SessionListItem[]> {
   const sessions = await listSessions();
-  return sessions.filter(s => (s as any).archived === true);
+  return sessions.filter((s) => (s as any).archived === true);
 }
 
 /**
@@ -292,7 +293,7 @@ export async function getArchivedSessions(): Promise<SessionListItem[]> {
  */
 export async function getActiveSessions(): Promise<SessionListItem[]> {
   const sessions = await listSessions();
-  return sessions.filter(s => (s as any).archived !== true);
+  return sessions.filter((s) => (s as any).archived !== true);
 }
 
 /**
@@ -300,7 +301,7 @@ export async function getActiveSessions(): Promise<SessionListItem[]> {
  */
 export async function deleteSession(sessionId: string): Promise<void> {
   const sessions = await listSessions();
-  const filteredSessions = sessions.filter(s => s.id !== sessionId);
+  const filteredSessions = sessions.filter((s) => s.id !== sessionId);
   setStorage(SESSIONS_KEY, filteredSessions);
 
   // Also delete responses

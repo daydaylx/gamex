@@ -1,4 +1,4 @@
-import type { QuestionSchema, RiskLevel, Tag } from './common';
+import type { QuestionSchema, RiskLevel, Tag } from "./common";
 
 /**
  * Template types for questionnaire structure

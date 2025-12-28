@@ -57,9 +57,7 @@ export function ConfirmDialog({
             )}
             <div className="flex-1 min-w-0">
               <h2 className="text-lg font-semibold mb-1">{title}</h2>
-              {description && (
-                <p className="text-sm text-muted-foreground">{description}</p>
-              )}
+              {description && <p className="text-sm text-muted-foreground">{description}</p>}
             </div>
             <button
               onClick={onClose}
@@ -75,11 +73,7 @@ export function ConfirmDialog({
 
           {/* Actions */}
           <div className="flex gap-3">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={onClose}
-            >
+            <Button variant="outline" className="flex-1" onClick={onClose}>
               {cancelText}
             </Button>
             <Button

@@ -98,8 +98,8 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
       const data = await loadScenarios();
       setScenariosData(data as ScenariosData);
     } catch (err) {
-      console.error('Failed to load scenarios:', err);
-      setError(err instanceof Error ? err.message : 'Fehler beim Laden der Szenarien');
+      console.error("Failed to load scenarios:", err);
+      setError(err instanceof Error ? err.message : "Fehler beim Laden der Szenarien");
     } finally {
       setLoading(false);
     }
@@ -108,12 +108,15 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
   // Get current deck and scenario
   const currentDeck = scenariosData?.decks[currentDeckIndex];
   const scenariosInDeck = currentDeck
-    ? currentDeck.scenarios.map(id => scenariosData?.scenarios.find(s => s.id === id)).filter(Boolean) as Scenario[]
+    ? (currentDeck.scenarios
+        .map((id) => scenariosData?.scenarios.find((s) => s.id === id))
+        .filter(Boolean) as Scenario[])
     : [];
   const currentScenario = scenariosInDeck[currentScenarioIndex];
 
   // Check if current deck requires safety gate
-  const deckRequiresSafetyGate = currentDeck?.requires_safety_gate && !safetyGateAccepted[currentDeck.id];
+  const deckRequiresSafetyGate =
+    currentDeck?.requires_safety_gate && !safetyGateAccepted[currentDeck.id];
 
   function goToNextScenario() {
     if (currentScenarioIndex < scenariosInDeck.length - 1) {
@@ -136,7 +139,9 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
       const prevDeckIndex = currentDeckIndex - 1;
       const prevDeck = scenariosData?.decks[prevDeckIndex];
       const prevDeckScenarios = prevDeck
-        ? prevDeck.scenarios.map(id => scenariosData?.scenarios.find(s => s.id === id)).filter(Boolean)
+        ? prevDeck.scenarios
+            .map((id) => scenariosData?.scenarios.find((s) => s.id === id))
+            .filter(Boolean)
         : [];
       setCurrentDeckIndex(prevDeckIndex);
       setCurrentScenarioIndex(prevDeckScenarios.length - 1);
@@ -148,7 +153,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
     const scenarioId = currentScenario?.id;
     if (!scenarioId) return;
 
-    setAnswers(prev => ({
+    setAnswers((prev) => ({
       ...prev,
       [scenarioId]: {
         ...prev[scenarioId],
@@ -158,7 +163,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
   }
 
   function acceptSafetyGate(deckId: string) {
-    setSafetyGateAccepted(prev => ({ ...prev, [deckId]: true }));
+    setSafetyGateAccepted((prev) => ({ ...prev, [deckId]: true }));
   }
 
   function jumpToDeck(deckIndex: number) {
@@ -179,7 +184,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
 
   function handleTouchEnd() {
     if (!touchStartX.current || !touchEndX.current) return;
-    
+
     const distance = touchStartX.current - touchEndX.current;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
@@ -226,7 +231,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
           )}
         </div>
         <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
-          {error || 'Keine Szenarien gefunden'}
+          {error || "Keine Szenarien gefunden"}
         </div>
       </div>
     );
@@ -234,9 +239,10 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
 
   // Calculate total progress across all decks
   const totalScenarios = scenariosData.scenarios.length;
-  const globalIndex = scenariosData.decks
-    .slice(0, currentDeckIndex)
-    .reduce((acc, deck) => acc + deck.scenarios.length, 0) + currentScenarioIndex;
+  const globalIndex =
+    scenariosData.decks
+      .slice(0, currentDeckIndex)
+      .reduce((acc, deck) => acc + deck.scenarios.length, 0) + currentScenarioIndex;
   const progress = Math.round(((globalIndex + 1) / totalScenarios) * 100);
 
   const currentAnswers = currentScenario ? answers[currentScenario.id] : undefined;
@@ -265,14 +271,15 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
         <div className="grid gap-4 md:grid-cols-2">
           {scenariosData.decks.map((deck, index) => {
             const deckScenarios = deck.scenarios.length;
-            const answeredInDeck = deck.scenarios.filter(id => answers[id]).length;
-            const deckProgress = deckScenarios > 0 ? Math.round((answeredInDeck / deckScenarios) * 100) : 0;
+            const answeredInDeck = deck.scenarios.filter((id) => answers[id]).length;
+            const deckProgress =
+              deckScenarios > 0 ? Math.round((answeredInDeck / deckScenarios) * 100) : 0;
 
             return (
               <Card
                 key={deck.id}
                 className={`cursor-pointer transition-all hover:ring-2 hover:ring-primary ${
-                  deck.requires_safety_gate ? 'border-red-500/50' : ''
+                  deck.requires_safety_gate ? "border-red-500/50" : ""
                 }`}
                 onClick={() => jumpToDeck(index)}
               >
@@ -333,7 +340,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">{currentDeck.description}</p>
-            
+
             <div className="rounded-lg bg-background p-4 space-y-3">
               <h4 className="font-semibold flex items-center gap-2">
                 <Shield className="h-4 w-4" />
@@ -374,15 +381,15 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
   }
 
   return (
-    <div 
+    <div
       className="space-y-6 pt-2"
       onTouchStart={handleTouchStart as any}
       onTouchMove={handleTouchMove as any}
       onTouchEnd={handleTouchEnd}
     >
-       {/* Zen Mode Progress - Subtle top bar */}
+      {/* Zen Mode Progress - Subtle top bar */}
       <div className="fixed top-0 left-0 w-full h-1 z-50 bg-background">
-        <div 
+        <div
           className="h-full bg-primary/70 transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
@@ -391,12 +398,12 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
       {/* Zen Header */}
       <div className="flex items-center justify-between px-1">
         <div>
-           <div className="flex items-center gap-2">
-             <h2 className="text-lg font-bold">{currentDeck?.name}</h2>
-             <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-accent">
-               Karte {currentScenarioIndex + 1}
-             </span>
-           </div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-bold">{currentDeck?.name}</h2>
+            <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-accent">
+              Karte {currentScenarioIndex + 1}
+            </span>
+          </div>
         </div>
         <div className="flex gap-2">
           <Button variant="ghost" size="sm" onClick={() => setShowDeckOverview(true)}>
@@ -422,16 +429,14 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
                     {currentScenario.category}
                   </CardDescription>
                 )}
-                <CardTitle className="text-xl leading-relaxed">
-                  {currentScenario.title}
-                </CardTitle>
+                <CardTitle className="text-xl leading-relaxed">{currentScenario.title}</CardTitle>
               </div>
               {currentScenario.info_card && (
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowInfoCard(!showInfoCard)}
-                  className={showInfoCard ? 'bg-muted' : ''}
+                  className={showInfoCard ? "bg-muted" : ""}
                 >
                   <Info className="h-5 w-5" />
                 </Button>
@@ -441,16 +446,16 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
 
           <CardContent className="space-y-6">
             {/* Scenario Description */}
-            <p className="text-muted-foreground leading-relaxed">
-              {currentScenario.description}
-            </p>
+            <p className="text-muted-foreground leading-relaxed">{currentScenario.description}</p>
 
             {/* Info Card (collapsible) */}
             {showInfoCard && currentScenario.info_card && (
               <div className="rounded-lg bg-muted/50 p-4 space-y-3 border border-border/50">
                 {currentScenario.info_card.emotional_context && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">💭 Emotionaler Kontext</h4>
+                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">
+                      💭 Emotionaler Kontext
+                    </h4>
                     <p className="text-sm text-muted-foreground">
                       {currentScenario.info_card.emotional_context}
                     </p>
@@ -458,7 +463,9 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
                 )}
                 {currentScenario.info_card.typical_risks && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">⚠️ Typische Risiken</h4>
+                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">
+                      ⚠️ Typische Risiken
+                    </h4>
                     <p className="text-sm text-muted-foreground">
                       {currentScenario.info_card.typical_risks}
                     </p>
@@ -466,7 +473,9 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
                 )}
                 {currentScenario.info_card.safety_gate && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">🛡️ Sicherheitshinweis</h4>
+                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">
+                      🛡️ Sicherheitshinweis
+                    </h4>
                     <p className="text-sm text-muted-foreground">
                       {currentScenario.info_card.safety_gate}
                     </p>
@@ -480,14 +489,17 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
               <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3">
                 <p className="text-sm text-red-600 flex items-start gap-2">
                   <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                  {currentScenario.safety_gate.message || 'Dieses Szenario erfordert besondere Vorsicht und vorherige Absprache.'}
+                  {currentScenario.safety_gate.message ||
+                    "Dieses Szenario erfordert besondere Vorsicht und vorherige Absprache."}
                 </p>
               </div>
             )}
 
             {/* Person A Response with 4 Options - Grid fix for mobile */}
             <div className="space-y-3">
-              <h3 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">Person A</h3>
+              <h3 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                Person A
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {currentScenario.options.map((option) => (
                   <Button
@@ -496,8 +508,8 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
                     onClick={() => handleAnswer("a", option.id)}
                     className={`w-full text-left h-auto py-3 px-4 whitespace-normal justify-start ${
                       currentAnswers?.a === option.id
-                        ? riskTypeColors[option.risk_type] || 'bg-primary'
-                        : ''
+                        ? riskTypeColors[option.risk_type] || "bg-primary"
+                        : ""
                     }`}
                   >
                     <span className="font-semibold mr-2 opacity-70">{option.id}.</span>
@@ -509,7 +521,9 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
 
             {/* Person B Response with 4 Options */}
             <div className="space-y-3">
-              <h3 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">Person B</h3>
+              <h3 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                Person B
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {currentScenario.options.map((option) => (
                   <Button
@@ -518,8 +532,8 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
                     onClick={() => handleAnswer("b", option.id)}
                     className={`w-full text-left h-auto py-3 px-4 whitespace-normal justify-start ${
                       currentAnswers?.b === option.id
-                        ? riskTypeColors[option.risk_type] || 'bg-primary'
-                        : ''
+                        ? riskTypeColors[option.risk_type] || "bg-primary"
+                        : ""
                     }`}
                   >
                     <span className="font-semibold mr-2 opacity-70">{option.id}.</span>
@@ -533,7 +547,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
             {currentScenario.tags && currentScenario.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2">
                 {currentScenario.tags.map((tag, i) => (
-                  <span 
+                  <span
                     key={i}
                     className="px-2 py-1 text-xs rounded-full bg-muted/50 text-muted-foreground border border-border/50"
                   >
@@ -572,9 +586,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
       )}
 
       {/* Swipe hint */}
-      <p className="text-center text-xs text-muted-foreground/50 pb-4">
-        💡 Wische für Navigation
-      </p>
+      <p className="text-center text-xs text-muted-foreground/50 pb-4">💡 Wische für Navigation</p>
     </div>
   );
 }

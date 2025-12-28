@@ -27,13 +27,7 @@ const cardPadding = {
   spacious: "p-6 sm:p-8",
 };
 
-export function Card({
-  className,
-  children,
-  onClick,
-  variant = "default",
-  padding,
-}: CardProps) {
+export function Card({ className, children, onClick, variant = "default", padding }: CardProps) {
   const Tag = onClick ? "button" : "div";
   return (
     <Tag
@@ -78,12 +72,7 @@ export interface CardTitleProps {
 
 export function CardTitle({ className, children }: CardTitleProps) {
   return (
-    <h3
-      className={cn(
-        "text-lg font-semibold leading-none tracking-tight",
-        className
-      )}
-    >
+    <h3 className={cn("text-lg font-semibold leading-none tracking-tight", className)}>
       {children}
     </h3>
   );
@@ -95,9 +84,7 @@ export interface CardDescriptionProps {
 }
 
 export function CardDescription({ className, children }: CardDescriptionProps) {
-  return (
-    <p className={cn("text-sm text-muted-foreground", className)}>{children}</p>
-  );
+  return <p className={cn("text-sm text-muted-foreground", className)}>{children}</p>;
 }
 
 export interface CardContentProps {

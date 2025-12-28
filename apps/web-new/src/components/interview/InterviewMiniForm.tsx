@@ -107,9 +107,10 @@ export function InterviewMiniForm({
                   ripple={isSelected}
                   className={`
                     min-h-[56px] h-14 text-base transition-all duration-200
-                    ${isSelected
-                      ? 'ring-2 ring-offset-2 ring-offset-background scale-[1.02]'
-                      : 'active:scale-95'
+                    ${
+                      isSelected
+                        ? "ring-2 ring-offset-2 ring-offset-background scale-[1.02]"
+                        : "active:scale-95"
                     }
                   `}
                 >
@@ -197,4 +198,3 @@ export function InterviewMiniForm({
     </div>
   );
 }
-

@@ -32,11 +32,14 @@ export function TouchTextInput({
     if (value?.text) {
       setText(value.text);
       // Check if any quick replies are in the existing text
-      const found = quickReplies.filter(qr => value.text.includes(qr));
+      const found = quickReplies.filter((qr) => value.text.includes(qr));
       setSelectedChips(found);
       // Show free text if there's content beyond quick replies
-      const remainingText = quickReplies.reduce((acc, qr) => acc.replace(qr, '').trim(), value.text);
-      if (remainingText.length > 0 && remainingText !== '; ') {
+      const remainingText = quickReplies.reduce(
+        (acc, qr) => acc.replace(qr, "").trim(),
+        value.text
+      );
+      if (remainingText.length > 0 && remainingText !== "; ") {
         setShowFreeText(true);
       }
     }
@@ -44,9 +47,9 @@ export function TouchTextInput({
 
   function handleChipToggle(chip: string) {
     const newSelected = selectedChips.includes(chip)
-      ? selectedChips.filter(c => c !== chip)
+      ? selectedChips.filter((c) => c !== chip)
       : [...selectedChips, chip];
-    
+
     setSelectedChips(newSelected);
     updateValue(newSelected, text);
   }
@@ -59,21 +62,21 @@ export function TouchTextInput({
   function updateValue(chips: string[], freeText: string) {
     // Combine chips and free text
     const parts: string[] = [...chips];
-    
+
     // Check if free text contains any chips (to avoid duplication)
     let cleanFreeText = freeText;
-    chips.forEach(chip => {
-      cleanFreeText = cleanFreeText.replace(chip, '').trim();
+    chips.forEach((chip) => {
+      cleanFreeText = cleanFreeText.replace(chip, "").trim();
     });
-    
+
     // Remove any leftover semicolons from previous combinations
-    cleanFreeText = cleanFreeText.replace(/^;\s*/, '').replace(/;\s*$/, '').trim();
-    
+    cleanFreeText = cleanFreeText.replace(/^;\s*/, "").replace(/;\s*$/, "").trim();
+
     if (cleanFreeText) {
       parts.push(cleanFreeText);
     }
-    
-    const combinedText = parts.join('; ');
+
+    const combinedText = parts.join("; ");
     onChange({ text: combinedText });
   }
 
@@ -99,11 +102,12 @@ export function TouchTextInput({
               disabled={disabled}
               className={`
                 px-4 py-3 rounded-full text-sm font-medium transition-all min-h-[48px]
-                ${selectedChips.includes(chip)
-                  ? 'bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary'
-                  : 'bg-muted hover:bg-muted/80 text-foreground'
+                ${
+                  selectedChips.includes(chip)
+                    ? "bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary"
+                    : "bg-muted hover:bg-muted/80 text-foreground"
                 }
-                ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:scale-95'}
+                ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer active:scale-95"}
               `}
             >
               {chip}
@@ -126,15 +130,13 @@ export function TouchTextInput({
       ) : (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-muted-foreground">
-              Eigener Text
-            </label>
+            <label className="text-sm font-medium text-muted-foreground">Eigener Text</label>
             <button
               type="button"
               onClick={() => {
                 setShowFreeText(false);
                 // Keep any chips but clear free text that wasn't from chips
-                const chipText = selectedChips.join('; ');
+                const chipText = selectedChips.join("; ");
                 setText(chipText);
                 onChange({ text: chipText });
               }}
@@ -152,9 +154,9 @@ export function TouchTextInput({
               w-full min-h-[120px] px-4 py-3 border border-input rounded-lg
               bg-background text-base resize-y
               focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
-              ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+              ${disabled ? "opacity-50 cursor-not-allowed" : ""}
             `}
-            style={{ fontSize: '16px' }} // Prevent iOS zoom on focus
+            style={{ fontSize: "16px" }} // Prevent iOS zoom on focus
           />
         </div>
       )}
@@ -179,9 +181,8 @@ export function TouchTextInput({
           <p className="text-xs text-muted-foreground mb-1">Deine Antwort:</p>
           <p className="text-sm">
             {selectedChips.length > 0 && !text.includes(selectedChips[0])
-              ? [...selectedChips, text.trim()].filter(Boolean).join('; ')
-              : text || selectedChips.join('; ')
-            }
+              ? [...selectedChips, text.trim()].filter(Boolean).join("; ")
+              : text || selectedChips.join("; ")}
           </p>
         </div>
       )}
@@ -191,16 +192,8 @@ export function TouchTextInput({
 
 // Context-specific quick replies for common question types
 export const QUICK_REPLIES = {
-  hardLimits: [
-    "Keine Hard Limits",
-    "Möchte ich persönlich besprechen",
-    "Siehe Liste unten",
-  ],
-  softLimits: [
-    "Keine Soft Limits aktuell",
-    "Vielleicht später erkunden",
-    "Brauche mehr Zeit",
-  ],
+  hardLimits: ["Keine Hard Limits", "Möchte ich persönlich besprechen", "Siehe Liste unten"],
+  softLimits: ["Keine Soft Limits aktuell", "Vielleicht später erkunden", "Brauche mehr Zeit"],
   aftercare: [
     "Kuscheln & Nähe",
     "Wasser & Snacks",
@@ -225,11 +218,7 @@ export const QUICK_REPLIES = {
     "Duftstoffallergie",
     "Siehe separaten Hinweis",
   ],
-  notes: [
-    "Keine weiteren Anmerkungen",
-    "Später ergänzen",
-    "Mündlich besprechen",
-  ],
+  notes: ["Keine weiteren Anmerkungen", "Später ergänzen", "Mündlich besprechen"],
   highlights: [
     "Mehr spontane Momente",
     "Mehr Zeit für Vorspiel",

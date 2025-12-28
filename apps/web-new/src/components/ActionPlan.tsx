@@ -19,22 +19,18 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
     // Pre-select top 3 "DOABLE NOW" items
     return items.map((item, idx) => ({
       ...item,
-      selected: idx < 3 && item.pair_status === "MATCH"
+      selected: idx < 3 && item.pair_status === "MATCH",
     }));
   });
 
-  const selectedItems = actionItems.filter(item => item.selected);
-  const doableItems = actionItems.filter(item => 
-    item.pair_status === "MATCH" || item.pair_status === "EXPLORE"
+  const selectedItems = actionItems.filter((item) => item.selected);
+  const doableItems = actionItems.filter(
+    (item) => item.pair_status === "MATCH" || item.pair_status === "EXPLORE"
   );
 
   function toggleItem(id: string) {
-    setActionItems(prev => 
-      prev.map(item => 
-        item.question_id === id 
-          ? { ...item, selected: !item.selected }
-          : item
-      )
+    setActionItems((prev) =>
+      prev.map((item) => (item.question_id === id ? { ...item, selected: !item.selected } : item))
     );
   }
 
@@ -44,19 +40,19 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
       "===================",
       "",
       ...selectedItems.map((item, idx) => {
-        const prompts = item.prompts?.join('\n   ') || '';
+        const prompts = item.prompts?.join("\n   ") || "";
         return `${idx + 1}. ${item.label || item.question_text}\n   ${prompts}`;
       }),
       "",
-      "Erstellt mit: Intimacy Tool"
-    ].join('\n');
+      "Erstellt mit: Intimacy Tool",
+    ].join("\n");
 
     // Create download
-    const blob = new Blob([text], { type: 'text/plain' });
+    const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'action-plan.txt';
+    a.download = "action-plan.txt";
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -79,12 +75,7 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
             </CardDescription>
           </div>
           {selectedItems.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportAsText}
-              className="gap-2"
-            >
+            <Button variant="outline" size="sm" onClick={exportAsText} className="gap-2">
               <Calendar className="h-4 w-4" />
               Exportieren
             </Button>
@@ -98,7 +89,7 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
             <div className="flex items-center gap-2 mb-2">
               <Heart className="h-4 w-4 text-primary" />
               <span className="font-medium text-sm">
-                {selectedItems.length} {selectedItems.length === 1 ? 'Item' : 'Items'} ausgewählt
+                {selectedItems.length} {selectedItems.length === 1 ? "Item" : "Items"} ausgewählt
               </span>
             </div>
             <p className="text-xs text-muted-foreground">
@@ -112,32 +103,30 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
           <h4 className="text-sm font-semibold text-muted-foreground">
             Verfügbare Items ({doableItems.length})
           </h4>
-          
+
           {doableItems.map((item) => {
             const isMatch = item.pair_status === "MATCH";
             const prompts = item.prompts || [];
-            
+
             return (
               <div
                 key={item.question_id}
                 className={`
                   p-4 rounded-lg border-2 transition-all cursor-pointer
-                  ${item.selected 
-                    ? 'border-primary bg-primary/5' 
-                    : 'border-border hover:border-primary/50'
+                  ${
+                    item.selected
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
                   }
                 `}
                 onClick={() => toggleItem(item.question_id)}
               >
                 <div className="flex items-start gap-3">
                   {/* Checkbox */}
-                  <div 
+                  <div
                     className={`
                       h-5 w-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5
-                      ${item.selected 
-                        ? 'bg-primary border-primary' 
-                        : 'border-muted-foreground/30'
-                      }
+                      ${item.selected ? "bg-primary border-primary" : "border-muted-foreground/30"}
                     `}
                   >
                     {item.selected && <Check className="h-3 w-3 text-primary-foreground" />}
@@ -149,10 +138,7 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
                       <h5 className="font-medium text-sm leading-tight">
                         {item.label || item.question_text}
                       </h5>
-                      <Badge 
-                        variant={isMatch ? "default" : "secondary"}
-                        className="flex-shrink-0"
-                      >
+                      <Badge variant={isMatch ? "default" : "secondary"} className="flex-shrink-0">
                         {isMatch ? "Match" : "Explore"}
                       </Badge>
                     </div>
@@ -172,7 +158,7 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
                     {/* Risk Level Indicator */}
                     {item.risk_level && item.risk_level !== "A" && (
                       <div className="mt-2">
-                        <Badge 
+                        <Badge
                           variant={item.risk_level === "C" ? "destructive" : "secondary"}
                           className="text-xs"
                         >
@@ -191,9 +177,7 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
         {selectedItems.length > 0 && (
           <div className="pt-4 border-t">
             <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-              <p className="text-sm font-medium">
-                💡 Tipp: So nutzt ihr den Action Plan
-              </p>
+              <p className="text-sm font-medium">💡 Tipp: So nutzt ihr den Action Plan</p>
               <ul className="text-xs text-muted-foreground space-y-1">
                 <li>• Legt einen Termin fest (Date Night / Quality Time)</li>
                 <li>• Startet mit dem leichtesten Item, um Vertrauen aufzubauen</li>
@@ -207,4 +191,3 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
     </Card>
   );
 }
-

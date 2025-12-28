@@ -1,9 +1,9 @@
-import { callOpenRouter, extractResponseText } from './openrouter';
-import { getAISettings } from '../settings';
-import type { AIReportResponse } from '../../types/ai';
-import type { Template, Question } from '../../types/template';
-import type { ResponseMap } from '../../types/form';
-import type { ComparisonResult } from '../../types/compare';
+import { callOpenRouter, extractResponseText } from "./openrouter";
+import { getAISettings } from "../settings";
+import type { AIReportResponse } from "../../types/ai";
+import type { Template, Question } from "../../types/template";
+import type { ResponseMap } from "../../types/form";
+import type { ComparisonResult } from "../../types/compare";
 
 /**
  * Extended report input with scenario comparisons
@@ -40,48 +40,50 @@ Wenn Informationen fehlen, setze leere Strings/Arrays, erfinde nichts.`;
  */
 function formatResponseValue(value: any, schema?: string): string {
   if (value === null || value === undefined) {
-    return 'Keine Antwort';
+    return "Keine Antwort";
   }
-  
-  if (schema === 'consent_rating' && typeof value === 'object') {
+
+  if (schema === "consent_rating" && typeof value === "object") {
     const parts: string[] = [];
     if (value.status) parts.push(`Status: ${value.status}`);
-    if (value.interest !== null && value.interest !== undefined) parts.push(`Interesse: ${value.interest}`);
-    if (value.comfort !== null && value.comfort !== undefined) parts.push(`Komfort: ${value.comfort}`);
-    return parts.join(', ') || 'Keine Antwort';
+    if (value.interest !== null && value.interest !== undefined)
+      parts.push(`Interesse: ${value.interest}`);
+    if (value.comfort !== null && value.comfort !== undefined)
+      parts.push(`Komfort: ${value.comfort}`);
+    return parts.join(", ") || "Keine Antwort";
   }
-  
-  if (schema === 'scale' || schema === 'slider') {
-    if (typeof value === 'number') return String(value);
-    if (typeof value === 'object' && value !== null && 'value' in value) {
-      return String(value.value ?? 'Keine Antwort');
+
+  if (schema === "scale" || schema === "slider") {
+    if (typeof value === "number") return String(value);
+    if (typeof value === "object" && value !== null && "value" in value) {
+      return String(value.value ?? "Keine Antwort");
     }
   }
-  
-  if (schema === 'enum') {
-    if (typeof value === 'string') return value;
-    if (typeof value === 'object' && value !== null && 'value' in value) {
-      return value.value ?? 'Keine Antwort';
+
+  if (schema === "enum") {
+    if (typeof value === "string") return value;
+    if (typeof value === "object" && value !== null && "value" in value) {
+      return value.value ?? "Keine Antwort";
     }
   }
-  
-  if (schema === 'multi') {
-    if (Array.isArray(value)) return value.join(', ');
-    if (typeof value === 'object' && value !== null && 'values' in value) {
-      return Array.isArray(value.values) ? value.values.join(', ') : 'Keine Antwort';
+
+  if (schema === "multi") {
+    if (Array.isArray(value)) return value.join(", ");
+    if (typeof value === "object" && value !== null && "values" in value) {
+      return Array.isArray(value.values) ? value.values.join(", ") : "Keine Antwort";
     }
   }
-  
-  if (schema === 'text') {
-    if (typeof value === 'object' && value !== null && 'text' in value) {
-      return value.text ?? 'Keine Antwort';
+
+  if (schema === "text") {
+    if (typeof value === "object" && value !== null && "text" in value) {
+      return value.text ?? "Keine Antwort";
     }
   }
-  
+
   if (Array.isArray(value)) {
-    return value.join(', ');
+    return value.join(", ");
   }
-  
+
   return String(value);
 }
 
@@ -97,7 +99,7 @@ function buildReportContext(
   const parts: string[] = [];
 
   parts.push(`Fragebogen: ${template.name} (Version ${template.version})`);
-  parts.push('');
+  parts.push("");
 
   // Collect all questions from modules
   const allQuestions: (Question & { moduleName?: string })[] = [];
@@ -112,7 +114,7 @@ function buildReportContext(
   }
 
   parts.push(`Anzahl Fragebogen-Fragen: ${allQuestions.length}`);
-  parts.push('');
+  parts.push("");
 
   // Format questions and answers
   for (const question of allQuestions) {
@@ -120,39 +122,42 @@ function buildReportContext(
     const answerB = responsesB[question.id];
 
     const questionText = question.text || question.label;
-    const moduleInfo = question.moduleName ? `[${question.moduleName}] ` : '';
+    const moduleInfo = question.moduleName ? `[${question.moduleName}] ` : "";
 
     parts.push(`${moduleInfo}Frage: ${questionText}`);
     parts.push(`  Schema: ${question.schema}`);
     if (question.tags && question.tags.length > 0) {
-      parts.push(`  Tags: ${question.tags.join(', ')}`);
+      parts.push(`  Tags: ${question.tags.join(", ")}`);
     }
     parts.push(`  Person A: ${formatResponseValue(answerA, question.schema)}`);
     parts.push(`  Person B: ${formatResponseValue(answerB, question.schema)}`);
-    parts.push('');
+    parts.push("");
   }
 
   // Add scenario comparisons if available
   if (scenarioComparisons && scenarioComparisons.length > 0) {
-    parts.push('---');
-    parts.push('SZENARIEN-VERGLEICH (Hypothetische Situationen und Interview-Antworten)');
+    parts.push("---");
+    parts.push("SZENARIEN-VERGLEICH (Hypothetische Situationen und Interview-Antworten)");
     parts.push(`Anzahl Szenarien: ${scenarioComparisons.length}`);
-    parts.push('');
+    parts.push("");
 
     for (const scenario of scenarioComparisons) {
-      const statusLabel = scenario.pair_status === 'MATCH' ? 'Übereinstimmung'
-        : scenario.pair_status === 'BOUNDARY' ? 'Grenze beachten'
-        : 'Unterschiedlich';
+      const statusLabel =
+        scenario.pair_status === "MATCH"
+          ? "Übereinstimmung"
+          : scenario.pair_status === "BOUNDARY"
+            ? "Grenze beachten"
+            : "Unterschiedlich";
 
       parts.push(`Szenario: ${scenario.label}`);
       if (scenario.question_text) {
         parts.push(`  Beschreibung: ${scenario.question_text.substring(0, 200)}...`);
       }
       parts.push(`  Status: ${statusLabel}`);
-      parts.push(`  Person A wählt: Option ${scenario.value_a || 'keine'}`);
-      parts.push(`  Person B wählt: Option ${scenario.value_b || 'keine'}`);
+      parts.push(`  Person A wählt: Option ${scenario.value_a || "keine"}`);
+      parts.push(`  Person B wählt: Option ${scenario.value_b || "keine"}`);
       if (scenario.comfort_a !== null || scenario.comfort_b !== null) {
-        parts.push(`  Komfort: A=${scenario.comfort_a ?? '?'}/5, B=${scenario.comfort_b ?? '?'}/5`);
+        parts.push(`  Komfort: A=${scenario.comfort_a ?? "?"}/5, B=${scenario.comfort_b ?? "?"}/5`);
       }
 
       // Include detailed interview answer data if available
@@ -163,8 +168,8 @@ function buildReportContext(
         // Emotions
         if (answerA?.emotion?.length > 0 || answerB?.emotion?.length > 0) {
           parts.push(`  Emotionen:`);
-          if (answerA?.emotion?.length > 0) parts.push(`    A: ${answerA.emotion.join(', ')}`);
-          if (answerB?.emotion?.length > 0) parts.push(`    B: ${answerB.emotion.join(', ')}`);
+          if (answerA?.emotion?.length > 0) parts.push(`    A: ${answerA.emotion.join(", ")}`);
+          if (answerB?.emotion?.length > 0) parts.push(`    B: ${answerB.emotion.join(", ")}`);
         }
 
         // Conditions
@@ -189,11 +194,11 @@ function buildReportContext(
         }
       }
 
-      parts.push('');
+      parts.push("");
     }
   }
 
-  return parts.join('\n');
+  return parts.join("\n");
 }
 
 /**
@@ -215,7 +220,7 @@ function parseJSONResponse(text: string): AIReportResponse | null {
         // Ignore
       }
     }
-    
+
     // Try to find JSON object in text
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
@@ -226,7 +231,7 @@ function parseJSONResponse(text: string): AIReportResponse | null {
         // Ignore
       }
     }
-    
+
     return null;
   }
 }
@@ -236,25 +241,25 @@ function parseJSONResponse(text: string): AIReportResponse | null {
  */
 function validateAndNormalizeReport(data: any): AIReportResponse {
   return {
-    summary: typeof data.summary === 'string' ? data.summary : '',
-    high_alignment: Array.isArray(data.high_alignment) 
-      ? data.high_alignment.filter((x: any) => typeof x === 'string')
+    summary: typeof data.summary === "string" ? data.summary : "",
+    high_alignment: Array.isArray(data.high_alignment)
+      ? data.high_alignment.filter((x: any) => typeof x === "string")
       : [],
     differences: Array.isArray(data.differences)
       ? data.differences
-          .filter((d: any) => d && typeof d === 'object')
+          .filter((d: any) => d && typeof d === "object")
           .map((d: any) => ({
-            topic: typeof d.topic === 'string' ? d.topic : '',
-            personA: typeof d.personA === 'string' ? d.personA : '',
-            personB: typeof d.personB === 'string' ? d.personB : '',
-            note: typeof d.note === 'string' ? d.note : '',
+            topic: typeof d.topic === "string" ? d.topic : "",
+            personA: typeof d.personA === "string" ? d.personA : "",
+            personB: typeof d.personB === "string" ? d.personB : "",
+            note: typeof d.note === "string" ? d.note : "",
           }))
       : [],
     conversation_starters: Array.isArray(data.conversation_starters)
-      ? data.conversation_starters.filter((x: any) => typeof x === 'string')
+      ? data.conversation_starters.filter((x: any) => typeof x === "string")
       : [],
     boundaries_and_safety: Array.isArray(data.boundaries_and_safety)
-      ? data.boundaries_and_safety.filter((x: any) => typeof x === 'string')
+      ? data.boundaries_and_safety.filter((x: any) => typeof x === "string")
       : [],
   };
 }
@@ -271,29 +276,31 @@ export async function generateAIReport(
   const settings = getAISettings();
 
   if (!settings.apiKey || settings.apiKey.trim().length === 0) {
-    throw new Error('OpenRouter API-Key ist nicht konfiguriert. Bitte in den Einstellungen setzen.');
+    throw new Error(
+      "OpenRouter API-Key ist nicht konfiguriert. Bitte in den Einstellungen setzen."
+    );
   }
 
   const context = buildReportContext(template, responsesA, responsesB, scenarioComparisons);
-  
+
   const userPrompt = `Bitte erstelle eine strukturierte Auswertung der folgenden Fragebogen-Antworten:\n\n${context}\n\nAntworte NUR mit validen JSON, keine zusätzlichen Texte.`;
-  
+
   const openRouterRequest = {
     model: settings.reportModel,
     messages: [
       {
-        role: 'system' as const,
+        role: "system" as const,
         content: SYSTEM_PROMPT,
       },
       {
-        role: 'user' as const,
+        role: "user" as const,
         content: userPrompt,
       },
     ],
     temperature: 0.5, // Lower temperature for more structured output
     max_tokens: 2000,
   };
-  
+
   try {
     const response = await callOpenRouter(
       {
@@ -302,20 +309,20 @@ export async function generateAIReport(
       },
       openRouterRequest
     );
-    
+
     const rawText = extractResponseText(response);
-    
+
     // Try to parse JSON
     const parsed = parseJSONResponse(rawText);
-    
+
     if (parsed) {
       return { report: parsed };
     }
-    
+
     // If parsing failed, return normalized structure with raw text
     return {
       report: {
-        summary: '',
+        summary: "",
         high_alignment: [],
         differences: [],
         conversation_starters: [],
@@ -328,7 +335,6 @@ export async function generateAIReport(
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error('Unbekannter Fehler bei KI-Auswertung');
+    throw new Error("Unbekannter Fehler bei KI-Auswertung");
   }
 }
-

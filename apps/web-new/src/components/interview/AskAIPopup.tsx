@@ -17,12 +17,7 @@ interface AskAIPopupProps {
   onClose: () => void;
 }
 
-export function AskAIPopup({
-  scenario,
-  currentAnswer,
-  open,
-  onClose,
-}: AskAIPopupProps) {
+export function AskAIPopup({ scenario, currentAnswer, open, onClose }: AskAIPopupProps) {
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState<string | null>(null);
@@ -70,10 +65,7 @@ export function AskAIPopup({
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 z-50"
-        onClick={handleClose}
-      />
+      <div className="fixed inset-0 bg-black/50 z-50" onClick={handleClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -85,11 +77,14 @@ export function AskAIPopup({
                   <MessageCircle className="h-5 w-5" />
                   Frage an KI
                 </CardTitle>
-                <CardDescription>
-                  Stelle eine Frage zu diesem Szenario
-                </CardDescription>
+                <CardDescription>Stelle eine Frage zu diesem Szenario</CardDescription>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleClose} className="min-h-[44px] min-w-[44px]">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClose}
+                className="min-h-[44px] min-w-[44px]"
+              >
                 <X className="h-5 w-5" />
               </Button>
             </div>
@@ -99,8 +94,8 @@ export function AskAIPopup({
             {/* API Key Warning */}
             {!hasApiKey && (
               <div className="rounded-lg border border-yellow-500 bg-yellow-500/10 p-3 text-sm text-yellow-800 dark:text-yellow-200">
-                <strong>Hinweis:</strong> OpenRouter API-Key nicht konfiguriert.
-                Bitte konfiguriere den API-Key in den Einstellungen, um KI-Hilfe zu nutzen.
+                <strong>Hinweis:</strong> OpenRouter API-Key nicht konfiguriert. Bitte konfiguriere
+                den API-Key in den Einstellungen, um KI-Hilfe zu nutzen.
               </div>
             )}
 
@@ -166,4 +161,3 @@ export function AskAIPopup({
     </>
   );
 }
-

@@ -21,9 +21,7 @@ export function ChatBubble({ text, title, className = "" }: ChatBubbleProps) {
 
       {/* Message */}
       <div className="flex-1 min-w-0 space-y-1">
-        {title && (
-          <div className="text-sm font-semibold text-foreground">Guide</div>
-        )}
+        {title && <div className="text-sm font-semibold text-foreground">Guide</div>}
         <div className="rounded-lg rounded-tl-none bg-muted px-4 py-3 text-sm sm:text-base text-foreground leading-relaxed landscape-compact-text break-words overflow-wrap-anywhere">
           {text}
         </div>
@@ -31,4 +29,3 @@ export function ChatBubble({ text, title, className = "" }: ChatBubbleProps) {
     </div>
   );
 }
-

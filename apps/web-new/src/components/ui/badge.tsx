@@ -18,11 +18,7 @@ const variantClasses = {
   outline: "border border-input bg-transparent text-foreground",
 };
 
-export function Badge({
-  variant = "default",
-  className,
-  children,
-}: BadgeProps) {
+export function Badge({ variant = "default", className, children }: BadgeProps) {
   return (
     <span
       className={cn(

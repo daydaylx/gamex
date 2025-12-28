@@ -26,11 +26,7 @@ Antworte in deutscher Sprache. Deine Antworten sollten:
 - Bei Grenzen diese respektvoll anerkennen
 - Keine Diagnosen oder Therapie-Empfehlungen enthalten`;
 
-export function ComparisonAIPopup({
-  item,
-  open,
-  onClose,
-}: ComparisonAIPopupProps) {
+export function ComparisonAIPopup({ item, open, onClose }: ComparisonAIPopupProps) {
   const [loading, setLoading] = useState(false);
   const [insight, setInsight] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -47,9 +43,12 @@ export function ComparisonAIPopup({
     try {
       const settings = getAISettings();
 
-      const statusLabel = item.pair_status === 'MATCH' ? 'Übereinstimmung'
-        : item.pair_status === 'BOUNDARY' ? 'Grenze beachten'
-        : 'Unterschiedlich';
+      const statusLabel =
+        item.pair_status === "MATCH"
+          ? "Übereinstimmung"
+          : item.pair_status === "BOUNDARY"
+            ? "Grenze beachten"
+            : "Unterschiedlich";
 
       let context = `Thema: ${item.label}
 Status: ${statusLabel}
@@ -57,7 +56,7 @@ Person A antwortet: ${formatValue(item.value_a || item.status_a)}
 Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
 
       if (item.comfort_a !== null || item.comfort_b !== null) {
-        context += `\nKomfort-Level: A=${item.comfort_a ?? '?'}/5, B=${item.comfort_b ?? '?'}/5`;
+        context += `\nKomfort-Level: A=${item.comfort_a ?? "?"}/5, B=${item.comfort_b ?? "?"}/5`;
       }
 
       if (item.question_text) {
@@ -76,8 +75,8 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
         {
           model: settings.helpModel,
           messages: [
-            { role: 'system', content: INSIGHT_SYSTEM_PROMPT },
-            { role: 'user', content: userPrompt },
+            { role: "system", content: INSIGHT_SYSTEM_PROMPT },
+            { role: "user", content: userPrompt },
           ],
           temperature: 0.7,
           max_tokens: 500,
@@ -118,10 +117,7 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 z-50"
-        onClick={handleClose}
-      />
+      <div className="fixed inset-0 bg-black/50 z-50" onClick={handleClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -137,7 +133,12 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
                   Erhalte Impulse für euer Gespräch
                 </CardDescription>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleClose} className="min-h-[44px] min-w-[44px]">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClose}
+                className="min-h-[44px] min-w-[44px]"
+              >
                 <X className="h-5 w-5" />
               </Button>
             </div>
@@ -167,18 +168,14 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
             {/* API Key Warning */}
             {!apiKeyConfigured && (
               <div className="rounded-lg border border-yellow-500 bg-yellow-500/10 p-3 text-sm text-yellow-800 dark:text-yellow-200">
-                <strong>Hinweis:</strong> OpenRouter API-Key nicht konfiguriert.
-                Bitte konfiguriere den API-Key in den Einstellungen.
+                <strong>Hinweis:</strong> OpenRouter API-Key nicht konfiguriert. Bitte konfiguriere
+                den API-Key in den Einstellungen.
               </div>
             )}
 
             {/* Generate Button (if no insight yet) */}
             {!insight && !loading && apiKeyConfigured && (
-              <Button
-                onClick={() => generateInsight()}
-                disabled={loading}
-                className="w-full gap-2"
-              >
+              <Button onClick={() => generateInsight()} disabled={loading} className="w-full gap-2">
                 <Sparkles className="h-4 w-4" />
                 KI-Impuls generieren
               </Button>
@@ -204,14 +201,15 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
             {insight && (
               <div className="space-y-4">
                 <div className="rounded-lg bg-primary/5 border border-primary/20 p-4">
-                  <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {insight}
-                  </div>
+                  <div className="text-sm leading-relaxed whitespace-pre-wrap">{insight}</div>
                 </div>
 
                 {/* Custom Question Form */}
                 <form onSubmit={handleAskCustom} className="space-y-2">
-                  <label htmlFor="customQuestion" className="text-xs font-medium text-muted-foreground">
+                  <label
+                    htmlFor="customQuestion"
+                    className="text-xs font-medium text-muted-foreground"
+                  >
                     Eigene Frage stellen:
                   </label>
                   <div className="flex gap-2">
@@ -254,10 +252,10 @@ function formatValue(val: any): string {
   if (Array.isArray(val)) return val.join(", ");
 
   const translations: Record<string, string> = {
-    'YES': 'Ja',
-    'MAYBE': 'Vielleicht',
-    'NO': 'Nein',
-    'HARD_LIMIT': 'Tabu'
+    YES: "Ja",
+    MAYBE: "Vielleicht",
+    NO: "Nein",
+    HARD_LIMIT: "Tabu",
   };
 
   return translations[String(val).toUpperCase()] || String(val);

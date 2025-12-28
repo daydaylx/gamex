@@ -23,11 +23,7 @@ import {
   getCombinedSession,
 } from "../../services/interview-storage";
 import { haptics, useInterviewBackButton } from "../../platform/capacitor";
-import type {
-  InterviewScenario,
-  InterviewSession,
-  InterviewAnswer,
-} from "../../types/interview";
+import type { InterviewScenario, InterviewSession, InterviewAnswer } from "../../types/interview";
 
 // Swipe threshold in pixels
 const SWIPE_THRESHOLD = 80;
@@ -39,12 +35,7 @@ interface InterviewViewProps {
   onClose?: () => void;
 }
 
-export function InterviewView({
-  sessionId,
-  person,
-  onComplete,
-  onClose,
-}: InterviewViewProps) {
+export function InterviewView({ sessionId, person, onComplete, onClose }: InterviewViewProps) {
   const [scenarios, setScenarios] = useState<InterviewScenario[]>([]);
   const [session, setSession] = useState<InterviewSession | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,7 +44,7 @@ export function InterviewView({
   const [showAskAI, setShowAskAI] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState<Partial<InterviewAnswer>>({});
-  
+
   // Swipe state
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
@@ -61,7 +52,8 @@ export function InterviewView({
   const contentRef = useRef<HTMLDivElement>(null);
 
   const currentScenario = scenarios[currentIndex];
-  const progress = scenarios.length > 0 ? Math.round(((currentIndex + 1) / scenarios.length) * 100) : 0;
+  const progress =
+    scenarios.length > 0 ? Math.round(((currentIndex + 1) / scenarios.length) * 100) : 0;
   const _isComplete = currentIndex >= scenarios.length;
   void _isComplete; // Reserved for completion state handling
 
@@ -210,11 +202,11 @@ export function InterviewView({
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (!touchStartRef.current) return;
-    
+
     const touch = e.touches[0];
     const deltaX = touch.clientX - touchStartRef.current.x;
     const deltaY = touch.clientY - touchStartRef.current.y;
-    
+
     // Only consider horizontal swipes (prevent vertical scroll interference)
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
       setIsSwiping(true);
@@ -248,13 +240,9 @@ export function InterviewView({
   }, [swipeOffset, currentIndex, scenarios.length, isSwiping]);
 
   // Android back button handler
-  useInterviewBackButton(
-    handlePrevious,
-    currentIndex > 0,
-    () => {
-      if (onClose) onClose();
-    }
-  );
+  useInterviewBackButton(handlePrevious, currentIndex > 0, () => {
+    if (onClose) onClose();
+  });
 
   if (loading) {
     return (
@@ -332,28 +320,30 @@ export function InterviewView({
     <div className="flex flex-col min-h-[calc(100vh-120px)] relative">
       {/* Sticky Progress Header */}
       <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border pb-3 pt-1 -mx-4 px-4">
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm">
-          <div className="flex items-center gap-2">
-            <span className="font-medium">Person {person}</span>
-            <span className="text-muted-foreground">•</span>
-              <span className="text-muted-foreground truncate max-w-[120px]">{currentScenario.section}</span>
-          </div>
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Person {person}</span>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-muted-foreground truncate max-w-[120px]">
+                {currentScenario.section}
+              </span>
+            </div>
             <span className="text-muted-foreground whitespace-nowrap">
               {currentIndex + 1}/{scenarios.length} • {progress}%
-          </span>
-        </div>
-        <div className="h-2 bg-muted rounded-full overflow-hidden">
-          <div
+            </span>
+          </div>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <div
               className="h-full bg-primary transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
-          />
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
       </div>
 
       {/* Swipeable Content Area */}
-      <div 
+      <div
         ref={contentRef}
         className="flex-1 pb-28 pt-4 overflow-y-auto"
         onTouchStart={handleTouchStart}
@@ -362,10 +352,10 @@ export function InterviewView({
       >
         {/* Swipe indicator */}
         {isSwiping && Math.abs(swipeOffset) > 20 && (
-          <div 
+          <div
             className={`fixed top-1/2 -translate-y-1/2 z-30 flex items-center gap-2 px-4 py-2 rounded-full bg-surface-elevated/90 backdrop-blur-sm shadow-lg transition-opacity duration-150
-              ${swipeOffset < 0 ? 'right-4' : 'left-4'}
-              ${Math.abs(swipeOffset) > SWIPE_THRESHOLD ? 'opacity-100' : 'opacity-60'}
+              ${swipeOffset < 0 ? "right-4" : "left-4"}
+              ${Math.abs(swipeOffset) > SWIPE_THRESHOLD ? "opacity-100" : "opacity-60"}
             `}
           >
             {swipeOffset < 0 ? (
@@ -383,53 +373,55 @@ export function InterviewView({
         )}
 
         {/* Content with swipe transform */}
-        <div 
+        <div
           className="space-y-4 transition-transform duration-75"
-          style={{ 
-            transform: isSwiping ? `translateX(${swipeOffset * 0.3}px)` : 'translateX(0)',
-            opacity: isSwiping ? 1 - Math.abs(swipeOffset) / 400 : 1
+          style={{
+            transform: isSwiping ? `translateX(${swipeOffset * 0.3}px)` : "translateX(0)",
+            opacity: isSwiping ? 1 - Math.abs(swipeOffset) / 400 : 1,
           }}
         >
-      {/* Chat Bubble with Scenario */}
-      <ChatBubble text={currentScenario.scenario_text} title="Guide" />
+          {/* Chat Bubble with Scenario */}
+          <ChatBubble text={currentScenario.scenario_text} title="Guide" />
 
-      {/* Mini Form */}
+          {/* Mini Form */}
           <Card className="animate-fade-in">
             <CardContent className="pt-5 space-y-5">
-          {/* Header with Info and Ask AI */}
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
+              {/* Header with Info and Ask AI */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
                   <h3 className="text-lg font-semibold leading-tight">{currentScenario.title}</h3>
-              {currentScenario.help_text && (
-                <p className="text-sm text-muted-foreground mt-1">{currentScenario.help_text}</p>
-              )}
-            </div>
-            <div className="flex gap-2">
-              {currentScenario.help_text && (
-                <InfoPopover
-                  title={currentScenario.title}
-                  content={currentScenario.help_text}
-                />
-              )}
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setShowAskAI(true)}
-                title="Frage an KI stellen"
+                  {currentScenario.help_text && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {currentScenario.help_text}
+                    </p>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  {currentScenario.help_text && (
+                    <InfoPopover
+                      title={currentScenario.title}
+                      content={currentScenario.help_text}
+                    />
+                  )}
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setShowAskAI(true)}
+                    title="Frage an KI stellen"
                     className="min-w-[44px] min-h-[44px]"
-              >
+                  >
                     <MessageCircle className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
+                  </Button>
+                </div>
+              </div>
 
-          {/* Form */}
-          <InterviewMiniForm
-            scenario={currentScenario}
-            answer={existingAnswer || undefined}
-            person={person}
-            onChange={handleAnswerChange}
-          />
+              {/* Form */}
+              <InterviewMiniForm
+                scenario={currentScenario}
+                answer={existingAnswer || undefined}
+                person={person}
+                onChange={handleAnswerChange}
+              />
             </CardContent>
           </Card>
         </div>
@@ -480,4 +472,3 @@ export function InterviewView({
     </div>
   );
 }
-

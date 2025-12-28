@@ -19,10 +19,10 @@
   --spacing-2xl: 48px;
 
   /* Android-Optimized Breakpoints */
-  --breakpoint-xs: 320px;  /* Small phones (Galaxy A12, etc.) */
-  --breakpoint-sm: 360px;  /* Standard small phones */
-  --breakpoint-md: 412px;  /* Standard phones (Pixel, etc.) */
-  --breakpoint-lg: 768px;  /* Tablets */
+  --breakpoint-xs: 320px; /* Small phones (Galaxy A12, etc.) */
+  --breakpoint-sm: 360px; /* Standard small phones */
+  --breakpoint-md: 412px; /* Standard phones (Pixel, etc.) */
+  --breakpoint-lg: 768px; /* Tablets */
   --breakpoint-xl: 1024px; /* Large tablets / Desktop */
 
   /* Colors - Dark Theme (Default) */
@@ -30,7 +30,7 @@
   --color-background-subtle: #1a121a;
   --color-surface: #241a24;
   --color-surface-elevated: #2d1f2d;
-  
+
   --color-border: rgba(244, 114, 182, 0.15);
   --color-border-strong: rgba(244, 114, 182, 0.3);
 
@@ -244,7 +244,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 0 var(--color-primary-muted);
   }
   50% {
@@ -334,7 +335,9 @@ button:disabled {
 
 /* Touch Feedback */
 .touch-feedback {
-  transition: transform 0.1s ease, opacity 0.1s ease;
+  transition:
+    transform 0.1s ease,
+    opacity 0.1s ease;
 }
 
 .touch-feedback:active {
@@ -344,7 +347,10 @@ button:disabled {
 
 /* Card Styles */
 .card-interactive {
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .card-interactive:hover {
@@ -496,7 +502,7 @@ button:disabled {
 }
 
 .button-ripple::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -557,3 +563,56 @@ button:disabled {
   }
 }
 
+/* ============================================================================
+   Mobile Dialog & Bottom Sheet Optimizations
+   ============================================================================ */
+
+/* Mobile Bottom Sheet Handle */
+.bottom-sheet-handle {
+  width: 32px;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  margin: 0 auto var(--spacing-md);
+}
+
+/* Mobile-First Dialog Animation */
+@media (max-width: 640px) {
+  .dialog-container {
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    max-height: 90vh;
+    border-bottom: none;
+  }
+
+  /* Ensure proper padding on mobile bottom sheets */
+  .dialog-container .card-content {
+    padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 16px));
+  }
+}
+
+/* Mobile Touch Optimizations for Dialogs */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets on mobile */
+  button,
+  .button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent accidental zoom on input focus */
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="number"] {
+    font-size: 16px;
+  }
+}
+
+/* Desktop Dialog Reset */
+@media (min-width: 641px) {
+  .dialog-container {
+    border-radius: var(--radius-lg);
+    max-height: 85vh;
+  }
+}

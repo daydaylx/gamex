@@ -9,19 +9,21 @@
 export function sanitizeString(input: string): string {
   if (!input || typeof input !== "string") return "";
 
-  return input
-    // Remove script tags and content
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    // Remove HTML tags but keep content
-    .replace(/<[^>]*>/g, "")
-    // Escape HTML entities
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    // Trim whitespace
-    .trim();
+  return (
+    input
+      // Remove script tags and content
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+      // Remove HTML tags but keep content
+      .replace(/<[^>]*>/g, "")
+      // Escape HTML entities
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#x27;")
+      // Trim whitespace
+      .trim()
+  );
 }
 
 /**
@@ -30,14 +32,16 @@ export function sanitizeString(input: string): string {
 export function sanitizeForDisplay(input: string): string {
   if (!input || typeof input !== "string") return "";
 
-  return input
-    // Remove script tags
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    // Remove event handlers
-    .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, "")
-    // Remove javascript: URLs
-    .replace(/javascript:/gi, "")
-    .trim();
+  return (
+    input
+      // Remove script tags
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+      // Remove event handlers
+      .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, "")
+      // Remove javascript: URLs
+      .replace(/javascript:/gi, "")
+      .trim()
+  );
 }
 
 /**
@@ -114,7 +118,7 @@ export function validateTextInput(
     return {
       valid: false,
       error: `Text darf maximal ${maxLength} Zeichen lang sein`,
-      sanitized: sanitized.substring(0, maxLength)
+      sanitized: sanitized.substring(0, maxLength),
     };
   }
 
@@ -177,7 +181,11 @@ export function validateEmail(email: string): { valid: boolean; error?: string }
 /**
  * Validate JSON string
  */
-export function validateJSON(jsonString: string): { valid: boolean; error?: string; parsed: unknown } {
+export function validateJSON(jsonString: string): {
+  valid: boolean;
+  error?: string;
+  parsed: unknown;
+} {
   if (!jsonString || typeof jsonString !== "string") {
     return { valid: false, error: "JSON ist erforderlich", parsed: null };
   }
@@ -215,9 +223,11 @@ export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
       sanitized[sanitizedKey] = sanitizeForDisplay(value);
     } else if (Array.isArray(value)) {
       sanitized[sanitizedKey] = value.map((item) =>
-        typeof item === "string" ? sanitizeForDisplay(item) :
-        typeof item === "object" && item !== null ? sanitizeObject(item as Record<string, unknown>) :
-        item
+        typeof item === "string"
+          ? sanitizeForDisplay(item)
+          : typeof item === "object" && item !== null
+            ? sanitizeObject(item as Record<string, unknown>)
+            : item
       );
     } else if (typeof value === "object" && value !== null) {
       sanitized[sanitizedKey] = sanitizeObject(value as Record<string, unknown>);

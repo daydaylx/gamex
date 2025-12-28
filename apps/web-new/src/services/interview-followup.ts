@@ -51,4 +51,3 @@ export function getFollowupQuestion(scenario: InterviewScenario): string | null 
   if (!scenario.followup_rules) return null;
   return scenario.followup_rules.followup_goal || null;
 }
-

@@ -109,10 +109,7 @@ export function loadInterviewSession(
 /**
  * Save interview session with schema version and timestamp
  */
-export function saveInterviewSession(
-  session: InterviewSession,
-  person: "A" | "B"
-): void {
+export function saveInterviewSession(session: InterviewSession, person: "A" | "B"): void {
   session.schema_version = CURRENT_SCHEMA_VERSION;
   session.updated_at = new Date().toISOString();
 
@@ -132,10 +129,7 @@ export function saveInterviewSession(
 /**
  * Create new interview session
  */
-export function createInterviewSession(
-  sessionId: string,
-  scenarioIds: string[]
-): InterviewSession {
+export function createInterviewSession(sessionId: string, scenarioIds: string[]): InterviewSession {
   const now = new Date().toISOString();
   const session: InterviewSession = {
     schema_version: CURRENT_SCHEMA_VERSION,
@@ -217,10 +211,7 @@ export function getInterviewAnswer(
 /**
  * Get all answers for a person
  */
-export function getInterviewAnswers(
-  sessionId: string,
-  person: "A" | "B"
-): InterviewAnswer[] {
+export function getInterviewAnswers(sessionId: string, person: "A" | "B"): InterviewAnswer[] {
   const session = loadInterviewSession(sessionId, person);
   if (!session) return [];
 
@@ -302,15 +293,10 @@ export function getCompletionPercentage(
 /**
  * Get answered question count
  */
-export function getAnsweredCount(
-  sessionId: string,
-  person: "A" | "B"
-): number {
+export function getAnsweredCount(sessionId: string, person: "A" | "B"): number {
   const session = loadInterviewSession(sessionId, person);
   if (!session) return 0;
 
-  return session.answers.filter(
-    (a) => !a.skipped && a.primary !== null && a.primary !== undefined
-  ).length;
+  return session.answers.filter((a) => !a.skipped && a.primary !== null && a.primary !== undefined)
+    .length;
 }
-

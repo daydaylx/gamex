@@ -37,12 +37,7 @@ export function Skeleton({
 
   return (
     <div
-      className={cn(
-        "bg-muted/50",
-        variantClasses[variant],
-        animationClasses[animation],
-        className
-      )}
+      className={cn("bg-muted/50", variantClasses[variant], animationClasses[animation], className)}
       style={style}
     />
   );

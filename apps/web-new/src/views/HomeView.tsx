@@ -25,8 +25,8 @@ export function HomeView() {
       const data = await listSessions();
       setSessions(data);
     } catch (err) {
-      console.error('Failed to load sessions:', err);
-      setError(err instanceof Error ? err.message : 'Fehler beim Laden der Sessions');
+      console.error("Failed to load sessions:", err);
+      setError(err instanceof Error ? err.message : "Fehler beim Laden der Sessions");
     } finally {
       setLoading(false);
     }
@@ -48,7 +48,8 @@ export function HomeView() {
           Intimacy. <span className="text-primary">Structured.</span>
         </h1>
         <p className="max-w-[700px] text-muted-foreground md:text-xl">
-          Ein sicherer Raum für ehrliche Gespräche. Vergleiche Grenzen und Wünsche, ohne Druck. Deine Daten verlassen nie dein Gerät.
+          Ein sicherer Raum für ehrliche Gespräche. Vergleiche Grenzen und Wünsche, ohne Druck.
+          Deine Daten verlassen nie dein Gerät.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center md:justify-start">
           <Button size="lg" className="gap-2" onClick={() => setShowCreateDialog(true)}>
@@ -64,14 +65,14 @@ export function HomeView() {
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold tracking-tight">Deine Sessions</h2>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="gap-2"
             onClick={loadSessionsData}
             disabled={loading}
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
             Aktualisieren
           </Button>
         </div>
@@ -83,9 +84,7 @@ export function HomeView() {
         )}
 
         {loading && sessions.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            Lädt Sessions...
-          </div>
+          <div className="text-center py-12 text-muted-foreground">Lädt Sessions...</div>
         ) : sessions.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <p className="text-lg mb-2">Noch keine Sessions vorhanden</p>
@@ -98,7 +97,10 @@ export function HomeView() {
               return (
                 <Link key={session.id} href={`/sessions/${session.id}`}>
                   <a className="block group">
-                    <Card variant="default" className="transition-all hover:border-primary/50 hover:shadow-md card-interactive">
+                    <Card
+                      variant="default"
+                      className="transition-all hover:border-primary/50 hover:shadow-md card-interactive"
+                    >
                       <CardHeader padding="comfortable" className="pb-2">
                         <div className="flex justify-between items-start gap-3">
                           <div className="space-y-1 flex-1 min-w-0">
@@ -107,7 +109,9 @@ export function HomeView() {
                             </CardTitle>
                             <CardDescription className="flex items-center gap-1">
                               <Calendar className="h-3 w-3 flex-shrink-0" />
-                              <span className="text-xs">{new Date(session.created_at).toLocaleDateString('de-DE')}</span>
+                              <span className="text-xs">
+                                {new Date(session.created_at).toLocaleDateString("de-DE")}
+                              </span>
                             </CardDescription>
                           </div>
                           <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
@@ -128,7 +132,7 @@ export function HomeView() {
                 </Link>
               );
             })}
-            
+
             {/* New Session Card */}
             <Card
               variant="outlined"

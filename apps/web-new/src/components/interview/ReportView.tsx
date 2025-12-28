@@ -198,18 +198,15 @@ export function ReportView({ session, onClose }: ReportViewProps) {
               Report konnte nicht geparst werden
             </CardTitle>
             <CardDescription>
-              Die KI-Antwort wurde erhalten, konnte aber nicht als strukturiertes JSON interpretiert werden.
+              Die KI-Antwort wurde erhalten, konnte aber nicht als strukturiertes JSON interpretiert
+              werden.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-lg bg-muted p-4 text-sm whitespace-pre-wrap font-mono">
               {rawText}
             </div>
-            {error && (
-              <div className="mt-4 text-sm text-muted-foreground">
-                Fehler: {error}
-              </div>
-            )}
+            {error && <div className="mt-4 text-sm text-muted-foreground">Fehler: {error}</div>}
           </CardContent>
         </Card>
 
@@ -255,12 +252,7 @@ export function ReportView({ session, onClose }: ReportViewProps) {
             </div>
           )}
 
-          <Button
-            onClick={handleGenerateReport}
-            disabled={loading}
-            size="lg"
-            className="w-full"
-          >
+          <Button onClick={handleGenerateReport} disabled={loading} size="lg" className="w-full">
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -278,4 +270,3 @@ export function ReportView({ session, onClose }: ReportViewProps) {
     </div>
   );
 }
-

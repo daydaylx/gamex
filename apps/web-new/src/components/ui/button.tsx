@@ -6,7 +6,16 @@ import type { ComponentChildren } from "preact";
 import { cn } from "../../lib/utils";
 
 export interface ButtonProps {
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "yes" | "maybe" | "no";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | "yes"
+    | "maybe"
+    | "no";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
   children?: ComponentChildren;
@@ -19,25 +28,18 @@ export interface ButtonProps {
 }
 
 const variantClasses = {
-  default:
-    "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
+  default: "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
   destructive:
     "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80",
   outline:
     "border border-input bg-background hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
-  secondary:
-    "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70",
-  ghost:
-    "hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
-  link:
-    "text-primary underline-offset-4 hover:underline",
+  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70",
+  ghost: "hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
+  link: "text-primary underline-offset-4 hover:underline",
   // Interview response buttons with semantic colors
-  yes:
-    "bg-[#22c55e] text-white hover:bg-[#16a34a] active:bg-[#15803d] font-semibold shadow-sm",
-  maybe:
-    "bg-[#f59e0b] text-black hover:bg-[#d97706] active:bg-[#b45309] font-semibold shadow-sm",
-  no:
-    "bg-[#ef4444] text-white hover:bg-[#dc2626] active:bg-[#b91c1c] font-semibold shadow-sm",
+  yes: "bg-[#22c55e] text-white hover:bg-[#16a34a] active:bg-[#15803d] font-semibold shadow-sm",
+  maybe: "bg-[#f59e0b] text-black hover:bg-[#d97706] active:bg-[#b45309] font-semibold shadow-sm",
+  no: "bg-[#ef4444] text-white hover:bg-[#dc2626] active:bg-[#b91c1c] font-semibold shadow-sm",
 };
 
 const sizeClasses = {
@@ -60,7 +62,9 @@ export function Button({
   ripple = true, // Ripple enabled by default for yes/maybe/no buttons
 }: ButtonProps) {
   // Auto-enable ripple for yes/maybe/no variants
-  const shouldRipple = ripple && (variant === "yes" || variant === "maybe" || variant === "no" || variant === "default");
+  const shouldRipple =
+    ripple &&
+    (variant === "yes" || variant === "maybe" || variant === "no" || variant === "default");
 
   return (
     <button

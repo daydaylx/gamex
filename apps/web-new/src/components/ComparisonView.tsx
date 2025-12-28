@@ -1,5 +1,14 @@
 import { useState, useEffect } from "preact/hooks";
-import { Search, X, CheckCircle2, AlertCircle, Info, MessageSquare, ShieldCheck, Sparkles } from "lucide-preact";
+import {
+  Search,
+  X,
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  MessageSquare,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-preact";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -30,7 +39,7 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
   const [error, setError] = useState<string | null>(null);
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
   const [scenarioResults, setScenarioResults] = useState<ComparisonResult[]>([]);
-  
+
   // Filters
   const [bucketFilter, setBucketFilter] = useState<MatchLevel | "ALL">("ALL");
   const [riskOnly, setRiskOnly] = useState(false);
@@ -51,9 +60,9 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
       const [session, questionnaireCompare, allScenarios] = await Promise.all([
         getSessionInfo(sessionId),
         compareSession(sessionId),
-        loadScenarios()
+        loadScenarios(),
       ]);
-      
+
       setSessionInfo(session);
 
       // 2. Load and Process Scenarios
@@ -62,30 +71,30 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
 
       if (combinedInterview && combinedInterview.answers) {
         // Group answers by scenario_id
-        const answersByScenario: Record<string, { a?: InterviewAnswer, b?: InterviewAnswer }> = {};
-        combinedInterview.answers.forEach(ans => {
+        const answersByScenario: Record<string, { a?: InterviewAnswer; b?: InterviewAnswer }> = {};
+        combinedInterview.answers.forEach((ans) => {
           if (!answersByScenario[ans.scenario_id]) answersByScenario[ans.scenario_id] = {};
-          if (ans.person === 'A') answersByScenario[ans.scenario_id].a = ans;
-          if (ans.person === 'B') answersByScenario[ans.scenario_id].b = ans;
+          if (ans.person === "A") answersByScenario[ans.scenario_id].a = ans;
+          if (ans.person === "B") answersByScenario[ans.scenario_id].b = ans;
         });
 
         // Map to ComparisonResult
         Object.entries(answersByScenario).forEach(([sid, pair]) => {
-          const scenarioMeta = allScenarios.scenarios.find(s => s.id === sid);
+          const scenarioMeta = allScenarios.scenarios.find((s) => s.id === sid);
           if (!pair.a && !pair.b) return;
 
           const isMatch = pair.a?.primary === pair.b?.primary;
           // Simple logic: if either has a 'boundary' risk type option selected, it might be a boundary
           // For now, let's stick to match/explore
-          
+
           scenarioItems.push({
             question_id: sid,
             label: scenarioMeta?.title || sid,
             question_text: scenarioMeta?.description,
-            schema: 'scenario',
-            risk_level: 'B',
-            module_id: 'scenarios',
-            pair_status: isMatch ? 'MATCH' : 'EXPLORE',
+            schema: "scenario",
+            risk_level: "B",
+            module_id: "scenarios",
+            pair_status: isMatch ? "MATCH" : "EXPLORE",
             value_a: pair.a?.primary ?? null,
             value_b: pair.b?.primary ?? null,
             comfort_a: pair.a?.comfort ?? null,
@@ -99,7 +108,7 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
             delta_comfort: null,
             flags: [],
             a: pair.a,
-            b: pair.b
+            b: pair.b,
           });
         });
       }
@@ -107,8 +116,8 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
       setScenarioResults(scenarioItems);
       setData(questionnaireCompare);
     } catch (err) {
-      console.error('Failed to load comparison:', err);
-      setError(err instanceof Error ? err.message : 'Fehler beim Vergleich');
+      console.error("Failed to load comparison:", err);
+      setError(err instanceof Error ? err.message : "Fehler beim Vergleich");
     } finally {
       setLoading(false);
     }
@@ -122,25 +131,27 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
 
     // Bucket filter
     if (bucketFilter !== "ALL") {
-      allItems = allItems.filter(item => item.pair_status === bucketFilter);
+      allItems = allItems.filter((item) => item.pair_status === bucketFilter);
     }
 
     // Risk filter
     if (riskOnly) {
-      allItems = allItems.filter(item =>
-        item.risk_level === 'C' || 
-        item.flags.includes('low_comfort_high_interest') ||
-        (item.comfort_a !== null && item.comfort_a <= 2) ||
-        (item.comfort_b !== null && item.comfort_b <= 2)
+      allItems = allItems.filter(
+        (item) =>
+          item.risk_level === "C" ||
+          item.flags.includes("low_comfort_high_interest") ||
+          (item.comfort_a !== null && item.comfort_a <= 2) ||
+          (item.comfort_b !== null && item.comfort_b <= 2)
       );
     }
 
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      allItems = allItems.filter(item => 
-        item.label?.toLowerCase().includes(query) ||
-        item.question_text?.toLowerCase().includes(query)
+      allItems = allItems.filter(
+        (item) =>
+          item.label?.toLowerCase().includes(query) ||
+          item.question_text?.toLowerCase().includes(query)
       );
     }
 
@@ -164,18 +175,26 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
     return (
       <div className="p-4">
         <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
-          {error || 'Vergleich konnte nicht geladen werden'}
+          {error || "Vergleich konnte nicht geladen werden"}
         </div>
-        <Button variant="outline" className="mt-4" onClick={onClose}>Zurück</Button>
+        <Button variant="outline" className="mt-4" onClick={onClose}>
+          Zurück
+        </Button>
       </div>
     );
   }
 
   // Recalculate summary based on combined data
   const combinedTotal = data.items.length + scenarioResults.length;
-  const combinedMatch = data.items.filter(i => i.pair_status === 'MATCH').length + scenarioResults.filter(i => i.pair_status === 'MATCH').length;
-  const combinedExplore = data.items.filter(i => i.pair_status === 'EXPLORE').length + scenarioResults.filter(i => i.pair_status === 'EXPLORE').length;
-  const combinedBoundary = data.items.filter(i => i.pair_status === 'BOUNDARY').length + scenarioResults.filter(i => i.pair_status === 'BOUNDARY').length;
+  const combinedMatch =
+    data.items.filter((i) => i.pair_status === "MATCH").length +
+    scenarioResults.filter((i) => i.pair_status === "MATCH").length;
+  const combinedExplore =
+    data.items.filter((i) => i.pair_status === "EXPLORE").length +
+    scenarioResults.filter((i) => i.pair_status === "EXPLORE").length;
+  const combinedBoundary =
+    data.items.filter((i) => i.pair_status === "BOUNDARY").length +
+    scenarioResults.filter((i) => i.pair_status === "BOUNDARY").length;
 
   return (
     <div className="space-y-6 pb-20 animate-fade-in">
@@ -202,7 +221,7 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
 
       {/* Action Plan Component */}
       {filteredItems.length > 0 && (
-        <ActionPlan items={filteredItems.filter(i => i.pair_status !== 'BOUNDARY')} />
+        <ActionPlan items={filteredItems.filter((i) => i.pair_status !== "BOUNDARY")} />
       )}
 
       {/* Filters Bar */}
@@ -274,17 +293,21 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
 
       {/* AI Popup for individual items */}
       {aiPopupItem && (
-        <ComparisonAIPopup
-          item={aiPopupItem}
-          open={true}
-          onClose={() => setAiPopupItem(null)}
-        />
+        <ComparisonAIPopup item={aiPopupItem} open={true} onClose={() => setAiPopupItem(null)} />
       )}
     </div>
   );
 }
 
-function StatCard({ label, value, color = "text-foreground" }: { label: string, value: number, color?: string }) {
+function StatCard({
+  label,
+  value,
+  color = "text-foreground",
+}: {
+  label: string;
+  value: number;
+  color?: string;
+}) {
   return (
     <Card className="border-border/20 bg-surface/50">
       <CardContent className="p-4 text-center">
@@ -297,9 +320,14 @@ function StatCard({ label, value, color = "text-foreground" }: { label: string, 
 
 function ComparisonItemCard({ item, onAskAI }: { item: ComparisonResult; onAskAI?: () => void }) {
   const isMatch = item.pair_status === "MATCH";
-  
+
   const statusConfig = {
-    MATCH: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10", label: "Match" },
+    MATCH: {
+      icon: CheckCircle2,
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/10",
+      label: "Match",
+    },
     EXPLORE: { icon: Info, color: "text-amber-500", bg: "bg-amber-500/10", label: "Diskussion" },
     BOUNDARY: { icon: ShieldCheck, color: "text-red-500", bg: "bg-red-500/10", label: "Grenze" },
   }[item.pair_status];
@@ -307,21 +335,25 @@ function ComparisonItemCard({ item, onAskAI }: { item: ComparisonResult; onAskAI
   const StatusIcon = statusConfig.icon;
 
   return (
-    <Card className={`border-border/40 overflow-hidden transition-all active:scale-[0.99] ${isMatch ? 'border-l-4 border-l-emerald-500' : ''}`}>
+    <Card
+      className={`border-border/40 overflow-hidden transition-all active:scale-[0.99] ${isMatch ? "border-l-4 border-l-emerald-500" : ""}`}
+    >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-               <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusConfig.bg} ${statusConfig.color}`}>
-                 {statusConfig.label}
-               </div>
-               {item.risk_level === 'C' && (
-                 <Badge variant="destructive" className="h-5 text-[10px]">High Risk</Badge>
-               )}
+              <div
+                className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusConfig.bg} ${statusConfig.color}`}
+              >
+                {statusConfig.label}
+              </div>
+              {item.risk_level === "C" && (
+                <Badge variant="destructive" className="h-5 text-[10px]">
+                  High Risk
+                </Badge>
+              )}
             </div>
-            <CardTitle className="text-base leading-tight">
-              {item.label}
-            </CardTitle>
+            <CardTitle className="text-base leading-tight">{item.label}</CardTitle>
           </div>
           <StatusIcon className={`h-5 w-5 flex-shrink-0 ${statusConfig.color}`} />
         </div>
@@ -339,8 +371,11 @@ function ComparisonItemCard({ item, onAskAI }: { item: ComparisonResult; onAskAI
             </div>
             {item.comfort_a !== null && (
               <div className="flex gap-1">
-                {[1,2,3,4,5].map(i => (
-                  <div key={i} className={`h-1 w-2 rounded-full ${i <= (item.comfort_a || 0) ? 'bg-primary' : 'bg-muted'}`} />
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className={`h-1 w-2 rounded-full ${i <= (item.comfort_a || 0) ? "bg-primary" : "bg-muted"}`}
+                  />
                 ))}
               </div>
             )}
@@ -352,8 +387,11 @@ function ComparisonItemCard({ item, onAskAI }: { item: ComparisonResult; onAskAI
             </div>
             {item.comfort_b !== null && (
               <div className="flex gap-1">
-                {[1,2,3,4,5].map(i => (
-                  <div key={i} className={`h-1 w-2 rounded-full ${i <= (item.comfort_b || 0) ? 'bg-primary' : 'bg-muted'}`} />
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className={`h-1 w-2 rounded-full ${i <= (item.comfort_b || 0) ? "bg-primary" : "bg-muted"}`}
+                  />
                 ))}
               </div>
             )}
@@ -396,22 +434,20 @@ function ComparisonItemCard({ item, onAskAI }: { item: ComparisonResult; onAskAI
 
 function renderFormattedAnswer(val: any, schema?: string): string {
   if (val === null || val === undefined) return "Keine Antwort";
-  
+
   if (schema === "scenario") {
     // A, B, C, D to readable text if possible, but for now just the ID
     return `Option ${val}`;
   }
 
   if (Array.isArray(val)) return val.join(", ");
-  
+
   const translations: Record<string, string> = {
-    'YES': 'Ja',
-    'MAYBE': 'Vielleicht',
-    'NO': 'Nein',
-    'HARD_LIMIT': 'Tabu'
+    YES: "Ja",
+    MAYBE: "Vielleicht",
+    NO: "Nein",
+    HARD_LIMIT: "Tabu",
   };
 
   return translations[String(val).toUpperCase()] || String(val);
 }
-
-

@@ -11,11 +11,7 @@ interface LiveRegionProps {
   clearAfter?: number;
 }
 
-export function LiveRegion({
-  message,
-  politeness = "polite",
-  clearAfter = 5000
-}: LiveRegionProps) {
+export function LiveRegion({ message, politeness = "polite", clearAfter = 5000 }: LiveRegionProps) {
   const [currentMessage, setCurrentMessage] = useState(message);
 
   useEffect(() => {
@@ -30,12 +26,7 @@ export function LiveRegion({
   }, [message, clearAfter]);
 
   return (
-    <div
-      role="status"
-      aria-live={politeness}
-      aria-atomic="true"
-      className="sr-only"
-    >
+    <div role="status" aria-live={politeness} aria-atomic="true" className="sr-only">
       {currentMessage}
     </div>
   );

@@ -1,4 +1,4 @@
-import type { Template } from './template';
+import type { Template } from "./template";
 
 export interface SessionListItem {
   id: string;

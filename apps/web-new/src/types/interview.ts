@@ -106,4 +106,3 @@ export interface ReportResult {
   rawText?: string;
   error?: string;
 }
-

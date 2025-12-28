@@ -33,9 +33,7 @@ export function SessionView() {
       setSession(data);
     } catch (err) {
       console.error("Failed to load session:", err);
-      setError(
-        err instanceof Error ? err.message : "Fehler beim Laden der Session"
-      );
+      setError(err instanceof Error ? err.message : "Fehler beim Laden der Session");
     } finally {
       setLoading(false);
     }
@@ -99,9 +97,7 @@ export function SessionView() {
 
       {/* Primary Action: Interview Mode */}
       <section className="mb-6">
-        <h2 className="text-sm font-medium text-muted-foreground mb-3">
-          Session beitreten
-        </h2>
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">Session beitreten</h2>
         <div className="space-y-2">
           <PersonActionCard
             person="A"
@@ -118,9 +114,7 @@ export function SessionView() {
 
       {/* Secondary Actions */}
       <section className="space-y-2">
-        <h2 className="text-sm font-medium text-muted-foreground mb-3">
-          Weitere Optionen
-        </h2>
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">Weitere Optionen</h2>
 
         {/* Comparison - only enabled when both are done */}
         <ActionCard
@@ -176,9 +170,7 @@ function PersonActionCard({ person, completed, onClick }: PersonActionCardProps)
         </p>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
-        {completed && (
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-        )}
+        {completed && <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
         <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
       </div>
     </Card>
@@ -200,9 +192,7 @@ function ActionCard({ icon, title, description, disabled, onClick }: ActionCardP
       padding="comfortable"
       onClick={disabled ? undefined : onClick}
       className={`flex items-center gap-4 text-left transition-all ${
-        disabled
-          ? "opacity-50 cursor-not-allowed"
-          : ""
+        disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
     >
       <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">

@@ -34,8 +34,8 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
         setSelectedTemplate(data[0]!.id);
       }
     } catch (err) {
-      console.error('Failed to load templates:', err);
-      setError('Fehler beim Laden der Templates');
+      console.error("Failed to load templates:", err);
+      setError("Fehler beim Laden der Templates");
     } finally {
       setLoadingTemplates(false);
     }
@@ -43,14 +43,14 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
-    
+
     if (!name.trim()) {
-      setError('Bitte gib einen Namen ein');
+      setError("Bitte gib einen Namen ein");
       return;
     }
 
     if (!selectedTemplate) {
-      setError('Bitte wähle ein Template aus');
+      setError("Bitte wähle ein Template aus");
       return;
     }
 
@@ -62,17 +62,17 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
         name: name.trim(),
         template_id: selectedTemplate,
       });
-      
+
       // Reset form
       setName("");
       setSelectedTemplate(templates.length > 0 ? templates[0]!.id : "");
-      
+
       // Notify parent
       onSuccess();
       onClose();
     } catch (err) {
-      console.error('Failed to create session:', err);
-      setError(err instanceof Error ? err.message : 'Fehler beim Erstellen der Session');
+      console.error("Failed to create session:", err);
+      setError(err instanceof Error ? err.message : "Fehler beim Erstellen der Session");
     } finally {
       setLoading(false);
     }
@@ -99,9 +99,7 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1 flex-1 min-w-0">
                 <CardTitle className="text-xl">Neue Session erstellen</CardTitle>
-                <CardDescription>
-                  Wähle einen Namen und ein Fragebogen-Template aus
-                </CardDescription>
+                <CardDescription>Wähle einen Namen und ein Fragebogen-Template aus</CardDescription>
               </div>
               <Button
                 variant="ghost"
@@ -149,7 +147,7 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
                   >
                     {templates.map((template) => (
                       <option key={template.id} value={template.id}>
-                        {template.name} {template.version ? `(${template.version})` : ''}
+                        {template.name} {template.version ? `(${template.version})` : ""}
                       </option>
                     ))}
                   </select>
@@ -184,7 +182,7 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
                   disabled={loading || loadingTemplates || !name.trim() || !selectedTemplate}
                   className="min-w-[120px]"
                 >
-                  {loading ? 'Erstellt...' : 'Erstellen'}
+                  {loading ? "Erstellt..." : "Erstellen"}
                 </Button>
               </div>
             </form>
@@ -194,4 +192,3 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
     </div>
   );
 }
-

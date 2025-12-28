@@ -10,7 +10,7 @@ interface SkipLinkProps {
 
 export function SkipLink({
   targetId = "main-content",
-  children = "Zum Hauptinhalt springen"
+  children = "Zum Hauptinhalt springen",
 }: SkipLinkProps) {
   return (
     <a

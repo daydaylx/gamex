@@ -16,7 +16,7 @@ export function MultiInput({ value, onChange, options, disabled }: MultiInputPro
 
   function toggleOption(optionValue: string) {
     if (selected.includes(optionValue)) {
-      setSelected(selected.filter(v => v !== optionValue));
+      setSelected(selected.filter((v) => v !== optionValue));
     } else {
       setSelected([...selected, optionValue]);
     }
@@ -34,21 +34,34 @@ export function MultiInput({ value, onChange, options, disabled }: MultiInputPro
             disabled={disabled}
             className={`
               w-full text-left px-4 py-3 rounded-lg border transition-all
-              ${isSelected 
-                ? 'border-primary bg-primary/10 ring-2 ring-primary/20' 
-                : 'border-border hover:border-primary/50 hover:bg-accent'
+              ${
+                isSelected
+                  ? "border-primary bg-primary/10 ring-2 ring-primary/20"
+                  : "border-border hover:border-primary/50 hover:bg-accent"
               }
-              ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+              ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
             `}
           >
             <div className="flex items-center gap-3">
-              <div className={`
+              <div
+                className={`
                 w-4 h-4 rounded border-2 flex items-center justify-center
-                ${isSelected ? 'border-primary bg-primary' : 'border-muted-foreground'}
-              `}>
+                ${isSelected ? "border-primary bg-primary" : "border-muted-foreground"}
+              `}
+              >
                 {isSelected && (
-                  <svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-3 h-3 text-primary-foreground"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={3}
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 )}
               </div>
@@ -60,4 +73,3 @@ export function MultiInput({ value, onChange, options, disabled }: MultiInputPro
     </div>
   );
 }
-
