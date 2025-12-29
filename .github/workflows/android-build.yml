@@ -110,7 +110,7 @@ jobs:
         run: sha256sum intimacy-tool-v${{ steps.version.outputs.version_name }}.apk > checksums.txt
       
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: intimacy-tool-apk
           path: |
