@@ -85,6 +85,11 @@ export function SessionView() {
     );
   }
 
+  const isChatDefault =
+    session.template?.id === "unified_v3_pure" || session.template_id === "unified_v3_pure";
+  const interviewPath = (person: "A" | "B") =>
+    `/sessions/${sessionId}/interview/${person}${isChatDefault ? "?mode=chat" : ""}`;
+
   return (
     <div className="page animate-fade-in">
       <div className="page-header">
@@ -116,12 +121,12 @@ export function SessionView() {
           <PersonActionCard
             person="A"
             completed={session.has_a}
-            onClick={() => setLocation(`/sessions/${sessionId}/interview/A`)}
+            onClick={() => setLocation(interviewPath("A"))}
           />
           <PersonActionCard
             person="B"
             completed={session.has_b}
-            onClick={() => setLocation(`/sessions/${sessionId}/interview/B`)}
+            onClick={() => setLocation(interviewPath("B"))}
           />
         </div>
       </section>

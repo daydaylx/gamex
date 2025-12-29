@@ -39,9 +39,10 @@ async function loadBundledTemplates(): Promise<Template[]> {
 
   // Load all available templates
   const templateFiles = [
+    "unified_v3_pure.json",
     "psycho_enhanced_v3.json",
-    "unified_template.json",
     "default_template.json",
+    "unified_template.json",
     "comprehensive_v1.json",
     "expanded_topics_v1.json",
     "kink_exploration_v1.json",

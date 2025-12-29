@@ -1,0 +1,346 @@
+{
+  "id": "unified_v3_pure",
+  "name": "Pure Play & Kink",
+  "version": 3,
+  "description": "Fokus pur auf Sexpraktiken, Fetische und Spielarten. Kein Beziehungs-Talk, keine Logistik. Direkt zum Wesentlichen.",
+  "modules": [
+    {
+      "id": "touch_senses",
+      "name": "01. Berührung & Sinnlichkeit",
+      "description": "Massage, Temperatur, Sensorik - der sanfte Einstieg.",
+      "questions": [
+        {
+          "id": "SEN01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Sinnliche Massage (Öl, Federn)",
+          "tags": ["sensory", "soft", "level1"]
+        },
+        {
+          "id": "SEN02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Gehalten werden / Festhalten",
+          "tags": ["intimacy", "level1"]
+        },
+        {
+          "id": "SEN03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Kratzen / Nägel spüren",
+          "help": "Leichtes Kratzen am Rücken oder Po.",
+          "tags": ["sensation", "level1"]
+        },
+        {
+          "id": "SEN04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Temperaturspiele (Eis / Warmes Wachs)",
+          "help": "Der Reiz von heiß/kalt auf der Haut. (Wachs nur Niedrigtemperatur!)",
+          "tags": ["sensation", "kink", "level2"]
+        },
+        {
+          "id": "SEN05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Augen verbinden (Blindfold)",
+          "help": "Kontrolle über das Sehen abgeben. Verstärkt andere Sinne.",
+          "tags": ["sensory", "level1"]
+        }
+      ]
+    },
+    {
+      "id": "sex_essentials",
+      "name": "02. Sex, Körper & Orte",
+      "description": "Was wir tun, wie wir es tun und wo wir es tun.",
+      "questions": [
+        {
+          "id": "SEX01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Oralsex (Geben)",
+          "has_active_passive": false,
+          "tags": ["sex", "oral", "give"]
+        },
+        {
+          "id": "SEX02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Oralsex (Empfangen)",
+          "tags": ["sex", "oral", "receive"]
+        },
+        {
+          "id": "SEX03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Vaginale Penetration",
+          "tags": ["sex", "penetration"]
+        },
+        {
+          "id": "SEX06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Toys einbeziehen (Vibratoren, Dildos)",
+          "tags": ["sex", "toys"]
+        },
+        {
+          "id": "POS01",
+          "schema": "multi",
+          "risk_level": "A",
+          "label": "Lieblingspositionen",
+          "tags": ["positions"],
+          "options": [
+            "Missionarsstellung",
+            "Doggy Style",
+            "Reiterstellung",
+            "Löffel/Spooning",
+            "69",
+            "Stehend",
+            "Sitzend",
+            "Rückwärts Reiten",
+            "Seitenposition",
+            "Andere"
+          ]
+        },
+        {
+          "id": "POS02",
+          "schema": "multi",
+          "risk_level": "A",
+          "label": "Orte, an denen ich Sex haben möchte",
+          "tags": ["places"],
+          "options": [
+            "Bett",
+            "Dusche/Badewanne",
+            "Couch",
+            "Küche",
+            "Balkon/Garten",
+            "Auto",
+            "Natur/Wald",
+            "Hotel",
+            "Büro (wenn leer)",
+            "Andere"
+          ]
+        },
+        {
+          "id": "BPR01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Nippel-Stimulation (Lecken, Saugen, Kneifen)",
+          "tags": ["body", "stimulation"]
+        },
+        {
+          "id": "BPR03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "G-Punkt Stimulation / Squirting",
+          "tags": ["body", "gspot"]
+        },
+        {
+          "id": "BPR04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Facesitting / Queening",
+          "tags": ["body", "facesitting"]
+        },
+        {
+          "id": "SEX04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Anale Stimulation (Finger/Zunge/Toy)",
+          "tags": ["sex", "anal"]
+        },
+        {
+          "id": "BPR06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Pegging (Frau penetriert Mann mit Strap-On)",
+          "tags": ["body", "pegging"]
+        }
+      ]
+    },
+    {
+      "id": "kink_dynamics",
+      "name": "03. Macht & Dynamik",
+      "description": "Dominanz, Submission und psychologische Spiele.",
+      "questions": [
+        {
+          "id": "DS01",
+          "schema": "consent_rating",
+          "has_dom_sub": true,
+          "risk_level": "A",
+          "label": "Führen & Geführt werden (Generell)",
+          "help": "Magst du es, die Kontrolle zu haben (Dom) oder abzugeben (Sub)?",
+          "tags": ["ds", "core"]
+        },
+        {
+          "id": "DS02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Gehorsam & Dienen (Service)",
+          "help": "Getränke bringen, Aufgaben erfüllen, 'zu Diensten sein'.",
+          "tags": ["ds", "service"],
+          "depends_on": {"id": "DS01", "conditions": [{"operator": "!=", "value": "NO"}]}
+        },
+        {
+          "id": "DS03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Disziplinierung / Bestrafung",
+          "help": "Wenn Regeln gebrochen werden, folgt eine Konsequenz (abgesprochen!).",
+          "tags": ["ds", "punishment"]
+        },
+        {
+          "id": "DS04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Orgasmuskontrolle / Verweigern",
+          "help": "Du entscheidest, wann (und ob) der andere kommen darf.",
+          "tags": ["ds", "control"]
+        },
+        {
+          "id": "COM01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Dirty Talk (Worte während Sex)",
+          "tags": ["communication", "dirtytalk"]
+        },
+        {
+          "id": "COM03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Lob & Bestätigung (Praising)",
+          "help": "'Gutes Mädchen', 'Braver Junge', 'Du machst das toll'.",
+          "tags": ["communication", "praising"]
+        },
+        {
+          "id": "COM04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Erniedrigung / Degradierung (Verbal)",
+          "help": "Beleidigungen, Objektifizierung (natürlich nur im konsensuellen Rahmen).",
+          "tags": ["communication", "degradation"]
+        }
+      ]
+    },
+    {
+      "id": "impact_bondage",
+      "name": "04. Fesseln & Spanking",
+      "description": "Körperliche Intensität, Fixierung und Impact.",
+      "questions": [
+        {
+          "id": "BND01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Leichte Fixierung (Soft Bondage)",
+          "help": "Festhalten, Tücher, Krawatten.",
+          "tags": ["bondage", "soft"]
+        },
+        {
+          "id": "BND02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Feste Fesseln (Handschellen, Seile)",
+          "help": "Man ist wirklich fixiert und hilflos.",
+          "tags": ["bondage", "hard"]
+        },
+        {
+          "id": "BND03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Knebel (Gags)",
+          "tags": ["bondage", "gag"]
+        },
+        {
+          "id": "IMP01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Spanking: Spaß & Lustvoll",
+          "help": "Leichtes Hauen auf den Po, während dem Sex oder zum Flirten.",
+          "tags": ["impact", "fun"]
+        },
+        {
+          "id": "IMP02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Spanking: Ernst & Strafe",
+          "help": "Methodisches Hauen, um Schmerz zu erzeugen oder Dominanz zu zeigen.",
+          "tags": ["impact", "punishment"]
+        },
+        {
+          "id": "IMP03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Tools: Gerten, Paddles, Peitschen",
+          "tags": ["impact", "toys"],
+          "depends_on": {"id": "IMP02", "values": ["YES", "MAYBE"]}
+        }
+      ]
+    },
+    {
+      "id": "fetish_advanced",
+      "name": "05. Fetische & Extreme",
+      "description": "Spezielle Vorlieben und Grenzerfahrungen.",
+      "questions": [
+        {
+          "id": "EXF03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Shibari / Kunstvolles Fesseln mit Seilen",
+          "tags": ["fetish", "shibari"]
+        },
+        {
+          "id": "EXF01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Primal Play (Jagen/Gejagt werden)",
+          "help": "Tierisch-instinktiv: Jagen, Beißen, Ringen.",
+          "tags": ["fetish", "primal"]
+        },
+        {
+          "id": "EXF07",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Crossdressing / Wäsche",
+          "tags": ["fetish", "clothing"]
+        },
+        {
+          "id": "EXF09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "label": "Geruchs-Fetisch (Scent)",
+          "tags": ["fetish", "scent"]
+        },
+        {
+          "id": "RSK01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Breathplay / Würgen",
+          "help": "WARNUNG: Hohes Risiko! Niemals allein, niemals Kehlkopf.",
+          "tags": ["risk", "breath"]
+        },
+        {
+          "id": "RSK03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "label": "Dreier / Gruppen",
+          "tags": ["risk", "group"]
+        },
+        {
+          "id": "EXT01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Fisting (vaginal/anal)",
+          "tags": ["extreme", "fisting"]
+        },
+        {
+          "id": "EXF06",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "label": "Cuckolding / Hotwife",
+          "help": "Partner beim Sex mit anderen zusehen.",
+          "tags": ["fetish", "cuckolding"]
+        }
+      ]
+    }
+  ]
+}

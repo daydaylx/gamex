@@ -559,6 +559,17 @@ body,
   }
 }
 
+@keyframes chat-enter {
+  from {
+    opacity: var(--chat-enter-opacity, 0);
+    transform: translate3d(0, var(--chat-enter-translate-y, 0.5rem), 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
 }
@@ -584,6 +595,176 @@ body,
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.animate-in {
+  animation: chat-enter 0.3s ease-out;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  --chat-enter-opacity: 0;
+}
+
+.slide-in-from-bottom-2 {
+  --chat-enter-translate-y: 0.5rem;
+}
+
+.chat-questionnaire {
+  --chat-bg: #09090b;
+  --chat-bg-grad-1: rgba(244, 63, 94, 0.12);
+  --chat-bg-grad-2: rgba(139, 92, 246, 0.12);
+  --chat-surface: rgba(24, 24, 27, 0.82);
+  --chat-surface-border: rgba(148, 163, 184, 0.18);
+  --chat-header-bg: rgba(9, 9, 11, 0.72);
+  --chat-system-bg: rgba(39, 39, 42, 0.78);
+  --chat-system-border: rgba(82, 82, 91, 0.5);
+  --chat-user-bg: linear-gradient(135deg, #fb7185, #be123c);
+  --chat-user-text: #fff5f7;
+  --chat-accent: #f43f5e;
+  --chat-progress-track: rgba(255, 255, 255, 0.08);
+  --chat-error-bg: rgba(244, 63, 94, 0.12);
+  --chat-error-border: rgba(244, 63, 94, 0.3);
+  --chat-error-text: #fecdd3;
+  background-color: var(--chat-bg);
+  background-image:
+    radial-gradient(circle at top right, var(--chat-bg-grad-1), transparent 45%),
+    radial-gradient(circle at bottom left, var(--chat-bg-grad-2), transparent 52%);
+}
+
+:root.light .chat-questionnaire {
+  --chat-bg: #fafaf9;
+  --chat-bg-grad-1: rgba(244, 63, 94, 0.08);
+  --chat-bg-grad-2: rgba(168, 85, 247, 0.08);
+  --chat-surface: rgba(255, 255, 255, 0.86);
+  --chat-surface-border: rgba(120, 113, 108, 0.2);
+  --chat-header-bg: rgba(250, 250, 249, 0.8);
+  --chat-system-bg: rgba(245, 242, 238, 0.92);
+  --chat-system-border: rgba(120, 113, 108, 0.18);
+  --chat-user-bg: linear-gradient(135deg, #fb7185, #e11d48);
+  --chat-user-text: #ffffff;
+  --chat-accent: #e11d48;
+  --chat-progress-track: rgba(0, 0, 0, 0.08);
+  --chat-error-bg: rgba(244, 63, 94, 0.08);
+  --chat-error-border: rgba(190, 18, 60, 0.25);
+  --chat-error-text: #9f1239;
+}
+
+.chat-header {
+  background: var(--chat-header-bg);
+  border-bottom: 1px solid var(--chat-surface-border);
+}
+
+.chat-progress-track {
+  background: var(--chat-progress-track);
+}
+
+.chat-sheet {
+  background: var(--chat-surface);
+  border-color: var(--chat-surface-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.chat-sheet-handle {
+  height: 6px;
+  width: 48px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+:root.light .chat-sheet-handle {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.chat-bubble {
+  position: relative;
+  border-radius: 24px;
+  padding: 12px 16px;
+  line-height: 1.5;
+  border: 1px solid transparent;
+  backdrop-filter: blur(2px);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.chat-bubble--system {
+  background: var(--chat-system-bg);
+  border-color: var(--chat-system-border);
+  color: var(--color-foreground);
+}
+
+.chat-bubble--user {
+  background: var(--chat-user-bg);
+  color: var(--chat-user-text);
+  box-shadow: 0 12px 24px rgba(244, 63, 94, 0.25);
+}
+
+.chat-bubble-tail {
+  position: absolute;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  transform: rotate(45deg);
+}
+
+.chat-bubble-tail--system {
+  left: 14px;
+  background: var(--chat-system-bg);
+  border-left: 1px solid var(--chat-system-border);
+  border-bottom: 1px solid var(--chat-system-border);
+}
+
+.chat-bubble-tail--user {
+  right: 14px;
+  background: var(--chat-user-bg);
+}
+
+.chat-label-system {
+  color: var(--color-muted-foreground);
+}
+
+.chat-label-user {
+  color: var(--chat-accent);
+}
+
+.chat-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.chat-typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.chat-typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.chat-sheet-panel {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-muted-foreground);
+  padding: 14px 16px;
+  font-size: 0.9rem;
+}
+
+:root.light .chat-sheet-panel {
+  border-color: rgba(15, 23, 42, 0.08);
+  background: rgba(15, 23, 42, 0.04);
+  color: var(--color-muted-foreground);
+}
+
+.chat-error {
+  border-radius: 16px;
+  border: 1px solid var(--chat-error-border);
+  background: var(--chat-error-bg);
+  color: var(--chat-error-text);
+  padding: 12px 14px;
+  font-size: 0.85rem;
 }
 
 /* Button Base Reset */

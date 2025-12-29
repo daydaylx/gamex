@@ -21,6 +21,9 @@ import { loadResponses, saveResponses } from "../../services/api";
 import type { Template, Question, Module } from "../../types";
 import type { ResponseMap, ResponseValue, ConsentRatingValue } from "../../types/form";
 
+const SAFETY_GATE_TEMPLATE_ID = "unified_v3_pure";
+const SAFETY_GATE_STORAGE_PREFIX = "gamex:safety_gate";
+
 interface QuestionnaireFormProps {
   sessionId: string;
   person: "A" | "B";
@@ -38,6 +41,8 @@ export function QuestionnaireForm({
   onExit,
   initialModuleId,
 }: QuestionnaireFormProps) {
+  const isSafetyGateTemplate = template.id === SAFETY_GATE_TEMPLATE_ID;
+  const safetyGateKey = `${SAFETY_GATE_STORAGE_PREFIX}:${sessionId}:${person}:${template.id}`;
   const [responses, setResponses] = useState<ResponseMap>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -48,6 +53,15 @@ export function QuestionnaireForm({
   const [showNotes, setShowNotes] = useState(false);
   const [showConditions, setShowConditions] = useState(false);
   const [showModuleOverview, setShowModuleOverview] = useState(false);
+  const [safetyChecks, setSafetyChecks] = useState({ safeword: false, boundaries: false });
+  const [safetyGateAccepted, setSafetyGateAccepted] = useState(() => {
+    if (!isSafetyGateTemplate) return true;
+    try {
+      return localStorage.getItem(safetyGateKey) === "true";
+    } catch {
+      return false;
+    }
+  });
 
   // Swipe handling refs
   const touchStartX = useRef<number | null>(null);
@@ -226,6 +240,15 @@ export function QuestionnaireForm({
     loadExistingResponses();
   }, [sessionId, person]);
 
+  useEffect(() => {
+    if (!isSafetyGateTemplate) return;
+    try {
+      setSafetyGateAccepted(localStorage.getItem(safetyGateKey) === "true");
+    } catch {
+      setSafetyGateAccepted(false);
+    }
+  }, [isSafetyGateTemplate, safetyGateKey]);
+
   // Jump to initial module if provided
   useEffect(() => {
     if (initialModuleId && template.modules) {
@@ -337,6 +360,16 @@ export function QuestionnaireForm({
     scheduleAutoSave();
   }
 
+  function handleSafetyConfirm() {
+    if (!isSafetyGateTemplate || !safetyChecks.safeword || !safetyChecks.boundaries) return;
+    setSafetyGateAccepted(true);
+    try {
+      localStorage.setItem(safetyGateKey, "true");
+    } catch {
+      // Ignore storage failures; gate stays local to this session.
+    }
+  }
+
   // Check if main answer is valid for the current question
   function isMainAnswerValid(question: Question, response: ResponseValue): boolean {
     if (response === null || response === undefined) return false;
@@ -399,6 +432,7 @@ export function QuestionnaireForm({
     : false;
   const moduleLabel = currentModule?.name || "Allgemein";
   const questionTitle = currentQuestion?.text || currentQuestion?.label || "Frage";
+  const canConfirmSafety = safetyChecks.safeword && safetyChecks.boundaries;
 
   function goToNext() {
     if (currentIndex < allQuestions.length - 1) {
@@ -466,6 +500,77 @@ export function QuestionnaireForm({
         <section className="section-card">
           <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
             Keine Fragen im Template gefunden.
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (isSafetyGateTemplate && !safetyGateAccepted) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          {onExit && (
+            <Button variant="ghost" size="icon" onClick={onExit}>
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+          )}
+          <div>
+            <h2 className="page-title">Safety Check</h2>
+            <p className="page-subtitle">Bevor es losgeht, kurz bestätigen.</p>
+          </div>
+        </div>
+
+        <section className="section-card">
+          <div className="section-header">
+            <div>
+              <p className="section-title">⚠️ Safety First</p>
+              <p className="section-subtitle">
+                Da dieser Fragebogen direkt zur Sache geht, bestätigt bitte kurz:
+              </p>
+            </div>
+          </div>
+          <div className="section-body">
+            <label className="list-card items-start gap-3">
+              <input
+                type="checkbox"
+                checked={safetyChecks.safeword}
+                onChange={(e) =>
+                  setSafetyChecks((prev) => ({
+                    ...prev,
+                    safeword: (e.target as HTMLInputElement).checked,
+                  }))
+                }
+                className="mt-1 h-5 w-5"
+              />
+              <span className="text-sm text-foreground">
+                Wir haben ein Safeword vereinbart (z.B. &quot;Rot&quot; oder &quot;Stop&quot;).
+              </span>
+            </label>
+            <label className="list-card items-start gap-3">
+              <input
+                type="checkbox"
+                checked={safetyChecks.boundaries}
+                onChange={(e) =>
+                  setSafetyChecks((prev) => ({
+                    ...prev,
+                    boundaries: (e.target as HTMLInputElement).checked,
+                  }))
+                }
+                className="mt-1 h-5 w-5"
+              />
+              <span className="text-sm text-foreground">
+                Wir achten auf körperliche und emotionale Grenzen.
+              </span>
+            </label>
+            <Button
+              onClick={handleSafetyConfirm}
+              disabled={!canConfirmSafety}
+              size="lg"
+              className="w-full"
+            >
+              Verstanden & starten
+            </Button>
           </div>
         </section>
       </div>

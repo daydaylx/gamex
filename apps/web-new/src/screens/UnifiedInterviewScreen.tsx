@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button";
 import { InterviewMiniForm } from "../components/interview/InterviewMiniForm";
 import { ScenariosView } from "../components/ScenariosView";
 import { QuestionnaireForm } from "../components/form/QuestionnaireForm";
+import { ChatQuestionnaire } from "../components/form/ChatQuestionnaire";
 import { loadInterviewScenarios } from "../services/interview-storage";
 import { loadScenarios, loadTemplate } from "../services/api";
 import type { InterviewScenario } from "../types/interview";
@@ -21,7 +22,7 @@ interface UnifiedInterviewScreenProps {
 }
 
 export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewScreenProps) {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [stage, setStage] = useState<Stage>("dashboard"); // Default to dashboard for now
   const [loading, setLoading] = useState(true);
 
@@ -34,6 +35,9 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
   const [selectedDeckIndex, setSelectedDeckIndex] = useState<number>(0);
   const [selectedModuleId, setSelectedModuleId] = useState<string>("");
 
+  const searchParams = new URLSearchParams(location.split("?")[1] || "");
+  const forceChatMode = searchParams.get("mode") === "chat";
+
   useEffect(() => {
     loadAllData();
   }, []);
@@ -45,7 +49,7 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
       const [checkin, scenarios, tmpl] = await Promise.all([
         loadInterviewScenarios(),
         loadScenarios(),
-        loadTemplate("default_template.json"), // Default for now
+        loadTemplate("unified_v3_pure.json"),
       ]);
 
       setCheckinQuestions(checkin);
@@ -188,14 +192,25 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
       {stage === "module" && template && (
         <div className="h-screen flex flex-col">
           {/* QuestionnaireForm loads full form but jumps to selected module */}
-          <QuestionnaireForm
-            sessionId={sessionId}
-            person={person}
-            template={template}
-            onComplete={() => setStage("dashboard")}
-            onExit={() => setStage("dashboard")}
-            initialModuleId={selectedModuleId}
-          />
+          {forceChatMode || template.id === "unified_v3_pure" ? (
+            <ChatQuestionnaire
+              sessionId={sessionId}
+              person={person}
+              template={template}
+              onComplete={() => setStage("dashboard")}
+              onExit={() => setStage("dashboard")}
+              initialModuleId={selectedModuleId}
+            />
+          ) : (
+            <QuestionnaireForm
+              sessionId={sessionId}
+              person={person}
+              template={template}
+              onComplete={() => setStage("dashboard")}
+              onExit={() => setStage("dashboard")}
+              initialModuleId={selectedModuleId}
+            />
+          )}
         </div>
       )}
 
