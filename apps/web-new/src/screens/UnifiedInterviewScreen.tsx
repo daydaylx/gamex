@@ -1,6 +1,6 @@
 import { useState, useEffect } from "preact/hooks";
 import { useLocation } from "wouter-preact";
-import { Layers, MessageCircle, ChevronLeft } from "lucide-preact";
+import { Layers, MessageCircle, ChevronLeft, ChevronRight } from "lucide-preact";
 import { Button } from "../components/ui/button";
 import { InterviewMiniForm } from "../components/interview/InterviewMiniForm";
 import { ScenariosView } from "../components/ScenariosView";
@@ -69,81 +69,91 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
   // --- Sub-Components for this screen ---
 
   const Dashboard = () => (
-    <div className="space-y-6 animate-fade-in p-4 pb-24">
-      {/* Check-in Recommendation */}
-      <div
-        onClick={() => setStage("checkin")}
-        className="bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/20 rounded-xl p-4 cursor-pointer active:scale-[0.98] transition-transform"
-      >
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/20 rounded-full text-primary">
-            <MessageCircle className="h-5 w-5" />
-          </div>
-          <div>
-            <h3 className="font-semibold">Check-in starten</h3>
-            <p className="text-xs text-muted-foreground">Kurzes Warm-up (12 Fragen)</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3 mb-6 mt-6">
+    <div className="page animate-fade-in">
+      <div className="page-header">
         <Button variant="ghost" size="icon" onClick={handleBack}>
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <div>
-          <h1 className="text-xl font-bold">Themen-Wahl</h1>
-          <p className="text-sm text-muted-foreground">Wähle dein nächstes Thema</p>
+          <h1 className="page-title">Themenwahl</h1>
+          <p className="page-subtitle">Wähle dein nächstes Thema für die Session.</p>
         </div>
       </div>
 
-      {/* Section 1: Scenarios / Decks */}
-      <section>
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">
-          Szenarien Decks
-        </h2>
-        <div className="grid gap-3">
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Schneller Einstieg</h2>
+            <p className="section-subtitle">Kurz starten und warm werden.</p>
+          </div>
+        </div>
+        <button
+          onClick={() => setStage("checkin")}
+          className="list-card card-interactive w-full text-left"
+        >
+          <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center">
+            <MessageCircle className="h-5 w-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="list-card-title">Check-in starten</p>
+            <p className="list-card-meta">Kurzes Warm-up mit 12 Fragen.</p>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </button>
+      </section>
+
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Szenario-Decks</h2>
+            <p className="section-subtitle">Stöbere in thematischen Karten-Sets.</p>
+          </div>
+        </div>
+        <div className="section-body">
           {scenariosData?.decks?.map((deck: any, index: number) => (
-            <div
+            <button
               key={deck.id}
               onClick={() => {
                 setSelectedDeckIndex(index);
                 setStage("deck");
               }}
-              className="bg-surface border border-border/40 rounded-xl p-4 active:scale-[0.98] transition-transform cursor-pointer hover:border-primary/30"
+              className="list-card card-interactive w-full text-left"
             >
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-lg">{deck.name}</h3>
-                <span className="text-xs bg-accent px-2 py-1 rounded-full">
-                  {deck.scenarios.length} Karten
-                </span>
+              <div className="flex-1 min-w-0">
+                <p className="list-card-title">{deck.name}</p>
+                <p className="list-card-meta line-clamp-2">{deck.description}</p>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2">{deck.description}</p>
-            </div>
+              <span className="pill">{deck.scenarios.length} Karten</span>
+            </button>
           ))}
         </div>
       </section>
 
-      {/* Section 2: Questionnaire Modules */}
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">
-          Vertiefungs-Module
-        </h2>
-        <div className="grid gap-3">
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Vertiefungs-Module</h2>
+            <p className="section-subtitle">Geführte Module für mehr Tiefe.</p>
+          </div>
+        </div>
+        <div className="section-body">
           {template?.modules?.map((module: any) => (
-            <div
+            <button
               key={module.id}
               onClick={() => {
                 setSelectedModuleId(module.id);
                 setStage("module");
               }}
-              className="bg-surface border border-border/40 rounded-xl p-4 active:scale-[0.98] transition-transform cursor-pointer hover:border-primary/30"
+              className="list-card card-interactive w-full text-left"
             >
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-lg">{module.name}</h3>
+              <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
                 <Layers className="h-4 w-4 text-muted-foreground" />
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2">{module.description}</p>
-            </div>
+              <div className="flex-1 min-w-0">
+                <p className="list-card-title">{module.name}</p>
+                <p className="list-card-meta line-clamp-2">{module.description}</p>
+              </div>
+            </button>
           ))}
         </div>
       </section>
@@ -176,20 +186,14 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
 
       {/* Stage: Module (Questionnaire) */}
       {stage === "module" && template && (
-        <div className="h-screen flex flex-col px-4 pt-4">
-          <div className="flex items-center mb-4">
-            <Button variant="ghost" onClick={() => setStage("dashboard")}>
-              <ChevronLeft className="mr-2 h-4 w-4" /> Zurück
-            </Button>
-          </div>
-          {/* 
-              QuestionnaireForm loads full form but jumps to selected module
-           */}
+        <div className="h-screen flex flex-col">
+          {/* QuestionnaireForm loads full form but jumps to selected module */}
           <QuestionnaireForm
             sessionId={sessionId}
             person={person}
             template={template}
             onComplete={() => setStage("dashboard")}
+            onExit={() => setStage("dashboard")}
             initialModuleId={selectedModuleId}
           />
         </div>
@@ -266,42 +270,65 @@ function CheckinFlow({
   }
 
   return (
-    <div className="h-screen flex flex-col p-4">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+    <div className="page">
+      <div className="page-header">
         <Button variant="ghost" size="icon" onClick={onExit}>
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="h-5 w-5" />
         </Button>
-        <span className="text-xs text-muted-foreground">
-          Check-in {index + 1}/{questions.length}
-        </span>
+        <div>
+          <h2 className="page-title">Check-in</h2>
+          <p className="page-subtitle">
+            Person {person} • Frage {index + 1}/{questions.length}
+          </p>
+        </div>
       </div>
 
-      {/* Progress */}
-      <div className="w-full h-1 bg-muted rounded-full mb-6">
-        <div
-          className="h-full bg-primary transition-all duration-300"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Fortschritt</p>
+            <p className="section-subtitle">Kurzstart mit {questions.length} Fragen.</p>
+          </div>
+        </div>
+        <div className="section-body">
+          <div className="progress-bar">
+            <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>{Math.round(progress)}% erledigt</span>
+            <span>Check-in {index + 1}/{questions.length}</span>
+          </div>
+        </div>
+      </section>
 
-      <div className="flex-1 overflow-y-auto pb-20">
-        <h2 className="text-xl font-bold mb-2">{currentQ.title}</h2>
-        <p className="text-muted-foreground mb-6">{currentQ.scenario_text}</p>
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Aktuelle Frage</p>
+            <p className="section-subtitle">Kurzer Warm-up-Check.</p>
+          </div>
+        </div>
+        <div className="section-body">
+          <div className="space-y-2">
+            <h3 className="text-display text-xl">{currentQ.title}</h3>
+            <p className="section-subtitle">{currentQ.scenario_text}</p>
+          </div>
+          <InterviewMiniForm
+            scenario={currentQ}
+            person={person}
+            answer={answer}
+            onChange={onAnswerChange}
+          />
+        </div>
+      </section>
 
-        <InterviewMiniForm
-          scenario={currentQ}
-          person={person}
-          answer={answer}
-          onChange={onAnswerChange}
-        />
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border/50">
-        <Button className="w-full h-12" onClick={saveAndNext}>
-          {index === questions.length - 1 ? "Abschließen" : "Weiter"}
-        </Button>
-      </div>
+      <section className="section-card">
+        <div className="section-body">
+          <Button className="w-full" onClick={saveAndNext}>
+            {index === questions.length - 1 ? "Abschließen" : "Weiter"}
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }

@@ -10,7 +10,6 @@ import {
   CheckCircle,
 } from "lucide-preact";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { ConsentRatingInput } from "./ConsentRatingInput";
 import { ScaleInput } from "./ScaleInput";
 import { EnumInput } from "./EnumInput";
@@ -27,6 +26,7 @@ interface QuestionnaireFormProps {
   person: "A" | "B";
   template: Template;
   onComplete?: () => void;
+  onExit?: () => void;
   initialModuleId?: string;
 }
 
@@ -35,6 +35,7 @@ export function QuestionnaireForm({
   person,
   template,
   onComplete,
+  onExit,
   initialModuleId,
 }: QuestionnaireFormProps) {
   const [responses, setResponses] = useState<ResponseMap>({});
@@ -137,8 +138,7 @@ export function QuestionnaireForm({
   const currentModuleId = currentQuestion?.moduleId;
   const currentModule = template.modules?.find((m) => m.id === currentModuleId);
   const moduleIndex = currentQuestion?.moduleIndex ?? 0;
-  const _totalModules = template.modules?.length ?? 0;
-  void _totalModules; // Reserved for future module progress display
+  const totalModules = template.modules?.length ?? 0;
 
   // Get module phases for color coding
   const getModulePhase = (moduleId: string | undefined): string => {
@@ -397,6 +397,8 @@ export function QuestionnaireForm({
   const isCurrentAnswerValid = currentQuestion
     ? isMainAnswerValid(currentQuestion, currentResponse)
     : false;
+  const moduleLabel = currentModule?.name || "Allgemein";
+  const questionTitle = currentQuestion?.text || currentQuestion?.label || "Frage";
 
   function goToNext() {
     if (currentIndex < allQuestions.length - 1) {
@@ -447,101 +449,92 @@ export function QuestionnaireForm({
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="py-12 text-center">
-          <p className="text-muted-foreground">Lädt Fragebogen...</p>
-        </CardContent>
-      </Card>
+      <div className="page">
+        <section className="section-card">
+          <div className="section-body text-center">
+            <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" />
+            <p className="section-subtitle mt-3">Fragen werden geladen...</p>
+          </div>
+        </section>
+      </div>
     );
   }
 
   if (!currentQuestion) {
     return (
-      <Card>
-        <CardContent className="py-12 text-center">
-          <p className="text-destructive">Keine Fragen im Template gefunden</p>
-        </CardContent>
-      </Card>
+      <div className="page">
+        <section className="section-card">
+          <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
+            Keine Fragen im Template gefunden.
+          </div>
+        </section>
+      </div>
     );
   }
 
   // Module Overview View
   if (showModuleOverview) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold">Modul-Übersicht</h2>
-            <p className="text-sm text-muted-foreground">
-              Person {person} • Springe zu einem Modul
-            </p>
-          </div>
-          <Button variant="outline" onClick={() => setShowModuleOverview(false)}>
-            Zurück
+      <div className="page">
+        <div className="page-header">
+          <Button variant="ghost" size="icon" onClick={() => setShowModuleOverview(false)}>
+            <ChevronLeft className="h-5 w-5" />
           </Button>
+          <div>
+            <h2 className="page-title">Modul-Übersicht</h2>
+            <p className="page-subtitle">Person {person} • Springe zu einem Modul.</p>
+          </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {template.modules?.map((module, mIdx) => {
-            const stats = getModuleStats(module);
-            const isComplete = stats.answered === stats.total && stats.total > 0;
-            const phase = getModulePhase(module.id);
-            const isCurrent = mIdx === moduleIndex;
+        <section className="section-card">
+          <div className="section-body">
+            {template.modules?.map((module, mIdx) => {
+              const stats = getModuleStats(module);
+              const isComplete = stats.answered === stats.total && stats.total > 0;
+              const phase = getModulePhase(module.id);
+              const isCurrent = mIdx === moduleIndex;
+              const progressValue =
+                stats.total > 0 ? Math.round((stats.answered / stats.total) * 100) : 0;
 
-            return (
-              <Card
-                key={module.id}
-                className={`cursor-pointer transition-all hover:ring-2 hover:ring-primary ${
-                  isCurrent ? "ring-2 ring-primary" : ""
-                } ${isComplete ? "bg-green-500/10" : ""}`}
-                onClick={() => jumpToModule(mIdx)}
-              >
-                <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className={`h-3 w-3 rounded-full ${phaseColors[phase]}`} />
-                        <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                          {phaseLabels[phase]}
-                        </span>
-                        {isComplete && <CheckCircle className="h-4 w-4 text-green-500" />}
-                      </div>
-                      <CardTitle className="text-lg">{module.name}</CardTitle>
-                    </div>
-                    {isCurrent && (
-                      <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
-                        Aktuell
+              return (
+                <button
+                  key={module.id}
+                  type="button"
+                  onClick={() => jumpToModule(mIdx)}
+                  className={`list-card w-full text-left ${
+                    isCurrent ? "ring-2 ring-primary/40" : "card-interactive"
+                  }`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span
+                        className={`text-xs uppercase tracking-wide font-semibold px-2 py-1 rounded-full ${phaseColors[phase]}`}
+                      >
+                        {phaseLabels[phase]}
                       </span>
-                    )}
-                  </div>
-                  <CardDescription className="text-sm">{module.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all duration-300 ${phaseColors[phase]}`}
-                        style={{
-                          width: `${stats.total > 0 ? (stats.answered / stats.total) * 100 : 0}%`,
-                        }}
-                      />
+                      {isComplete && <CheckCircle className="h-4 w-4 text-emerald-400" />}
+                      {isCurrent && <span className="pill">Aktuell</span>}
                     </div>
-                    <p className="text-xs text-muted-foreground text-right">
-                      {stats.answered} / {stats.total} Fragen beantwortet
-                    </p>
+                    <p className="list-card-title">{module.name}</p>
+                    <p className="list-card-meta line-clamp-2">{module.description}</p>
+                    <div className="progress-bar mt-3">
+                      <div className="progress-bar-fill" style={{ width: `${progressValue}%` }} />
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                  <span className="pill">
+                    {stats.answered}/{stats.total}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
 
-        {/* Overall stats */}
-        <Card className="border-dashed">
-          <CardContent className="pt-6">
-            <div className="flex justify-around text-center">
+        <section className="section-card">
+          <div className="section-body">
+            <div className="grid grid-cols-3 gap-3 text-center">
               <div>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-semibold">
                   {
                     Object.keys(responses).filter(
                       (k) => !k.includes("_notes") && !k.includes("_conditions")
@@ -551,88 +544,98 @@ export function QuestionnaireForm({
                 <p className="text-sm text-muted-foreground">Beantwortet</p>
               </div>
               <div>
-                <p className="text-2xl font-bold">{allQuestions.length}</p>
+                <p className="text-2xl font-semibold">{allQuestions.length}</p>
                 <p className="text-sm text-muted-foreground">Gesamt</p>
               </div>
               <div>
-                <p className="text-2xl font-bold">{progress}%</p>
+                <p className="text-2xl font-semibold">{progress}%</p>
                 <p className="text-sm text-muted-foreground">Fortschritt</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       </div>
     );
   }
 
   return (
     <div
-      className="space-y-6 pt-2"
+      className="page"
       onTouchStart={handleTouchStart as any}
       onTouchMove={handleTouchMove as any}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Zen Mode Progress - Subtle top bar */}
-      <div className="fixed top-0 left-0 w-full h-1 z-50 bg-background">
-        <div
-          className={`h-full transition-all duration-500 ${phaseColors[currentPhase].split(" ")[0]}`}
-          style={{ width: `${progress}%` }}
-        />
+      <div className="page-header">
+        {onExit && (
+          <Button variant="ghost" size="icon" onClick={onExit}>
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+        )}
+        <div>
+          <h2 className="page-title">Fragebogen</h2>
+          <p className="page-subtitle">
+            Person {person} • {moduleLabel}
+          </p>
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={() => setShowModuleOverview(true)}>
+            <Layers className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
-      {/* Zen Header */}
-      <div className="flex justify-between items-center px-1">
-        <div className="flex items-center gap-3">
-          <div
-            className={`px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wider ${phaseColors[currentPhase]}`}
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Fortschritt</p>
+            <p className="section-subtitle">
+              Frage {currentIndex + 1} von {allQuestions.length}
+              {totalModules > 0 ? ` • Modul ${moduleIndex + 1}/${totalModules}` : ""}
+            </p>
+          </div>
+          <span
+            className={`text-xs uppercase tracking-wide font-semibold px-2 py-1 rounded-full ${phaseColors[currentPhase]}`}
           >
             {phaseLabels[currentPhase] || "Exploration"}
-          </div>
-          {currentModule && (
-            <span className="text-sm text-muted-foreground font-medium hidden sm:inline-block">
-              {currentModule.name}
-            </span>
-          )}
+          </span>
         </div>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowModuleOverview(true)}
-          className="text-muted-foreground hover:text-foreground h-8 w-8 p-0"
-        >
-          <Layers className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {/* Current Question Indicator (Minimal) */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground px-1 -mt-4 mb-2">
-        <span>{currentModule?.name || "Allgemein"}</span>
-      </div>
-
-      {/* Question Card */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-start justify-between gap-3">
-            <CardTitle className="text-xl flex-1">
-              {currentQuestion.text || currentQuestion.label}
-            </CardTitle>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <InfoPopover
-                title="Informationen zur Frage"
-                infoDetails={currentQuestion.info_details}
-                help={currentQuestion.help}
-                examples={currentQuestion.examples}
-              />
-              <AIHelpDialog
-                question={currentQuestion}
-                sectionTitle={currentModule?.name}
-                currentAnswer={currentResponse}
-              />
-            </div>
+        <div className="section-body">
+          <div className="progress-bar">
+            <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>{progress}% erledigt</span>
+            <span>Wischen zum Navigieren</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Aktuelle Frage</p>
+            <p className="section-subtitle">Beantworte die Frage so konkret wie möglich.</p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <InfoPopover
+              title="Informationen zur Frage"
+              infoDetails={currentQuestion.info_details}
+              help={currentQuestion.help}
+              examples={currentQuestion.examples}
+            />
+            <AIHelpDialog
+              question={currentQuestion}
+              sectionTitle={currentModule?.name}
+              currentAnswer={currentResponse}
+            />
+          </div>
+        </div>
+        <div className="section-body">
+          <div className="space-y-2">
+            <h3 className="text-display text-xl">{questionTitle}</h3>
+            {currentQuestion.help && <p className="section-subtitle">{currentQuestion.help}</p>}
+          </div>
+
           {/* Render appropriate input based on schema */}
           {currentQuestion.schema === "consent_rating" && (
             <ConsentRatingInput
@@ -685,88 +688,96 @@ export function QuestionnaireForm({
               quickReplies={getQuickRepliesForQuestion(currentQuestion)}
             />
           )}
+        </div>
+      </section>
 
-          {/* Optional Fields - Notes */}
-          <div className="space-y-3 pt-4 border-t">
-            <button
-              type="button"
-              onClick={() => setShowNotes(!showNotes)}
-              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showNotes ? (
-                <>
-                  <ChevronUp className="h-4 w-4" />
-                  Notiz ausblenden
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="h-4 w-4" />
-                  Notiz hinzufügen (optional)
-                </>
-              )}
-            </button>
-
-            {showNotes && (
-              <div className="pt-2">
-                <textarea
-                  value={
-                    (responses[`${currentQuestion.id}_notes`] as { text: string } | undefined)
-                      ?.text || ""
-                  }
-                  onChange={(e) =>
-                    handleNotesChange(currentQuestion.id, (e.target as HTMLTextAreaElement).value)
-                  }
-                  placeholder="Hier kannst du zusätzliche Notizen zu dieser Frage hinterlassen..."
-                  className="w-full min-h-[100px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  style={{ fontSize: "16px" }}
-                />
-              </div>
-            )}
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Optional</p>
+            <p className="section-subtitle">Ergänze Notizen oder Bedingungen.</p>
           </div>
-
-          {/* Optional Fields - Conditions */}
-          <div className="space-y-3 pt-2">
-            <button
-              type="button"
-              onClick={() => setShowConditions(!showConditions)}
-              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showConditions ? (
-                <>
-                  <ChevronUp className="h-4 w-4" />
-                  Bedingungen/Grenzen ausblenden
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="h-4 w-4" />
-                  Bedingungen/Grenzen hinzufügen (optional)
-                </>
-              )}
-            </button>
-
-            {showConditions && (
-              <div className="pt-2">
-                <textarea
-                  value={
-                    (responses[`${currentQuestion.id}_conditions`] as { text: string } | undefined)
-                      ?.text || ""
-                  }
-                  onChange={(e) =>
-                    handleConditionsChange(
-                      currentQuestion.id,
-                      (e.target as HTMLTextAreaElement).value
-                    )
-                  }
-                  placeholder="Hier kannst du Bedingungen oder Grenzen zu dieser Frage angeben..."
-                  className="w-full min-h-[100px] px-3 py-2 border border-input rounded-md bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  style={{ fontSize: "16px" }}
-                />
-              </div>
+        </div>
+        <div className="section-body">
+          <button
+            type="button"
+            onClick={() => setShowNotes(!showNotes)}
+            className={`list-card w-full text-left ${showNotes ? "ring-2 ring-primary/30" : "card-interactive"}`}
+          >
+            <div className="flex-1 min-w-0">
+              <p className="list-card-title">Notiz hinzufügen</p>
+              <p className="list-card-meta">Persönliche Ergänzungen zur Frage.</p>
+            </div>
+            {showNotes ? (
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
             )}
-          </div>
+          </button>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between pt-6 border-t">
+          {showNotes && (
+            <textarea
+              value={
+                (responses[`${currentQuestion.id}_notes`] as { text: string } | undefined)?.text ||
+                ""
+              }
+              onChange={(e) =>
+                handleNotesChange(currentQuestion.id, (e.target as HTMLTextAreaElement).value)
+              }
+              placeholder="Hier kannst du zusätzliche Notizen zu dieser Frage hinterlassen..."
+              className="w-full min-h-[120px] px-3 py-2 border border-input rounded-xl bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              style={{ fontSize: "16px" }}
+            />
+          )}
+
+          <button
+            type="button"
+            onClick={() => setShowConditions(!showConditions)}
+            className={`list-card w-full text-left ${showConditions ? "ring-2 ring-primary/30" : "card-interactive"}`}
+          >
+            <div className="flex-1 min-w-0">
+              <p className="list-card-title">Bedingungen/Grenzen</p>
+              <p className="list-card-meta">Spezifische Voraussetzungen festhalten.</p>
+            </div>
+            {showConditions ? (
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
+
+          {showConditions && (
+            <textarea
+              value={
+                (responses[`${currentQuestion.id}_conditions`] as { text: string } | undefined)
+                  ?.text || ""
+              }
+              onChange={(e) =>
+                handleConditionsChange(
+                  currentQuestion.id,
+                  (e.target as HTMLTextAreaElement).value
+                )
+              }
+              placeholder="Hier kannst du Bedingungen oder Grenzen zu dieser Frage angeben..."
+              className="w-full min-h-[120px] px-3 py-2 border border-input rounded-xl bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              style={{ fontSize: "16px" }}
+            />
+          )}
+        </div>
+      </section>
+
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Navigation</p>
+            <p className="section-subtitle">Weiter, wenn die Antwort passt.</p>
+          </div>
+          <span className="pill">
+            {currentIndex + 1}/{allQuestions.length}
+          </span>
+        </div>
+        <div className="section-body">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button
               variant="outline"
               onClick={goToPrevious}
@@ -780,52 +791,48 @@ export function QuestionnaireForm({
             <Button
               onClick={goToNext}
               disabled={!isCurrentAnswerValid}
-              className="gap-2 min-h-[48px]"
+              className="gap-2 min-h-[48px] flex-1"
             >
               {currentIndex === allQuestions.length - 1 ? "Fertig" : "Weiter"}
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Save Status */}
-      <div className="flex items-center justify-between text-sm">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleSave}
-          disabled={saving}
-          className="gap-2"
-        >
-          {saving ? (
-            <>
-              <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              Speichert...
-            </>
-          ) : saveSuccess ? (
-            <>
-              <Check className="h-4 w-4 text-green-600" />
-              Gespeichert
-            </>
-          ) : (
-            <>
-              <Save className="h-4 w-4" />
+          <div className="list-card">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              {saving ? (
+                <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              ) : saveSuccess ? (
+                <Check className="h-4 w-4 text-emerald-400" />
+              ) : (
+                <Save className="h-4 w-4 text-muted-foreground" />
+              )}
+              <div>
+                <p className="list-card-title">
+                  {saving ? "Speichert..." : saveSuccess ? "Gespeichert" : "Auto-Save aktiv"}
+                </p>
+                <p className="list-card-meta">Änderungen werden automatisch gesichert.</p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSave}
+              disabled={saving}
+              className="gap-2"
+            >
               Manuell speichern
-            </>
-          )}
-        </Button>
-
-        <span className="text-muted-foreground text-xs">
-          Auto-Save aktiv • Wische für Navigation
-        </span>
-      </div>
-
-      {/* Error Display */}
-      {error && (
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
+            </Button>
+          </div>
         </div>
+      </section>
+
+      {error && (
+        <section className="section-card">
+          <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
+            {error}
+          </div>
+        </section>
       )}
     </div>
   );

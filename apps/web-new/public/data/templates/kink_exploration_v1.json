@@ -1,0 +1,219 @@
+{
+  "id": "kink_exploration_v1",
+  "name": "Kink, Fetisch & Fantasien",
+  "version": 1,
+  "description": "Ein umfassender Katalog zum Entdecken neuer Spielarten, von sanfter Sensorik bis zu intensiveren Praktiken. Fokus auf Neugier und Grenzen.",
+  "modules": [
+    {
+      "id": "sensory_play",
+      "name": "Sensorik & Atmosphäre",
+      "description": "Spiele mit den Sinnen: Temperatur, Texturen und Wahrnehmung.",
+      "questions": [
+        {
+          "id": "SENS01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "temperature"],
+          "label": "Temperaturspiele (Eis/Wärme)",
+          "help": "Den Körper mit Eiswürfeln, kaltem Wasser oder warmem Öl/Wachs (Niedrigtemperatur) stimulieren."
+        },
+        {
+          "id": "SENS02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["sensory", "deprivation"],
+          "label": "Sinnesentzug (Blindfolds/Gehörschutz)",
+          "help": "Augen verbinden oder Ohren schließen, um andere Sinne zu schärfen."
+        },
+        {
+          "id": "SENS03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "texture"],
+          "label": "Materialien & Texturen",
+          "help": "Feder, Seide, Pelz oder Leder auf der Haut spüren."
+        },
+        {
+          "id": "SENS04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "food"],
+          "label": "Food Play / Sploshing",
+          "help": "Essen (Sahne, Schokolade, Früchte) in das Liebesspiel einbeziehen."
+        }
+      ]
+    },
+    {
+      "id": "power_dynamics",
+      "name": "Macht & Dynamik",
+      "description": "Wer führt? Wer lässt los? Spiele mit Kontrolle und Hingabe.",
+      "questions": [
+        {
+          "id": "DYN01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["power", "dominance"],
+          "label": "Aktive Rolle (Dominanz)",
+          "help": "Die Führung übernehmen, Anweisungen geben, das Tempo bestimmen."
+        },
+        {
+          "id": "DYN02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["power", "submission"],
+          "label": "Passive Rolle (Submission)",
+          "help": "Sich führen lassen, Kontrolle abgeben, Gehorsam."
+        },
+        {
+          "id": "DYN03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["power", "restraint"],
+          "label": "Leichte Fesselspiele (Bondage)",
+          "help": "Verwendung von Seidenbändern, Handschellen oder Seilen zur Immobilisierung."
+        },
+        {
+          "id": "DYN04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["power", "discipline"],
+          "label": "Disziplinierung & Strafe",
+          "help": "Spielerische Bestrafung für 'Ungehorsam' (Spanking, Eckenstehen)."
+        },
+        {
+          "id": "DYN05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["power", "worship"],
+          "label": "Body Worship / Verehrung",
+          "help": "Den Körper des Partners wie einen Altar behandeln und anbeten."
+        }
+      ]
+    },
+    {
+      "id": "impact_intensity",
+      "name": "Intensität & Spanking",
+      "description": "Körperliche Reize jenseits von sanftem Streicheln.",
+      "questions": [
+        {
+          "id": "IMP01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "spanking"],
+          "label": "Spanking (Hand)",
+          "help": "Klassisches Versohlen mit der flachen Hand auf den Po."
+        },
+        {
+          "id": "IMP02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["impact", "toys"],
+          "label": "Schlagwerkzeuge (Paddle/Gerte)",
+          "help": "Einsatz von Hilfsmitteln für unterschiedliche Schmerzreize."
+        },
+        {
+          "id": "IMP03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "biting"],
+          "label": "Bisse & Kratzer",
+          "help": "Spuren hinterlassen, 'Primal Play' (Tierisches/Urinstinktives Verhalten)."
+        },
+        {
+          "id": "IMP04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "squeezing"],
+          "label": "Festhalten & Drücken",
+          "help": "Fester Griff an Armen, Hals (Vorsicht!) oder Körper."
+        }
+      ]
+    },
+    {
+      "id": "roleplay_fantasy",
+      "name": "Rollenspiele & Fantasien",
+      "description": "In andere Rollen schlüpfen und Szenarien durchspielen.",
+      "questions": [
+        {
+          "id": "RP01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["roleplay", "strangers"],
+          "label": "Fremde spielen",
+          "help": "So tun, als ob man sich in einer Bar/Club neu kennenlernt."
+        },
+        {
+          "id": "RP02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["roleplay", "authority"],
+          "label": "Autoritäts-Szenarien",
+          "help": "Lehrer/Schüler, Arzt/Patient, Boss/Sekretärin."
+        },
+        {
+          "id": "RP03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["roleplay", "service"],
+          "label": "Service / Dienen (Maid/Butler)",
+          "help": "Szenarien, in denen einer den anderen bedient."
+        },
+        {
+          "id": "RP04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["roleplay", "cncf"],
+          "label": "Consensual Non-Consent (CNC)",
+          "help": "Spielerisches 'Nein', das ignoriert wird (mit striktem Safeword!)."
+        }
+      ]
+    },
+    {
+      "id": "specific_fetishes",
+      "name": "Spezifische Fetische",
+      "description": "Besondere Vorlieben für Körperteile, Materialien oder Situationen.",
+      "questions": [
+        {
+          "id": "FET01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["fetish", "feet"],
+          "label": "Fußfetisch",
+          "help": "Interesse an Füßen: Massieren, Küssen, Lecken."
+        },
+        {
+          "id": "FET02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["fetish", "lingerie"],
+          "label": "Reizwäsche & Dessous",
+          "help": "Strapshalter, Spitze, High Heels."
+        },
+        {
+          "id": "FET03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fetish", "materials"],
+          "label": "Material-Fetisch (Leder/Latex)",
+          "help": "Der Geruch, das Gefühl oder das Geräusch von bestimmten Materialien."
+        },
+        {
+          "id": "FET04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fetish", "voyeurism"],
+          "label": "Voyeurismus / Exhibitionismus",
+          "help": "Zusehen oder gesehen werden (auch im privaten Rahmen, z.B. Spiegel)."
+        },
+        {
+          "id": "FET05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fetish", "anal"],
+          "label": "Analverkehr / Anale Spiele",
+          "help": "Alles rund um anale Stimulation (Finger, Toys, Penis)."
+        }
+      ]
+    }
+  ]
+}

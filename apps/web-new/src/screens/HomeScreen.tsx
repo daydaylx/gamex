@@ -48,74 +48,97 @@ export function HomeScreen() {
   const hasRecentSession = !!latestSession;
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-56px)]">
-      {/* Hero Section */}
-      <section className="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
-        {/* Logo/Icon */}
-        <div className="mb-6 animate-pulse-glow">
-          <div className="w-20 h-20 rounded-2xl bg-primary/20 flex items-center justify-center">
-            <Heart className="w-10 h-10 text-primary" />
+    <div className="page">
+      <header className="hero">
+        <div className="hero-icon animate-pulse-glow">
+          <Heart className="w-8 h-8 text-primary" />
+        </div>
+        <div className="space-y-2">
+          <h1 className="hero-title">Intimacy Tool</h1>
+          <p className="hero-subtitle">
+            Ein klarer, sicherer Raum für ehrliche Gespräche über Wünsche und Grenzen.
+          </p>
+        </div>
+      </header>
+
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Neue Session</h2>
+            <p className="section-subtitle">Starte eine neue Runde oder lade eine Person ein.</p>
           </div>
         </div>
-
-        {/* Headline */}
-        <h1 className="text-display text-3xl mb-3 gradient-text">Intimacy. Structured.</h1>
-        <p className="text-muted-foreground text-base max-w-xs mb-8 text-balance">
-          Ein sicherer Raum für ehrliche Gespräche über Wünsche und Grenzen.
-        </p>
-
-        {/* Primary CTA */}
-        <Button
-          size="lg"
-          className="w-full max-w-sm sm:max-w-md h-14 text-lg gap-3 animate-fade-in"
-          onClick={() => setShowCreateDialog(true)}
-        >
+        <Button size="lg" className="w-full gap-3" onClick={() => setShowCreateDialog(true)}>
           <Plus className="w-6 h-6" />
           Neue Session starten
         </Button>
-
-        {/* Quick access to recent session */}
-        {hasRecentSession && (
-          <div
-            className="mt-6 w-full max-w-sm sm:max-w-md animate-fade-in"
-            style={{ animationDelay: "0.1s" }}
-          >
-            <button
-              onClick={() => setLocation(`/sessions/${latestSession.id}`)}
-              className="w-full p-4 rounded-xl bg-surface border border-border/50 flex items-center gap-3 card-interactive"
-            >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1 text-left min-w-0">
-                <p className="text-sm text-muted-foreground">Zuletzt geöffnet</p>
-                <p className="font-medium truncate">{latestSession.name}</p>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-            </button>
-          </div>
-        )}
       </section>
 
-      {/* Sessions List (if more than one) */}
+      {hasRecentSession && (
+        <section className="section-card">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title">Zuletzt geöffnet</h2>
+              <p className="section-subtitle">Schnell weitermachen, wo ihr aufgehört habt.</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setLocation(`/sessions/${latestSession.id}`)}
+            className="list-card w-full text-left card-interactive"
+          >
+            <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <Clock className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="list-card-title truncate">{latestSession.name}</p>
+              <p className="list-card-meta">{formatDate(latestSession.created_at)}</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+          </button>
+        </section>
+      )}
+
+      {loading && (
+        <section className="section-card">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title">Sessions</h2>
+              <p className="section-subtitle">Lade deine aktuellen Sessions.</p>
+            </div>
+          </div>
+          <div className="section-body">
+            <SessionCardSkeleton />
+            <SessionCardSkeleton />
+          </div>
+        </section>
+      )}
+
+      {!loading && sessions.length === 0 && (
+        <section className="section-card">
+          <div className="section-body text-center">
+            <p className="section-subtitle">
+              Noch keine Sessions vorhanden. Erstelle deine erste, um loszulegen.
+            </p>
+          </div>
+        </section>
+      )}
+
       {sessions.length > 1 && (
-        <section className="px-4 pb-6">
-          <h2 className="text-sm font-medium text-muted-foreground mb-3 px-2">
-            Alle Sessions ({sessions.length})
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {sessions.slice(1, 7).map((session, index) => (
+        <section className="section-card">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title">Alle Sessions</h2>
+              <p className="section-subtitle">{sessions.length} Sessions verfügbar</p>
+            </div>
+          </div>
+          <div className="section-body">
+            {sessions.slice(1, 7).map((session) => (
               <Link key={session.id} href={`/sessions/${session.id}`}>
-                <a
-                  className="block p-4 rounded-xl bg-surface/50 border border-border/30 flex items-center gap-3 card-interactive animate-fade-in"
-                  style={{ animationDelay: `${(index + 2) * 0.05}s` }}
-                >
+                <a className="list-card card-interactive">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{session.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {formatDate(session.created_at)}
-                    </p>
-                    <div className="flex gap-2 mt-2">
+                    <p className="list-card-title truncate">{session.name}</p>
+                    <p className="list-card-meta">{formatDate(session.created_at)}</p>
+                    <div className="flex gap-2 mt-3">
                       <StatusDot complete={session.has_a} label="A" sessionId={session.id} />
                       <StatusDot complete={session.has_b} label="B" sessionId={session.id} />
                     </div>
@@ -126,43 +149,39 @@ export function HomeScreen() {
             ))}
 
             {sessions.length > 7 && (
-              <div className="col-span-full">
-                <p className="text-xs text-center text-muted-foreground py-2">
-                  +{sessions.length - 7} weitere Sessions
-                </p>
+              <div className="text-sm text-center text-muted-foreground">
+                +{sessions.length - 7} weitere Sessions
               </div>
             )}
           </div>
         </section>
       )}
 
-      {/* Empty State */}
-      {!loading && sessions.length === 0 && (
-        <section className="px-6 pb-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Noch keine Sessions. Erstelle deine erste, um loszulegen.
-          </p>
-        </section>
-      )}
-
-      {/* Archived Sessions Toggle */}
       {archivedSessions.length > 0 && !loading && (
-        <section className="px-4 pb-6">
-          <button
-            onClick={() => setShowArchived(!showArchived)}
-            className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {showArchived ? "Archiv ausblenden" : `Archiv anzeigen (${archivedSessions.length})`}
-          </button>
+        <section className="section-card">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title">Archiv</h2>
+              <p className="section-subtitle">
+                Ältere Sessions kannst du hier jederzeit wieder öffnen.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowArchived(!showArchived)}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {showArchived ? "Ausblenden" : `Anzeigen (${archivedSessions.length})`}
+            </button>
+          </div>
 
           {showArchived && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+            <div className="section-body">
               {archivedSessions.map((session) => (
                 <Link key={session.id} href={`/sessions/${session.id}`}>
-                  <a className="block p-4 rounded-xl bg-surface/30 border border-border/20 opacity-70 hover:opacity-100 transition-opacity">
+                  <a className="list-card card-interactive">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{session.name}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="list-card-title truncate">{session.name}</p>
+                      <p className="list-card-meta">
                         {formatDate(session.created_at)} • Archiviert
                       </p>
                     </div>
@@ -174,16 +193,6 @@ export function HomeScreen() {
         </section>
       )}
 
-      {/* Loading State */}
-      {loading && (
-        <div className="px-4 pb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <SessionCardSkeleton />
-          <SessionCardSkeleton />
-          <SessionCardSkeleton />
-        </div>
-      )}
-
-      {/* Create Session Dialog */}
       <CreateSessionDialog
         open={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}

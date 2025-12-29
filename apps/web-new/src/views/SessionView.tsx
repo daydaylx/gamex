@@ -6,7 +6,6 @@
 import { useState, useEffect } from "preact/hooks";
 import { Link, useRoute, useLocation } from "wouter-preact";
 import { ArrowLeft, User, Users, MessageSquare, ChevronRight } from "lucide-preact";
-import { Card } from "../components/ui/card";
 import { getSessionInfo } from "../services/api";
 import type { SessionInfo } from "../types/session";
 
@@ -41,15 +40,22 @@ export function SessionView() {
 
   if (loading) {
     return (
-      <div className="p-4">
-        <div className="flex items-center gap-3 mb-6">
+      <div className="page">
+        <div className="page-header">
           <Link href="/">
             <button className="p-2 -ml-2 rounded-lg hover:bg-accent transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </button>
           </Link>
-          <div className="animate-pulse">
-            <div className="h-6 w-32 bg-surface rounded" />
+          <div className="space-y-2">
+            <div className="h-6 w-40 bg-surface rounded-lg animate-pulse" />
+            <div className="h-4 w-24 bg-surface rounded-lg animate-pulse" />
+          </div>
+        </div>
+        <div className="section-card">
+          <div className="section-body">
+            <div className="h-16 rounded-xl bg-surface-elevated animate-pulse" />
+            <div className="h-16 rounded-xl bg-surface-elevated animate-pulse" />
           </div>
         </div>
       </div>
@@ -58,34 +64,38 @@ export function SessionView() {
 
   if (error || !session) {
     return (
-      <div className="p-4">
-        <div className="flex items-center gap-3 mb-6">
+      <div className="page">
+        <div className="page-header">
           <Link href="/">
             <button className="p-2 -ml-2 rounded-lg hover:bg-accent transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </button>
           </Link>
-          <h1 className="text-lg font-semibold">Fehler</h1>
+          <div>
+            <h1 className="page-title">Fehler</h1>
+            <p className="page-subtitle">Die Session konnte nicht geladen werden.</p>
+          </div>
         </div>
-        <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
-          {error || "Session nicht gefunden"}
+        <div className="section-card">
+          <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
+            {error || "Session nicht gefunden"}
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 pb-safe animate-fade-in">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+    <div className="page animate-fade-in">
+      <div className="page-header">
         <Link href="/">
           <button className="p-2 -ml-2 rounded-lg hover:bg-accent transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
         </Link>
         <div className="flex-1 min-w-0">
-          <h1 className="text-lg font-semibold truncate">{session.name}</h1>
-          <p className="text-xs text-muted-foreground">
+          <h1 className="page-title truncate">{session.name}</h1>
+          <p className="page-subtitle">
             {new Date(session.created_at).toLocaleDateString("de-DE", {
               day: "numeric",
               month: "long",
@@ -95,10 +105,14 @@ export function SessionView() {
         </div>
       </div>
 
-      {/* Primary Action: Interview Mode */}
-      <section className="mb-6">
-        <h2 className="text-sm font-medium text-muted-foreground mb-3">Session beitreten</h2>
-        <div className="space-y-2">
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Session beitreten</h2>
+            <p className="section-subtitle">Wähle deine Rolle für diese Session.</p>
+          </div>
+        </div>
+        <div className="section-body">
           <PersonActionCard
             person="A"
             completed={session.has_a}
@@ -112,11 +126,13 @@ export function SessionView() {
         </div>
       </section>
 
-      {/* Secondary Actions */}
-      <section className="space-y-2">
-        <h2 className="text-sm font-medium text-muted-foreground mb-3">Weitere Optionen</h2>
-
-        {/* Comparison - only enabled when both are done */}
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Weitere Optionen</h2>
+            <p className="section-subtitle">Ergebnisse anzeigen oder vergleichen.</p>
+          </div>
+        </div>
         <ActionCard
           icon={<MessageSquare className="w-5 h-5" />}
           title="Vergleich & Auswertung"
@@ -130,11 +146,8 @@ export function SessionView() {
         />
       </section>
 
-      {/* Privacy Note */}
-      <div className="mt-8 p-4 rounded-xl bg-surface/50 border border-border/30">
-        <p className="text-xs text-muted-foreground text-center">
-          🔒 Alle Daten bleiben auf deinem Gerät
-        </p>
+      <div className="section-card text-center">
+        <p className="section-subtitle">🔒 Alle Daten bleiben auf deinem Gerät.</p>
       </div>
     </div>
   );
@@ -150,12 +163,7 @@ function PersonActionCard({ person, completed, onClick }: PersonActionCardProps)
   const Icon = person === "A" ? User : Users;
 
   return (
-    <Card
-      variant={completed ? "elevated" : "default"}
-      padding="comfortable"
-      onClick={onClick}
-      className="flex items-center gap-4"
-    >
+    <button type="button" onClick={onClick} className="list-card card-interactive w-full">
       <div
         className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
           completed ? "bg-primary/20" : "bg-accent"
@@ -164,16 +172,16 @@ function PersonActionCard({ person, completed, onClick }: PersonActionCardProps)
         <Icon className={`w-6 h-6 ${completed ? "text-primary" : ""}`} />
       </div>
       <div className="flex-1 text-left min-w-0">
-        <p className="font-medium truncate">Person {person}</p>
-        <p className="text-sm text-muted-foreground">
+        <p className="list-card-title truncate">Person {person}</p>
+        <p className="list-card-meta">
           {completed ? "Abgeschlossen – Erneut bearbeiten" : "Interview starten"}
         </p>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
-        {completed && <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
-        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+        {completed && <span className="pill">Fertig</span>}
+        <ChevronRight className="w-5 h-5 text-muted-foreground" />
       </div>
-    </Card>
+    </button>
   );
 }
 
@@ -187,24 +195,20 @@ interface ActionCardProps {
 
 function ActionCard({ icon, title, description, disabled, onClick }: ActionCardProps) {
   return (
-    <Card
-      variant="outlined"
-      padding="comfortable"
+    <button
+      type="button"
       onClick={disabled ? undefined : onClick}
-      className={`flex items-center gap-4 text-left transition-all ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
+      className={`list-card w-full text-left ${disabled ? "opacity-50 cursor-not-allowed" : "card-interactive"}`}
+      disabled={disabled}
     >
       <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm truncate">{title}</p>
-        <p className="text-xs text-muted-foreground line-clamp-2">{description}</p>
+        <p className="list-card-title truncate">{title}</p>
+        <p className="list-card-meta line-clamp-2">{description}</p>
       </div>
-      {!disabled && (
-        <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:translate-x-1 transition-transform" />
-      )}
-    </Card>
+      {!disabled && <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+    </button>
   );
 }

@@ -22,8 +22,8 @@ const cardVariants = {
 
 const cardPadding = {
   none: "",
-  compact: "p-3",
-  comfortable: "p-4 sm:p-6",
+  compact: "p-4",
+  comfortable: "p-5 sm:p-6",
   spacious: "p-6 sm:p-8",
 };
 
@@ -33,7 +33,7 @@ export function Card({ className, children, onClick, variant = "default", paddin
     <Tag
       onClick={onClick}
       className={cn(
-        "rounded-xl border text-card-foreground transition-all duration-200",
+        "rounded-2xl border text-card-foreground transition-all duration-200",
         cardVariants[variant],
         padding && cardPadding[padding],
         onClick && "cursor-pointer text-left w-full card-interactive",
@@ -53,8 +53,8 @@ export interface CardHeaderProps {
 
 export function CardHeader({ className, children, padding = "comfortable" }: CardHeaderProps) {
   const headerPadding = {
-    compact: "p-3",
-    comfortable: "p-4",
+    compact: "p-4",
+    comfortable: "p-5",
     spacious: "p-6",
   };
 
@@ -95,12 +95,12 @@ export interface CardContentProps {
 
 export function CardContent({ className, children, padding = "comfortable" }: CardContentProps) {
   const contentPadding = {
-    compact: "p-3 pt-0",
-    comfortable: "p-4 pt-0",
+    compact: "p-4 pt-0",
+    comfortable: "p-5 pt-0",
     spacious: "p-6 pt-0",
   };
 
-  return <div className={cn(contentPadding[padding], className)}>{children}</div>;
+  return <div className={cn("card-content", contentPadding[padding], className)}>{children}</div>;
 }
 
 export interface CardFooterProps {
@@ -111,8 +111,8 @@ export interface CardFooterProps {
 
 export function CardFooter({ className, children, padding = "comfortable" }: CardFooterProps) {
   const footerPadding = {
-    compact: "p-3 pt-0",
-    comfortable: "p-4 pt-0",
+    compact: "p-4 pt-0",
+    comfortable: "p-5 pt-0",
     spacious: "p-6 pt-0",
   };
 

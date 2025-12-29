@@ -1,7 +1,6 @@
 import { useState, useEffect } from "preact/hooks";
 import { Sparkles, Loader2, X, AlertCircle, Clock } from "lucide-preact";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { generateAIReport } from "../services/ai/report";
 import { hasAPIKey } from "../services/settings";
@@ -116,24 +115,24 @@ export function AIReportSection({
   }
 
   return (
-    <Card className="border-dashed">
-      <CardHeader>
-        <div className="flex items-center justify-between">
+    <section className="section-card">
+      <div className="section-header">
+        <div>
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <CardTitle className="text-lg">KI-gestützte Auswertung</CardTitle>
+            <Sparkles className="h-4 w-4 text-primary" />
+            <p className="section-title">KI-Auswertung</p>
           </div>
-          {isExpanded && (
-            <Button variant="ghost" size="sm" onClick={handleClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
+          <p className="section-subtitle">
+            Erstelle eine strukturierte Auswertung deiner Antworten mit Hilfe von KI.
+          </p>
         </div>
-        <CardDescription>
-          Erstelle eine strukturierte Auswertung deiner Antworten mit Hilfe von KI.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        {isExpanded && (
+          <Button variant="ghost" size="icon" onClick={handleClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+      <div className="section-body">
         {!isExpanded ? (
           <div className="space-y-3">
             <Button onClick={handleGenerate} disabled={loading} className="w-full gap-2">
@@ -150,18 +149,17 @@ export function AIReportSection({
               )}
             </Button>
             {error && (
-              <div className="rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
+              <div className="rounded-xl border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
                 {error}
               </div>
             )}
           </div>
         ) : (
-          <div className="space-y-6">
-            {/* Cached Indicator */}
+          <div className="space-y-4">
             {isCached && cacheTimestamp && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
-                <Clock className="h-3 w-3" />
-                <span>
+              <div className="list-card">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <div className="list-card-meta">
                   Gespeicherte Auswertung vom{" "}
                   {new Date(cacheTimestamp).toLocaleDateString("de-DE", {
                     day: "2-digit",
@@ -170,13 +168,12 @@ export function AIReportSection({
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
-                </span>
+                </div>
               </div>
             )}
 
-            {/* Error Display */}
             {error && (
-              <div className="rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive flex items-start gap-2">
+              <div className="rounded-xl border border-destructive bg-destructive/10 p-3 text-sm text-destructive flex items-start gap-2">
                 <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <div>
                   <div className="font-medium mb-1">Fehler bei der Auswertung</div>
@@ -185,9 +182,8 @@ export function AIReportSection({
               </div>
             )}
 
-            {/* Raw Text Fallback (if JSON parsing failed) */}
             {rawText && !report?.summary && (
-              <div className="rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4">
+              <div className="rounded-xl border border-yellow-500/50 bg-yellow-500/10 p-4">
                 <div className="flex items-start gap-2 mb-2">
                   <AlertCircle className="h-4 w-4 text-yellow-600 mt-0.5" />
                   <div className="font-medium text-sm text-yellow-800">
@@ -200,26 +196,23 @@ export function AIReportSection({
               </div>
             )}
 
-            {/* Report Content */}
             {report && (
-              <div className="space-y-6">
-                {/* Summary */}
+              <div className="space-y-4">
                 {report.summary && (
-                  <div>
-                    <h3 className="font-semibold text-base mb-2">Zusammenfassung</h3>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                  <div className="list-card flex-col items-start">
+                    <p className="list-card-title">Zusammenfassung</p>
+                    <p className="list-card-meta whitespace-pre-wrap leading-relaxed">
                       {report.summary}
                     </p>
                   </div>
                 )}
 
-                {/* High Alignment */}
                 {report.high_alignment && report.high_alignment.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold text-base mb-2">Hohe Übereinstimmung</h3>
+                  <div className="list-card flex-col items-start">
+                    <p className="list-card-title">Hohe Übereinstimmung</p>
                     <div className="flex flex-wrap gap-2">
                       {report.high_alignment.map((item, idx) => (
-                        <Badge key={idx} variant="default">
+                        <Badge key={idx} variant="secondary">
                           {item}
                         </Badge>
                       ))}
@@ -227,100 +220,95 @@ export function AIReportSection({
                   </div>
                 )}
 
-                {/* Differences */}
                 {report.differences && report.differences.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold text-base mb-2">Unterschiede</h3>
-                    <div className="space-y-3">
+                  <div className="list-card flex-col items-start">
+                    <p className="list-card-title">Unterschiede</p>
+                    <div className="space-y-3 w-full">
                       {report.differences.map((diff, idx) => (
-                        <Card key={idx} className="border-l-4 border-l-yellow-500">
-                          <CardContent className="pt-4">
-                            <div className="font-medium text-sm mb-2">{diff.topic}</div>
-                            <div className="grid md:grid-cols-2 gap-3 text-sm">
-                              <div>
-                                <div className="font-medium text-muted-foreground mb-1">
-                                  Person A:
-                                </div>
-                                <div>{diff.personA}</div>
+                        <div
+                          key={idx}
+                          className="rounded-xl border border-border/60 bg-background/60 p-3 space-y-2"
+                        >
+                          <div className="font-medium text-sm">{diff.topic}</div>
+                          <div className="grid gap-3 text-sm md:grid-cols-2">
+                            <div>
+                              <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                                Person A
                               </div>
-                              <div>
-                                <div className="font-medium text-muted-foreground mb-1">
-                                  Person B:
-                                </div>
-                                <div>{diff.personB}</div>
-                              </div>
+                              <div>{diff.personA}</div>
                             </div>
-                            {diff.note && (
-                              <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
-                                {diff.note}
+                            <div>
+                              <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                                Person B
                               </div>
-                            )}
-                          </CardContent>
-                        </Card>
+                              <div>{diff.personB}</div>
+                            </div>
+                          </div>
+                          {diff.note && (
+                            <div className="pt-2 border-t text-xs text-muted-foreground">
+                              {diff.note}
+                            </div>
+                          )}
+                        </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Conversation Starters */}
                 {report.conversation_starters && report.conversation_starters.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold text-base mb-2">Gesprächsanlässe</h3>
-                    <ul className="space-y-2">
+                  <div className="list-card flex-col items-start">
+                    <p className="list-card-title">Gesprächsanlässe</p>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
                       {report.conversation_starters.map((starter, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm">
+                        <li key={idx} className="flex items-start gap-2">
                           <span className="text-primary mt-1">•</span>
-                          <span className="text-muted-foreground">{starter}</span>
+                          <span>{starter}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 )}
 
-                {/* Boundaries and Safety */}
                 {report.boundaries_and_safety && report.boundaries_and_safety.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold text-base mb-2 flex items-center gap-2">
+                  <div className="list-card flex-col items-start">
+                    <div className="flex items-center gap-2">
                       <AlertCircle className="h-4 w-4 text-yellow-600" />
-                      Grenzen & Sicherheit
-                    </h3>
-                    <ul className="space-y-2">
+                      <p className="list-card-title">Grenzen & Sicherheit</p>
+                    </div>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
                       {report.boundaries_and_safety.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm">
+                        <li key={idx} className="flex items-start gap-2">
                           <span className="text-yellow-600 mt-1">⚠</span>
-                          <span className="text-muted-foreground">{item}</span>
+                          <span>{item}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 )}
 
-                {/* Regenerate Button */}
-                <div className="pt-4 border-t">
-                  <Button
-                    onClick={handleGenerate}
-                    disabled={loading}
-                    variant="outline"
-                    className="w-full gap-2"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Erstelle neu...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="h-4 w-4" />
-                        Auswertung neu erstellen
-                      </>
-                    )}
-                  </Button>
-                </div>
+                <Button
+                  onClick={handleGenerate}
+                  disabled={loading}
+                  variant="outline"
+                  className="w-full gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Erstelle neu...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      Auswertung neu erstellen
+                    </>
+                  )}
+                </Button>
               </div>
             )}
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }

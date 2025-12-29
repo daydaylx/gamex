@@ -1,8 +1,6 @@
 import { useState } from "preact/hooks";
 import { Check, Calendar, Heart, Sparkles } from "lucide-preact";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Badge } from "./ui/badge";
 import type { ComparisonResult } from "../types/compare";
 
 interface ActionPlanProps {
@@ -62,132 +60,125 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
   }
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Action Plan: Was als Nächstes?
-            </CardTitle>
-            <CardDescription>
-              Wählt 2-3 Dinge aus, die ihr in den nächsten Wochen ausprobieren wollt
-            </CardDescription>
+    <section className={`section-card ${className}`}>
+      <div className="section-header">
+        <div>
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <p className="section-title">Action Plan</p>
           </div>
-          {selectedItems.length > 0 && (
-            <Button variant="outline" size="sm" onClick={exportAsText} className="gap-2">
-              <Calendar className="h-4 w-4" />
-              Exportieren
-            </Button>
-          )}
+          <p className="section-subtitle">
+            Wählt 2-3 Dinge aus, die ihr in den nächsten Wochen ausprobieren wollt.
+          </p>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Selected Summary */}
         {selectedItems.length > 0 && (
-          <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
-            <div className="flex items-center gap-2 mb-2">
+          <Button variant="outline" size="sm" onClick={exportAsText} className="gap-2">
+            <Calendar className="h-4 w-4" />
+            Exportieren
+          </Button>
+        )}
+      </div>
+      <div className="section-body">
+        {selectedItems.length > 0 && (
+          <div className="list-card">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
               <Heart className="h-4 w-4 text-primary" />
-              <span className="font-medium text-sm">
-                {selectedItems.length} {selectedItems.length === 1 ? "Item" : "Items"} ausgewählt
-              </span>
+              <div>
+                <p className="list-card-title">
+                  {selectedItems.length} {selectedItems.length === 1 ? "Item" : "Items"} ausgewählt
+                </p>
+                <p className="list-card-meta">
+                  Plant einen ruhigen Abend, um eure Auswahl zu erkunden.
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Plant ein Date oder einen ruhigen Abend, um eure Auswahl zu erkunden
-            </p>
+            <span className="pill">Auswahl</span>
           </div>
         )}
 
-        {/* Doable Items List */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-semibold text-muted-foreground">
-            Verfügbare Items ({doableItems.length})
-          </h4>
+        <div className="section-divider" />
 
+        <div className="flex items-center justify-between">
+          <p className="section-title">Verfügbare Items</p>
+          <span className="pill">{doableItems.length}</span>
+        </div>
+
+        <div className="space-y-3">
           {doableItems.map((item) => {
             const isMatch = item.pair_status === "MATCH";
             const prompts = item.prompts || [];
 
             return (
-              <div
+              <button
                 key={item.question_id}
-                className={`
-                  p-4 rounded-lg border-2 transition-all cursor-pointer
-                  ${
-                    item.selected
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
-                  }
-                `}
+                type="button"
                 onClick={() => toggleItem(item.question_id)}
+                className={`list-card w-full text-left items-start ${
+                  item.selected ? "ring-2 ring-primary/30" : "card-interactive"
+                }`}
               >
-                <div className="flex items-start gap-3">
-                  {/* Checkbox */}
-                  <div
-                    className={`
-                      h-5 w-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5
-                      ${item.selected ? "bg-primary border-primary" : "border-muted-foreground/30"}
-                    `}
-                  >
-                    {item.selected && <Check className="h-3 w-3 text-primary-foreground" />}
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h5 className="font-medium text-sm leading-tight">
-                        {item.label || item.question_text}
-                      </h5>
-                      <Badge variant={isMatch ? "default" : "secondary"} className="flex-shrink-0">
-                        {isMatch ? "Match" : "Explore"}
-                      </Badge>
-                    </div>
-
-                    {/* Prompts */}
-                    {prompts.length > 0 && (
-                      <ul className="space-y-1 text-xs text-muted-foreground">
-                        {prompts.slice(0, 2).map((prompt, idx) => (
-                          <li key={idx} className="flex items-start gap-1.5">
-                            <span className="text-primary mt-0.5">•</span>
-                            <span>{prompt}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-
-                    {/* Risk Level Indicator */}
-                    {item.risk_level && item.risk_level !== "A" && (
-                      <div className="mt-2">
-                        <Badge
-                          variant={item.risk_level === "C" ? "destructive" : "secondary"}
-                          className="text-xs"
-                        >
-                          {item.risk_level === "C" ? "⚠️ High Risk" : "Medium Risk"}
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
+                <div
+                  className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                    item.selected ? "bg-primary border-primary" : "border-muted-foreground/30"
+                  }`}
+                >
+                  {item.selected && <Check className="h-3 w-3 text-primary-foreground" />}
                 </div>
-              </div>
+
+                <div className="flex-1 min-w-0 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="list-card-title">{item.label || item.question_text}</p>
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wide px-2 py-1 rounded-full ${
+                        isMatch
+                          ? "bg-emerald-500/20 text-emerald-200 border border-emerald-500/40"
+                          : "bg-amber-500/20 text-amber-200 border border-amber-500/40"
+                      }`}
+                    >
+                      {isMatch ? "Match" : "Explore"}
+                    </span>
+                  </div>
+
+                  {prompts.length > 0 && (
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      {prompts.slice(0, 2).map((prompt, idx) => (
+                        <li key={idx} className="flex items-start gap-1.5">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span>{prompt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {item.risk_level && item.risk_level !== "A" && (
+                    <span
+                      className={`inline-flex items-center text-xs font-semibold uppercase tracking-wide px-2 py-1 rounded-full ${
+                        item.risk_level === "C"
+                          ? "bg-rose-500/20 text-rose-200 border border-rose-500/40"
+                          : "bg-amber-500/20 text-amber-200 border border-amber-500/40"
+                      }`}
+                    >
+                      {item.risk_level === "C" ? "High Risk" : "Medium Risk"}
+                    </span>
+                  )}
+                </div>
+              </button>
             );
           })}
         </div>
 
-        {/* Call to Action */}
         {selectedItems.length > 0 && (
-          <div className="pt-4 border-t">
-            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-              <p className="text-sm font-medium">💡 Tipp: So nutzt ihr den Action Plan</p>
-              <ul className="text-xs text-muted-foreground space-y-1">
-                <li>• Legt einen Termin fest (Date Night / Quality Time)</li>
-                <li>• Startet mit dem leichtesten Item, um Vertrauen aufzubauen</li>
-                <li>• Besprecht vorher: Was brauche ich, um mich sicher zu fühlen?</li>
-                <li>• Nach jedem Item: Kurzes Debrief (Was war gut? Was ändern?)</li>
-              </ul>
-            </div>
+          <div className="list-card flex-col items-start">
+            <p className="list-card-title">Tipp: So nutzt ihr den Action Plan</p>
+            <ul className="text-xs text-muted-foreground space-y-1">
+              <li>• Legt einen Termin fest (Date Night / Quality Time)</li>
+              <li>• Startet mit dem leichtesten Item, um Vertrauen aufzubauen</li>
+              <li>• Besprecht vorher: Was brauche ich, um mich sicher zu fühlen?</li>
+              <li>• Nach jedem Item: Kurzes Debrief (Was war gut? Was ändern?)</li>
+            </ul>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }

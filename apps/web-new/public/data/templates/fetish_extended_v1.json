@@ -1,0 +1,2924 @@
+{
+  "id": "fetish_extended_v1",
+  "name": "Fetische & Fantasien (Erweitert)",
+  "version": 1,
+  "description": "Erweitertes Template fokussiert auf Fetische, Sexpraktiken und Fantasien. Enthält granulare Fragen zu Outfits, Body Worship, spezifischen Praktiken, Fantasy-Szenarien und mehr.",
+  "modules": [
+    {
+      "id": "outfit_material",
+      "name": "Outfit & Material-Fetische",
+      "description": "Kleidung, Verkleidung und Material-Vorlieben.",
+      "questions": [
+        {
+          "id": "OM01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["outfit", "lingerie"],
+          "label": "Lingerie / Dessous tragen oder sehen.",
+          "help": "Reizwäsche als Teil des Spiels."
+        },
+        {
+          "id": "OM02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["outfit", "stockings"],
+          "label": "Strümpfe / Nylons / Strumpfhosen.",
+          "help": "Tragen oder am Partner sehen."
+        },
+        {
+          "id": "OM03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["outfit", "crossdressing"],
+          "label": "Cross-Dressing (Kleidung des anderen Geschlechts tragen).",
+          "help": "Kann spielerisch oder als Fetisch sein."
+        },
+        {
+          "id": "OM04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["outfit", "uniform"],
+          "label": "Uniform-Fetisch (Krankenschwester, Polizei, Maid, etc.).",
+          "help": "Rollenspiel mit Berufskleidung."
+        },
+        {
+          "id": "OM05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["outfit", "cosplay"],
+          "label": "Cosplay / Verkleidung als Charakter.",
+          "help": "Anime, Film, Gaming-Charaktere etc."
+        },
+        {
+          "id": "OM06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["material", "latex"],
+          "label": "Latex / Gummi tragen oder sehen.",
+          "help": "Glänzendes, enges Material."
+        },
+        {
+          "id": "OM07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["material", "leather"],
+          "label": "Leder tragen oder sehen.",
+          "help": "Klassisches BDSM-Material."
+        },
+        {
+          "id": "OM08",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["material", "silk"],
+          "label": "Seide / Satin.",
+          "help": "Weiches, fließendes Material."
+        },
+        {
+          "id": "OM09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["material", "pvc"],
+          "label": "PVC / Lack.",
+          "help": "Glänzendes Kunststoff-Material."
+        },
+        {
+          "id": "OM10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["outfit", "naked"],
+          "label": "Nackt sein während Partner bekleidet ist (oder umgekehrt).",
+          "help": "CFNM (Clothed Female, Naked Male) oder CMNF."
+        },
+        {
+          "id": "OM11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["outfit", "shoes"],
+          "label": "High Heels / Schuhe als Teil des Spiels.",
+          "help": "Schuhe anbehalten beim Sex oder als Fetisch-Objekt."
+        },
+        {
+          "id": "OM12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["outfit", "underwear"],
+          "label": "Getragene Unterwäsche (riechen, tragen).",
+          "help": "Fetisch für benutzte Wäsche."
+        },
+        {
+          "id": "OM13",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["outfit", "mask"],
+          "label": "Masken tragen (Anonymität, Ästhetik).",
+          "help": "Von Augenmasken bis Vollmasken."
+        },
+        {
+          "id": "OM14",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["outfit", "collar"],
+          "label": "Halsband / Collar tragen.",
+          "help": "Symbol für Zugehörigkeit oder Submission."
+        },
+        {
+          "id": "OM15",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["outfit", "emotional", "confidence"],
+          "label": "Wie fühlst du dich emotional in sexy Kleidung?",
+          "help": "Selbstbewusstsein vs. Unsicherheit.",
+          "options": [
+            "Sehr selbstbewusst und sexy",
+            "Anfangs unsicher, dann gut",
+            "Neutral - verändert nichts",
+            "Unwohl - fühle mich exponiert",
+            "Kommt auf die Kleidung an"
+          ]
+        },
+        {
+          "id": "OM16",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["outfit", "emotional", "shame"],
+          "label": "Gibt es Kleidung/Outfits, für die du dich schämst oder die du heimlich liebst?",
+          "help": "Internalisierte Scham rund um Outfit-Vorlieben."
+        },
+        {
+          "id": "OM17",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["outfit", "emotional", "vulnerability"],
+          "label": "Sich für Partner verkleiden (emotionale Verletzlichkeit).",
+          "help": "Das Gefühl, sich Mühe zu geben und gesehen zu werden."
+        }
+      ]
+    },
+    {
+      "id": "body_worship",
+      "name": "Body Worship",
+      "description": "Fokus auf bestimmte Körperteile und deren Verehrung.",
+      "questions": [
+        {
+          "id": "BW01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "feet"],
+          "label": "Fuß-Verehrung (Küssen, Massieren, Lecken).",
+          "help": "Füße als Objekt der Begierde."
+        },
+        {
+          "id": "BW02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "ass"],
+          "label": "Ass-Worship (Po verehren, küssen, lecken).",
+          "help": "Fokus auf den Hintern."
+        },
+        {
+          "id": "BW03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "muscle"],
+          "label": "Muskel-Verehrung.",
+          "help": "Körperliche Stärke als Fetisch."
+        },
+        {
+          "id": "BW04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "hair"],
+          "label": "Haar-Fetisch (Haare streicheln, riechen, ziehen).",
+          "help": "Kopfhaare, nicht Körperbehaarung."
+        },
+        {
+          "id": "BW05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "body_hair"],
+          "label": "Körperbehaarung (mögen oder rasiert bevorzugen).",
+          "help": "Präferenz für Haare am Körper."
+        },
+        {
+          "id": "BW06",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "hands"],
+          "label": "Hand-Fetisch (Hände küssen, lecken).",
+          "help": "Finger und Hände als Fokus."
+        },
+        {
+          "id": "BW07",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "neck"],
+          "label": "Hals / Nacken küssen, lecken, hauchen.",
+          "help": "Erogene Zone Hals."
+        },
+        {
+          "id": "BW08",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "ears"],
+          "label": "Ohr-Stimulation (flüstern, lecken, beißen).",
+          "help": "Empfindliche Zone hinter dem Ohr."
+        },
+        {
+          "id": "BW09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["worship", "armpit"],
+          "label": "Achsel-Fetisch.",
+          "help": "Geruch und Berührung der Achseln."
+        },
+        {
+          "id": "BW10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["worship", "thighs"],
+          "label": "Oberschenkel küssen, lecken, beißen.",
+          "help": "Innenseite der Oberschenkel als erogene Zone."
+        },
+        {
+          "id": "BW11",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["worship", "emotional", "receiving"],
+          "label": "Wie fühlst du dich emotional, wenn dein Körper verehrt wird?",
+          "help": "Aufmerksamkeit und Anbetung empfangen.",
+          "options": [
+            "Sehr gut - fühle mich geliebt",
+            "Angenehm, aber auch verlegen",
+            "Unwohl - zu viel Aufmerksamkeit",
+            "Neutral - ist ok",
+            "Will lieber geben als empfangen"
+          ]
+        },
+        {
+          "id": "BW12",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["worship", "emotional", "insecurity"],
+          "label": "Welche Körperteile fällt es dir schwer, verehrt zu sehen (Unsicherheit)?",
+          "help": "Wo blockiert dich dein Selbstbild?"
+        }
+      ]
+    },
+    {
+      "id": "practices_extended",
+      "name": "Praktiken (Erweitert)",
+      "description": "Spezifische sexuelle Handlungen und Positionen.",
+      "questions": [
+        {
+          "id": "PE01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "69"],
+          "label": "69-Position (gleichzeitiger Oralsex).",
+          "help": "Beide geben und empfangen gleichzeitig."
+        },
+        {
+          "id": "PE02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "facesitting"],
+          "label": "Face-Sitting (auf Gesicht sitzen).",
+          "help": "Orale Stimulation von oben."
+        },
+        {
+          "id": "PE03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "deepthroat"],
+          "label": "Deep Throat (tiefes Oralnehmen).",
+          "help": "Erfordert Übung und Kommunikation."
+        },
+        {
+          "id": "PE04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "facefuck"],
+          "label": "Face-Fucking (aktives Stoßen beim Oral).",
+          "help": "Der empfangende Part ist passiv. Stop-Signal wichtig!"
+        },
+        {
+          "id": "PE05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "facial"],
+          "label": "Facial (Ejakulation ins Gesicht).",
+          "help": "Augen schließen! Vorher besprechen."
+        },
+        {
+          "id": "PE06",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "cumplay"],
+          "label": "Cum-Play (Sperma auf Körper verteilen).",
+          "help": "Spielen mit Ejakulat."
+        },
+        {
+          "id": "PE07",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "swallow"],
+          "label": "Schlucken (Sperma/Sekret).",
+          "help": "Nach Oralsex."
+        },
+        {
+          "id": "PE08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "creampie"],
+          "label": "Creampie (innen kommen, vaginal/anal).",
+          "help": "Verhütung/STI beachten!"
+        },
+        {
+          "id": "PE09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "squirting"],
+          "label": "Squirting erleben oder auslösen.",
+          "help": "Weibliche Ejakulation."
+        },
+        {
+          "id": "PE10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "prostate"],
+          "label": "Prostata-Massage (P-Punkt Stimulation).",
+          "help": "Intensive Stimulation für Penis-Träger."
+        },
+        {
+          "id": "PE11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "gspot"],
+          "label": "G-Punkt Stimulation.",
+          "help": "Gezielte interne Stimulation."
+        },
+        {
+          "id": "PE12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "grinding"],
+          "label": "Grinding / Dry Humping (aneinander reiben ohne Penetration).",
+          "help": "Stimulation durch Reibung."
+        },
+        {
+          "id": "PE13",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "tribbing"],
+          "label": "Tribbing / Scissoring.",
+          "help": "Genitalien aneinander reiben."
+        },
+        {
+          "id": "PE14",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "handjob_mutual"],
+          "label": "Gegenseitige Masturbation (ihr fasst euch gleichzeitig an).",
+          "help": "Beide stimulieren sich gegenseitig."
+        },
+        {
+          "id": "PE15",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "watch_masturbate"],
+          "label": "Partner bei Selbstbefriedigung zusehen.",
+          "help": "Voyeuristischer Aspekt."
+        },
+        {
+          "id": "PE16",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "titfuck"],
+          "label": "Titjob / Busen-Sex.",
+          "help": "Penetration zwischen den Brüsten."
+        },
+        {
+          "id": "PE17",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "footjob"],
+          "label": "Footjob (Stimulation mit Füßen).",
+          "help": "Kombination aus Fuß-Fetisch und Stimulation."
+        },
+        {
+          "id": "PE18",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["practice", "emotional", "preference"],
+          "label": "Was ist dir wichtiger - Geben oder Empfangen bei Oralsex?",
+          "help": "Emotionale Präferenz in der Dynamik.",
+          "options": [
+            "Geben - mag es, Partner zu verwöhnen",
+            "Empfangen - genieße Hingabe des Partners",
+            "Beides gleichwertig",
+            "Wechselnd - je nach Stimmung",
+            "Kein Interesse an Oral"
+          ]
+        },
+        {
+          "id": "PE19",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["practice", "emotional", "shame"],
+          "label": "Gibt es Praktiken, für die du dich schämst oder die du heimlich liebst?",
+          "help": "Innerer Konflikt zwischen Wunsch und Scham?"
+        },
+        {
+          "id": "PE20",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["practice", "emotional", "boundaries"],
+          "label": "Welche Praktik ist für dich ein absolutes 'Nein' und warum?",
+          "help": "Hard Limits verstehen - Ekel, Angst, oder Desinteresse?"
+        },
+        {
+          "id": "PE21",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["practice", "emotional", "communication"],
+          "label": "Wie kommunizierst du während der Praktiken, was dir gefällt?",
+          "help": "Feedback im Moment.",
+          "options": [
+            "Verbal - sage deutlich, was ich will",
+            "Non-verbal - Stöhnen, Bewegungen",
+            "Schwierig - fühle mich gehemmt",
+            "Partner merkt es von selbst",
+            "Bespreche vorher, schweige während"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fantasy_scenarios",
+      "name": "Fantasy-Szenarien",
+      "description": "Rollenspiel-Szenarien und Fantasien zum Nachspielen.",
+      "questions": [
+        {
+          "id": "FS01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["fantasy", "stranger"],
+          "label": "Fremde/r Szenario (so tun, als würdet ihr euch nicht kennen).",
+          "help": "Begegnung in einer Bar, etc."
+        },
+        {
+          "id": "FS02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "seduction"],
+          "label": "Verführungs-Szenario (einer verführt den anderen).",
+          "help": "Klare Rollen: Jäger und Beute."
+        },
+        {
+          "id": "FS03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "boss"],
+          "label": "Chef/Angestellte*r Szenario.",
+          "help": "Macht-Dynamik im Büro-Setting."
+        },
+        {
+          "id": "FS04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "teacher"],
+          "label": "Lehrer*in/Schüler*in Szenario.",
+          "help": "Wissens- und Machtgefälle. Alle Beteiligten sind erwachsen!"
+        },
+        {
+          "id": "FS05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "doctor"],
+          "label": "Arzt/Patient*in Szenario.",
+          "help": "Medizinisches Setting, Untersuchung."
+        },
+        {
+          "id": "FS06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "massage"],
+          "label": "Massage-Szenario (professionell wird intim).",
+          "help": "Entspannung führt zu mehr."
+        },
+        {
+          "id": "FS07",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["fantasy", "cnc"],
+          "label": "Consensual Non-Consent (CNC) Fantasy.",
+          "help": "Überwältigungs-Fantasy mit klarem Safeword. Erfordert viel Vertrauen!"
+        },
+        {
+          "id": "FS08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "intruder"],
+          "label": "Einbrecher/Gefangene*r Fantasy.",
+          "help": "Macht und Kontrollverlust-Szenario."
+        },
+        {
+          "id": "FS09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "escort"],
+          "label": "Escort/Prostituierte*r Szenario.",
+          "help": "Bezahlung für Sex nachspielen."
+        },
+        {
+          "id": "FS10",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "cheating"],
+          "label": "Fremdgeh-Fantasy (nur Roleplay!).",
+          "help": "So tun als wäre der andere 'verboten'."
+        },
+        {
+          "id": "FS11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["fantasy", "celebrity"],
+          "label": "Promi/Fan Szenario.",
+          "help": "Einer spielt berühmte Person."
+        },
+        {
+          "id": "FS12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["fantasy", "romantic"],
+          "label": "Romantisches Szenario (Hochzeitsnacht, Jubiläum).",
+          "help": "Zärtlich und bedeutungsvoll."
+        },
+        {
+          "id": "FS13",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "rough"],
+          "label": "Rough Sex Fantasy (härter, wilder).",
+          "help": "Intensiver und körperlicher."
+        },
+        {
+          "id": "FS14",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "service"],
+          "label": "Service-Szenario (einer bedient den anderen komplett).",
+          "help": "Total fokussiert auf einen Partner."
+        },
+        {
+          "id": "FS15",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fantasy", "auction"],
+          "label": "Auktion/Slave-Market Fantasy.",
+          "help": "'Verkauft' werden Szenario."
+        },
+        {
+          "id": "FS16",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["fantasy", "emotional", "motivation"],
+          "label": "Was reizt dich psychologisch an Rollenspiel/Fantasien?",
+          "help": "Andere Person sein, Macht verschieben, Tabu ausleben - was ist der Kern?"
+        },
+        {
+          "id": "FS17",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["fantasy", "emotional", "safety"],
+          "label": "Wie leicht kannst du nach intensivem Rollenspiel aus der Rolle raus?",
+          "help": "Emotionale Trennung Rolle vs. Realität.",
+          "options": [
+            "Sehr leicht - klare Trennung",
+            "Brauche kurzen Moment",
+            "Manchmal hängt es nach",
+            "Schwierig - Rolle klebt",
+            "Noch nicht ausprobiert"
+          ]
+        },
+        {
+          "id": "FS18",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["fantasy", "emotional", "shame"],
+          "label": "Gibt es Fantasien, für die du dich schämst oder die du schwer zugeben kannst?",
+          "help": "CNC, Taboo-Rollenspiele - Scham vs. Wunsch."
+        },
+        {
+          "id": "FS19",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["fantasy", "emotional", "aftercare"],
+          "label": "Was brauchst du nach intensiven Rollenspiel-Szenarien?",
+          "help": "Zurück zur Realität kommen, Nähe, Bestätigung - was hilft?"
+        }
+      ]
+    },
+    {
+      "id": "impact_extended",
+      "name": "Impact Play (Erweitert)",
+      "description": "Verschiedene Schlag-Intensitäten und Werkzeuge.",
+      "questions": [
+        {
+          "id": "IP01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "hand"],
+          "label": "Spanking mit flacher Hand.",
+          "help": "Klassisches Schlagen auf den Po."
+        },
+        {
+          "id": "IP02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "paddle"],
+          "label": "Paddle (flaches Schlagwerkzeug).",
+          "help": "Intensiver als Hand, kontrollierte Fläche."
+        },
+        {
+          "id": "IP03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "flogger"],
+          "label": "Flogger (viele weiche Riemen).",
+          "help": "Rhythmisches Schlagen, eher sensorisch."
+        },
+        {
+          "id": "IP04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["impact", "whip"],
+          "label": "Peitsche (Single-Tail).",
+          "help": "Erfordert Übung! Kann Haut verletzen."
+        },
+        {
+          "id": "IP05",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["impact", "cane"],
+          "label": "Rohrstock / Cane.",
+          "help": "Sehr intensiv, kann blaue Flecken hinterlassen."
+        },
+        {
+          "id": "IP06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "belt"],
+          "label": "Gürtel zum Schlagen.",
+          "help": "Improvised Tool, flexibel."
+        },
+        {
+          "id": "IP07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "crop"],
+          "label": "Reitgerte / Crop.",
+          "help": "Präzise, punktuelle Schläge."
+        },
+        {
+          "id": "IP08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["impact", "slapping"],
+          "label": "Ohrfeigen (Gesicht - nur mit Consent!).",
+          "help": "Demütigend, braucht klares OK."
+        },
+        {
+          "id": "IP09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["impact", "thigh_slap"],
+          "label": "Oberschenkel-Schläge.",
+          "help": "Empfindliche Zone, kann stimulierend sein."
+        },
+        {
+          "id": "IP10",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["impact", "intensity"],
+          "label": "Bevorzugte Impact-Intensität.",
+          "help": "1 = nur andeuten, 10 = intensive Schmerzen ok"
+        },
+        {
+          "id": "IP11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["impact", "marks"],
+          "label": "Ist es ok, sichtbare Spuren zu hinterlassen?",
+          "help": "Blaue Flecken, Striemen - wo ja, wo nein?"
+        },
+        {
+          "id": "IP12",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["impact", "emotional", "motivation"],
+          "label": "Was reizt dich psychologisch an Schmerz/Impact Play?",
+          "help": "Endorphine, Kontrolle, Hingabe, Stressabbau - was ist der Antrieb?"
+        },
+        {
+          "id": "IP13",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["impact", "emotional", "processing"],
+          "label": "Wie verarbeitest du Schmerz emotional?",
+          "help": "Katharsis vs. Überforderung.",
+          "options": [
+            "Befreiend - emotionale Reinigung",
+            "Meditativ - hilft mir loszulassen",
+            "Intensiv aber gut verarbeitbar",
+            "Manchmal überfordernd",
+            "Emotional schwer - brauche viel Aftercare"
+          ]
+        },
+        {
+          "id": "IP14",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["impact", "emotional", "aftercare"],
+          "label": "Was brauchst du nach Impact Play emotional?",
+          "help": "Kuscheln, Stille, Versicherung, Wasser - was erdet dich?"
+        }
+      ]
+    },
+    {
+      "id": "digital_media",
+      "name": "Digital & Medien",
+      "description": "Technologie und Medien im Sexleben.",
+      "questions": [
+        {
+          "id": "DM01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["digital", "porn"],
+          "label": "Gemeinsam Pornos/erotische Videos schauen.",
+          "help": "Zur Inspiration oder Stimulation."
+        },
+        {
+          "id": "DM02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["digital", "erotica"],
+          "label": "Erotische Geschichten vorlesen oder hören.",
+          "help": "Audio-Erotik oder Literatur."
+        },
+        {
+          "id": "DM03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["digital", "sexting"],
+          "label": "Sexting (erotische Nachrichten schreiben).",
+          "help": "Textbasierte Erregung."
+        },
+        {
+          "id": "DM04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["digital", "nudes"],
+          "label": "Nudes senden/empfangen.",
+          "help": "Fotos nur mit Vertrauen! Gesichter weglassen?"
+        },
+        {
+          "id": "DM05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["digital", "video_call"],
+          "label": "Video-Call Sex (Cybersex).",
+          "help": "Intimität über Distanz."
+        },
+        {
+          "id": "DM06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["digital", "sextape"],
+          "label": "Sex aufnehmen (Video/Fotos von uns).",
+          "help": "Nur für private Nutzung. Speicherort klären!"
+        },
+        {
+          "id": "DM07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["digital", "mirror"],
+          "label": "Sex vor dem Spiegel (sich selbst sehen).",
+          "help": "Visueller Kick."
+        },
+        {
+          "id": "DM08",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["digital", "remote_toy"],
+          "label": "Ferngesteuerte Toys (App-controlled).",
+          "help": "Partner kontrolliert Vibrator etc."
+        },
+        {
+          "id": "DM09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["digital", "vr"],
+          "label": "VR-Pornos oder VR-Sex.",
+          "help": "Virtual Reality Erfahrungen."
+        },
+        {
+          "id": "DM10",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["digital", "storage"],
+          "label": "Wie sollen intime Fotos/Videos gespeichert werden?",
+          "help": "Sicherheit vor Leaks.",
+          "options": [
+            "Gar nicht speichern (direkt löschen)",
+            "Verschlüsselt auf einem Gerät",
+            "Hidden Folder (mit Passwort)",
+            "Mir egal",
+            "Wir besprechen das noch"
+          ]
+        },
+        {
+          "id": "DM11",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["digital", "emotional", "trust"],
+          "label": "Wie hoch ist dein Vertrauen bei intimen Medien (Nudes, Videos)?",
+          "help": "1 = Sehr unsicher, Angst vor Missbrauch, 10 = Totales Vertrauen."
+        },
+        {
+          "id": "DM12",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["digital", "emotional", "fear"],
+          "label": "Was ist deine größte Angst bei digitaler Intimität?",
+          "help": "Leak, Erpressung, Kontrolle verlieren - ehrliche Sorgen."
+        },
+        {
+          "id": "DM13",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["digital", "emotional", "vulnerability"],
+          "label": "Wie fühlst du dich dabei, dich vor der Kamera zu zeigen?",
+          "help": "Verletzlichkeit vs. Selbstbewusstsein.",
+          "options": [
+            "Sehr selbstbewusst - mag mich sehen",
+            "Am Anfang unsicher, dann gut",
+            "Neutral - ist ok",
+            "Unwohl - mag mich nicht sehen",
+            "Absolut nicht mein Ding"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fluids_extended",
+      "name": "Körperflüssigkeiten (Erweitert)",
+      "description": "Umgang mit verschiedenen Körperflüssigkeiten.",
+      "questions": [
+        {
+          "id": "FL01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["fluids", "saliva"],
+          "label": "Speichel-Spiele (Spucken, Drooling).",
+          "help": "Speichel als Teil des Spiels."
+        },
+        {
+          "id": "FL02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["fluids", "precum"],
+          "label": "Lusttropfen/Vaginalsekret genießen.",
+          "help": "Natürliche Körperflüssigkeiten."
+        },
+        {
+          "id": "FL03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fluids", "cumswap"],
+          "label": "Cum-Swapping / Snowballing.",
+          "help": "Ejakulat von Mund zu Mund weitergeben."
+        },
+        {
+          "id": "FL04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["fluids", "bukkake"],
+          "label": "Bukkake (mehrere ejakulieren auf eine Person).",
+          "help": "Erfordert mehrere Partner oder mehrfache Ejakulation."
+        },
+        {
+          "id": "FL05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["fluids", "sweat"],
+          "label": "Schweiß als Turn-on.",
+          "help": "Natürlicher Körpergeruch beim Sex."
+        },
+        {
+          "id": "FL06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fluids", "period"],
+          "label": "Sex während der Periode.",
+          "help": "Manche finden es intensiver, manche nicht."
+        },
+        {
+          "id": "FL07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["fluids", "lactation"],
+          "label": "Laktation / Stillen (wenn natürlich vorhanden).",
+          "help": "Muttermilch als Teil der Intimität."
+        },
+        {
+          "id": "FL08",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["fluids", "emotional", "disgust"],
+          "label": "Wie gehst du emotional mit Ekel-Grenzen bei Fluids um?",
+          "help": "Akzeptanz vs. Widerstand.",
+          "options": [
+            "Keine Ekel-Reaktion - alles ok",
+            "Manche Dinge ok, andere nicht",
+            "Überwindung nötig, aber machbar",
+            "Starker Ekel - harte Grenze",
+            "Variiert je nach Stimmung"
+          ]
+        },
+        {
+          "id": "FL09",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["fluids", "emotional", "shame"],
+          "label": "Gibt es Fluid-Praktiken, für die du dich schämst oder die du schwer zugeben kannst?",
+          "help": "Gesellschaftliche Tabus vs. persönliche Neugier."
+        }
+      ]
+    },
+    {
+      "id": "mind_control",
+      "name": "Mind Games & Kontrolle",
+      "description": "Psychologische Spiele und mentale Kontrolle.",
+      "questions": [
+        {
+          "id": "MC01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "tease"],
+          "label": "Teasing / Necken (Lust aufbauen ohne Erlösung).",
+          "help": "Hinhalten und Spannung steigern."
+        },
+        {
+          "id": "MC02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "begging"],
+          "label": "Betteln müssen (um Erlaubnis bitten).",
+          "help": "Kontrolle über Höhepunkt/Berührung."
+        },
+        {
+          "id": "MC03",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "orders"],
+          "label": "Befehle geben/empfangen.",
+          "help": "Klare Anweisungen im Spiel."
+        },
+        {
+          "id": "MC04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "rules"],
+          "label": "Regeln/Aufgaben außerhalb der Session.",
+          "help": "z.B. 'Keine Selbstbefriedigung ohne Erlaubnis'."
+        },
+        {
+          "id": "MC05",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["mind", "hypnosis"],
+          "label": "Hypno-Play / Erotic Hypnosis.",
+          "help": "Erfordert Vertrauen und Erfahrung."
+        },
+        {
+          "id": "MC06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "objectification"],
+          "label": "Objektifizierung (als Objekt behandelt werden).",
+          "help": "Temporär als Ding, nicht Person."
+        },
+        {
+          "id": "MC07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "predicament"],
+          "label": "Predicament Bondage (Zwickmühlen-Fesselung).",
+          "help": "Position, die bei Bewegung unangenehm wird."
+        },
+        {
+          "id": "MC08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "ignore"],
+          "label": "Ignoriert werden (Partner tut so, als wärst du nicht da).",
+          "help": "Mentaler Kontrollverlust."
+        },
+        {
+          "id": "MC09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "countdown"],
+          "label": "Countdowns (in X Sekunden musst du...).",
+          "help": "Zeitdruck als Stimulation."
+        },
+        {
+          "id": "MC10",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["mind", "rewards"],
+          "label": "Belohnungs-/Bestrafungssystem.",
+          "help": "Gutes Verhalten wird belohnt."
+        },
+        {
+          "id": "MC11",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["mind", "emotional", "motivation"],
+          "label": "Was reizt dich psychologisch an Kontrolle/Kontrollverlust?",
+          "help": "Verantwortung abgeben? Macht ausüben? Sich fallen lassen? Ehrliche Selbstreflexion."
+        },
+        {
+          "id": "MC12",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["mind", "emotional", "power"],
+          "label": "Wo fühlst du dich wohler - kontrollieren oder kontrolliert werden?",
+          "help": "Macht-Dynamik in Mind Games.",
+          "options": [
+            "Ich gebe gerne Kontrolle ab (submissiv)",
+            "Ich übernehme gerne Führung (dominant)",
+            "Beides interessant - Switchen",
+            "Weiß nicht - brauche Erfahrung",
+            "Keins von beiden reizt mich"
+          ]
+        },
+        {
+          "id": "MC13",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["mind", "emotional", "shame"],
+          "label": "Gibt es bei Mind Games Scham oder Angst, 'zu viel' zu wollen?",
+          "help": "Gesellschaftlich werden Machtspiele oft als krankhaft gesehen - fühlst du Konflikt?"
+        },
+        {
+          "id": "MC14",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["mind", "emotional", "aftercare"],
+          "label": "Was brauchst du nach intensiven mentalen Spielen?",
+          "help": "Mind Games können emotional erschöpfend sein - Aftercare für den Kopf?"
+        },
+        {
+          "id": "MC15",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["mind", "emotional", "consent"],
+          "label": "Wie sicher fühlst du dich, bei Mind Games 'Stopp' zu sagen?",
+          "help": "Mentale Kontrolle kann Consent schwierig machen.",
+          "options": [
+            "Sehr sicher - kann jederzeit aussteigen",
+            "Meistens sicher, manchmal im Flow verloren",
+            "Schwierig - will nicht das Spiel ruinieren",
+            "Sehr schwer - fühle mich mental gefangen",
+            "Noch nicht ausprobiert"
+          ]
+        },
+        {
+          "id": "MC16",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["mind", "emotional", "trust"],
+          "label": "Wie hoch ist dein Vertrauen nötig für mentale Kontrolle?",
+          "help": "1 = Kann auch mit fremden, 10 = Nur mit tiefster Verbindung."
+        }
+      ]
+    },
+    {
+      "id": "sensory_extended",
+      "name": "Sensory Play (Erweitert)",
+      "description": "Erweiterte sensorische Stimulation und Sinnesspiele.",
+      "questions": [
+        {
+          "id": "SE01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "tickle"],
+          "label": "Kitzeln / Tickling.",
+          "help": "Kann vom Lachen zur Erregung werden."
+        },
+        {
+          "id": "SE02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["sensory", "estim"],
+          "label": "Elektrostimulation (E-Stim).",
+          "help": "Leichte elektrische Impulse. Spezial-Geräte nötig!"
+        },
+        {
+          "id": "SE03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "feather"],
+          "label": "Feder / sanfte Berührungen.",
+          "help": "Hauchzarte Stimulation."
+        },
+        {
+          "id": "SE04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["sensory", "pinwheel"],
+          "label": "Wartenberg-Rad / Pinwheel.",
+          "help": "Spitze Zacken über die Haut."
+        },
+        {
+          "id": "SE05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "ice"],
+          "label": "Eiswürfel / Kälte.",
+          "help": "Kälte-Kontrast auf warmer Haut."
+        },
+        {
+          "id": "SE06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["sensory", "cupping"],
+          "label": "Cupping / Saugnäpfe.",
+          "help": "Vakuum auf der Haut."
+        },
+        {
+          "id": "SE07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["sensory", "clamps"],
+          "label": "Klammern (Nippel, Genital, etc.).",
+          "help": "Druck und Schmerz an empfindlichen Stellen."
+        },
+        {
+          "id": "SE08",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "oil"],
+          "label": "Öl / Gleitgel großzügig verwenden.",
+          "help": "Glitschige Berührungen überall."
+        },
+        {
+          "id": "SE09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "music"],
+          "label": "Musik/Geräusche während Sex.",
+          "help": "Stimmung durch Sounds setzen."
+        },
+        {
+          "id": "SE10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["sensory", "scent"],
+          "label": "Düfte/Parfüm als Turn-on.",
+          "help": "Olfaktorische Stimulation."
+        },
+        {
+          "id": "SE11",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["sensory", "emotional", "preference"],
+          "label": "Was reizt dich mehr - Schmerz oder Genuss bei Sensory Play?",
+          "help": "Emotionale Präferenz für Reizart.",
+          "options": [
+            "Sanfte Berührungen / Pleasure",
+            "Schmerz / Pain als Stimulation",
+            "Beides - Kontraste sind spannend",
+            "Wechselnd - je nach Stimmung",
+            "Weiß nicht / Noch ausprobieren"
+          ]
+        },
+        {
+          "id": "SE12",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["sensory", "emotional", "motivation"],
+          "label": "Warum reizt dich sensorische Stimulation psychologisch?",
+          "help": "Ablenkung vom Kopf? Bewusstsein schärfen? Im Körper ankommen?"
+        },
+        {
+          "id": "SE13",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["sensory", "emotional", "trust"],
+          "label": "Wie viel Vertrauen brauchst du für Sinnesentzug (Augen verbinden)?",
+          "help": "1 = Auch mit Fremden ok, 10 = Nur mit absolutem Vertrauen."
+        },
+        {
+          "id": "SE14",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["sensory", "emotional", "aftercare"],
+          "label": "Was brauchst du nach intensiver sensorischer Überreizung?",
+          "help": "Ruhe, Kuscheln, Wasser, Gespräch - emotionale Erdung."
+        }
+      ]
+    },
+    {
+      "id": "high_risk_edge",
+      "name": "High-Risk & Edge Play",
+      "description": "Fortgeschrittene Praktiken mit erhöhtem Risiko. Nur für Erfahrene!",
+      "questions": [
+        {
+          "id": "HR01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["edge", "knife"],
+          "label": "Knife Play (Messer an der Haut - nicht schneiden!).",
+          "help": "Psychologischer Thrill. NIEMALS schneiden ohne Training!"
+        },
+        {
+          "id": "HR02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["edge", "needle"],
+          "label": "Needle Play (temporäre Nadeln).",
+          "help": "Erfordert medizinisches Wissen! Sterile Nadeln Pflicht."
+        },
+        {
+          "id": "HR03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["edge", "fire"],
+          "label": "Fire Play (kontrolliertes Feuer an der Haut).",
+          "help": "Erfordert Training! Feuerlöscher bereit."
+        },
+        {
+          "id": "HR04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["edge", "bloodplay"],
+          "label": "Blood Play (kleine Schnitte - nicht empfohlen).",
+          "help": "Extrem riskant! Infektionsgefahr, Narben."
+        },
+        {
+          "id": "HR05",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["edge", "gunplay"],
+          "label": "Gun Play (entladene Waffe als Prop).",
+          "help": "Psychologischer Thrill. Waffe MUSS entladen und gesichert sein!"
+        },
+        {
+          "id": "HR06",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["edge", "total_control"],
+          "label": "Total Power Exchange (TPE) - 24/7 Kontrolle.",
+          "help": "Leben komplett in D/s Dynamik. Extrem anspruchsvoll."
+        },
+        {
+          "id": "HR07",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["edge", "interest"],
+          "label": "Generelles Interesse an Edge Play:",
+          "options": [
+            "Kein Interesse - zu riskant für mich",
+            "Neugierig, aber brauche mehr Wissen",
+            "Interessiert, möchte langsam erkunden",
+            "Erfahren, praktiziere bereits"
+          ]
+        },
+        {
+          "id": "HR08",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["edge", "emotional", "motivation"],
+          "label": "Was reizt dich psychologisch an extremen/riskanten Praktiken?",
+          "help": "Adrenalin? Absolutes Vertrauen? Tabubruch? Todesangst als Aphrodisiakum?"
+        },
+        {
+          "id": "HR09",
+          "schema": "scale_1_10",
+          "risk_level": "C",
+          "tags": ["edge", "emotional", "fear"],
+          "label": "Wie wichtig ist dir das Element der echten Angst/Gefahr?",
+          "help": "1 = Nur symbolisch, 10 = Reale Gefahr ist der Kick."
+        },
+        {
+          "id": "HR10",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["edge", "emotional", "shame"],
+          "label": "Fühlst du dich 'krank' oder 'falsch' für dein Interesse an Edge Play?",
+          "help": "Gesellschaftlich oft als pathologisch gesehen - innerer Konflikt?"
+        },
+        {
+          "id": "HR11",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["edge", "emotional", "aftercare"],
+          "label": "Was brauchst du nach extremen Sessions (körperlich & emotional)?",
+          "help": "Edge Play kann traumatisierend sein - intensive Nachsorge essentiell!"
+        },
+        {
+          "id": "HR12",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["edge", "emotional", "consent"],
+          "label": "Hast du ein klares Safeword-System bei riskanten Praktiken?",
+          "help": "Bei Edge Play MUSS Consent jederzeit widerrufbar sein.",
+          "options": [
+            "Ja, klar definiert und getestet",
+            "Ja, aber noch nie benutzt",
+            "Unklar/schwammig",
+            "Nein - verlasse mich auf Vertrauen",
+            "Noch nicht relevant"
+          ]
+        },
+        {
+          "id": "HR13",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["edge", "emotional", "boundaries"],
+          "label": "Welche Warnsignale würden bedeuten, dass ihr Edge Play stoppen solltet?",
+          "help": "Disassoziation, Panik, körperliche Verletzungen - klare Grenzen definieren!"
+        }
+      ]
+    },
+    {
+      "id": "positions",
+      "name": "Sex-Positionen & Stellungen",
+      "description": "Vorlieben für verschiedene Körper-Positionen und Stellungen.",
+      "questions": [
+        {
+          "id": "POS01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "missionary"],
+          "label": "Missionary (Missionarsstellung).",
+          "help": "Klassische Position, Face-to-Face, intim."
+        },
+        {
+          "id": "POS02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "doggy"],
+          "label": "Doggy Style (Von hinten).",
+          "help": "Tiefe Penetration, weniger Blickkontakt."
+        },
+        {
+          "id": "POS03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "cowgirl"],
+          "label": "Cowgirl / Riding (Partner*in oben, aktiv).",
+          "help": "Empfangende Person kontrolliert Tempo und Tiefe."
+        },
+        {
+          "id": "POS04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "reverse_cowgirl"],
+          "label": "Reverse Cowgirl (Umgekehrt reiten).",
+          "help": "Wie Cowgirl, aber mit dem Rücken zum Partner."
+        },
+        {
+          "id": "POS05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "spooning"],
+          "label": "Spooning (Löffelchen-Position, seitlich).",
+          "help": "Entspannt, kuschelig, guter G-Punkt Winkel."
+        },
+        {
+          "id": "POS06",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "standing"],
+          "label": "Standing Sex (Stehend).",
+          "help": "Spontan, erfordert Kraft oder Höhenunterschied."
+        },
+        {
+          "id": "POS07",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "wall"],
+          "label": "Against the Wall (An der Wand gepresst).",
+          "help": "Intensiv, dominanter Aspekt."
+        },
+        {
+          "id": "POS08",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "legs_up"],
+          "label": "Legs over Shoulders (Beine auf Schultern).",
+          "help": "Sehr tiefe Penetration möglich."
+        },
+        {
+          "id": "POS09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["position", "piledriver"],
+          "label": "Pile Driver (Schulterstand-Position).",
+          "help": "Fortgeschritten, erfordert Flexibilität."
+        },
+        {
+          "id": "POS10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "scissors"],
+          "label": "Scissors / Schere.",
+          "help": "Beine verschränkt, seitliche Position."
+        },
+        {
+          "id": "POS11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "edge"],
+          "label": "Edge of Bed / Table (Am Rand von Bett/Tisch).",
+          "help": "Praktisch für Höhenunterschiede."
+        },
+        {
+          "id": "POS12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["position", "butterfly"],
+          "label": "Butterfly (Hüfte erhöht, Beine gespreizt).",
+          "help": "Guter Winkel für Klitoris-Stimulation."
+        },
+        {
+          "id": "POS13",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["position", "emotional", "intimacy"],
+          "label": "Was ist dir wichtiger - Blickkontakt oder tiefe Penetration?",
+          "help": "Emotionale vs. körperliche Präferenz.",
+          "options": [
+            "Blickkontakt - emotionale Verbindung wichtig",
+            "Tiefe Penetration - körperliche Intensität wichtig",
+            "Beides - wechselnd",
+            "Weder noch - andere Faktoren wichtiger",
+            "Weiß nicht"
+          ]
+        },
+        {
+          "id": "POS14",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["position", "emotional", "insecurity"],
+          "label": "Gibt es Positionen, bei denen du dich unsicher oder exponiert fühlst?",
+          "help": "Körperliche Selbstwahrnehmung - Scham oder Unbehagen?"
+        },
+        {
+          "id": "POS15",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["position", "emotional", "control"],
+          "label": "Bevorzugst du aktive oder passive Rollen bei Positionen?",
+          "help": "Kontroll-Dynamik in Stellungen.",
+          "options": [
+            "Aktiv - ich kontrolliere Bewegung/Tempo",
+            "Passiv - Partner übernimmt",
+            "Switchen - je nach Stimmung",
+            "Gleichberechtigt - gemeinsam bewegen",
+            "Keine Präferenz"
+          ]
+        },
+        {
+          "id": "POS16",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["position", "emotional", "connection"],
+          "label": "Welche Position fühlt sich für dich am emotionalsten/intimsten an?",
+          "help": "Nicht nur körperlich - wo fühlst du dich am verbundensten?"
+        }
+      ]
+    },
+    {
+      "id": "advanced_practices",
+      "name": "Erweiterte Praktiken",
+      "description": "Fortgeschrittene sexuelle Techniken und intensive Erfahrungen.",
+      "questions": [
+        {
+          "id": "AP01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "rimming"],
+          "label": "Rimming / Analingus (Po lecken).",
+          "help": "Hygiene sehr wichtig! Vorher duschen."
+        },
+        {
+          "id": "AP02",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "pegging"],
+          "label": "Pegging (Strap-on für Penis-Träger).",
+          "help": "Umkehrung der typischen Penetrations-Rollen."
+        },
+        {
+          "id": "AP03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["practice", "fisting_vaginal"],
+          "label": "Fisting (vaginal).",
+          "help": "Erfordert Geduld, viel Gleitgel, Training. Langsam!"
+        },
+        {
+          "id": "AP04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["practice", "fisting_anal"],
+          "label": "Fisting (anal).",
+          "help": "Sehr fortgeschritten! Niemals ohne Training und Vorbereitung."
+        },
+        {
+          "id": "AP05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "edging"],
+          "label": "Edging (Kurz vor Orgasmus stoppen).",
+          "help": "Orgasmuskontrolle, intensiveres Finale."
+        },
+        {
+          "id": "AP06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "forced_orgasm"],
+          "label": "Forced Orgasm (Weitermachen nach Höhepunkt).",
+          "help": "Überstimulation, kann intensiv sein."
+        },
+        {
+          "id": "AP07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "ruined_orgasm"],
+          "label": "Ruined Orgasm (Stimulation im letzten Moment stoppen).",
+          "help": "Frustration als Teil des Spiels."
+        },
+        {
+          "id": "AP08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "chastity"],
+          "label": "Chastity / Orgasm Denial (Langzeit-Verweigerung).",
+          "help": "Tage oder Wochen ohne Orgasmus, mit/ohne Käfig."
+        },
+        {
+          "id": "AP09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["practice", "double_penetration"],
+          "label": "Double Penetration (zwei Öffnungen gleichzeitig).",
+          "help": "Erfordert Toys oder mehrere Partner."
+        },
+        {
+          "id": "AP10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "strapon"],
+          "label": "Strap-on Sex (generell).",
+          "help": "Unabhängig von Genitalien penetrieren."
+        },
+        {
+          "id": "AP11",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "tantric"],
+          "label": "Tantric / Slow Sex.",
+          "help": "Langsam, meditativ, Energie-Fokus."
+        },
+        {
+          "id": "AP12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "marathon"],
+          "label": "Marathon Sessions (mehrere Stunden).",
+          "help": "Ausdauer-Sex mit Pausen."
+        },
+        {
+          "id": "AP13",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["practice", "multiple_orgasm"],
+          "label": "Multiple Orgasmen anstreben.",
+          "help": "Mehrfache Höhepunkte in einer Session."
+        },
+        {
+          "id": "AP14",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["practice", "breathplay"],
+          "label": "Breath Play / Choking (Atemkontrolle).",
+          "help": "SEHR RISKANT! Nur mit Training, niemals alleine. Lebensgefahr!"
+        },
+        {
+          "id": "AP15",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["practice", "watersports"],
+          "label": "Watersports / Golden Shower (Urin-Spiele).",
+          "help": "Tabu-Praktik, Hygiene beachten."
+        },
+        {
+          "id": "AP16",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["practice", "emotional", "motivation"],
+          "label": "Was reizt dich psychologisch an intensiven/extremen Praktiken?",
+          "help": "Grenzen testen, Vertrauen beweisen, Tabubruch, Hingabe - was ist der Kern?"
+        },
+        {
+          "id": "AP17",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["practice", "emotional", "role"],
+          "label": "Bei Pegging/Fisting - was ist deine emotionale Rolle?",
+          "help": "Nur relevant wenn interessiert.",
+          "options": [
+            "Aktiv/gebend - Verantwortung & Fürsorge",
+            "Empfangend - Verletzlichkeit & Loslassen",
+            "Beide Rollen interessant",
+            "Nicht mein Thema",
+            "Noch unsicher/explorativ"
+          ]
+        },
+        {
+          "id": "AP18",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["practice", "emotional", "shame"],
+          "label": "Gibt es bei intensiven Praktiken Scham/Angst vor Bewertung (Männlichkeit/Weiblichkeit)?",
+          "help": "Gesellschaftliche Normen vs. persönliche Wünsche - großer Konflikt."
+        },
+        {
+          "id": "AP19",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["practice", "emotional", "aftercare"],
+          "label": "Was brauchst du nach intensiven Praktiken emotional?",
+          "help": "Versicherung, Nähe, Zeit, Gespräch - Aftercare ist bei extremen Praktiken KRITISCH."
+        },
+        {
+          "id": "AP20",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["practice", "emotional", "consent"],
+          "label": "Wie sicher fühlst du dich, während intensiver Praktiken 'Stopp' zu sagen?",
+          "help": "Consent muss funktionieren, auch im Flow.",
+          "options": [
+            "Sehr sicher - weiß, ich kann jederzeit stoppen",
+            "Meistens sicher, manchmal unsicher",
+            "Schwierig - will nicht enttäuschen",
+            "Sehr schwer - fühle mich unter Druck",
+            "Noch nicht ausprobiert"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "location_context",
+      "name": "Ort & Kontext",
+      "description": "Wo und wann? Vorlieben für Orte, Tageszeiten und Situationen.",
+      "questions": [
+        {
+          "id": "LC01",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["location", "public"],
+          "label": "Public Sex / Semi-öffentlich (Risiko gesehen zu werden).",
+          "help": "Balkon, Park, Parkhaus - Exhibitionismus-Element."
+        },
+        {
+          "id": "LC02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["location", "outdoor"],
+          "label": "Sex im Freien / Natur (privat).",
+          "help": "Wald, Strand, Garten - ohne Publikum."
+        },
+        {
+          "id": "LC03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["location", "car"],
+          "label": "Car Sex (Im Auto).",
+          "help": "Enge, spontan, unterwegs."
+        },
+        {
+          "id": "LC04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["location", "shower"],
+          "label": "Shower / Bath Sex (Dusche oder Badewanne).",
+          "help": "Nass und glitschig, rutschgefahr!"
+        },
+        {
+          "id": "LC05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["location", "kitchen"],
+          "label": "Kitchen Sex (Auf Arbeitsplatte etc.).",
+          "help": "Spontan im Alltag."
+        },
+        {
+          "id": "LC06",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["location", "different_rooms"],
+          "label": "Verschiedene Räume durchs Haus/Wohnung.",
+          "help": "Abwechslung in vertrauter Umgebung."
+        },
+        {
+          "id": "LC07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["location", "hotel"],
+          "label": "Hotel / Fremdes Bett.",
+          "help": "Weniger Hemmungen außerhalb der eigenen vier Wände."
+        },
+        {
+          "id": "LC08",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["context", "quickie"],
+          "label": "Quickies (Schneller Sex zwischendurch).",
+          "help": "Spontan, kurz, intensiv."
+        },
+        {
+          "id": "LC09",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["context", "morning"],
+          "label": "Morning Sex (Direkt nach dem Aufwachen).",
+          "help": "Verschlafen, natürlich, entspannt."
+        },
+        {
+          "id": "LC10",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["context", "night"],
+          "label": "Late Night Sex (Mitten in der Nacht).",
+          "help": "Aufwachen und loslegen."
+        },
+        {
+          "id": "LC11",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["context", "somnophilia"],
+          "label": "Somnophilia (Sex während Partner schläft - consensual!).",
+          "help": "Vorher besprechen! Nur mit klarem Einverständnis."
+        },
+        {
+          "id": "LC12",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["context", "planned"],
+          "label": "Geplante Sex-Dates (mit Vorbereitung).",
+          "help": "Zeit nehmen, Atmosphäre schaffen."
+        },
+        {
+          "id": "LC13",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["context", "spontaneous"],
+          "label": "Spontaner Sex (ohne Vorbereitung).",
+          "help": "Moment nutzen, wenn die Chemie stimmt."
+        },
+        {
+          "id": "LC14",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["location", "emotional", "motivation"],
+          "label": "Was reizt dich psychologisch an neuen/ungewöhnlichen Orten?",
+          "help": "Nervenkitzel? Tabubruch? Abenteuer? Spontanität?"
+        },
+        {
+          "id": "LC15",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["location", "emotional", "exhibitionism"],
+          "label": "Wie wichtig ist dir das Risiko 'erwischt' zu werden bei öffentlichem Sex?",
+          "help": "1 = Will absolut privat sein, 10 = Das Risiko ist der Reiz."
+        },
+        {
+          "id": "LC16",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["context", "emotional", "planning"],
+          "label": "Was bevorzugst du emotional - geplant oder spontan?",
+          "help": "Vorfreude vs. Impulsivität.",
+          "options": [
+            "Geplant - mag die Vorfreude und Vorbereitung",
+            "Spontan - liebe den Moment und Überraschung",
+            "Beides - je nach Stimmung",
+            "Weiß nicht"
+          ]
+        },
+        {
+          "id": "LC17",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["location", "emotional", "shame"],
+          "label": "Gibt es Orte/Situationen, für die du dich schämen würdest (aber die dich reizen)?",
+          "help": "Innerer Konflikt zwischen Wunsch und gesellschaftlicher Norm?"
+        }
+      ]
+    },
+    {
+      "id": "multipartner",
+      "name": "Mehrpersonen-Szenarien",
+      "description": "Fantasien und Realität mit mehr als zwei Personen. Erfordert sehr viel Kommunikation!",
+      "questions": [
+        {
+          "id": "MP01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "threesome"],
+          "label": "Threesome / Dreier generell.",
+          "help": "Dritte Person einbeziehen - Fantasie oder Realität?"
+        },
+        {
+          "id": "MP02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "mff"],
+          "label": "MFF Threesome (Two women, one man).",
+          "help": "Spezifische Konstellation."
+        },
+        {
+          "id": "MP03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "mmf"],
+          "label": "MMF Threesome (Two men, one woman).",
+          "help": "Spezifische Konstellation."
+        },
+        {
+          "id": "MP04",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "same_gender"],
+          "label": "Dreier mit gleichem Geschlecht (MMM oder FFF).",
+          "help": "Alle Beteiligten gleiches Geschlecht."
+        },
+        {
+          "id": "MP05",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "swinging"],
+          "label": "Swinging / Partnertausch.",
+          "help": "Mit anderem Paar die Partner tauschen."
+        },
+        {
+          "id": "MP06",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "cuckolding"],
+          "label": "Cuckolding (Partner schaut zu, wie anderer mit mir schläft).",
+          "help": "Demütigung oder Compersion-Element."
+        },
+        {
+          "id": "MP07",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "cuckquean"],
+          "label": "Cuckquean (Ich schaue zu, wie Partner mit anderem schläft).",
+          "help": "Weibliche Version von Cuckolding."
+        },
+        {
+          "id": "MP08",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "hotwife"],
+          "label": "Hotwife / Hotwifing.",
+          "help": "Partner*in darf mit anderen schlafen (mit Zustimmung)."
+        },
+        {
+          "id": "MP09",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "gangbang"],
+          "label": "Gangbang (Mehrere Partner nacheinander/gleichzeitig).",
+          "help": "Sehr intensiv, nur für Erfahrene."
+        },
+        {
+          "id": "MP10",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["multipartner", "orgy"],
+          "label": "Orgy / Gruppen-Sex.",
+          "help": "Viele Personen, wechselnde Konstellationen."
+        },
+        {
+          "id": "MP11",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["multipartner", "watching"],
+          "label": "Partner beim Sex mit anderem zusehen (nur Fantasy).",
+          "help": "Nur als Gedankenspiel während des Sex zu zweit."
+        },
+        {
+          "id": "MP12",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["multipartner", "being_watched"],
+          "label": "Jemand schaut uns beim Sex zu.",
+          "help": "Voyeur als Zuschauer (nicht mitmachend)."
+        },
+        {
+          "id": "MP13",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["multipartner", "boundary"],
+          "label": "Was ist deine Grenze bei Mehrpersonen-Szenarien?",
+          "help": "Ehrliche Einschätzung der persönlichen Grenze.",
+          "options": [
+            "Nur als Fantasie/Dirty Talk",
+            "In der Theorie ok, praktisch unsicher",
+            "Würde es mit klaren Regeln probieren",
+            "Habe Erfahrung und bin offen",
+            "Absolutes No-Go"
+          ]
+        },
+        {
+          "id": "MP14",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["multipartner", "emotional", "motivation"],
+          "label": "Was reizt dich psychologisch an Mehrpersonen-Szenarien (ehrlich)?",
+          "help": "Tabubruch, Validierung, Neugier, Macht, Hingabe - was ist der tiefere Antrieb?"
+        },
+        {
+          "id": "MP15",
+          "schema": "scale_1_10",
+          "risk_level": "C",
+          "tags": ["multipartner", "emotional", "jealousy"],
+          "label": "Wie stark ist deine Eifersucht bei der Vorstellung?",
+          "help": "1 = Keine Eifersucht, sogar Mitfreude, 10 = Sehr starke Eifersucht."
+        },
+        {
+          "id": "MP16",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["multipartner", "emotional", "compersion"],
+          "label": "Kannst du Compersion empfinden (Freude an der Lust des Partners mit anderem)?",
+          "help": "Oder überwiegt Unsicherheit/Eifersucht? Beides ist ok."
+        },
+        {
+          "id": "MP17",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["multipartner", "emotional", "aftercare"],
+          "label": "Was würdest du emotional nach einem Mehrpersonen-Erlebnis brauchen?",
+          "help": "Versicherung, Nähe, Raum, Gespräch - Aftercare ist hier ESSENTIELL."
+        },
+        {
+          "id": "MP18",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["multipartner", "emotional", "identity"],
+          "label": "Wie würde sich das auf dein Selbstbild/Beziehungsbild auswirken?",
+          "help": "Manche fühlen sich befreit, andere bedroht.",
+          "options": [
+            "Würde mich freier/offener fühlen",
+            "Unsicher - könnte gut oder schlecht sein",
+            "Befürchte, es würde uns emotional schaden",
+            "Weiß nicht, wie ich mich fühlen würde",
+            "Will es nicht rausfinden - zu riskant"
+          ]
+        },
+        {
+          "id": "MP19",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["multipartner", "emotional", "consent"],
+          "label": "Welche Regeln/Grenzen wären emotional absolut notwendig für dich?",
+          "help": "Veto-Recht, bestimmte Handlungen tabu, Nachgespräch - was ist nicht verhandelbar?"
+        }
+      ]
+    },
+    {
+      "id": "bdsm_advanced",
+      "name": "BDSM Fortgeschritten",
+      "description": "Erweiterte BDSM-Techniken und Spielarten.",
+      "questions": [
+        {
+          "id": "BD01",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["bdsm", "shibari"],
+          "label": "Shibari / Japanese Rope Bondage.",
+          "help": "Kunstvolle Fesselungen, erfordert Training."
+        },
+        {
+          "id": "BD02",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["bdsm", "suspension"],
+          "label": "Suspension Bondage (In der Luft gefesselt).",
+          "help": "Sehr fortgeschritten! Nur mit Profi-Equipment und Training."
+        },
+        {
+          "id": "BD03",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["bdsm", "mummification"],
+          "label": "Mummification (Komplett eingewickelt).",
+          "help": "Totale Bewegungsunfähigkeit, Klaustrophobie-Trigger!"
+        },
+        {
+          "id": "BD04",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "caging"],
+          "label": "Caging / Confinement (In Käfig/enge Box).",
+          "help": "Psychologische Dominanz, Platzmangel."
+        },
+        {
+          "id": "BD05",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "humiliation"],
+          "label": "Verbal Humiliation (Erniedrigende Worte).",
+          "help": "Beschimpfungen als Teil des Spiels. Aftercare wichtig!"
+        },
+        {
+          "id": "BD06",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "degradation"],
+          "label": "Degradation (Erniedrigung durch Handlungen).",
+          "help": "Z.B. aus Napf essen, auf dem Boden kriechen."
+        },
+        {
+          "id": "BD07",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["bdsm", "praise"],
+          "label": "Praise Kink (Lob und Bestätigung).",
+          "help": "Gegenteil von Degradation - 'Good girl/boy' etc."
+        },
+        {
+          "id": "BD08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "petplay"],
+          "label": "Pet Play (Kitten, Puppy, Pony).",
+          "help": "Als Tier verhalten, Kopfraum ändern."
+        },
+        {
+          "id": "BD09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "ageplay"],
+          "label": "Age Play (Erwachsene spielen andere Altersrollen).",
+          "help": "Daddy/Mommy Dom, Little - ALLE sind erwachsen!"
+        },
+        {
+          "id": "BD10",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "forced_fem"],
+          "label": "Forced Feminization / Masculinization.",
+          "help": "Partner in Kleidung/Rolle des anderen Geschlechts zwingen."
+        },
+        {
+          "id": "BD11",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "sissy"],
+          "label": "Sissy Play.",
+          "help": "Spezielle Form der Feminisierung, oft mit Demütigung."
+        },
+        {
+          "id": "BD12",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "primal"],
+          "label": "Primal Play (Jagen, Wrestling, Instinkte).",
+          "help": "Tierische Seite rauslassen, kämpfen, dominieren."
+        },
+        {
+          "id": "BD13",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["bdsm", "sensory_overload"],
+          "label": "Sensory Overload (Reizüberflutung).",
+          "help": "Zu viele Reize gleichzeitig - Gegenteil von Deprivation."
+        },
+        {
+          "id": "BD14",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["bdsm", "tpe"],
+          "label": "Total Power Exchange (24/7 D/s).",
+          "help": "Dauerhafte Machtübergabe im Alltag. Extrem anspruchsvoll!"
+        },
+        {
+          "id": "BD15",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["bdsm", "emotional", "motivation"],
+          "label": "Was ist dein psychologischer Antrieb bei BDSM (ehrlich)?",
+          "help": "Kontrolle abgeben/nehmen, Grenzen testen, Rollen spielen, Katharsis?"
+        },
+        {
+          "id": "BD16",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["bdsm", "emotional", "headspace"],
+          "label": "Erlebst du Subspace/Domspace (veränderter Bewusstseinszustand)?",
+          "help": "Trancezustand, völliges Loslassen oder Fokus.",
+          "options": [
+            "Ja, sehr intensiv",
+            "Manchmal, je nach Session",
+            "Glaube schon, unsicher",
+            "Nein, noch nie erlebt",
+            "Weiß nicht, was das ist"
+          ]
+        },
+        {
+          "id": "BD17",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["bdsm", "emotional", "aftercare"],
+          "label": "Was brauchst du emotional nach intensiven BDSM-Sessions?",
+          "help": "Kuscheln, Stille, Essen/Trinken, Reden, Raum - Aftercare ist NICHT optional!"
+        },
+        {
+          "id": "BD18",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["bdsm", "emotional", "drop"],
+          "label": "Hast du schon Sub-Drop oder Dom-Drop erlebt (emotionale Leere danach)?",
+          "help": "Plötzliche Traurigkeit/Erschöpfung Stunden/Tage später - normal aber braucht Pflege."
+        },
+        {
+          "id": "BD19",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["bdsm", "emotional", "shame"],
+          "label": "Gibt es BDSM-Wünsche, für die du dich schämst oder die du schwer akzeptierst?",
+          "help": "Internalisierte Scham vs. authentische Wünsche - häufiger Konflikt."
+        },
+        {
+          "id": "BD20",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["bdsm", "emotional", "identity"],
+          "label": "Wie integrierst du BDSM in dein Selbstbild?",
+          "help": "Teil meiner Identität vs. nur Spiel?",
+          "options": [
+            "Kernstück meiner sexuellen Identität",
+            "Wichtiger Teil, aber nicht alles",
+            "Interessantes Spiel, keine Identität",
+            "Noch am Herausfinden",
+            "Möchte es getrennt halten"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "body_features",
+      "name": "Körper-Präferenzen & Besonderheiten",
+      "description": "Fetische für bestimmte körperliche Merkmale und Zustände.",
+      "questions": [
+        {
+          "id": "BF01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["body", "pregnant"],
+          "label": "Pregnant Sex / Schwangerschafts-Fetisch.",
+          "help": "Sex während Schwangerschaft oder Fetisch für schwangere Körper."
+        },
+        {
+          "id": "BF02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["body", "size_difference"],
+          "label": "Size Difference Kink (Größenunterschied).",
+          "help": "Große vs. kleine Person als Turn-on."
+        },
+        {
+          "id": "BF03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["body", "strength"],
+          "label": "Strength Play / Kraft demonstrieren.",
+          "help": "Hochheben, halten, körperliche Überlegenheit zeigen."
+        },
+        {
+          "id": "BF04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["body", "tattoo"],
+          "label": "Tattoo-Fetisch.",
+          "help": "Tattoos als besonders attraktiv empfinden."
+        },
+        {
+          "id": "BF05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["body", "piercing"],
+          "label": "Piercing-Fetisch (auch genital).",
+          "help": "Piercings als Turn-on, Spielen damit."
+        },
+        {
+          "id": "BF06",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["body", "glasses"],
+          "label": "Brillen-Fetisch.",
+          "help": "Brille als sexy Accessoire."
+        },
+        {
+          "id": "BF07",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["body", "period"],
+          "label": "Period Sex intensiv (Blut als Teil der Erfahrung).",
+          "help": "Über MEN01 hinaus - bewusst mit Periode arbeiten."
+        },
+        {
+          "id": "BF08",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["body", "emotional", "motivation"],
+          "label": "Was reizt dich psychologisch an bestimmten Körpermerkmalen?",
+          "help": "Ästhetik? Symbolik? Individualität? Macht/Unterwerfung durch Größe?"
+        },
+        {
+          "id": "BF09",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["body", "emotional", "insecurity"],
+          "label": "Gibt es eigene Körpermerkmale, die deine Sexualität beeinflussen (positiv/negativ)?",
+          "help": "Selbstbewusstsein, Scham, Stolz - wie wirkt dein Körperbild?"
+        },
+        {
+          "id": "BF10",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["body", "emotional", "acceptance"],
+          "label": "Wie gehst du mit eigenen körperlichen 'Makeln' während Sex um?",
+          "help": "Selbstakzeptanz und Verletzlichkeit.",
+          "options": [
+            "Kein Problem - fühle mich wohl",
+            "Manchmal unsicher, aber ok",
+            "Verstecke bestimmte Stellen/Positionen",
+            "Großes Thema - hemmt mich sehr",
+            "Arbeite daran"
+          ]
+        },
+        {
+          "id": "BF11",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["body", "emotional", "attraction"],
+          "label": "Welches Körpermerkmal findest du an dir selbst am attraktivsten/sexiesten?",
+          "help": "Selbstliebe und Stolz - was zeigst du gerne?"
+        }
+      ]
+    },
+    {
+      "id": "toys_tools",
+      "name": "Toys & Tools (Erweitert)",
+      "description": "Detaillierte Vorlieben für Sexspielzeug und Hilfsmittel.",
+      "questions": [
+        {
+          "id": "TT01",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "vibrator"],
+          "label": "Vibratoren (klassisch, intern).",
+          "help": "Standard Vibrator für Klitoris oder vaginal."
+        },
+        {
+          "id": "TT02",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "wand"],
+          "label": "Wand Vibrator (z.B. Magic Wand).",
+          "help": "Sehr intensiv, auch für Massage nutzbar."
+        },
+        {
+          "id": "TT03",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "rabbit"],
+          "label": "Rabbit Vibrator (Dual-Stimulation).",
+          "help": "Gleichzeitige G-Punkt und Klitoris-Stimulation."
+        },
+        {
+          "id": "TT04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "bullet"],
+          "label": "Bullet Vibrator (klein, diskret).",
+          "help": "Handlich, auch während Sex zu zweit nutzbar."
+        },
+        {
+          "id": "TT05",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "clit_sucker"],
+          "label": "Clit Sucker / Air Pulse Toys.",
+          "help": "Druckwellen-Technologie, sehr intensiv."
+        },
+        {
+          "id": "TT06",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "dildo"],
+          "label": "Dildos (ohne Vibration, manuell).",
+          "help": "Realistische oder abstrakte Formen."
+        },
+        {
+          "id": "TT07",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "realistic"],
+          "label": "Realistische Dildos (Penis-Form).",
+          "help": "Natürliche Optik und Haptik."
+        },
+        {
+          "id": "TT08",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "fantasy"],
+          "label": "Fantasy Dildos (Drachen, Alien etc.).",
+          "help": "Ungewöhnliche Formen und Farben."
+        },
+        {
+          "id": "TT09",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "strapon_give"],
+          "label": "Strap-on benutzen (aktive Rolle, penetrieren).",
+          "help": "Mit Harness jemanden penetrieren."
+        },
+        {
+          "id": "TT10",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "strapon_receive"],
+          "label": "Von Strap-on penetriert werden.",
+          "help": "Partner trägt Strap-on und penetriert mich."
+        },
+        {
+          "id": "TT11",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "double_dildo"],
+          "label": "Double-Ended Dildo (beide gleichzeitig).",
+          "help": "Beide Partner nutzen ein Toy gleichzeitig."
+        },
+        {
+          "id": "TT12",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "strapless"],
+          "label": "Strapless Strap-on (z.B. Feeldoe).",
+          "help": "Hält durch Muskelkraft, kein Harness nötig."
+        },
+        {
+          "id": "TT13",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "suction"],
+          "label": "Suction Cup Dildo (an Wand/Boden).",
+          "help": "Freihändig nutzbar, vielseitig."
+        },
+        {
+          "id": "TT14",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["toys", "size_preference"],
+          "label": "Bevorzugte Dildo/Strap-on Größe:",
+          "help": "Ehrliche Einschätzung für Komfort.",
+          "options": [
+            "Klein (< 12cm / 3cm Durchmesser)",
+            "Normal (12-16cm / 3-4cm)",
+            "Groß (16-20cm / 4-5cm)",
+            "Sehr groß (> 20cm / > 5cm)",
+            "Variiert je nach Stimmung"
+          ]
+        },
+        {
+          "id": "TT15",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "anal_plug"],
+          "label": "Butt Plugs (tragen während Sex oder Alltag).",
+          "help": "Anal-Stimulation, Vorbereitung oder Dauertragen."
+        },
+        {
+          "id": "TT16",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "anal_beads"],
+          "label": "Anal Beads (herausziehen beim Orgasmus).",
+          "help": "Intensiviert den Höhepunkt."
+        },
+        {
+          "id": "TT17",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "prostate_toy"],
+          "label": "Prostate Toys / P-Punkt Stimulatoren.",
+          "help": "Speziell geformt für Penis-Träger."
+        },
+        {
+          "id": "TT18",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "anal_trainer"],
+          "label": "Anal Trainer Set (verschiedene Größen).",
+          "help": "Schrittweise Dehnung für Anal-Play."
+        },
+        {
+          "id": "TT19",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "cockring"],
+          "label": "Cock Rings / Penis-Ringe.",
+          "help": "Verstärkte Erektion, auch vibrierende Varianten."
+        },
+        {
+          "id": "TT20",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "sleeve"],
+          "label": "Penis Sleeves / Extender.",
+          "help": "Größe oder Textur verändern."
+        },
+        {
+          "id": "TT21",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "stroker"],
+          "label": "Stroker / Masturbatoren (für Penis).",
+          "help": "Fleshlight, Tenga etc. - auch zusammen nutzbar."
+        },
+        {
+          "id": "TT22",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "pump"],
+          "label": "Pumpen (Penis/Vulva/Nippel).",
+          "help": "Vakuum für Schwellung und Sensibilität."
+        },
+        {
+          "id": "TT23",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "kegel"],
+          "label": "Kegel Balls / Ben Wa Balls.",
+          "help": "Training und Stimulation, auch im Alltag tragbar."
+        },
+        {
+          "id": "TT24",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "nipple_toys"],
+          "label": "Nippel-Toys (Sauger, Klammern, Vibratoren).",
+          "help": "Fokus auf Brust-Stimulation."
+        },
+        {
+          "id": "TT25",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "fucking_machine"],
+          "label": "Fuck Machines (motorisierte Penetration).",
+          "help": "Automatisiert, einstellbare Geschwindigkeit."
+        },
+        {
+          "id": "TT26",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "sex_furniture"],
+          "label": "Sex Furniture (Wedges, Ramps, Kissen).",
+          "help": "Positionshilfen für bessere Winkel."
+        },
+        {
+          "id": "TT27",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "swing"],
+          "label": "Sex Swing / Schaukel.",
+          "help": "Schwerelosigkeit, neue Positionen."
+        },
+        {
+          "id": "TT28",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["toys", "fuck_bench"],
+          "label": "Fuck Bench / Spanking Bench.",
+          "help": "BDSM-Möbel für Fixierung und Position."
+        },
+        {
+          "id": "TT29",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "lube"],
+          "label": "Gleitgel großzügig verwenden (Silikonbasis/Wasserbasis).",
+          "help": "Wichtig für Komfort und Sicherheit."
+        },
+        {
+          "id": "TT30",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["toys", "remote_control"],
+          "label": "Ferngesteuerte Toys (Partner hat Kontrolle).",
+          "help": "Auch öffentlich nutzbar, Machtspiel."
+        },
+        {
+          "id": "TT31",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "app_controlled"],
+          "label": "App-gesteuerte Toys (über Smartphone).",
+          "help": "Auch über Distanz nutzbar."
+        },
+        {
+          "id": "TT32",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "together"],
+          "label": "Toys während Sex zu zweit nutzen.",
+          "help": "Vibrator während Penetration etc."
+        },
+        {
+          "id": "TT33",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "solo_show"],
+          "label": "Mit Toys vor Partner masturbieren.",
+          "help": "Sich selbst vergnügen während Partner zuschaut."
+        },
+        {
+          "id": "TT34",
+          "schema": "enum",
+          "risk_level": "A",
+          "tags": ["toys", "material"],
+          "label": "Bevorzugtes Toy-Material:",
+          "help": "Wichtig für Verträglichkeit und Pflege.",
+          "options": [
+            "Silikon (medizinisch, hautfreundlich)",
+            "Glas (glatt, temperaturplay)",
+            "Metall (schwer, kühl/warm)",
+            "TPE/TPR (weich, realistisch)",
+            "Ist mir egal"
+          ]
+        },
+        {
+          "id": "TT35",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["toys", "emotional", "shame"],
+          "label": "Wie fühlst du dich dabei, Sexspielzeug zu kaufen/besitzen?",
+          "help": "Scham vs. Selbstbewusstsein.",
+          "options": [
+            "Total selbstbewusst - kein Problem",
+            "Am Anfang unsicher, jetzt ok",
+            "Etwas peinlich, aber mache es trotzdem",
+            "Sehr unangenehm - bestelle nur online",
+            "Habe mich noch nicht getraut"
+          ]
+        },
+        {
+          "id": "TT36",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["toys", "emotional", "vulnerability"],
+          "label": "Was brauchst du emotional, um Toys mit Partner zu nutzen?",
+          "help": "Vertrauen, Offenheit, Sicherheit - was sind die Voraussetzungen?"
+        },
+        {
+          "id": "TT37",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["toys", "emotional", "together"],
+          "label": "Toys gemeinsam aussuchen und kaufen.",
+          "help": "Kann Intimität schaffen oder peinlich sein."
+        }
+      ]
+    },
+    {
+      "id": "emotional_psychological",
+      "name": "Emotionale & Psychologische Aspekte",
+      "description": "Die mentale und emotionale Dimension von Intimität. Vertrauen, Verletzlichkeit, emotionale Sicherheit und psychisches Wohlbefinden.",
+      "questions": [
+        {
+          "id": "EP01",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["emotional", "vulnerability"],
+          "label": "Wie leicht fällt es dir, dich emotional während Sex zu öffnen?",
+          "help": "1 = Sehr schwer, bleibe verschlossen, 10 = Sehr leicht, bin völlig offen."
+        },
+        {
+          "id": "EP02",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["emotional", "safety"],
+          "label": "Was brauchst du, um dich emotional sicher zu fühlen während Intimität?",
+          "help": "Worte, Gesten, Atmosphäre - was gibt dir das Gefühl von Sicherheit?"
+        },
+        {
+          "id": "EP03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["emotional", "connection"],
+          "label": "Wie wichtig ist dir emotionale Verbindung während Sex?",
+          "help": "Manche brauchen tiefe Verbindung, andere trennen Körper und Emotion.",
+          "options": [
+            "Essentiell - ohne Gefühl geht nichts",
+            "Sehr wichtig - verstärkt das Erlebnis",
+            "Nice to have - aber nicht zwingend",
+            "Egal - ich kann beides genießen",
+            "Störend - ich bevorzuge körperlichen Fokus"
+          ]
+        },
+        {
+          "id": "EP04",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["emotional", "eye_contact"],
+          "label": "Intensiver Blickkontakt während intimer Momente.",
+          "help": "Augen in Augen schauen - sehr intim oder unangenehm?"
+        },
+        {
+          "id": "EP05",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["emotional", "aftercare"],
+          "label": "Was brauchst du emotional nach dem Sex (Aftercare)?",
+          "help": "Kuscheln, Reden, Stille, Raum für dich? Was hilft dir zurück zu kommen?"
+        },
+        {
+          "id": "EP06",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["emotional", "communication"],
+          "label": "Wie gut kannst du während Sex über deine Gefühle sprechen?",
+          "help": "1 = Gar nicht, blockiere komplett, 10 = Total offen, sage alles."
+        },
+        {
+          "id": "EP07",
+          "schema": "multi_select",
+          "risk_level": "C",
+          "tags": ["emotional", "negative"],
+          "label": "Welche negativen Gefühle tauchen manchmal bei Intimität auf?",
+          "help": "Ehrliche Selbstreflexion - was hält dich zurück?",
+          "options": [
+            "Scham oder Peinlichkeit",
+            "Schuldgefühle",
+            "Angst vor Ablehnung",
+            "Versagensangst / Performance-Druck",
+            "Unsicherheit über meinen Körper",
+            "Angst, nicht gut genug zu sein",
+            "Emotionale Überforderung",
+            "Dissoziieren / Nicht richtig präsent sein",
+            "Keine - ich fühle mich wohl"
+          ]
+        },
+        {
+          "id": "EP08",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["emotional", "triggers"],
+          "label": "Gibt es emotionale Trigger, die Partner kennen sollte?",
+          "help": "Situationen, Worte oder Handlungen, die alte Wunden berühren."
+        },
+        {
+          "id": "EP09",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["emotional", "body_image"],
+          "label": "Wie fühlst du dich mit deinem Körper während Intimität?",
+          "help": "Body Image und Selbstakzeptanz.",
+          "options": [
+            "Sehr selbstbewusst und wohl",
+            "Meistens ok, manchmal unsicher",
+            "Neutral - denke nicht drüber nach",
+            "Oft unsicher oder selbstkritisch",
+            "Sehr unwohl - großes Thema für mich"
+          ]
+        },
+        {
+          "id": "EP10",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["emotional", "reassurance"],
+          "label": "Welche Art von Bestätigung/Reassurance hilft dir am meisten?",
+          "help": "Worte ('Du bist schön'), Berührungen, Blicke - was beruhigt dich?"
+        },
+        {
+          "id": "EP11",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["emotional", "crying"],
+          "label": "Weinen während oder nach Sex (aus Überwältigung/Freude).",
+          "help": "Emotionale Katharsis - ist ok oder beängstigend?"
+        },
+        {
+          "id": "EP12",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["emotional", "trust"],
+          "label": "Wie hoch ist dein Vertrauen in emotionaler Intimität aktuell?",
+          "help": "1 = Sehr niedrig, Mauern hoch, 10 = Totales Vertrauen."
+        },
+        {
+          "id": "EP13",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["emotional", "past"],
+          "label": "Gibt es vergangene Erfahrungen, die deine Sexualität emotional beeinflussen?",
+          "help": "Nur teilen, was du magst. Kann helfen, Partner zu verstehen."
+        },
+        {
+          "id": "EP14",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["emotional", "attachment"],
+          "label": "Wie gehst du mit emotionaler Bindung durch Sex um?",
+          "help": "Manche binden sich schnell, andere trennen Emotion und Körper.",
+          "options": [
+            "Sex schafft sofort tiefe Bindung",
+            "Ich binde mich über Zeit durch Intimität",
+            "Kann Sex ohne emotionale Bindung haben",
+            "Bevorzuge Distanz - zu viel Nähe ist schwer",
+            "Wechselt je nach Person und Situation"
+          ]
+        },
+        {
+          "id": "EP15",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["emotional", "laughter"],
+          "label": "Lachen und Albernheit während Sex.",
+          "help": "Entspannt die Stimmung oder zerstört den Moment?"
+        },
+        {
+          "id": "EP16",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["emotional", "love_language"],
+          "label": "Wie zeigst du Liebe/Zuneigung in der Sexualität am liebsten?",
+          "help": "Deine Love Language im intimen Kontext."
+        },
+        {
+          "id": "EP17",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["emotional", "performance"],
+          "label": "Fühlst du Performance-Druck beim Sex?",
+          "help": "Druck, 'gut' sein zu müssen oder Partner zufriedenzustellen.",
+          "options": [
+            "Ja, sehr - ich stresse mich oft",
+            "Manchmal, abhängig von der Situation",
+            "Selten, meistens entspannt",
+            "Nie, ich bin im Flow",
+            "Unsicher, schwer zu sagen"
+          ]
+        },
+        {
+          "id": "EP18",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["emotional", "mindfulness"],
+          "label": "Was hilft dir, im Moment präsent zu bleiben (statt im Kopf zu sein)?",
+          "help": "Techniken gegen Overthinking während Intimität."
+        },
+        {
+          "id": "EP19",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["emotional", "silence"],
+          "label": "Stille während/nach Sex (kein Reden, nur Sein).",
+          "help": "Gemeinsame Stille kann intim oder unangenehm sein."
+        },
+        {
+          "id": "EP20",
+          "schema": "enum",
+          "risk_level": "C",
+          "tags": ["emotional", "rejection"],
+          "label": "Wie gehst du mit sexueller Zurückweisung um?",
+          "help": "Wenn Partner 'Nein' sagt - emotional.",
+          "options": [
+            "Sehr verletzend - nehme es persönlich",
+            "Unangenehm, aber kann es akzeptieren",
+            "Neutral - kein Problem für mich",
+            "Bin selbst oft derjenige, der ablehnt",
+            "Kommt auf den Kontext an"
+          ]
+        },
+        {
+          "id": "EP21",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["emotional", "shame"],
+          "label": "Gibt es sexuelle Wünsche, für die du dich schämst?",
+          "help": "Internalisierte Scham auspacken - nur wenn du magst."
+        },
+        {
+          "id": "EP22",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["emotional", "authenticity"],
+          "label": "Wie authentisch kannst du in der Sexualität sein?",
+          "help": "1 = Spiele eine Rolle, 10 = Total ich selbst."
+        },
+        {
+          "id": "EP23",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["emotional", "needs"],
+          "label": "Was ist dir wichtiger in Intimität?",
+          "help": "Prioritäten erkennen.",
+          "options": [
+            "Emotionale Verbindung vor allem",
+            "Balance zwischen emotional und körperlich",
+            "Körperliche Befriedigung primär",
+            "Wechselt je nach Stimmung",
+            "Bin mir unsicher"
+          ]
+        },
+        {
+          "id": "EP24",
+          "schema": "consent_rating",
+          "risk_level": "C",
+          "tags": ["emotional", "subspace"],
+          "label": "Subspace / Flow-State (völlig im Moment verlieren).",
+          "help": "Trancezustand während intensiver Sessions - BDSM-Begriff, aber allgemein anwendbar."
+        },
+        {
+          "id": "EP25",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["emotional", "drop"],
+          "label": "Erlebst du emotionale 'Drops' nach intensivem Sex? Was hilft?",
+          "help": "Plötzliche Traurigkeit/Leere danach. Aftercare-Strategien."
+        },
+        {
+          "id": "EP26",
+          "schema": "consent_rating",
+          "risk_level": "B",
+          "tags": ["emotional", "check_in"],
+          "label": "Emotionale Check-ins während Sex ('Wie fühlst du dich?').",
+          "help": "Unterbricht den Flow oder wichtig für Sicherheit?"
+        },
+        {
+          "id": "EP27",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["emotional", "growth"],
+          "label": "Was würdest du gerne emotional in deiner Sexualität entwickeln?",
+          "help": "Weniger Scham, mehr Offenheit, bessere Kommunikation?"
+        },
+        {
+          "id": "EP28",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["emotional", "initiation"],
+          "label": "Wie fühlst du dich dabei, Sex zu initiieren?",
+          "help": "Emotionale Barrieren beim 'ersten Schritt'.",
+          "options": [
+            "Selbstbewusst - mache ich gerne",
+            "Ok, aber manchmal nervös",
+            "Schwierig - Angst vor Zurückweisung",
+            "Sehr schwer - lieber passiv",
+            "Situationsabhängig"
+          ]
+        },
+        {
+          "id": "EP29",
+          "schema": "consent_rating",
+          "risk_level": "A",
+          "tags": ["emotional", "compliments"],
+          "label": "Komplimente während Sex (über Aussehen, Leistung, etc.).",
+          "help": "Stärkt Selbstwert oder wirkt aufgesetzt?"
+        },
+        {
+          "id": "EP30",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["emotional", "boundaries"],
+          "label": "Welche emotionalen Grenzen sind dir wichtig zu kommunizieren?",
+          "help": "Was ist emotional zu viel oder zu schnell für dich?"
+        }
+      ]
+    }
+  ]
+}

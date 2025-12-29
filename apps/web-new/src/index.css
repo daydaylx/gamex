@@ -1,14 +1,122 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/fonts/Manrope-Var-latin-ext.woff2") format("woff2");
+  unicode-range:
+    U+0100-02BA,
+    U+02BD-02C5,
+    U+02C7-02CC,
+    U+02CE-02D7,
+    U+02DD-02FF,
+    U+0304,
+    U+0308,
+    U+0329,
+    U+1D00-1DBF,
+    U+1E00-1E9F,
+    U+1EF2-1EFF,
+    U+2020,
+    U+20A0-20AB,
+    U+20AD-20C0,
+    U+2113,
+    U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/fonts/Manrope-Var-latin.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF,
+    U+0131,
+    U+0152-0153,
+    U+02BB-02BC,
+    U+02C6,
+    U+02DA,
+    U+02DC,
+    U+0304,
+    U+0308,
+    U+0329,
+    U+2000-206F,
+    U+20AC,
+    U+2122,
+    U+2191,
+    U+2193,
+    U+2212,
+    U+2215,
+    U+FEFF,
+    U+FFFD;
+}
+
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/Sora-Var-latin-ext.woff2") format("woff2");
+  unicode-range:
+    U+0100-02BA,
+    U+02BD-02C5,
+    U+02C7-02CC,
+    U+02CE-02D7,
+    U+02DD-02FF,
+    U+0304,
+    U+0308,
+    U+0329,
+    U+1D00-1DBF,
+    U+1E00-1E9F,
+    U+1EF2-1EFF,
+    U+2020,
+    U+20A0-20AB,
+    U+20AD-20C0,
+    U+2113,
+    U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/Sora-Var-latin.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF,
+    U+0131,
+    U+0152-0153,
+    U+02BB-02BC,
+    U+02C6,
+    U+02DA,
+    U+02DC,
+    U+0304,
+    U+0308,
+    U+0329,
+    U+2000-206F,
+    U+20AC,
+    U+2122,
+    U+2191,
+    U+2193,
+    U+2212,
+    U+2215,
+    U+FEFF,
+    U+FFFD;
+}
+
 /* ============================================================================
    Design System: Intimacy Tool
-   Mobile-first, dark theme with pink accents
+   Mobile-first, warm dark theme with clear hierarchy
    ============================================================================ */
 
 @theme {
   /* Typography */
-  --font-family-display: "Outfit", "Inter", system-ui, sans-serif;
-  --font-family-body: "Inter", system-ui, sans-serif;
+  --font-family-display: "Sora", "Manrope", system-ui, sans-serif;
+  --font-family-body: "Manrope", system-ui, sans-serif;
 
   /* Spacing Scale */
   --spacing-xs: 4px;
@@ -17,40 +125,41 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
 
-  /* Android-Optimized Breakpoints */
-  --breakpoint-xs: 320px; /* Small phones (Galaxy A12, etc.) */
-  --breakpoint-sm: 360px; /* Standard small phones */
-  --breakpoint-md: 412px; /* Standard phones (Pixel, etc.) */
-  --breakpoint-lg: 768px; /* Tablets */
-  --breakpoint-xl: 1024px; /* Large tablets / Desktop */
+  /* Responsive Breakpoints */
+  --breakpoint-xs: 360px; /* Small phones */
+  --breakpoint-sm: 640px; /* Large phones */
+  --breakpoint-md: 768px; /* Tablets */
+  --breakpoint-lg: 1024px; /* Small desktops */
+  --breakpoint-xl: 1280px; /* Large screens */
 
   /* Colors - Dark Theme (Default) */
-  --color-background: #0f0a0f;
-  --color-background-subtle: #1a121a;
-  --color-surface: #241a24;
-  --color-surface-elevated: #2d1f2d;
+  --color-background: #0c1014;
+  --color-background-subtle: #121720;
+  --color-surface: #171e29;
+  --color-surface-elevated: #1f2735;
 
-  --color-border: rgba(244, 114, 182, 0.15);
-  --color-border-strong: rgba(244, 114, 182, 0.3);
+  --color-border: rgba(148, 163, 184, 0.16);
+  --color-border-strong: rgba(148, 163, 184, 0.3);
 
-  --color-primary: #f472b6;
-  --color-primary-hover: #f9a8d4;
-  --color-primary-muted: rgba(244, 114, 182, 0.2);
-  --color-primary-foreground: #0f0a0f;
+  --color-primary: #ff7a6b;
+  --color-primary-hover: #ff9a8f;
+  --color-primary-muted: rgba(255, 122, 107, 0.16);
+  --color-primary-foreground: #0c1014;
 
-  --color-secondary: #3b2d3b;
-  --color-secondary-hover: #4a3a4a;
-  --color-secondary-foreground: #fafafa;
+  --color-secondary: #212837;
+  --color-secondary-hover: #2a3143;
+  --color-secondary-foreground: #f8fafc;
 
-  --color-accent: #2d1f2d;
-  --color-accent-foreground: #fafafa;
+  --color-accent: #202636;
+  --color-accent-foreground: #f8fafc;
 
-  --color-muted: #4a3a4a;
-  --color-muted-foreground: #a1a1a1;
+  --color-muted: #2b3242;
+  --color-muted-foreground: #a5b0c2;
 
-  --color-foreground: #fafafa;
-  --color-foreground-muted: #d4d4d4;
+  --color-foreground: #f8fafc;
+  --color-foreground-muted: #d0d5dd;
 
   --color-destructive: #ef4444;
   --color-destructive-foreground: #fafafa;
@@ -72,28 +181,29 @@
   --color-button-no-foreground: #ffffff;
 
   /* Cards */
-  --color-card: #1a121a;
-  --color-card-foreground: #fafafa;
+  --color-card: #151b25;
+  --color-card-foreground: #f8fafc;
 
   /* Card Variants */
-  --card-border-subtle: rgba(244, 114, 182, 0.1);
-  --card-border-medium: rgba(244, 114, 182, 0.2);
-  --card-border-strong: rgba(244, 114, 182, 0.3);
+  --card-border-subtle: rgba(148, 163, 184, 0.12);
+  --card-border-medium: rgba(148, 163, 184, 0.22);
+  --card-border-strong: rgba(148, 163, 184, 0.32);
   --card-padding-compact: 12px;
   --card-padding-comfortable: 16px;
   --card-padding-spacious: 24px;
 
   /* Ring for focus states */
-  --color-ring: rgba(244, 114, 182, 0.5);
-  --ring-offset-background: #0f0a0f;
+  --color-ring: rgba(255, 122, 107, 0.5);
+  --ring-offset-background: #0c1014;
 
   /* Input */
-  --color-input: rgba(244, 114, 182, 0.15);
+  --color-input: rgba(255, 255, 255, 0.06);
 
   /* Border Radius */
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
   /* Phase Colors - Semantic & Muted */
@@ -107,38 +217,38 @@
 /* Light Theme Override */
 :root.light {
   /* Light mode colors */
-  --color-background: #ffffff;
-  --color-background-subtle: #f8f8f8;
-  --color-surface: #f4f4f4;
-  --color-surface-elevated: #e8e8e8;
+  --color-background: #f8fafc;
+  --color-background-subtle: #eef2f6;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f1f5f9;
 
-  --color-border: rgba(244, 114, 182, 0.2);
-  --color-border-strong: rgba(244, 114, 182, 0.4);
+  --color-border: rgba(15, 23, 42, 0.12);
+  --color-border-strong: rgba(15, 23, 42, 0.2);
 
-  --color-primary: #ec4899;
-  --color-primary-hover: #db2777;
-  --color-primary-muted: rgba(236, 72, 153, 0.15);
+  --color-primary: #e86152;
+  --color-primary-hover: #f07a6c;
+  --color-primary-muted: rgba(232, 97, 82, 0.15);
   --color-primary-foreground: #ffffff;
 
-  --color-secondary: #e8e8e8;
-  --color-secondary-hover: #d4d4d4;
-  --color-secondary-foreground: #0f0a0f;
+  --color-secondary: #eef2f6;
+  --color-secondary-hover: #e2e8f0;
+  --color-secondary-foreground: #0f172a;
 
-  --color-accent: #f4f4f4;
-  --color-accent-foreground: #0f0a0f;
+  --color-accent: #e8edf4;
+  --color-accent-foreground: #0f172a;
 
-  --color-muted: #d4d4d4;
-  --color-muted-foreground: #737373;
+  --color-muted: #e2e8f0;
+  --color-muted-foreground: #475569;
 
-  --color-foreground: #0f0a0f;
-  --color-foreground-muted: #404040;
+  --color-foreground: #0f172a;
+  --color-foreground-muted: #475569;
 
-  --color-card: #f8f8f8;
-  --color-card-foreground: #0f0a0f;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
 
-  --ring-offset-background: #ffffff;
+  --ring-offset-background: #f8fafc;
 
-  --color-input: rgba(0, 0, 0, 0.1);
+  --color-input: rgba(15, 23, 42, 0.08);
 }
 
 /* Base Styles */
@@ -152,16 +262,202 @@
 html {
   font-family: var(--font-family-body);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background-color: var(--color-background);
+  background-image:
+    radial-gradient(120% 120% at 20% 0%, rgba(255, 122, 107, 0.12), transparent 60%),
+    radial-gradient(120% 120% at 80% 10%, rgba(78, 200, 175, 0.08), transparent 55%);
   color: var(--color-foreground);
   min-height: 100vh;
   min-height: 100dvh; /* Dynamic viewport height for mobile */
+  letter-spacing: 0.01em;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+:root {
+  --page-padding: 20px;
+  --page-max-width: 760px;
+}
+
+:root[data-device="phone"] {
+  font-size: 17px;
+}
+
+.page {
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: var(--page-padding);
+  padding-bottom: calc(var(--page-padding) + env(safe-area-inset-bottom, 16px));
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.page-title {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: 0.98rem;
+  color: var(--color-foreground-muted);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-align: center;
+}
+
+.hero-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255, 122, 107, 0.18), rgba(255, 122, 107, 0.05));
+  border: 1px solid rgba(255, 122, 107, 0.3);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.hero-title {
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  max-width: 32ch;
+  color: var(--color-foreground-muted);
+}
+
+.section-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-muted-foreground);
+  font-weight: 600;
+}
+
+.section-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-foreground-muted);
+}
+
+.section-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.list-card {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.list-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.list-card-meta {
+  font-size: 0.9rem;
+  color: var(--color-foreground-muted);
+}
+
+.pill {
+  background: var(--color-accent);
+  border: 1px solid var(--color-border);
+  color: var(--color-foreground-muted);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--spacing-md) 0;
+}
+
+:root[data-device="phone"] [data-dialog="sheet"] {
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  top: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+:root[data-device="phone"] .page {
+  max-width: 100%;
+}
+
+:root[data-device="phone"] .max-w-xs,
+:root[data-device="phone"] .max-w-sm,
+:root[data-device="phone"] .max-w-md,
+:root[data-device="phone"] .max-w-lg,
+:root[data-device="phone"] .max-w-xl,
+:root[data-device="phone"] .max-w-2xl,
+:root[data-device="phone"] .max-w-3xl,
+:root[data-device="phone"] .max-w-prose,
+:root[data-device="phone"] .max-w-screen-sm,
+:root[data-device="phone"] .max-w-screen-md {
+  max-width: 100% !important;
 }
 
 /* Safe Area Insets for notched devices */
@@ -202,7 +498,8 @@ body {
 .text-display {
   font-family: var(--font-family-display);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 .text-balance {
@@ -355,8 +652,8 @@ button:disabled {
 
 .card-interactive:hover {
   border-color: var(--color-border-strong);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3);
 }
 
 .card-interactive:active {
@@ -559,7 +856,7 @@ button:disabled {
   }
 
   .text-display {
-    font-size: 1.5rem; /* Reduce display text */
+    font-size: 1.45rem; /* Reduce display text */
   }
 }
 

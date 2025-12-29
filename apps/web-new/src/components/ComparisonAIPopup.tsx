@@ -6,7 +6,6 @@
 import { useState } from "preact/hooks";
 import { Sparkles, X, Send, Loader2, AlertCircle } from "lucide-preact";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { hasAPIKey, getAISettings } from "../services/settings";
 import { callOpenRouter, extractResponseText } from "../services/ai/openrouter";
 import type { ComparisonResult } from "../types/compare";
@@ -121,46 +120,45 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <Card variant="elevated" className="w-full max-w-lg max-h-[85vh] flex flex-col">
-          <CardHeader className="flex-shrink-0 pb-2">
-            <div className="flex items-start justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  KI-Analyse
-                </CardTitle>
-                <CardDescription className="mt-1">
-                  Erhalte Impulse für euer Gespräch
-                </CardDescription>
+        <div className="section-card w-full max-w-lg max-h-[85vh] flex flex-col">
+          <div className="section-header">
+            <div>
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <p className="section-title">KI-Analyse</p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-                className="min-h-[44px] min-w-[44px]"
-              >
-                <X className="h-5 w-5" />
-              </Button>
+              <p className="section-subtitle">Erhalte Impulse für euer Gespräch.</p>
             </div>
-          </CardHeader>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleClose}
+              className="min-h-[44px] min-w-[44px]"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
 
-          <CardContent className="flex-1 overflow-y-auto space-y-4">
-            {/* Item Context */}
-            <div className="rounded-lg bg-muted/50 p-3 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-medium text-sm">{item.label}</span>
-                <span className={`text-xs font-medium ${statusConfig.color}`}>
+          <div className="section-body overflow-y-auto min-h-0">
+            <div className="list-card flex-col items-start gap-2">
+              <div className="flex items-center justify-between w-full">
+                <span className="list-card-title">{item.label}</span>
+                <span className={`text-xs font-semibold uppercase tracking-wide ${statusConfig.color}`}>
                   {statusConfig.label}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground w-full">
                 <div>
-                  <span className="text-muted-foreground">Person A:</span>{" "}
-                  <span className="font-medium">{formatValue(item.value_a || item.status_a)}</span>
+                  <span>Person A:</span>{" "}
+                  <span className="text-foreground font-medium">
+                    {formatValue(item.value_a || item.status_a)}
+                  </span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Person B:</span>{" "}
-                  <span className="font-medium">{formatValue(item.value_b || item.status_b)}</span>
+                  <span>Person B:</span>{" "}
+                  <span className="text-foreground font-medium">
+                    {formatValue(item.value_b || item.status_b)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -200,7 +198,7 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
             {/* Insight Result */}
             {insight && (
               <div className="space-y-4">
-                <div className="rounded-lg bg-primary/5 border border-primary/20 p-4">
+                <div className="rounded-xl bg-primary/5 border border-primary/20 p-4">
                   <div className="text-sm leading-relaxed whitespace-pre-wrap">{insight}</div>
                 </div>
 
@@ -219,7 +217,7 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
                       value={customQuestion}
                       onInput={(e) => setCustomQuestion((e.target as HTMLInputElement).value)}
                       placeholder="z.B. Wie können wir damit umgehen?"
-                      className="flex-1 px-3 py-2 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="flex-1 px-3 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                       disabled={loading}
                     />
                     <Button type="submit" size="icon" disabled={!customQuestion.trim() || loading}>
@@ -240,8 +238,8 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
                 </Button>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </>
   );

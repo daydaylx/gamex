@@ -137,7 +137,8 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" onClick={handleClose}>
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 w-full max-h-[90vh] overflow-y-auto
+        data-dialog="sheet"
+        className="dialog-container fixed bottom-0 left-0 right-0 z-50 w-full max-h-[90vh] overflow-y-auto
                    sm:fixed sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] 
                    sm:max-w-lg sm:max-h-[85vh] sm:rounded-xl sm:bottom-auto sm:right-auto
                    animate-slide-up sm:animate-fade-in"
@@ -152,11 +153,11 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
           <CardHeader className="pb-4">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1">
-                <CardTitle className="flex items-center gap-2 text-xl">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Settings className="h-5 w-5 text-primary" />
                   Einstellungen
                 </CardTitle>
-                <CardDescription>Verwalte deine Daten und KI-Optionen</CardDescription>
+                <CardDescription>Verwalte deine Daten und KI-Optionen.</CardDescription>
               </div>
               <Button
                 variant="ghost"
@@ -169,14 +170,14 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6 pb-8">
+          <CardContent className="space-y-8 pb-8">
             {/* Appearance Section */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+              <h3 className="section-title flex items-center gap-2">
                 {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                 Erscheinungsbild
               </h3>
-              <p className="text-xs text-muted-foreground">
+              <p className="section-subtitle">
                 Passe die Darstellung an deine Umgebung an
               </p>
               <Button
@@ -194,15 +195,15 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
               </Button>
             </div>
 
-            <div className="h-px bg-border/40" />
+            <div className="section-divider" />
 
             {/* Backup Section */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+              <h3 className="section-title flex items-center gap-2">
                 <Download className="h-4 w-4" />
                 Datensicherung & Backup
               </h3>
-              <p className="text-xs text-muted-foreground">
+              <p className="section-subtitle">
                 Exportiere deine Daten als JSON oder importiere ein Backup
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -230,20 +231,20 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                   onChange={handleFileImport}
                 />
               </div>
-              <p className="text-[10px] text-muted-foreground text-center italic">
+              <p className="text-xs text-muted-foreground text-center italic">
                 Deine Daten werden als JSON-Datei lokal auf dein Gerät gespeichert.
               </p>
             </div>
 
-            <div className="h-px bg-border/40" />
+            <div className="section-divider" />
 
             {/* AI Configuration Section */}
             <form onSubmit={handleSubmit} className="space-y-5">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+              <h3 className="section-title flex items-center gap-2">
                 <ShieldAlert className="h-4 w-4" />
                 KI-Konfiguration (OpenRouter)
               </h3>
-              <p className="text-xs text-muted-foreground">
+              <p className="section-subtitle">
                 Konfiguriere deine API-Zugänge und Modelle für KI-Funktionen
               </p>
 
@@ -275,7 +276,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                     {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Dein Key wird lokal gespeichert und niemals an unsere Server gesendet
                 </p>
               </div>
@@ -297,7 +298,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                                px-3 py-2 text-sm focus:outline-none focus:ring-2 
                                focus:ring-primary/20 transition-all"
                   />
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     Wird für interaktive Hilfe verwendet
                   </p>
                 </div>
@@ -316,7 +317,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                                px-3 py-2 text-sm focus:outline-none focus:ring-2 
                                focus:ring-primary/20 transition-all"
                   />
-                  <p className="text-[10px] text-muted-foreground">Für Analyse-Berichte</p>
+                  <p className="text-xs text-muted-foreground">Für Analyse-Berichte</p>
                 </div>
               </div>
 
@@ -329,7 +330,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
               )}
 
               {success && (
-                <div className="rounded-xl border border-green-500 bg-green-500/10 p-4 text-sm text-green-700 text-center font-medium flex items-center justify-center gap-2">
+                <div className="rounded-xl border border-emerald-500/60 bg-emerald-500/10 p-4 text-sm text-emerald-200 text-center font-medium flex items-center justify-center gap-2">
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"

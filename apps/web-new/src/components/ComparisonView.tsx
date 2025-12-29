@@ -1,7 +1,7 @@
 import { useState, useEffect } from "preact/hooks";
 import {
   Search,
-  X,
+  ChevronLeft,
   CheckCircle2,
   AlertCircle,
   Info,
@@ -162,24 +162,54 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center animate-fade-in">
-          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Berechne Vergleich...</p>
+      <div className="page">
+        <div className="page-header">
+          {onClose && (
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+          )}
+          <div>
+            <h2 className="page-title">Vergleich & Auswertung</h2>
+            <p className="page-subtitle">Berechne Ergebnisse...</p>
+          </div>
         </div>
+        <section className="section-card">
+          <div className="section-body text-center">
+            <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" />
+            <p className="section-subtitle mt-3">Bitte einen Moment warten.</p>
+          </div>
+        </section>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="p-4">
-        <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
-          {error || "Vergleich konnte nicht geladen werden"}
+      <div className="page">
+        <div className="page-header">
+          {onClose && (
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+          )}
+          <div>
+            <h2 className="page-title">Vergleich & Auswertung</h2>
+            <p className="page-subtitle">Die Auswertung konnte nicht geladen werden.</p>
+          </div>
         </div>
-        <Button variant="outline" className="mt-4" onClick={onClose}>
-          Zurück
-        </Button>
+        <section className="section-card">
+          <div className="section-body">
+            <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
+              {error || "Vergleich konnte nicht geladen werden"}
+            </div>
+            {onClose && (
+              <Button variant="outline" onClick={onClose}>
+                Zurück
+              </Button>
+            )}
+          </div>
+        </section>
       </div>
     );
   }
@@ -197,88 +227,111 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
     scenarioResults.filter((i) => i.pair_status === "BOUNDARY").length;
 
   return (
-    <div className="space-y-6 pb-20 animate-fade-in">
-      {/* Header */}
-      <header className="flex items-center justify-between sticky top-0 bg-background/95 backdrop-blur-sm z-10 py-2 border-b border-border/40">
-        <div>
-          <h2 className="text-xl font-bold">Vergleich & Auswertung</h2>
-          <p className="text-xs text-muted-foreground">{sessionInfo?.name}</p>
-        </div>
+    <div className="page animate-fade-in">
+      <div className="page-header">
         {onClose && (
-          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
-            <X className="h-5 w-5" />
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <ChevronLeft className="h-5 w-5" />
           </Button>
         )}
-      </header>
-
-      {/* Stats Dashboard - Zen Colors */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Gesamt" value={combinedTotal} />
-        <StatCard label="Matches" value={combinedMatch} color="text-emerald-500" />
-        <StatCard label="Offen" value={combinedExplore} color="text-amber-500" />
-        <StatCard label="Grenzen" value={combinedBoundary} color="text-red-500" />
+        <div>
+          <h2 className="page-title">Vergleich & Auswertung</h2>
+          <p className="page-subtitle">{sessionInfo?.name}</p>
+        </div>
       </div>
+
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Überblick</p>
+            <p className="section-subtitle">Zusammenfassung aus Fragebogen und Szenarien.</p>
+          </div>
+        </div>
+        <div className="section-body">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <StatTile label="Gesamt" value={combinedTotal} />
+            <StatTile label="Matches" value={combinedMatch} color="text-emerald-400" />
+            <StatTile label="Offen" value={combinedExplore} color="text-amber-400" />
+            <StatTile label="Grenzen" value={combinedBoundary} color="text-rose-400" />
+          </div>
+        </div>
+      </section>
 
       {/* Action Plan Component */}
       {filteredItems.length > 0 && (
         <ActionPlan items={filteredItems.filter((i) => i.pair_status !== "BOUNDARY")} />
       )}
 
-      {/* Filters Bar */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
-          {BUCKET_OPTIONS.map((option) => (
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Filter</p>
+            <p className="section-subtitle">Sortiere nach Kategorie oder Risiko.</p>
+          </div>
+          <span className="pill">{filteredItems.length} Treffer</span>
+        </div>
+        <div className="section-body">
+          <div className="flex flex-wrap gap-2">
+            {BUCKET_OPTIONS.map((option) => (
+              <Button
+                key={option.value}
+                variant={bucketFilter === option.value ? "default" : "outline"}
+                size="sm"
+                onClick={() => setBucketFilter(option.value)}
+                className="rounded-full whitespace-nowrap"
+              >
+                {option.label}
+              </Button>
+            ))}
             <Button
-              key={option.value}
-              variant={bucketFilter === option.value ? "default" : "outline"}
+              variant={riskOnly ? "destructive" : "outline"}
               size="sm"
-              onClick={() => setBucketFilter(option.value)}
-              className="rounded-full whitespace-nowrap"
+              onClick={() => setRiskOnly(!riskOnly)}
+              className="rounded-full whitespace-nowrap gap-1"
             >
-              {option.label}
+              <AlertCircle className="h-3 w-3" />
+              Risiko
             </Button>
-          ))}
-          <Button
-            variant={riskOnly ? "destructive" : "outline"}
-            size="sm"
-            onClick={() => setRiskOnly(!riskOnly)}
-            className="rounded-full whitespace-nowrap gap-1"
-          >
-            <AlertCircle className="h-3 w-3" />
-            Risiko
-          </Button>
-        </div>
+          </div>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="search"
-            placeholder="Nach Themen suchen..."
-            value={searchQuery}
-            onInput={(e) => setSearchQuery((e.target as HTMLInputElement).value)}
-            className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-border/40 bg-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
-        </div>
-      </div>
-
-      {/* Results List */}
-      <div className="space-y-4">
-        {filteredItems.length === 0 ? (
-          <Card className="border-dashed">
-            <CardContent className="py-12 text-center text-muted-foreground">
-              Keine Einträge für diese Filter gefunden.
-            </CardContent>
-          </Card>
-        ) : (
-          filteredItems.map((item, index) => (
-            <ComparisonItemCard
-              key={`${item.question_id}-${index}`}
-              item={item}
-              onAskAI={() => setAiPopupItem(item)}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="search"
+              placeholder="Nach Themen suchen..."
+              value={searchQuery}
+              onInput={(e) => setSearchQuery((e.target as HTMLInputElement).value)}
+              className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-border/40 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
-          ))
-        )}
-      </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">Ergebnisse</p>
+            <p className="section-subtitle">Einträge aus Fragebogen und Szenarien.</p>
+          </div>
+        </div>
+        <div className="section-body">
+          {filteredItems.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border/60 bg-surface-elevated p-6 text-center text-muted-foreground">
+              Keine Einträge für diese Filter gefunden.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredItems.map((item, index) => (
+                <ComparisonItemCard
+                  key={`${item.question_id}-${index}`}
+                  item={item}
+                  onAskAI={() => setAiPopupItem(item)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* AI Deep Dive */}
       {sessionInfo?.template && (
@@ -299,7 +352,7 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
   );
 }
 
-function StatCard({
+function StatTile({
   label,
   value,
   color = "text-foreground",
@@ -309,12 +362,10 @@ function StatCard({
   color?: string;
 }) {
   return (
-    <Card className="border-border/20 bg-surface/50">
-      <CardContent className="p-4 text-center">
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-        <p className={`text-2xl font-bold ${color}`}>{value}</p>
-      </CardContent>
-    </Card>
+    <div className="list-card flex-col items-start gap-2">
+      <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className={`text-2xl font-semibold ${color}`}>{value}</p>
+    </div>
   );
 }
 

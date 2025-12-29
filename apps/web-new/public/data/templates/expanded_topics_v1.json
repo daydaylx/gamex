@@ -1,0 +1,217 @@
+{
+  "id": "expanded_topics_v1",
+  "name": "Erweiterte Themen: Distanz, Körper & Alltag",
+  "version": 1,
+  "description": "Zusatzmodule für Fernbeziehungen, körperliche Veränderungen, Solo-Sexualität und Langzeit-Dynamiken.",
+  "modules": [
+    {
+      "id": "ldr_digital",
+      "name": "Fernbeziehung & Digitale Intimität",
+      "description": "Verbindung halten über Distanz: Kommunikation, digitale Nähe und gemeinsame Rituale.",
+      "questions": [
+        {
+          "id": "LDR01",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["ldr", "connection"],
+          "label": "Was vermisst du am meisten an mir, wenn wir nicht zusammen sind?",
+          "help": "Fokus auf emotionale oder physische Details."
+        },
+        {
+          "id": "LDR02",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["ldr", "needs"],
+          "label": "Wie wichtig ist dir täglicher Kontakt (Text/Anruf)?",
+          "help": "Abgleich der Kommunikationsbedürfnisse.",
+          "options": [
+            "Essentiell - brauche ich zum Wohlfühlen",
+            "Wichtig - aber mal ein Tag Ruhe ist okay",
+            "Flexibel - Qualität vor Quantität",
+            "Weniger ist mehr - ich brauche viel Raum"
+          ]
+        },
+        {
+          "id": "LDR03",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["ldr", "digital_sex"],
+          "label": "Wie offen bist du für Sexting oder Video-Sex?",
+          "help": "1 = Gar nicht mein Ding, 10 = Liebe ich sehr."
+        },
+        {
+          "id": "LDR04",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["ldr", "future"],
+          "label": "Wie stellst du dir unser gemeinsames Leben vor, wenn die Distanz wegfällt?",
+          "help": "Gemeinsame Visionen stärken die Bindung."
+        },
+        {
+          "id": "LDR05",
+          "schema": "multi_select",
+          "risk_level": "A",
+          "tags": ["ldr", "activities"],
+          "label": "Welche digitalen Dates würden dir Spaß machen?",
+          "help": "Wähle Aktivitäten für die Zeit getrennt.",
+          "options": [
+            "Gemeinsam einen Film schauen (Sync-Watch)",
+            "Online-Games zusammen spielen",
+            "Gleichzeitig kochen und videochatten",
+            "Ein Buch lesen und darüber reden",
+            "Erotische Geschichten vorlesen",
+            "Einfach nur den Video-Call laufen lassen (Co-Existing)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "body_needs",
+      "name": "Körper, Libido & Veränderungen",
+      "description": "Umgang mit unterschiedlichem Verlangen, körperlichen Einschränkungen und Zyklen.",
+      "questions": [
+        {
+          "id": "LIB01",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["libido", "self_assessment"],
+          "label": "Wie hoch ist dein sexuelles Verlangen aktuell?",
+          "help": "1 = Sehr niedrig / kein Interesse, 10 = Sehr hoch."
+        },
+        {
+          "id": "LIB02",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["libido", "factors"],
+          "label": "Was beeinflusst deine Lust am meisten (positiv oder negativ)?",
+          "help": "z.B. Stress, Schlaf, emotionale Nähe, Zyklus, Schmerzen."
+        },
+        {
+          "id": "LIB03",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["libido", "mismatch"],
+          "label": "Wie empfindest du unsere Häufigkeit von Intimität?",
+          "help": "Ehrliche Einschätzung des Status Quo.",
+          "options": [
+            "Genau richtig",
+            "Ich wünschte mir mehr",
+            "Ich wünschte mir weniger / mehr Pausen",
+            "Die Art der Intimität passt nicht (Qualität vs Quantität)"
+          ]
+        },
+        {
+          "id": "MEN01",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["menstruation", "intimacy"],
+          "label": "Sex während der Menstruation?",
+          "help": "Einstellung zu Periodensex.",
+          "options": [
+            "Gerne, kein Problem",
+            "Nur bestimmte Praktiken (z.B. unter der Dusche)",
+            "Eher nicht / Fühle mich unwohl",
+            "Auf gar keinen Fall (Hard Limit)"
+          ]
+        },
+        {
+          "id": "ACC01",
+          "schema": "text",
+          "risk_level": "B",
+          "tags": ["accessibility", "adaptation"],
+          "label": "Gibt es körperliche Beschwerden, die unsere Intimität einschränken?",
+          "help": "Schmerzen, Beweglichkeit, Energielevel. Was können wir anpassen?"
+        }
+      ]
+    },
+    {
+      "id": "solo_jealousy",
+      "name": "Solo, Eifersucht & Compersion",
+      "description": "Selbstbefriedigung, Umgang mit Eifersucht und Mitfreude.",
+      "questions": [
+        {
+          "id": "SOL01",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["masturbation", "openness"],
+          "label": "Wie stehst du zu Masturbation in einer Beziehung?",
+          "help": "Die eigene Zeit mit sich selbst.",
+          "options": [
+            "Wichtig für mein Wohlbefinden (privat)",
+            "Gerne auch mal voreinander / gemeinsam",
+            "Mache ich selten / nie",
+            "Fühlt sich wie Betrug an (möchte darüber reden)"
+          ]
+        },
+        {
+          "id": "JEA01",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["jealousy", "triggers"],
+          "label": "Was löst bei dir Eifersucht aus?",
+          "help": "Bestimmte Situationen, Personen oder Verhaltensweisen."
+        },
+        {
+          "id": "COM01",
+          "schema": "text",
+          "risk_level": "C",
+          "tags": ["compersion", "joy"],
+          "label": "Kannst du Freude empfinden, wenn ich Spaß ohne dich habe (Compersion)?",
+          "help": "Mitfreude statt Neid bei unabhängigen Erlebnissen."
+        },
+        {
+          "id": "JEA02",
+          "schema": "enum",
+          "risk_level": "B",
+          "tags": ["jealousy", "support"],
+          "label": "Was hilft dir am besten, wenn du unsicher oder eifersüchtig bist?",
+          "help": "Strategien zur Beruhigung.",
+          "options": [
+            "Viel Bestätigung und Worte",
+            "Körperliche Nähe und Kuscheln",
+            "Raum für mich alleine zum Sortieren",
+            "Ablenkung / Gemeinsame Aktivität"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "longterm_spark",
+      "name": "Langzeit & Routine",
+      "description": "Für Paare, die schon länger zusammen sind: Neue Impulse und Wertschätzung.",
+      "questions": [
+        {
+          "id": "LNG01",
+          "schema": "text",
+          "risk_level": "A",
+          "tags": ["longterm", "appreciation"],
+          "label": "Was ist eine Sache, die du an mir nach all der Zeit immer noch anziehend findest?",
+          "help": "Fokus auf beständige Qualitäten."
+        },
+        {
+          "id": "LNG02",
+          "schema": "multi_select",
+          "risk_level": "B",
+          "tags": ["longterm", "adventure"],
+          "label": "Welche Routine-Breaker könnten wir probieren?",
+          "help": "Kleine Abenteuer für den Alltag.",
+          "options": [
+            "Ein Überraschungs-Date planen (abwechselnd)",
+            "Sex an einem neuen Ort in der Wohnung",
+            "Ein gemeinsames Hobby starten",
+            "Digital Detox Wochenende",
+            "Rollenspiel / 'Erstes Date' nachspielen"
+          ]
+        },
+        {
+          "id": "LNG03",
+          "schema": "scale_1_10",
+          "risk_level": "B",
+          "tags": ["longterm", "satisfaction"],
+          "label": "Wie zufrieden bist du mit unserer aktuellen 'Quality Time'?",
+          "help": "1 = Wir leben nur nebeneinander her, 10 = Wir haben tiefe Momente."
+        }
+      ]
+    }
+  ]
+}

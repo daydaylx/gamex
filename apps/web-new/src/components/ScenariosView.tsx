@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import { ChevronLeft, ChevronRight, X, AlertTriangle, Info, Shield, Layers } from "lucide-preact";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { loadScenarios } from "../services/api";
 
 interface ScenariosViewProps {
@@ -52,23 +51,23 @@ interface ScenariosData {
   scenarios: Scenario[];
 }
 
-// Risk type colors for options - Muted/Semantic
+// Risk type colors for option markers
 const riskTypeColors: Record<string, string> = {
-  boundary: "bg-green-600/90 text-green-50",
-  fantasy_passive: "bg-blue-600/90 text-blue-50",
-  fantasy_active: "bg-indigo-600/90 text-indigo-50",
-  playful: "bg-amber-500/90 text-amber-50",
-  negotiation: "bg-orange-500/90 text-orange-50",
-  checkin: "bg-stone-500/90 text-stone-50",
-  safety: "bg-teal-600/90 text-teal-50",
-  conditional: "bg-purple-600/90 text-purple-50",
-  active: "bg-red-600/90 text-red-50",
-  submission: "bg-pink-600/90 text-pink-50",
-  explore: "bg-cyan-600/90 text-cyan-50",
-  passive: "bg-slate-500/90 text-slate-50",
-  hesitant: "bg-yellow-600/90 text-yellow-50",
-  soft: "bg-rose-500/90 text-rose-50",
-  masochism: "bg-red-800/90 text-red-100",
+  boundary: "bg-emerald-500/20 text-emerald-200 border border-emerald-500/40",
+  fantasy_passive: "bg-sky-500/20 text-sky-200 border border-sky-500/40",
+  fantasy_active: "bg-indigo-500/20 text-indigo-200 border border-indigo-500/40",
+  playful: "bg-amber-500/20 text-amber-200 border border-amber-500/40",
+  negotiation: "bg-orange-500/20 text-orange-200 border border-orange-500/40",
+  checkin: "bg-slate-500/20 text-slate-200 border border-slate-500/40",
+  safety: "bg-teal-500/20 text-teal-200 border border-teal-500/40",
+  conditional: "bg-violet-500/20 text-violet-200 border border-violet-500/40",
+  active: "bg-rose-500/20 text-rose-200 border border-rose-500/40",
+  submission: "bg-pink-500/20 text-pink-200 border border-pink-500/40",
+  explore: "bg-cyan-500/20 text-cyan-200 border border-cyan-500/40",
+  passive: "bg-slate-500/20 text-slate-200 border border-slate-500/40",
+  hesitant: "bg-yellow-500/20 text-yellow-200 border border-yellow-500/40",
+  soft: "bg-fuchsia-500/20 text-fuchsia-200 border border-fuchsia-500/40",
+  masochism: "bg-red-600/20 text-red-200 border border-red-600/40",
 };
 
 export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewProps) {
@@ -201,38 +200,47 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Szenarien</h2>
+      <div className="page">
+        <div className="page-header">
+          <div>
+            <h2 className="page-title">Szenarien</h2>
+            <p className="page-subtitle">Lädt Szenarien...</p>
+          </div>
           {onClose && (
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-5 w-5" />
             </Button>
           )}
         </div>
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">Lädt Szenarien...</p>
-          </CardContent>
-        </Card>
+        <section className="section-card">
+          <div className="section-body text-center">
+            <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" />
+            <p className="section-subtitle mt-3">Bitte einen Moment warten.</p>
+          </div>
+        </section>
       </div>
     );
   }
 
   if (error || !scenariosData || scenariosData.scenarios.length === 0) {
     return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Szenarien</h2>
+      <div className="page">
+        <div className="page-header">
+          <div>
+            <h2 className="page-title">Szenarien</h2>
+            <p className="page-subtitle">Leider konnten die Szenarien nicht geladen werden.</p>
+          </div>
           {onClose && (
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-5 w-5" />
             </Button>
           )}
         </div>
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
-          {error || "Keine Szenarien gefunden"}
-        </div>
+        <section className="section-card">
+          <div className="rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive">
+            {error || "Keine Szenarien gefunden"}
+          </div>
+        </section>
       </div>
     );
   }
@@ -250,16 +258,16 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
   // Deck Overview
   if (showDeckOverview) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="page">
+        <div className="page-header">
+          <Button variant="ghost" size="icon" onClick={() => setShowDeckOverview(false)}>
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
           <div>
-            <h2 className="text-2xl font-bold">Szenarien-Decks</h2>
-            <p className="text-sm text-muted-foreground">Wähle ein Deck zum Starten</p>
+            <h2 className="page-title">Szenarien-Decks</h2>
+            <p className="page-subtitle">Wähle ein Deck zum Starten.</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowDeckOverview(false)}>
-              Zurück
-            </Button>
+          <div className="ml-auto flex gap-2">
             {onClose && (
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-5 w-5" />
@@ -268,52 +276,47 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {scenariosData.decks.map((deck, index) => {
-            const deckScenarios = deck.scenarios.length;
-            const answeredInDeck = deck.scenarios.filter((id) => answers[id]).length;
-            const deckProgress =
-              deckScenarios > 0 ? Math.round((answeredInDeck / deckScenarios) * 100) : 0;
+        <section className="section-card">
+          <div className="section-body">
+            {scenariosData.decks.map((deck, index) => {
+              const deckScenarios = deck.scenarios.length;
+              const answeredInDeck = deck.scenarios.filter((id) => answers[id]).length;
+              const deckProgress =
+                deckScenarios > 0 ? Math.round((answeredInDeck / deckScenarios) * 100) : 0;
 
-            return (
-              <Card
-                key={deck.id}
-                className={`cursor-pointer transition-all hover:ring-2 hover:ring-primary ${
-                  deck.requires_safety_gate ? "border-red-500/50" : ""
-                }`}
-                onClick={() => jumpToDeck(index)}
-              >
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        {deck.name}
-                        {deck.requires_safety_gate && (
-                          <AlertTriangle className="h-4 w-4 text-red-500" />
-                        )}
-                      </CardTitle>
-                      <CardDescription>{deck.description}</CardDescription>
+              return (
+                <button
+                  key={deck.id}
+                  type="button"
+                  onClick={() => jumpToDeck(index)}
+                  className={`list-card card-interactive w-full text-left ${
+                    deck.requires_safety_gate ? "border-red-500/50" : ""
+                  }`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="list-card-title truncate">{deck.name}</p>
+                      {deck.requires_safety_gate && (
+                        <AlertTriangle className="h-4 w-4 text-red-400" />
+                      )}
                     </div>
-                    <span className="text-sm text-muted-foreground">{deckScenarios} Karten</span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <p className="list-card-meta line-clamp-2">{deck.description}</p>
+                    <div className="progress-bar mt-3">
                       <div
-                        className="h-full bg-primary transition-all duration-300"
+                        className="progress-bar-fill"
                         style={{ width: `${deckProgress}%` }}
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground text-right">
+                    <p className="list-card-meta mt-2">
                       {answeredInDeck} / {deckScenarios} beantwortet
                     </p>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                  <span className="pill">{deckScenarios} Karten</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
       </div>
     );
   }
@@ -321,40 +324,52 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
   // Safety Gate Warning
   if (deckRequiresSafetyGate && currentDeck) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Szenarien-Modus</h2>
-          {onClose && (
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-5 w-5" />
-            </Button>
-          )}
+      <div className="page">
+        <div className="page-header">
+          <Button variant="ghost" size="icon" onClick={() => setShowDeckOverview(true)}>
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h2 className="page-title">Sicherheits-Gate</h2>
+            <p className="page-subtitle">Bitte bestätige die Voraussetzungen.</p>
+          </div>
+          <div className="ml-auto flex gap-2">
+            {onClose && (
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
         </div>
 
-        <Card className="border-red-500 bg-red-500/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-red-600">
-              <AlertTriangle className="h-6 w-6" />
-              Sicherheits-Gate: {currentDeck.name}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">{currentDeck.description}</p>
+        <section className="section-card border border-red-500/40 bg-red-500/10">
+          <div className="section-header">
+            <div>
+              <p className="section-title text-red-300 flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                {currentDeck.name}
+              </p>
+              <p className="section-subtitle">{currentDeck.description}</p>
+            </div>
+          </div>
 
-            <div className="rounded-lg bg-background p-4 space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Voraussetzungen für dieses Deck:
-              </h4>
-              <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                <li>Safeword ist vereinbart und wird 100% respektiert</li>
-                <li>Beide Partner:innen fühlen sich sicher und wohl</li>
-                <li>Ausreichend Zeit für Nachbesprechung</li>
-                <li>Keine Überraschungen - alles wird vorher besprochen</li>
-              </ul>
+          <div className="section-body">
+            <div className="list-card bg-background">
+              <div>
+                <p className="list-card-title flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  Voraussetzungen für dieses Deck
+                </p>
+                <ul className="mt-3 list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                  <li>Safeword ist vereinbart und wird respektiert.</li>
+                  <li>Beide Partner:innen fühlen sich sicher.</li>
+                  <li>Ausreichend Zeit für Nachbesprechung.</li>
+                  <li>Keine Überraschungen ohne vorherige Absprache.</li>
+                </ul>
+              </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 variant="outline"
                 onClick={() => {
@@ -365,7 +380,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
                 }}
                 className="flex-1"
               >
-                Zurück zum vorherigen Deck
+                Zum vorherigen Deck
               </Button>
               <Button
                 onClick={() => acceptSafetyGate(currentDeck.id)}
@@ -374,219 +389,204 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
                 Verstanden, fortfahren
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       </div>
     );
   }
 
   return (
     <div
-      className="space-y-6 pt-2"
+      className="page"
       onTouchStart={handleTouchStart as any}
       onTouchMove={handleTouchMove as any}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Zen Mode Progress - Subtle top bar */}
-      <div className="fixed top-0 left-0 w-full h-1 z-50 bg-background">
-        <div
-          className="h-full bg-primary/70 transition-all duration-500"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-
-      {/* Zen Header */}
-      <div className="flex items-center justify-between px-1">
-        <div>
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <p className="section-title">{currentDeck?.name || "Szenarien"}</p>
+            <p className="section-subtitle">
+              Karte {currentScenarioIndex + 1} von {scenariosInDeck.length}
+            </p>
+          </div>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold">{currentDeck?.name}</h2>
-            <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-accent">
-              Karte {currentScenarioIndex + 1}
-            </span>
+            <Button variant="ghost" size="icon" onClick={() => setShowDeckOverview(true)}>
+              <Layers className="h-5 w-5" />
+            </Button>
+            {onClose && (
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="ghost" size="sm" onClick={() => setShowDeckOverview(true)}>
-            <Layers className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Decks</span>
-          </Button>
-          {onClose && (
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-5 w-5" />
-            </Button>
-          )}
+        <div className="progress-bar">
+          <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
         </div>
-      </div>
+        <p className="list-card-meta mt-2">Gesamtfortschritt: {progress}%</p>
+      </section>
 
-      {/* Scenario Card */}
       {currentScenario && (
-        <Card className="border-2 border-primary/20">
-          <CardHeader>
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1">
-                {currentScenario.category && (
-                  <CardDescription className="mb-2 text-xs uppercase tracking-wide font-medium text-primary/70">
-                    {currentScenario.category}
-                  </CardDescription>
-                )}
-                <CardTitle className="text-xl leading-relaxed">{currentScenario.title}</CardTitle>
-              </div>
-              {currentScenario.info_card && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowInfoCard(!showInfoCard)}
-                  className={showInfoCard ? "bg-muted" : ""}
-                >
-                  <Info className="h-5 w-5" />
-                </Button>
-              )}
+        <section className="section-card">
+          <div className="section-header">
+            <div className="space-y-2">
+              {currentScenario.category && <span className="pill">{currentScenario.category}</span>}
+              <h3 className="text-xl font-semibold leading-snug">{currentScenario.title}</h3>
+              <p className="section-subtitle">{currentScenario.description}</p>
             </div>
-          </CardHeader>
+            {currentScenario.info_card && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowInfoCard(!showInfoCard)}
+                className={showInfoCard ? "bg-muted" : ""}
+              >
+                <Info className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
 
-          <CardContent className="space-y-6">
-            {/* Scenario Description */}
-            <p className="text-muted-foreground leading-relaxed">{currentScenario.description}</p>
-
-            {/* Info Card (collapsible) */}
-            {showInfoCard && currentScenario.info_card && (
-              <div className="rounded-lg bg-muted/50 p-4 space-y-3 border border-border/50">
+          {showInfoCard && currentScenario.info_card && (
+            <div className="list-card bg-muted/40">
+              <div className="space-y-3">
                 {currentScenario.info_card.emotional_context && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">
-                      💭 Emotionaler Kontext
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="list-card-title">Emotionaler Kontext</p>
+                    <p className="list-card-meta">
                       {currentScenario.info_card.emotional_context}
                     </p>
                   </div>
                 )}
                 {currentScenario.info_card.typical_risks && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">
-                      ⚠️ Typische Risiken
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {currentScenario.info_card.typical_risks}
-                    </p>
+                    <p className="list-card-title">Typische Risiken</p>
+                    <p className="list-card-meta">{currentScenario.info_card.typical_risks}</p>
                   </div>
                 )}
                 {currentScenario.info_card.safety_gate && (
                   <div>
-                    <h4 className="text-sm font-semibold mb-1 text-foreground/80">
-                      🛡️ Sicherheitshinweis
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {currentScenario.info_card.safety_gate}
-                    </p>
+                    <p className="list-card-title">Sicherheitshinweis</p>
+                    <p className="list-card-meta">{currentScenario.info_card.safety_gate}</p>
                   </div>
                 )}
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Scenario-specific Safety Gate */}
-            {currentScenario.safety_gate && (
-              <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3">
-                <p className="text-sm text-red-600 flex items-start gap-2">
-                  <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                  {currentScenario.safety_gate.message ||
-                    "Dieses Szenario erfordert besondere Vorsicht und vorherige Absprache."}
-                </p>
-              </div>
-            )}
+          {currentScenario.safety_gate && (
+            <div className="list-card border border-red-500/40 bg-red-500/10">
+              <AlertTriangle className="h-4 w-4 text-red-300" />
+              <p className="list-card-meta text-red-200">
+                {currentScenario.safety_gate.message ||
+                  "Dieses Szenario erfordert besondere Vorsicht und vorherige Absprache."}
+              </p>
+            </div>
+          )}
 
-            {/* Person A Response with 4 Options - Grid fix for mobile */}
-            <div className="space-y-3">
-              <h3 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                Person A
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {currentScenario.options.map((option) => (
-                  <Button
+          <div className="section-divider" />
+
+          <div className="section-body">
+            <div>
+              <p className="section-title">Person A</p>
+              <p className="section-subtitle">Wähle die passende Option.</p>
+            </div>
+            <div className="grid gap-2">
+              {currentScenario.options.map((option) => {
+                const selected = currentAnswers?.a === option.id;
+                const markerClass =
+                  riskTypeColors[option.risk_type] || "bg-muted text-muted-foreground border";
+                return (
+                  <button
                     key={option.id}
-                    variant={currentAnswers?.a === option.id ? "default" : "outline"}
+                    type="button"
                     onClick={() => handleAnswer("a", option.id)}
-                    className={`w-full text-left h-auto py-3 px-4 whitespace-normal justify-start ${
-                      currentAnswers?.a === option.id
-                        ? riskTypeColors[option.risk_type] || "bg-primary"
-                        : ""
-                    }`}
+                    className={`list-card w-full text-left ${selected ? "ring-2 ring-primary/40" : "card-interactive"}`}
                   >
-                    <span className="font-semibold mr-2 opacity-70">{option.id}.</span>
-                    {option.label}
-                  </Button>
-                ))}
-              </div>
+                    <span
+                      className={`h-7 w-7 rounded-full text-xs font-semibold flex items-center justify-center ${markerClass}`}
+                    >
+                      {option.id}
+                    </span>
+                    <span className="flex-1 min-w-0 text-sm leading-snug">{option.label}</span>
+                  </button>
+                );
+              })}
             </div>
+          </div>
 
-            {/* Person B Response with 4 Options */}
-            <div className="space-y-3">
-              <h3 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                Person B
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {currentScenario.options.map((option) => (
-                  <Button
+          <div className="section-divider" />
+
+          <div className="section-body">
+            <div>
+              <p className="section-title">Person B</p>
+              <p className="section-subtitle">Wähle die passende Option.</p>
+            </div>
+            <div className="grid gap-2">
+              {currentScenario.options.map((option) => {
+                const selected = currentAnswers?.b === option.id;
+                const markerClass =
+                  riskTypeColors[option.risk_type] || "bg-muted text-muted-foreground border";
+                return (
+                  <button
                     key={option.id}
-                    variant={currentAnswers?.b === option.id ? "default" : "outline"}
+                    type="button"
                     onClick={() => handleAnswer("b", option.id)}
-                    className={`w-full text-left h-auto py-3 px-4 whitespace-normal justify-start ${
-                      currentAnswers?.b === option.id
-                        ? riskTypeColors[option.risk_type] || "bg-primary"
-                        : ""
-                    }`}
+                    className={`list-card w-full text-left ${selected ? "ring-2 ring-primary/40" : "card-interactive"}`}
                   >
-                    <span className="font-semibold mr-2 opacity-70">{option.id}.</span>
-                    {option.label}
-                  </Button>
-                ))}
-              </div>
+                    <span
+                      className={`h-7 w-7 rounded-full text-xs font-semibold flex items-center justify-center ${markerClass}`}
+                    >
+                      {option.id}
+                    </span>
+                    <span className="flex-1 min-w-0 text-sm leading-snug">{option.label}</span>
+                  </button>
+                );
+              })}
             </div>
+          </div>
 
-            {/* Tags */}
-            {currentScenario.tags && currentScenario.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-2">
-                {currentScenario.tags.map((tag, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-1 text-xs rounded-full bg-muted/50 text-muted-foreground border border-border/50"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Navigation */}
-            <div className="flex justify-between pt-6 border-t border-border/50">
-              <Button
-                variant="outline"
-                onClick={goToPreviousScenario}
-                disabled={currentDeckIndex === 0 && currentScenarioIndex === 0}
-                className="gap-2 min-h-[48px]"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Vorherige
-              </Button>
-
-              <Button
-                onClick={goToNextScenario}
-                disabled={
-                  currentDeckIndex === scenariosData.decks.length - 1 &&
-                  currentScenarioIndex === scenariosInDeck.length - 1
-                }
-                className="gap-2 min-h-[48px]"
-              >
-                Nächste
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+          {currentScenario.tags && currentScenario.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {currentScenario.tags.map((tag, i) => (
+                <span key={i} className="pill">
+                  {tag}
+                </span>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+          )}
+
+          <div className="section-divider" />
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              variant="outline"
+              onClick={goToPreviousScenario}
+              disabled={currentDeckIndex === 0 && currentScenarioIndex === 0}
+              className="gap-2 flex-1"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Vorherige
+            </Button>
+
+            <Button
+              onClick={goToNextScenario}
+              disabled={
+                currentDeckIndex === scenariosData.decks.length - 1 &&
+                currentScenarioIndex === scenariosInDeck.length - 1
+              }
+              className="gap-2 flex-1"
+            >
+              Nächste
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </section>
       )}
 
-      {/* Swipe hint */}
-      <p className="text-center text-xs text-muted-foreground/50 pb-4">💡 Wische für Navigation</p>
+      <p className="text-center text-xs text-muted-foreground/70">
+        💡 Wische nach links oder rechts zum Navigieren.
+      </p>
     </div>
   );
 }
