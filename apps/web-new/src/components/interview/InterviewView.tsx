@@ -1,11 +1,11 @@
 /**
  * Interview View Component
  * Main interview interface with chat-style UI and structured forms
- * Mobile-optimized with swipe gestures and haptic feedback
+ * Optimized for mobile chat with auto-progress answers and inline quick replies
  */
 
-import { useState, useEffect, useRef, useCallback } from "preact/hooks";
-import { ChevronLeft, ChevronRight, MessageCircle, SkipForward } from "lucide-preact";
+import { useState, useEffect, useRef } from "preact/hooks";
+import { ArrowLeft, MessageCircle, SkipForward, X } from "lucide-preact";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { InfoPopover } from "../InfoPopover";
@@ -26,8 +26,10 @@ import {
 import { haptics, useInterviewBackButton } from "../../platform/capacitor";
 import type { InterviewScenario, InterviewSession, InterviewAnswer } from "../../types/interview";
 
-// Swipe threshold in pixels
-const SWIPE_THRESHOLD = 80;
+interface SystemMessage {
+  id: string;
+  text: string;
+}
 
 interface InterviewViewProps {
   sessionId: string;
@@ -45,11 +47,7 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
   const [showAskAI, setShowAskAI] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState<Partial<InterviewAnswer>>({});
-
-  // Swipe state
-  const [swipeOffset, setSwipeOffset] = useState(0);
-  const [isSwiping, setIsSwiping] = useState(false);
-  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const [systemMessages, setSystemMessages] = useState<SystemMessage[]>([]);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const currentScenario = scenarios[currentIndex];
@@ -118,9 +116,11 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
     haptics.light();
   }
 
-  async function handleNext() {
+  async function handleNextWithOverride(override?: Partial<InterviewAnswer>) {
     if (!currentScenario || !session) return;
-    if (currentAnswer.primary === undefined || currentAnswer.primary === null) {
+    const mergedAnswer = { ...currentAnswer, ...override };
+
+    if (mergedAnswer.primary === undefined || mergedAnswer.primary === null) {
       // User tried to continue without answering - haptic feedback
       await haptics.light();
       return;
@@ -130,17 +130,17 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
     await haptics.medium();
 
     // Save current answer if we have a primary value
-    if (currentAnswer.primary !== undefined && currentAnswer.primary !== null) {
+    if (mergedAnswer.primary !== undefined && mergedAnswer.primary !== null) {
       const answer: InterviewAnswer = {
         scenario_id: currentScenario.id,
         person,
-        primary: currentAnswer.primary,
-        emotion: currentAnswer.emotion,
-        comfort: currentAnswer.comfort,
-        continue_preference: currentAnswer.continue_preference,
-        conditions: currentAnswer.conditions,
-        notes: currentAnswer.notes,
-        skipped: currentAnswer.skipped ?? false,
+        primary: mergedAnswer.primary,
+        emotion: mergedAnswer.emotion,
+        comfort: mergedAnswer.comfort,
+        continue_preference: mergedAnswer.continue_preference,
+        conditions: mergedAnswer.conditions,
+        notes: mergedAnswer.notes,
+        skipped: mergedAnswer.skipped ?? false,
         timestamp: new Date().toISOString(),
       };
 
@@ -170,6 +170,13 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
       setCurrentIndex(prevIndex);
       updateInterviewProgress(sessionId, person, prevIndex);
       setCurrentAnswer({});
+      setSystemMessages((prev) => [
+        ...prev,
+        {
+          id: `${Date.now()}-${prev.length}`,
+          text: `Zurück zu Frage ${prevIndex + 1}`,
+        },
+      ]);
     }
   }
 
@@ -204,56 +211,17 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
     }
   }
 
-  // Swipe handlers
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    const touch = e.touches[0];
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
-    setIsSwiping(false);
-  }, []);
-
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!touchStartRef.current) return;
-
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - touchStartRef.current.x;
-    const deltaY = touch.clientY - touchStartRef.current.y;
-
-    // Only consider horizontal swipes (prevent vertical scroll interference)
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
-      setIsSwiping(true);
-      // Limit swipe offset
-      const maxOffset = 120;
-      const clampedOffset = Math.max(-maxOffset, Math.min(maxOffset, deltaX));
-      setSwipeOffset(clampedOffset);
-    }
-  }, []);
-
-  const handleTouchEnd = useCallback(async () => {
-    if (!touchStartRef.current || !isSwiping) {
-      touchStartRef.current = null;
-      setSwipeOffset(0);
-      return;
-    }
-
-    // Determine action based on swipe direction and distance
-    if (swipeOffset < -SWIPE_THRESHOLD && currentIndex < scenarios.length - 1) {
-      // Swipe left → next question
-      await handleNext();
-    } else if (swipeOffset > SWIPE_THRESHOLD && currentIndex > 0) {
-      // Swipe right → previous question
-      await handlePrevious();
-    }
-
-    // Reset swipe state
-    touchStartRef.current = null;
-    setSwipeOffset(0);
-    setIsSwiping(false);
-  }, [swipeOffset, currentIndex, scenarios.length, isSwiping]);
-
   // Android back button handler
   useInterviewBackButton(handlePrevious, currentIndex > 0, () => {
     if (onClose) onClose();
   });
+
+  // Auto-scroll to the latest message when the index or system messages change
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [currentIndex, systemMessages.length]);
 
   if (loading) {
     return (
@@ -326,169 +294,177 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
   const existingAnswer = getInterviewAnswer(sessionId, person, currentScenario.id);
   const _isAnswered = !!existingAnswer && !existingAnswer.skipped;
   void _isAnswered; // Reserved for answer state visualization
-  const canContinue = currentAnswer.primary !== undefined && currentAnswer.primary !== null;
   const remainingQuestions = Math.max(0, scenarios.length - (currentIndex + 1));
+  const mergedAnswer = existingAnswer ? { ...existingAnswer, ...currentAnswer } : currentAnswer;
+
+  const answeredHistory = scenarios
+    .slice(0, currentIndex)
+    .map((scenario) => ({
+      scenario,
+      answer: getInterviewAnswer(sessionId, person, scenario.id),
+    }))
+    .filter((entry) => entry.answer);
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-120px)] relative">
-      {/* Sticky Progress Header */}
+      {/* Chat Header */}
       <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border pb-3 pt-1 -mx-4 px-4">
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">Person {person}</span>
-              <span className="text-muted-foreground">•</span>
-              <span className="text-muted-foreground truncate max-w-[120px]">
-                {currentScenario.section}
-              </span>
-            </div>
-            <span className="text-muted-foreground whitespace-nowrap">
-              {currentIndex + 1}/{scenarios.length} • {progress}% • Noch {remainingQuestions}
-            </span>
-          </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary transition-all duration-300 ease-out"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Swipeable Content Area */}
-      <div
-        ref={contentRef}
-        className="flex-1 pb-28 pt-4 overflow-y-auto"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* Swipe indicator */}
-        {isSwiping && Math.abs(swipeOffset) > 20 && (
-          <div
-            className={`fixed top-1/2 -translate-y-1/2 z-30 flex items-center gap-2 px-4 py-2 rounded-full bg-surface-elevated/90 backdrop-blur-sm shadow-lg transition-opacity duration-150
-              ${swipeOffset < 0 ? "right-4" : "left-4"}
-              ${Math.abs(swipeOffset) > SWIPE_THRESHOLD ? "opacity-100" : "opacity-60"}
-            `}
-          >
-            {swipeOffset < 0 ? (
-              <>
-                <span className="text-sm font-medium">Weiter</span>
-                <ChevronRight className="h-5 w-5" />
-              </>
-            ) : (
-              <>
-                <ChevronLeft className="h-5 w-5" />
-                <span className="text-sm font-medium">Zurück</span>
-              </>
-            )}
-          </div>
-        )}
-
-        {/* Content with swipe transform */}
-        <div
-          className="space-y-4 transition-transform duration-75"
-          style={{
-            transform: isSwiping ? `translateX(${swipeOffset * 0.3}px)` : "translateX(0)",
-            opacity: isSwiping ? 1 - Math.abs(swipeOffset) / 400 : 1,
-          }}
-        >
-          {/* Chat Bubble with Scenario */}
-          <ChatBubble text={currentScenario.scenario_text} title="Guide" />
-
-          {/* Mini Form */}
-          <Card className="animate-fade-in">
-            <CardContent className="pt-5 space-y-5">
-              {/* Header with Info and Ask AI */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold leading-tight">{currentScenario.title}</h3>
-                  {currentScenario.help_text && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {currentScenario.help_text}
-                    </p>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  {currentScenario.help_text && (
-                    <InfoPopover
-                      title={currentScenario.title}
-                      content={currentScenario.help_text}
-                    />
-                  )}
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setShowAskAI(true)}
-                    title="Frage an KI stellen"
-                    className="min-w-[44px] min-h-[44px]"
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Form */}
-              <InterviewMiniForm
-                scenario={currentScenario}
-                answer={existingAnswer || undefined}
-                person={person}
-                onChange={handleAnswerChange}
-              />
-
-              {!canContinue && (
-                <div className="callout text-sm">
-                  Bitte wähle eine Antwort, um fortzufahren oder nutze Skip.
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Fixed Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-t border-border">
-        <div className="max-w-2xl mx-auto px-4 py-3 pb-safe">
-          <div className="flex justify-between items-center gap-3">
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentIndex === 0}
-                className="gap-1.5 min-h-[48px] px-4 touch-feedback"
-              >
-                <ChevronLeft className="h-5 w-5" />
-                <span className="hidden sm:inline">Zurück</span>
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={handleSkip}
-                className="gap-1.5 min-h-[48px] px-3 text-muted-foreground touch-feedback"
-              >
-                <SkipForward className="h-5 w-5" />
-                <span className="hidden sm:inline">Skip</span>
-              </Button>
-            </div>
-
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
             <Button
-              onClick={handleNext}
-              className="gap-1.5 min-h-[48px] px-5 font-semibold touch-feedback shadow-lg shadow-primary/20"
-              disabled={!canContinue}
+              variant="ghost"
+              size="icon"
+              onClick={handlePrevious}
+              disabled={currentIndex === 0}
+              className="min-w-[44px] min-h-[44px]"
+              title="Zurück zur vorherigen Frage"
             >
-              {currentIndex === scenarios.length - 1 ? "Fertig" : "Weiter"}
-              <ChevronRight className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <p className="text-sm text-muted-foreground">Interview Person {person}</p>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <span className="truncate max-w-[140px]">{currentScenario.section}</span>
+                <span className="text-muted-foreground">•</span>
+                <span>{currentScenario.title}</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+              {currentIndex + 1}/{scenarios.length} • {progress}%
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="min-w-[40px] min-h-[40px]"
+              title="Interview schließen"
+            >
+              <X className="h-5 w-5" />
             </Button>
           </div>
         </div>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+          <div className="rounded-full bg-primary/10 text-primary px-2.5 py-1 font-semibold">
+            Chat-Modus aktiv
+          </div>
+          <div>• Noch {remainingQuestions} offen</div>
+        </div>
       </div>
 
-      {/* Ask AI Popup */}
+      {/* Chat Stream */}
+      <div ref={contentRef} className="flex-1 overflow-y-auto space-y-5 pt-4 pb-28">
+        {systemMessages.map((msg) => (
+          <SystemBubble key={msg.id} text={msg.text} />
+        ))}
+
+        {answeredHistory.map(({ scenario, answer }) => (
+          <div key={scenario.id} className="space-y-3 px-1">
+            <ChatBubble text={scenario.scenario_text} title="Guide" />
+            {answer && <AnswerBubble answer={answer} scenario={scenario} />}
+          </div>
+        ))}
+
+        <div className="space-y-3 px-1">
+          <ChatBubble text={currentScenario.scenario_text} title="Guide" />
+
+          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground pl-12 pr-2">
+            <div className="flex items-center gap-2">
+              {currentScenario.help_text && (
+                <InfoPopover title={currentScenario.title} content={currentScenario.help_text} />
+              )}
+              <button
+                type="button"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => setShowAskAI(true)}
+              >
+                <span className="inline-flex items-center gap-1">
+                  <MessageCircle className="h-4 w-4" />
+                  KI um Hilfe bitten
+                </span>
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <SkipForward className="h-4 w-4" /> Skip
+            </button>
+          </div>
+
+          <InterviewMiniForm
+            scenario={currentScenario}
+            answer={mergedAnswer}
+            person={person}
+            onChange={handleAnswerChange}
+            autoAdvance
+            onSubmit={(override) => handleNextWithOverride(override)}
+            onSkip={handleSkip}
+          />
+        </div>
+      </div>
+
       <AskAIPopup
         scenario={currentScenario}
         currentAnswer={currentAnswer}
         open={showAskAI}
         onClose={() => setShowAskAI(false)}
       />
+    </div>
+  );
+}
+
+function AnswerBubble({
+  answer,
+  scenario,
+}: {
+  answer: InterviewAnswer;
+  scenario: InterviewScenario;
+}) {
+  const primaryLabel =
+    scenario.primary_answer_type === "likert5"
+      ? `${answer.primary}/5`
+      : typeof answer.primary === "string"
+        ? answer.primary
+        : String(answer.primary ?? "");
+
+  return (
+    <div className="flex justify-end gap-3 items-start">
+      <div className="flex-1 flex flex-col items-end min-w-0">
+        <div className="text-xs text-muted-foreground mb-1">Du</div>
+        <div className="rounded-2xl rounded-br-none bg-primary text-primary-foreground px-4 py-3 shadow-sm max-w-[80%] space-y-2">
+          <div className="font-semibold leading-tight break-words">{primaryLabel}</div>
+
+          {(answer.emotion?.length || answer.comfort || answer.notes) && (
+            <div className="flex flex-wrap gap-2 text-[11px] text-primary-foreground/90">
+              {answer.emotion?.map((emotion) => (
+                <span key={emotion} className="rounded-full bg-primary-foreground/15 px-2 py-1">
+                  {emotion}
+                </span>
+              ))}
+              {answer.comfort && <span className="rounded-full bg-primary-foreground/15 px-2 py-1">Komfort {answer.comfort}/5</span>}
+              {answer.notes && (
+                <span className="rounded-full bg-primary-foreground/15 px-2 py-1 max-w-full truncate">
+                  {answer.notes}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/15 flex items-center justify-center text-primary font-semibold">
+        Du
+      </div>
+    </div>
+  );
+}
+
+function SystemBubble({ text }: { text: string }) {
+  return (
+    <div className="flex justify-center">
+      <div className="rounded-full bg-muted px-3 py-1 text-[11px] text-muted-foreground">{text}</div>
     </div>
   );
 }
