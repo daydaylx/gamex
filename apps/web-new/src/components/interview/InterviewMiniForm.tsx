@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "preact/hooks";
-import { ChevronDown, ChevronUp } from "lucide-preact";
+import { ChevronDown, ChevronUp, Send, SkipForward } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ScaleInput } from "../form/ScaleInput";
 import { EmotionChips } from "./EmotionChips";
@@ -16,6 +16,9 @@ interface InterviewMiniFormProps {
   answer?: Partial<InterviewAnswer> | null;
   person: "A" | "B";
   onChange: (answer: Partial<InterviewAnswer>) => void;
+  onSubmit?: (override?: Partial<InterviewAnswer>) => void;
+  onSkip?: () => void;
+  autoAdvance?: boolean;
   disabled?: boolean;
 }
 
@@ -24,10 +27,14 @@ export function InterviewMiniForm({
   answer,
   person: _person,
   onChange,
+  onSubmit,
+  onSkip,
+  autoAdvance = false,
   disabled = false,
 }: InterviewMiniFormProps) {
   void _person; // Reserved for person-specific styling
   const [showOptional, setShowOptional] = useState(false);
+  const [autoSubmitted, setAutoSubmitted] = useState(false);
 
   // Initialize form values from answer or defaults
   const primary = answer?.primary ?? null;
@@ -39,7 +46,8 @@ export function InterviewMiniForm({
 
   useEffect(() => {
     setShowOptional(hasOptional);
-  }, [scenario.id]);
+    setAutoSubmitted(false);
+  }, [scenario.id, hasOptional]);
 
   useEffect(() => {
     if (hasOptional && !showOptional) {
@@ -58,6 +66,11 @@ export function InterviewMiniForm({
     } else {
       // Likert scale - light feedback
       await haptics.light();
+    }
+
+    if (autoAdvance && onSubmit && !autoSubmitted) {
+      setAutoSubmitted(true);
+      setTimeout(() => onSubmit({ primary: value }), 220);
     }
   }
 
@@ -79,18 +92,13 @@ export function InterviewMiniForm({
 
   // Render primary answer input based on type
   function renderPrimaryInput() {
-    const header = (
-      <div className="flex items-center justify-between gap-2">
-        <label className="text-sm font-medium">1) {scenario.primary_label}</label>
-        <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Pflicht</span>
-      </div>
-    );
-
     if (scenario.primary_answer_type === "likert5") {
       return (
-        <div className="space-y-3">
-          {header}
-          <p className="text-xs text-muted-foreground">1 = gar nicht, 5 = sehr.</p>
+        <div className="rounded-2xl bg-primary/5 border border-primary/20 px-4 py-3 space-y-3">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">{scenario.primary_label}</span>
+            <span>1 = gar nicht, 5 = sehr</span>
+          </div>
           <ScaleInput
             value={typeof primary === "number" ? primary : undefined}
             onChange={(val) => handlePrimaryChange(val)}
@@ -98,6 +106,7 @@ export function InterviewMiniForm({
             max={5}
             disabled={disabled}
           />
+          <div className="text-[11px] text-muted-foreground">Sende automatisch nach Auswahl.</div>
         </div>
       );
     }
@@ -111,35 +120,31 @@ export function InterviewMiniForm({
 
       return (
         <div className="space-y-3">
-          {header}
-          <p className="text-xs text-muted-foreground">Wähle eine Option.</p>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="text-xs text-muted-foreground font-semibold">{scenario.primary_label}</div>
+          <div className="flex flex-wrap gap-2">
             {options.map((opt) => {
               const isSelected = primary === opt.value;
               return (
-                <Button
+                <button
                   key={opt.value}
                   type="button"
-                  variant={isSelected ? opt.variant : "outline"}
-                  size="lg"
                   onClick={() => handlePrimaryChange(opt.value)}
                   disabled={disabled}
-                  ripple={isSelected}
-                  aria-pressed={isSelected}
                   className={`
-                    min-h-[56px] h-14 text-base transition-all duration-200
+                    inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all shadow-sm
                     ${
                       isSelected
-                        ? "ring-2 ring-offset-2 ring-offset-background scale-[1.02]"
-                        : "active:scale-95"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background text-foreground hover:bg-muted border-border"
                     }
                   `}
                 >
                   {opt.label}
-                </Button>
+                </button>
               );
             })}
           </div>
+          <div className="text-[11px] text-muted-foreground">Tippe eine Antwort an, um automatisch fortzufahren.</div>
         </div>
       );
     }
@@ -153,12 +158,11 @@ export function InterviewMiniForm({
       {renderPrimaryInput()}
 
       {/* Comfort Scale (Optional but recommended) */}
-      <div className="space-y-3">
+      <div className="rounded-2xl bg-muted/60 px-4 py-3 space-y-3">
         <div className="flex items-center justify-between gap-2">
-          <label className="text-sm font-medium">2) Komfort/Sicherheit</label>
+          <label className="text-sm font-medium">Komfort/Sicherheit</label>
           <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Optional</span>
         </div>
-        <p className="text-xs text-muted-foreground">Wie wohl fühlst du dich dabei?</p>
         <ScaleInput
           value={comfort}
           onChange={handleComfortChange}
@@ -174,8 +178,8 @@ export function InterviewMiniForm({
         value={emotion}
         onChange={handleEmotionChange}
         disabled={disabled}
-        label="3) Emotionen (optional)"
-        helper="Wähle bis zu zwei Gefühle, die gerade passen."
+        label="Emotionen (optional)"
+        helper="Füge bis zu zwei Gefühle als Nachricht hinzu."
       />
 
       {/* Optional Fields (Collapsible) */}
@@ -188,19 +192,17 @@ export function InterviewMiniForm({
           aria-expanded={showOptional}
         >
           {showOptional ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          {showOptional ? "Details ausblenden" : "Mehr Details (optional)"}
+          {showOptional ? "Details ausblenden" : "Freitext & Bedingungen"}
         </button>
 
         {!showOptional && (
-          <p className="text-xs text-muted-foreground">
-            Bedingungen, Grenzen oder Notizen ergänzen.
-          </p>
+          <p className="text-xs text-muted-foreground">Teile Grenzen oder Notizen als Chat-Beitrag.</p>
         )}
 
         {showOptional && (
           <div className="mt-4 space-y-4">
             {/* Conditions */}
-            <div className="space-y-2">
+            <div className="space-y-2 rounded-2xl bg-background/80 border px-3 py-3">
               <label htmlFor="conditions" className="text-sm font-medium">
                 Bedingungen/Grenzen
               </label>
@@ -215,20 +217,49 @@ export function InterviewMiniForm({
             </div>
 
             {/* Notes */}
-            <div className="space-y-2">
-              <label htmlFor="notes" className="text-sm font-medium">
-                Notizen
+            <div className="space-y-2 rounded-2xl bg-background/80 border px-3 py-3">
+              <label htmlFor="notes" className="text-sm font-medium flex items-center gap-2">
+                Freitext-Nachricht
               </label>
               <textarea
                 id="notes"
                 value={notes}
                 onInput={(e) => handleNotesChange((e.target as HTMLTextAreaElement).value)}
                 disabled={disabled}
-                placeholder="z.B. Kommt sehr auf Stimmung an..."
+                placeholder="Schreib eine kurze Notiz, sie erscheint als gesendete Nachricht."
                 className="w-full min-h-[80px] px-3 py-2 rounded-md border border-input bg-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
               />
+              <div className="flex justify-between items-center pt-1 text-[11px] text-muted-foreground">
+                <span>Optional – wird zusammen mit der Antwort gespeichert.</span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  className="gap-1"
+                  disabled={!primary || disabled}
+                  onClick={() => onSubmit?.()}
+                >
+                  <Send className="h-3.5 w-3.5" /> Senden
+                </Button>
+              </div>
             </div>
           </div>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <SkipForward className="h-4 w-4" />
+          <button
+            type="button"
+            onClick={() => onSkip?.()}
+            className="underline decoration-dotted underline-offset-4"
+          >
+            Szene überspringen
+          </button>
+        </div>
+        {!autoAdvance && onSubmit && (
+          <Button type="button" size="sm" onClick={() => onSubmit()}>Weiter</Button>
         )}
       </div>
     </div>
