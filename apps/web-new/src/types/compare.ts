@@ -1,3 +1,5 @@
+import type { InterviewAnswer } from "./interview";
+
 export type MatchLevel = "MATCH" | "EXPLORE" | "BOUNDARY";
 
 export interface ComparisonResult {
@@ -18,9 +20,9 @@ export interface ComparisonResult {
   delta_interest: number | null;
   delta_comfort: number | null;
 
-  // For other schemas
-  value_a: any;
-  value_b: any;
+  // For other schemas (can be string, number, string[], object, etc.)
+  value_a: unknown;
+  value_b: unknown;
 
   // Flags
   flags: string[];
@@ -32,9 +34,9 @@ export interface ComparisonResult {
   help?: string;
   prompts?: string[];
 
-  // Metadata
-  a?: any; // Full response object A
-  b?: any; // Full response object B
+  // Metadata - Full interview answer objects
+  a?: InterviewAnswer;
+  b?: InterviewAnswer;
 }
 
 export interface CompareSummary {

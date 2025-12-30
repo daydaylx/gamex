@@ -7,6 +7,8 @@ export interface SessionListItem {
   created_at: string;
   has_a: boolean;
   has_b: boolean;
+  archived?: boolean;
+  archived_at?: string;
 }
 
 export interface SessionInfo extends SessionListItem {

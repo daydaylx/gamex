@@ -245,7 +245,7 @@ Person B antwortet: ${formatValue(item.value_b || item.status_b)}`;
   );
 }
 
-function formatValue(val: any): string {
+function formatValue(val: unknown): string {
   if (val === null || val === undefined) return "Keine Antwort";
   if (Array.isArray(val)) return val.join(", ");
 

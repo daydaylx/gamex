@@ -2,6 +2,8 @@
  * AI-related type definitions for OpenRouter integration
  */
 
+import type { ResponseMap } from "./form";
+
 export interface AISettings {
   apiKey: string;
   helpModel: string;
@@ -54,7 +56,7 @@ export interface AIHelpRequest {
   helpText?: string;
   answerType: string;
   options?: string[] | Array<{ value: string; label: string }>;
-  currentAnswer?: any;
+  currentAnswer?: unknown;
   userQuestion: string;
 }
 
@@ -71,8 +73,8 @@ export interface AIReportRequest {
     schema: string;
     tags?: string[];
   }>;
-  responsesA: Record<string, any>;
-  responsesB: Record<string, any>;
+  responsesA: ResponseMap;
+  responsesB: ResponseMap;
 }
 
 export interface AIReportDifference {
