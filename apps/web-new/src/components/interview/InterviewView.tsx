@@ -22,9 +22,20 @@ import {
   getInterviewAnswer,
   getCombinedSession,
   findFirstIncompleteIndex,
+  resolveSceneStream,
+  getSceneDecisions,
+  saveSceneDecision,
+  SceneStreamMessage,
+  buildSceneReaction,
 } from "../../services/interview-storage";
 import { haptics, useInterviewBackButton } from "../../platform/capacitor";
-import type { InterviewScenario, InterviewSession, InterviewAnswer } from "../../types/interview";
+import type {
+  InterviewScenario,
+  InterviewSession,
+  InterviewAnswer,
+  InterviewSceneDecision,
+  InterviewSceneNode,
+} from "../../types/interview";
 
 // Swipe threshold in pixels
 const SWIPE_THRESHOLD = 80;
@@ -45,6 +56,8 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
   const [showAskAI, setShowAskAI] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState<Partial<InterviewAnswer>>({});
+  const [sceneStream, setSceneStream] = useState<SceneStreamMessage[]>([]);
+  const [pendingSceneNode, setPendingSceneNode] = useState<InterviewSceneNode | null>(null);
 
   // Swipe state
   const [swipeOffset, setSwipeOffset] = useState(0);
@@ -70,6 +83,26 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
       setCurrentAnswer(existing || {});
     }
   }, [sessionId, person, currentScenario, session]);
+
+  // Build scene stream whenever we change scenario or reload decisions
+  useEffect(() => {
+    if (currentScenario) {
+      refreshSceneStream();
+    } else {
+      setSceneStream([]);
+      setPendingSceneNode(null);
+    }
+  }, [currentScenario, sessionId, person]);
+
+  function refreshSceneStream(decisions?: InterviewSceneDecision[]) {
+    if (!currentScenario) return;
+    const resolved = resolveSceneStream(
+      currentScenario,
+      decisions || getSceneDecisions(sessionId, person, currentScenario.id)
+    );
+    setSceneStream(resolved.stream);
+    setPendingSceneNode(resolved.pendingNode);
+  }
 
   async function loadData() {
     setLoading(true);
@@ -116,6 +149,31 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
     setCurrentAnswer((prev) => ({ ...prev, ...partialAnswer }));
     // Light haptic on answer change
     haptics.light();
+  }
+
+  async function handleSceneChoice(choiceId: string) {
+    if (!currentScenario || !pendingSceneNode) return;
+    const choice = pendingSceneNode.choices.find((c) => c.id === choiceId);
+    if (!choice) return;
+
+    const decision: InterviewSceneDecision = {
+      scenario_id: currentScenario.id,
+      person,
+      node_id: pendingSceneNode.id,
+      choice_id: choiceId,
+      reaction: buildSceneReaction(
+        currentScenario,
+        pendingSceneNode,
+        choice.label,
+        choice.reaction_template
+      ),
+      timestamp: new Date().toISOString(),
+    };
+
+    saveSceneDecision(sessionId, person, decision);
+    const updatedDecisions = getSceneDecisions(sessionId, person, currentScenario.id);
+    refreshSceneStream(updatedDecisions);
+    await haptics.light();
   }
 
   async function handleNext() {
@@ -393,8 +451,47 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
             opacity: isSwiping ? 1 - Math.abs(swipeOffset) / 400 : 1,
           }}
         >
-          {/* Chat Bubble with Scenario */}
-          <ChatBubble text={currentScenario.scenario_text} title="Guide" />
+          <div className="space-y-3">
+            {sceneStream.map((message) => {
+              if (message.role === "user") {
+                return (
+                  <div key={message.id} className="flex justify-end">
+                    <div className="max-w-[80%] rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm shadow-sm">
+                      {message.text}
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <ChatBubble
+                  key={message.id}
+                  text={message.text}
+                  title={message.role === "guide" ? "Guide" : "Reaktion"}
+                  className={message.role === "reaction" ? "opacity-90" : ""}
+                />
+              );
+            })}
+
+            {pendingSceneNode && (
+              <div className="ml-12 space-y-2">
+                <p className="text-xs text-muted-foreground">{pendingSceneNode.prompt}</p>
+                <div className="flex flex-wrap gap-2">
+                  {pendingSceneNode.choices.map((choice) => (
+                    <Button
+                      key={choice.id}
+                      variant="secondary"
+                      size="sm"
+                      className="shadow-sm"
+                      onClick={() => void handleSceneChoice(choice.id)}
+                    >
+                      {choice.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Mini Form */}
           <Card className="animate-fade-in">
