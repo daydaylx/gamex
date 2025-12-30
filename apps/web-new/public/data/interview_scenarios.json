@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "scenarios": [
     {
       "id": "role_lead_01",
@@ -14,12 +14,107 @@
         "Du willst lieber mitbestimmen oder selbst führen.",
         "Du findest es nur okay unter bestimmten Bedingungen."
       ],
-      "tags": ["control", "lead"],
+      "tags": [
+        "control",
+        "lead"
+      ],
       "risk_level": "low",
       "followup_rules": {
         "condition": "interest_high_comfort_low",
         "followup_goal": "Welche Bedingungen würden es sicher/angenehm machen?"
-      }
+      },
+      "reaction_templates": {
+        "default": "Du tendierst zu \"{{choice}}\" bei \"{{title}}\"."
+      },
+      "scene_entry": "opener",
+      "scene_nodes": [
+        {
+          "id": "opener",
+          "prompt": "Dein Partner übernimmt klar die Führung. Was ist dein spontanes Gefühl?",
+          "choices": [
+            {
+              "id": "lead_ok",
+              "label": "Entspannt / angenehm",
+              "next": "why",
+              "reaction_template": "Du wirkst offen dafür, geführt zu werden."
+            },
+            {
+              "id": "needs_bounds",
+              "label": "Nur mit klaren Grenzen",
+              "next": "boundaries",
+              "reaction_template": "Du magst Führung, wenn sie klar abgesprochen ist."
+            },
+            {
+              "id": "uneasy",
+              "label": "Macht mich unsicher",
+              "followup": "reassure",
+              "reaction_template": "Du brauchst mehr Sicherheit, bevor Führung angenehm wird."
+            }
+          ]
+        },
+        {
+          "id": "why",
+          "prompt": "Was macht es angenehm, geführt zu werden?",
+          "choices": [
+            {
+              "id": "less_decisions",
+              "label": "Weniger entscheiden müssen",
+              "next": "close"
+            },
+            {
+              "id": "trust",
+              "label": "Vertrauen und Nähe spüren",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Du genießt Führung, weil {{choice}} im Vordergrund steht."
+        },
+        {
+          "id": "boundaries",
+          "prompt": "Welche Grenze oder Absprache brauchst du?",
+          "choices": [
+            {
+              "id": "stopword",
+              "label": "Stoppsignal/Safeword",
+              "next": "close"
+            },
+            {
+              "id": "checkins",
+              "label": "Regelmäßige Check-ins",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Du magst Führung, wenn {{choice}} den Rahmen hält."
+        },
+        {
+          "id": "reassure",
+          "prompt": "Was würde das Gefühl sicherer machen?",
+          "choices": [
+            {
+              "id": "more_info",
+              "label": "Vorher besprechen",
+              "next": "close"
+            },
+            {
+              "id": "slow_down",
+              "label": "Langsam rantasten",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Sicherheit entsteht für dich, wenn {{choice}} eingeplant ist."
+        },
+        {
+          "id": "close",
+          "prompt": "Alles klar, das notiere ich. Bereit für die Bewertung?",
+          "choices": [
+            {
+              "id": "go_on",
+              "label": "Ja, weiter"
+            }
+          ],
+          "reaction_template": "Du bist bereit weiterzugehen."
+        }
+      ]
     },
     {
       "id": "communication_feedback_01",
@@ -34,8 +129,100 @@
         "Du schämst dich oder findest es unromantisch.",
         "Du könntest es üben, brauchst aber Zeit."
       ],
-      "tags": ["communication", "feedback"],
-      "risk_level": "low"
+      "tags": [
+        "communication",
+        "feedback"
+      ],
+      "risk_level": "low",
+      "reaction_templates": {
+        "default": "Bei \"{{title}}\" zeigst du: {{choice}}."
+      },
+      "scene_entry": "opener",
+      "scene_nodes": [
+        {
+          "id": "opener",
+          "prompt": "Wie leicht fällt es dir, währenddessen Feedback zu geben?",
+          "choices": [
+            {
+              "id": "easy",
+              "label": "Geht mir leicht von der Hand",
+              "next": "style"
+            },
+            {
+              "id": "depends",
+              "label": "Kommt auf Stimmung/Setting an",
+              "next": "moment"
+            },
+            {
+              "id": "hard",
+              "label": "Fällt mir eher schwer",
+              "followup": "block"
+            }
+          ]
+        },
+        {
+          "id": "style",
+          "prompt": "Welche Art von Feedback gibst du meist?",
+          "choices": [
+            {
+              "id": "concrete",
+              "label": "Sehr konkret (mehr/weniger/anders)",
+              "next": "close"
+            },
+            {
+              "id": "praise",
+              "label": "Eher Bestätigung/Lob",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Du kommunizierst aktiv und konkret: {{choice}}."
+        },
+        {
+          "id": "moment",
+          "prompt": "Wann teilst du Feedback am liebsten?",
+          "choices": [
+            {
+              "id": "before",
+              "label": "Kurz vorher planen",
+              "next": "close"
+            },
+            {
+              "id": "during",
+              "label": "Spontan im Moment",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Dein Timing fürs Feedback: {{choice}}."
+        },
+        {
+          "id": "block",
+          "prompt": "Was bremst dich beim Feedback geben?",
+          "choices": [
+            {
+              "id": "fear",
+              "label": "Angst, Stimmung zu stören",
+              "next": "close"
+            },
+            {
+              "id": "words",
+              "label": "Finde nicht die Worte",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Du spürst Hürden: {{choice}} steht im Weg."
+        },
+        {
+          "id": "close",
+          "prompt": "Okay, das hilft beim Einordnen. Noch etwas ergänzen?",
+          "choices": [
+            {
+              "id": "continue",
+              "label": "Nein, passt"
+            }
+          ],
+          "reaction_template": "Feedback-Notizen gespeichert."
+        }
+      ]
     },
     {
       "id": "boundaries_safe_word_01",
@@ -50,8 +237,83 @@
         "Nützlich, aber nicht immer nötig.",
         "Nicht so wichtig für mich."
       ],
-      "tags": ["boundaries", "safety"],
-      "risk_level": "low"
+      "tags": [
+        "boundaries",
+        "safety"
+      ],
+      "risk_level": "low",
+      "reaction_templates": {
+        "default": "Du würdest wahrscheinlich: {{choice}}"
+      },
+      "scene_entry": "opener",
+      "scene_nodes": [
+        {
+          "id": "opener",
+          "prompt": "Safeword vereinbaren – was löst das bei dir aus?",
+          "choices": [
+            {
+              "id": "must",
+              "label": "Unbedingt nötig",
+              "next": "usage"
+            },
+            {
+              "id": "nice",
+              "label": "Nett, aber nicht immer",
+              "next": "usage"
+            },
+            {
+              "id": "not_needed",
+              "label": "Brauche ich kaum",
+              "followup": "concern"
+            }
+          ]
+        },
+        {
+          "id": "usage",
+          "prompt": "Wie würdest du das Safeword nutzen?",
+          "choices": [
+            {
+              "id": "hard_stop",
+              "label": "Als klares STOP sofort",
+              "next": "close"
+            },
+            {
+              "id": "slow",
+              "label": "Als \"Bitte langsamer\"",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Du hast ein klares Bild: {{choice}}."
+        },
+        {
+          "id": "concern",
+          "prompt": "Was spricht für dich gegen ein Safeword?",
+          "choices": [
+            {
+              "id": "kills_mood",
+              "label": "Wirkt zu technisch",
+              "next": "close"
+            },
+            {
+              "id": "trust",
+              "label": "Ich vertraue auf nonverbale Zeichen",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Du setzt eher auf Gefühl statt Signal: {{choice}}."
+        },
+        {
+          "id": "close",
+          "prompt": "Danke, damit können wir besser einschätzen, was dir Sicherheit gibt.",
+          "choices": [
+            {
+              "id": "done",
+              "label": "Weiter"
+            }
+          ],
+          "reaction_template": "Sicherheits-Prioritäten notiert."
+        }
+      ]
     },
     {
       "id": "aftercare_cuddling_01",
@@ -66,8 +328,60 @@
         "Nett, aber nicht immer nötig.",
         "Ich brauche eher Abstand danach."
       ],
-      "tags": ["aftercare", "intimacy"],
-      "risk_level": "low"
+      "tags": [
+        "aftercare",
+        "intimacy"
+      ],
+      "risk_level": "low",
+      "reaction_templates": {
+        "default": "Du tendierst zu: {{choice}}"
+      },
+      "scene_entry": "opener",
+      "scene_nodes": [
+        {
+          "id": "opener",
+          "prompt": "Wie stellst du dir die Zeit nach der Intimität vor?",
+          "choices": [
+            {
+              "id": "cuddle",
+              "label": "Gemeinsam kuscheln",
+              "next": "need"
+            },
+            {
+              "id": "space",
+              "label": "Kurz Abstand nehmen",
+              "next": "need"
+            },
+            {
+              "id": "talk",
+              "label": "Kurz reden/checken",
+              "next": "need"
+            }
+          ]
+        },
+        {
+          "id": "need",
+          "prompt": "Was brauchst du in dieser Phase besonders?",
+          "choices": [
+            {
+              "id": "warmth",
+              "label": "Wärme & Nähe",
+              "next": "close"
+            },
+            {
+              "id": "quiet",
+              "label": "Ruhe & Runterkommen",
+              "next": "close"
+            },
+            {
+              "id": "affirm",
+              "label": "Verbales Bestätigen",
+              "next": "close"
+            }
+          ],
+          "reaction_template": "Aftercare heißt für dich vor allem: {{choice}}."
+        }
+      ]
     },
     {
       "id": "roles_switch_01",
@@ -82,7 +396,10 @@
         "Vielleicht, aber nur als Experiment.",
         "Nicht interessant für mich."
       ],
-      "tags": ["roles", "switch"],
+      "tags": [
+        "roles",
+        "switch"
+      ],
       "risk_level": "low",
       "followup_rules": {
         "condition": "interest_high_comfort_low",
@@ -102,7 +419,10 @@
         "Okay, aber mir fehlt manchmal der Schwung.",
         "Zu langsam für meinen Geschmack."
       ],
-      "tags": ["intensity", "tempo"],
+      "tags": [
+        "intensity",
+        "tempo"
+      ],
       "risk_level": "low"
     },
     {
@@ -118,7 +438,10 @@
         "Okay, aber nicht immer.",
         "Zu viel für mich - ich brauche mehr Kontrolle."
       ],
-      "tags": ["intensity", "tempo"],
+      "tags": [
+        "intensity",
+        "tempo"
+      ],
       "risk_level": "low"
     },
     {
@@ -134,7 +457,10 @@
         "Vielleicht mal probieren.",
         "Nicht interessant für mich."
       ],
-      "tags": ["toys", "exploration"],
+      "tags": [
+        "toys",
+        "exploration"
+      ],
       "risk_level": "low"
     },
     {
@@ -150,7 +476,10 @@
         "Als Spiel okay, aber nicht zu ernst.",
         "Zu künstlich für mich."
       ],
-      "tags": ["power", "rules"],
+      "tags": [
+        "power",
+        "rules"
+      ],
       "risk_level": "medium",
       "followup_rules": {
         "condition": "interest_high_comfort_low",
@@ -170,7 +499,10 @@
         "Okay, aber nur manchmal.",
         "Nicht so wichtig für mich."
       ],
-      "tags": ["sensory", "exploration"],
+      "tags": [
+        "sensory",
+        "exploration"
+      ],
       "risk_level": "low"
     },
     {
@@ -186,7 +518,10 @@
         "Okay, aber nicht überall.",
         "Ich bleibe lieber im Schlafzimmer."
       ],
-      "tags": ["variation", "location"],
+      "tags": [
+        "variation",
+        "location"
+      ],
       "risk_level": "low"
     },
     {
@@ -202,7 +537,10 @@
         "Okay, aber nicht die ganze Zeit.",
         "Zu intim oder unangenehm für mich."
       ],
-      "tags": ["connection", "intimacy"],
+      "tags": [
+        "connection",
+        "intimacy"
+      ],
       "risk_level": "low"
     },
     {
@@ -218,7 +556,10 @@
         "Gut, aber nicht jedes Mal nötig.",
         "Stört eher den Fluss."
       ],
-      "tags": ["emotional", "communication"],
+      "tags": [
+        "emotional",
+        "communication"
+      ],
       "risk_level": "low"
     },
     {
@@ -234,7 +575,10 @@
         "Okay, aber führt bei mir oft zu Lust.",
         "Langweilig, ich will dann auch Sex."
       ],
-      "tags": ["touch", "connection"],
+      "tags": [
+        "touch",
+        "connection"
+      ],
       "risk_level": "low"
     },
     {
@@ -250,9 +594,11 @@
         "Nett, aber kein Muss.",
         "Mich stört das eher bei der Arbeit."
       ],
-      "tags": ["digital", "ldr"],
+      "tags": [
+        "digital",
+        "ldr"
+      ],
       "risk_level": "low"
     }
   ]
 }
-

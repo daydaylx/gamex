@@ -3,11 +3,28 @@
  * Schema Version: 1
  */
 
-export const INTERVIEW_SCHEMA_VERSION = 1;
+export const INTERVIEW_SCHEMA_VERSION = 2;
 
 /**
  * Scenario (Szenario-Definition)
  */
+export interface InterviewSceneChoice {
+  id: string;
+  label: string;
+  next?: string;
+  followup?: string;
+  reaction_template?: string;
+}
+
+export interface InterviewSceneNode {
+  id: string;
+  prompt: string;
+  choices: InterviewSceneChoice[];
+  next?: string;
+  followup?: string;
+  reaction_template?: string;
+}
+
 export interface InterviewScenario {
   id: string;
   section: string;
@@ -22,6 +39,15 @@ export interface InterviewScenario {
   followup_rules?: {
     condition: "interest_high_comfort_low" | "skipped" | "boundary";
     followup_goal: string;
+  };
+  /**
+   * Optional Story-Nodes für den Chat-Stream
+   */
+  scene_nodes?: InterviewSceneNode[];
+  scene_entry?: string;
+  reaction_templates?: {
+    default?: string;
+    followup?: string;
   };
 }
 
@@ -49,6 +75,15 @@ export interface InterviewAnswer {
   timestamp: string;
 }
 
+export interface InterviewSceneDecision {
+  scenario_id: string;
+  person: "A" | "B";
+  node_id: string;
+  choice_id: string;
+  reaction?: string;
+  timestamp: string;
+}
+
 /**
  * Session with versioning
  */
@@ -58,6 +93,7 @@ export interface InterviewSession {
   people: ["A", "B"];
   scenario_order: string[];
   answers: InterviewAnswer[];
+  scene_paths: InterviewSceneDecision[];
   progress: { current_index: number };
   created_at: string;
   updated_at: string;

@@ -338,12 +338,15 @@ function handleScale(
   const valA = typeof dataA === "object" && dataA !== null && "value" in dataA ? dataA.value : null;
   const valB = typeof dataB === "object" && dataB !== null && "value" in dataB ? dataB.value : null;
 
-  entry.value_a = safeInt(valA);
-  entry.value_b = safeInt(valB);
+  const numA = safeInt(valA);
+  const numB = safeInt(valB);
+
+  entry.value_a = numA;
+  entry.value_b = numB;
 
   // Match if both answered and values are close (delta <= 2)
-  if (entry.value_a !== null && entry.value_b !== null) {
-    const delta = Math.abs(entry.value_a - entry.value_b);
+  if (numA !== null && numB !== null) {
+    const delta = Math.abs(numA - numB);
     entry.pair_status = delta <= 2 ? "MATCH" : "EXPLORE";
 
     if (delta >= 3) {

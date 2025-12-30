@@ -4,34 +4,27 @@ Vielen Dank für dein Interesse am Projekt! 🎉
 
 ## Quick Start
 
-### Backend Setup
+### Web App Setup (Preact + Vite)
 
 ```bash
-cd backend
-
-# Virtual Environment erstellen
-python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+cd apps/web-new
 
 # Dependencies installieren
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+npm install
+
+# Development Server starten
+npm run dev
+
+# Browser öffnen: http://localhost:5173
 
 # Tests ausführen
-pytest
+npm run test
 
-# Server starten
-python -m app
-```
+# TypeScript prüfen
+npm run typecheck
 
-### Frontend (aktuell)
-
-```bash
-# Server starten (dient auch das Frontend)
-cd backend
-python -m app
-
-# Browser öffnen: http://127.0.0.1:8000
+# Linting
+npm run lint
 ```
 
 ### Mobile App (Android)
@@ -53,49 +46,61 @@ git checkout -b fix/bug-beschreibung
 ### 2. Code schreiben
 
 **Code Style:**
-- **Python:** PEP 8 (max 120 Zeichen/Zeile)
-- **JavaScript:** Konsistent mit bestehendem Code
+- **TypeScript:** Strict Mode aktiviert, ESLint-Regeln befolgen
+- **Preact/React:** Functional Components mit Hooks
 - **Commits:** Aussagekräftige Messages (siehe unten)
 
 **Tools:**
 ```bash
-# Python Code formatieren
-cd backend
-black app/ tests/
-isort app/ tests/
+cd apps/web-new
+
+# Code formatieren
+npm run format
 
 # Linting
-flake8 app/ tests/
+npm run lint
+npm run lint:fix  # Automatische Fixes
 
 # Type Checking
-mypy app/
+npm run typecheck
+
+# Tests
+npm run test
+npm run test:watch  # Watch-Mode
 ```
 
 ### 3. Tests schreiben
 
-**Backend:**
+**Frontend (Vitest + Testing Library):**
 ```bash
-cd backend
-pytest                          # Alle Tests
-pytest tests/test_routes.py     # Einzelne Datei
-pytest -k test_compare          # Tests mit Name
-pytest --cov=app                # Mit Coverage
+cd apps/web-new
+npm run test                    # Alle Tests
+npm run test:watch              # Watch-Mode
+npm run test -- --coverage      # Mit Coverage
+npm run test -- Button.test     # Einzelne Datei
 ```
 
 **Test-Struktur:**
-```python
-def test_feature_name():
-    # Given (Vorbedingungen)
-    ...
+```typescript
+import { render, screen } from '@testing-library/preact';
+import { describe, it, expect } from 'vitest';
+import { Button } from './Button';
 
-    # When (Aktion)
-    ...
+describe('Button', () => {
+  it('should render with text', () => {
+    // Given (Vorbedingungen)
+    const text = 'Click me';
 
-    # Then (Erwartung)
-    assert ...
+    // When (Aktion)
+    render(<Button>{text}</Button>);
+
+    // Then (Erwartung)
+    expect(screen.getByText(text)).toBeInTheDocument();
+  });
+});
 ```
 
-**Coverage-Anforderung:** 60% (wird in CI geprüft)
+**Coverage-Ziel:** 80% für kritische Komponenten
 
 ### 4. Commit Guidelines
 
@@ -141,8 +146,9 @@ Dann auf GitHub einen PR erstellen mit:
 
 **PR-Checklist:**
 - [ ] Tests geschrieben und passing
-- [ ] Code formatiert (black, isort)
-- [ ] Linting passing (flake8)
+- [ ] Code formatiert (`npm run format`)
+- [ ] Linting passing (`npm run lint`)
+- [ ] TypeScript Check passing (`npm run typecheck`)
 - [ ] Dokumentation aktualisiert (falls nötig)
 - [ ] CHANGELOG aktualisiert (bei größeren Features)
 
@@ -150,91 +156,102 @@ Dann auf GitHub einen PR erstellen mit:
 
 ## Code-Organisation
 
-### Backend (`backend/app/`)
+### Frontend (`apps/web-new/src/`)
 
 ```
-app/
-├── core/               # Domain-Logik (keine IO!)
-│   ├── compare.py      # Vergleichsalgorithmus
-│   ├── validation.py   # Validierung
-│   └── types.py        # Typen
-├── storage/            # Persistenz-Layer
-│   └── sqlite.py       # SQLite-Adapter
-├── templates/          # Template-System
-│   ├── loader.py       # Template-Loader
-│   └── normalize.py    # Normalisierung
-├── main.py             # FastAPI App
-├── routes.py           # API-Routen
-├── models.py           # Pydantic Models
-└── db.py               # Datenbank-Setup
+src/
+├── components/         # UI-Komponenten
+│   ├── form/          # Formular-Inputs & Questionnaire
+│   ├── ui/            # Basis-UI (Button, Card, etc.)
+│   ├── interview/     # Interview-spezifische Komponenten
+│   └── a11y/          # Accessibility-Komponenten
+├── services/          # Business-Logik & API
+│   ├── ai/            # AI-Integration (OpenRouter)
+│   ├── comparison/    # Vergleichsalgorithmus
+│   ├── validation/    # Validierungsregeln
+│   ├── api.ts         # API-Calls & Storage
+│   └── logger.ts      # Logging
+├── types/             # TypeScript-Typen
+│   ├── common.ts      # Gemeinsame Types
+│   ├── interview.ts   # Interview-Types
+│   ├── form.ts        # Formular-Types
+│   ├── compare.ts     # Vergleichs-Types
+│   └── ai.ts          # AI-Types
+├── hooks/             # Custom React Hooks
+├── contexts/          # React Contexts
+├── screens/           # Haupt-Screens
+├── views/             # View-Komponenten
+├── lib/               # Utility-Funktionen
+├── platform/          # Capacitor-Integration
+└── App.tsx            # Haupt-App
 ```
 
 **Wichtig:**
-- `core/` enthält **keine** FastAPI-Imports (testbar ohne Framework)
-- `storage/` abstrahiert Datenbank (potentiell austauschbar)
-- `routes.py` ist dünn (nur HTTP-Handling)
-
-### Frontend (`apps/web/web/`)
-
-```
-web/
-├── app.js              # Haupt-App (WIRD REFACTORED!)
-├── core/
-│   ├── compare.js      # Vergleichslogik (Duplikat von Backend)
-│   └── validation.js   # Validierung
-├── storage/
-│   └── indexeddb.js    # Offline-Storage
-└── templates/
-    ├── normalize.js    # Template-Normalisierung
-    └── dependencies.js # Template-Sichtbarkeit
-```
-
-**TODO:** Wird in Phase 3 modularisiert (siehe IMPLEMENTIERUNGSPLAN.md)
+- `services/` enthält **keine** UI-Logik (testbar ohne Components)
+- `components/` sind reine View-Components
+- Types sind zentral in `types/` organisiert
 
 ---
 
 ## Testing-Strategie
 
-### Backend Tests
+### Frontend Tests (Vitest)
 
 **Unit Tests:**
-```python
-# tests/test_core_compare.py
-def test_compare_consent_rating_match():
-    template = {...}
-    resp_a = {"Q1": {"status": "YES", "interest": 3, "comfort": 3}}
-    resp_b = {"Q1": {"status": "YES", "interest": 4, "comfort": 4}}
+```typescript
+// tests/unit/services/comparison/compare.test.ts
+import { describe, it, expect } from 'vitest';
+import { compareResponses } from './compare';
 
-    result = compare(template, resp_a, resp_b)
+describe('compareResponses', () => {
+  it('should identify matching consent ratings', () => {
+    const respA = { Q1: { status: 'YES', interest: 3, comfort: 3 } };
+    const respB = { Q1: { status: 'YES', interest: 4, comfort: 4 } };
 
-    assert result["items"][0]["pair_status"] == "MATCH"
+    const result = compareResponses(template, respA, respB);
+
+    expect(result.items[0].pair_status).toBe('MATCH');
+  });
+});
 ```
 
-**Integration Tests:**
-```python
-# tests/test_routes.py
-def test_create_session_and_save_responses(client):
-    # Session erstellen
-    resp = client.post("/api/sessions", json={"name": "Test", "template_id": "unified_v1"})
-    session_id = resp.json()["id"]
+**Component Tests:**
+```typescript
+// tests/component/QuestionnaireForm.test.tsx
+import { render, screen, waitFor } from '@testing-library/preact';
+import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi } from 'vitest';
+import { QuestionnaireForm } from './QuestionnaireForm';
 
-    # Antworten speichern
-    resp = client.post(f"/api/sessions/{session_id}/responses/A/save",
-                      json={"responses": {...}})
-    assert resp.status_code == 200
+describe('QuestionnaireForm', () => {
+  it('should auto-save after 2 seconds', async () => {
+    const onSave = vi.fn();
+    render(<QuestionnaireForm sessionId="test" person="A" onSave={onSave} />);
+
+    const input = screen.getByLabelText('Antwort');
+    await userEvent.type(input, 'Test answer');
+
+    await waitFor(() => expect(onSave).toHaveBeenCalled(), { timeout: 2500 });
+  });
+});
 ```
 
 **Test-Fixtures:**
-```python
-# tests/conftest.py
-@pytest.fixture
-def client():
-    # FastAPI TestClient
-    return TestClient(app)
+```typescript
+// tests/fixtures/templates.ts
+import type { Template } from '../../src/types/common';
 
-@pytest.fixture
-def sample_template():
-    return load_template("unified_v1")
+export const mockTemplate: Template = {
+  id: 'unified_v3_pure',
+  version: '3.0',
+  modules: [
+    {
+      id: 'communication',
+      title: 'Kommunikation',
+      questions: [/* ... */]
+    }
+  ]
+};
 ```
 
 ---
@@ -244,22 +261,22 @@ def sample_template():
 **WICHTIG:** Dieses Tool verarbeitet **sensible Daten**.
 
 ### Do's:
-- ✅ Validiere **alle** User-Inputs (Backend + Frontend)
-- ✅ Nutze Parameterized Queries (bereits der Fall)
-- ✅ Rate-Limiting für API-Endpoints (TODO)
+- ✅ Validiere **alle** User-Inputs im Frontend
+- ✅ Nutze Content Security Policy (CSP)
 - ✅ Sanitize Output (XSS-Prävention)
-- ✅ HTTPS in Production (TODO: Docker-Setup)
+- ✅ HTTPS in Production
+- ✅ Secure Storage für sensitive Daten (Capacitor SecureStorage)
 
 ### Don'ts:
-- ❌ **NIEMALS** User-Input direkt in SQL interpolieren
 - ❌ **NIEMALS** Secrets in Git committen
 - ❌ **NIEMALS** sensible Daten in Logs ausgeben
-- ❌ **NIEMALS** unverschlüsselte Daten über Netzwerk senden (außer localhost)
+- ❌ **NIEMALS** `dangerouslySetInnerHTML` ohne Sanitization nutzen
+- ❌ **NIEMALS** API-Keys im Frontend-Code hardcoden
 
-**Geplant (Phase 2):**
-- Verschlüsselung der SQLite-DB (SQLCipher)
-- Secure Storage für Mobile App
+**Geplant:**
 - Encryption-at-rest für IndexedDB
+- Capacitor SecureStorage für API-Keys
+- Biometric Authentication für Mobile App
 
 ---
 
@@ -267,39 +284,48 @@ def sample_template():
 
 ### Code-Dokumentation
 
-**Python:**
-```python
-def compare(template: Dict[str, Any], resp_a: Dict[str, Any], resp_b: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Vergleicht zwei Antwort-Sets basierend auf einem Template.
-
-    Args:
-        template: Template-Definition mit Modulen und Fragen
-        resp_a: Antworten von Person A (question_id -> answer)
-        resp_b: Antworten von Person B (question_id -> answer)
-
-    Returns:
-        Vergleichs-Resultat mit:
-        - meta: Template-Metadaten
-        - summary: Counts & Flags
-        - items: Liste aller Fragen mit Paar-Status
-        - action_plan: Top 3 empfohlene Aktivitäten
-
-    Raises:
-        KeyError: Wenn Template nicht gefunden
-    """
-    ...
+**TypeScript (Services):**
+```typescript
+/**
+ * Vergleicht zwei Antwort-Sets basierend auf einem Template.
+ *
+ * @param template - Template-Definition mit Modulen und Fragen
+ * @param respA - Antworten von Person A (question_id -> answer)
+ * @param respB - Antworten von Person B (question_id -> answer)
+ *
+ * @returns Vergleichs-Resultat mit:
+ *   - meta: Template-Metadaten
+ *   - summary: Counts & Flags
+ *   - items: Liste aller Fragen mit Paar-Status
+ *   - actionPlan: Top 3 empfohlene Aktivitäten
+ *
+ * @throws {Error} Wenn Template nicht gefunden
+ */
+export function compareResponses(
+  template: Template,
+  respA: ResponseMap,
+  respB: ResponseMap
+): ComparisonResult {
+  // ...
+}
 ```
 
-**JavaScript:**
-```javascript
+**TypeScript (Komponenten):**
+```typescript
 /**
  * Normalisiert eine Antwort für Rückwärtskompatibilität
- * @param {Object} answer - Rohe Antwort von User
- * @returns {Object} Normalisierte Antwort mit Defaults
+ *
+ * @param answer - Rohe Antwort vom User
+ * @returns Normalisierte Antwort mit Defaults
+ *
+ * @example
+ * ```tsx
+ * const normalized = normalizeAnswer({ status: 'YES' });
+ * // Returns: { status: 'YES', interest: 3, comfort: 3 }
+ * ```
  */
-function normalizeAnswer(answer) {
-  ...
+export function normalizeAnswer(answer: Partial<Answer>): Answer {
+  // ...
 }
 ```
 

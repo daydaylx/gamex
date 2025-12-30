@@ -8,7 +8,7 @@ const STORAGE_PREFIXES = ["gamex:", "gamex_interview_v1"];
 export interface ExportData {
   version: number;
   timestamp: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 /**

@@ -538,7 +538,7 @@ function ComparisonItemCard({ item, onAskAI }: { item: ComparisonResult; onAskAI
   );
 }
 
-function renderFormattedAnswer(val: any, schema?: string): string {
+function renderFormattedAnswer(val: unknown, schema?: string): string {
   if (val === null || val === undefined) return "Keine Antwort";
 
   if (schema === "scenario") {

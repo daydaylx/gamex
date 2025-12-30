@@ -38,45 +38,52 @@ Wenn Informationen fehlen, setze leere Strings/Arrays, erfinde nichts.`;
 /**
  * Format a response value for display in context
  */
-function formatResponseValue(value: any, schema?: string): string {
+function formatResponseValue(value: unknown, schema?: string): string {
   if (value === null || value === undefined) {
     return "Keine Antwort";
   }
 
-  if (schema === "consent_rating" && typeof value === "object") {
+  if (schema === "consent_rating" && typeof value === "object" && value !== null) {
+    const obj = value as Record<string, unknown>;
     const parts: string[] = [];
-    if (value.status) parts.push(`Status: ${value.status}`);
-    if (value.interest !== null && value.interest !== undefined)
-      parts.push(`Interesse: ${value.interest}`);
-    if (value.comfort !== null && value.comfort !== undefined)
-      parts.push(`Komfort: ${value.comfort}`);
+    if (obj.status) parts.push(`Status: ${obj.status}`);
+    if (obj.interest !== null && obj.interest !== undefined)
+      parts.push(`Interesse: ${obj.interest}`);
+    if (obj.comfort !== null && obj.comfort !== undefined)
+      parts.push(`Komfort: ${obj.comfort}`);
     return parts.join(", ") || "Keine Antwort";
   }
 
   if (schema === "scale" || schema === "slider") {
     if (typeof value === "number") return String(value);
     if (typeof value === "object" && value !== null && "value" in value) {
-      return String(value.value ?? "Keine Antwort");
+      const obj = value as Record<string, unknown>;
+      return String(obj.value ?? "Keine Antwort");
     }
   }
 
   if (schema === "enum") {
     if (typeof value === "string") return value;
     if (typeof value === "object" && value !== null && "value" in value) {
-      return value.value ?? "Keine Antwort";
+      const obj = value as Record<string, unknown>;
+      const val = obj.value;
+      return typeof val === "string" ? val : "Keine Antwort";
     }
   }
 
   if (schema === "multi") {
     if (Array.isArray(value)) return value.join(", ");
     if (typeof value === "object" && value !== null && "values" in value) {
-      return Array.isArray(value.values) ? value.values.join(", ") : "Keine Antwort";
+      const obj = value as Record<string, unknown>;
+      return Array.isArray(obj.values) ? obj.values.join(", ") : "Keine Antwort";
     }
   }
 
   if (schema === "text") {
     if (typeof value === "object" && value !== null && "text" in value) {
-      return value.text ?? "Keine Antwort";
+      const obj = value as Record<string, unknown>;
+      const text = obj.text;
+      return typeof text === "string" ? text : "Keine Antwort";
     }
   }
 
@@ -166,10 +173,15 @@ function buildReportContext(
 
       if (answerA || answerB) {
         // Emotions
-        if (answerA?.emotion?.length > 0 || answerB?.emotion?.length > 0) {
+        if (
+          (answerA?.emotion && answerA.emotion.length > 0) ||
+          (answerB?.emotion && answerB.emotion.length > 0)
+        ) {
           parts.push(`  Emotionen:`);
-          if (answerA?.emotion?.length > 0) parts.push(`    A: ${answerA.emotion.join(", ")}`);
-          if (answerB?.emotion?.length > 0) parts.push(`    B: ${answerB.emotion.join(", ")}`);
+          if (answerA?.emotion && answerA.emotion.length > 0)
+            parts.push(`    A: ${answerA.emotion.join(", ")}`);
+          if (answerB?.emotion && answerB.emotion.length > 0)
+            parts.push(`    B: ${answerB.emotion.join(", ")}`);
         }
 
         // Conditions
@@ -239,27 +251,40 @@ function parseJSONResponse(text: string): AIReportResponse | null {
 /**
  * Validate and normalize report structure
  */
-function validateAndNormalizeReport(data: any): AIReportResponse {
+function validateAndNormalizeReport(data: unknown): AIReportResponse {
+  // Type guard for data object
+  if (typeof data !== "object" || data === null) {
+    return {
+      summary: "",
+      high_alignment: [],
+      differences: [],
+      conversation_starters: [],
+      boundaries_and_safety: [],
+    };
+  }
+
+  const obj = data as Record<string, unknown>;
+
   return {
-    summary: typeof data.summary === "string" ? data.summary : "",
-    high_alignment: Array.isArray(data.high_alignment)
-      ? data.high_alignment.filter((x: any) => typeof x === "string")
+    summary: typeof obj.summary === "string" ? obj.summary : "",
+    high_alignment: Array.isArray(obj.high_alignment)
+      ? obj.high_alignment.filter((x: unknown): x is string => typeof x === "string")
       : [],
-    differences: Array.isArray(data.differences)
-      ? data.differences
-          .filter((d: any) => d && typeof d === "object")
-          .map((d: any) => ({
+    differences: Array.isArray(obj.differences)
+      ? obj.differences
+          .filter((d: unknown): d is Record<string, unknown> => d !== null && typeof d === "object")
+          .map((d) => ({
             topic: typeof d.topic === "string" ? d.topic : "",
             personA: typeof d.personA === "string" ? d.personA : "",
             personB: typeof d.personB === "string" ? d.personB : "",
             note: typeof d.note === "string" ? d.note : "",
           }))
       : [],
-    conversation_starters: Array.isArray(data.conversation_starters)
-      ? data.conversation_starters.filter((x: any) => typeof x === "string")
+    conversation_starters: Array.isArray(obj.conversation_starters)
+      ? obj.conversation_starters.filter((x: unknown): x is string => typeof x === "string")
       : [],
-    boundaries_and_safety: Array.isArray(data.boundaries_and_safety)
-      ? data.boundaries_and_safety.filter((x: any) => typeof x === "string")
+    boundaries_and_safety: Array.isArray(obj.boundaries_and_safety)
+      ? obj.boundaries_and_safety.filter((x: unknown): x is string => typeof x === "string")
       : [],
   };
 }

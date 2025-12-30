@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState, useCallback } from "preact/hooks";
 import { ChevronDown, ChevronLeft, ChevronUp, Send, Sparkles, LayoutList, Check } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ConsentRatingInput } from "./ConsentRatingInput";
@@ -127,6 +127,66 @@ export function ChatQuestionnaire({
   const canConfirmSafety = safetyChecks.safeword && safetyChecks.boundaries;
   const canUseAI = hasAPIKey();
 
+  // useCallback definitions BEFORE useEffect calls
+  const getStartIndex = useCallback((): number => {
+    if (!initialModuleId || !template.modules) return 0;
+    const moduleIndex = template.modules.findIndex((m) => m.id === initialModuleId);
+    if (moduleIndex >= 0 && moduleIndex < moduleStartIndices.length) {
+      return moduleStartIndices[moduleIndex];
+    }
+    return 0;
+  }, [initialModuleId, template.modules, moduleStartIndices]);
+
+  const buildHistory = useCallback((data: ResponseMap) => {
+    const history: ChatMessage[] = [];
+    const startIndex = getStartIndex();
+    let nextIndex = startIndex;
+
+    for (let i = startIndex; i < allQuestions.length; i++) {
+      const question = allQuestions[i];
+      const response = data[question.id];
+      if (response !== null && response !== undefined && isMainAnswerValid(question, response)) {
+        history.push(createSystemMessage(question));
+        history.push(createUserMessage(question, response));
+        nextIndex = i + 1;
+      } else {
+        nextIndex = i;
+        break;
+      }
+    }
+
+    if (nextIndex < allQuestions.length) {
+      history.push(createSystemMessage(allQuestions[nextIndex]));
+    } else if (allQuestions.length > 0) {
+      history.push({
+        id: "complete",
+        role: "system",
+        text: "Alles beantwortet. Danke dir.",
+      });
+    }
+
+    setMessages(trimMessages(history));
+    setIsComplete(nextIndex >= allQuestions.length);
+    const clampedIndex = Math.min(nextIndex, Math.max(allQuestions.length - 1, 0));
+    setCurrentIndex(clampedIndex);
+  }, [getStartIndex, allQuestions]);
+
+  const loadExistingResponses = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await loadResponses(sessionId, person);
+      const responseMap = data || {};
+      setResponses(responseMap);
+      buildHistory(responseMap);
+    } catch (err) {
+      console.error("Failed to load responses:", err);
+      setError(err instanceof Error ? err.message : "Fehler beim Laden");
+    } finally {
+      setLoading(false);
+    }
+  }, [sessionId, person, buildHistory]);
+
   useEffect(() => {
     loadExistingResponses();
     return () => {
@@ -134,7 +194,7 @@ export function ChatQuestionnaire({
         clearTimeout(typingTimeoutRef.current);
       }
     };
-  }, [sessionId, person, initialModuleId, template.id]);
+  }, [loadExistingResponses]);
 
   useEffect(() => {
     if (!isSafetyGateTemplate) return;
@@ -187,7 +247,7 @@ export function ChatQuestionnaire({
   useEffect(() => {
     if (!currentQuestion) return;
     setDraftResponse(responses[currentQuestion.id] ?? null);
-  }, [currentQuestion?.id]);
+  }, [currentQuestion?.id, responses, currentQuestion]);
 
   useEffect(() => {
     setAiQuestion("");
@@ -225,7 +285,7 @@ export function ChatQuestionnaire({
     } else {
       setShowConditions(false);
     }
-  }, [currentQuestion?.id, responses]);
+  }, [currentQuestion, responses]);
 
   useEffect(() => {
     if (!chatEndRef.current) return;
@@ -265,65 +325,6 @@ export function ChatQuestionnaire({
       text: answer,
       detail: "KI-Antwort",
     };
-  }
-
-  function getStartIndex(): number {
-    if (!initialModuleId || !template.modules) return 0;
-    const moduleIndex = template.modules.findIndex((m) => m.id === initialModuleId);
-    if (moduleIndex >= 0 && moduleIndex < moduleStartIndices.length) {
-      return moduleStartIndices[moduleIndex];
-    }
-    return 0;
-  }
-
-  function buildHistory(data: ResponseMap) {
-    const history: ChatMessage[] = [];
-    const startIndex = getStartIndex();
-    let nextIndex = startIndex;
-
-    for (let i = startIndex; i < allQuestions.length; i++) {
-      const question = allQuestions[i];
-      const response = data[question.id];
-      if (response !== null && response !== undefined && isMainAnswerValid(question, response)) {
-        history.push(createSystemMessage(question));
-        history.push(createUserMessage(question, response));
-        nextIndex = i + 1;
-      } else {
-        nextIndex = i;
-        break;
-      }
-    }
-
-    if (nextIndex < allQuestions.length) {
-      history.push(createSystemMessage(allQuestions[nextIndex]));
-    } else if (allQuestions.length > 0) {
-      history.push({
-        id: "complete",
-        role: "system",
-        text: "Alles beantwortet. Danke dir.",
-      });
-    }
-
-    setMessages(trimMessages(history));
-    setIsComplete(nextIndex >= allQuestions.length);
-    const clampedIndex = Math.min(nextIndex, Math.max(allQuestions.length - 1, 0));
-    setCurrentIndex(clampedIndex);
-  }
-
-  async function loadExistingResponses() {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await loadResponses(sessionId, person);
-      const responseMap = data || {};
-      setResponses(responseMap);
-      buildHistory(responseMap);
-    } catch (err) {
-      console.error("Failed to load responses:", err);
-      setError(err instanceof Error ? err.message : "Fehler beim Laden");
-    } finally {
-      setLoading(false);
-    }
   }
 
   async function handleSend() {
