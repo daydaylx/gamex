@@ -124,6 +124,16 @@ export async function listTemplates(): Promise<TemplateListItem[]> {
   }));
 }
 
+export async function getTemplateById(templateId: string): Promise<Template | null> {
+  const templates = await loadBundledTemplates();
+  return templates.find((template) => template.id === templateId) || null;
+}
+
+export function getTemplateQuestionCount(template?: Template | null): number {
+  if (!template) return 0;
+  return template.modules.reduce((sum, module) => sum + module.questions.length, 0);
+}
+
 export async function loadResponses(sessionId: string, person: "A" | "B"): Promise<ResponseMap> {
   const key = `${STORAGE_PREFIX}responses:${sessionId}:${person}`;
   return getStorage<ResponseMap>(key) || {};

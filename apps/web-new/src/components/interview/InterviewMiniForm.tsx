@@ -3,7 +3,7 @@
  * Structured answer form with primary, comfort, emotion, conditions, notes
  */
 
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { ChevronDown, ChevronUp } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ScaleInput } from "../form/ScaleInput";
@@ -35,6 +35,17 @@ export function InterviewMiniForm({
   const emotion = answer?.emotion ?? [];
   const conditions = answer?.conditions ?? "";
   const notes = answer?.notes ?? "";
+  const hasOptional = Boolean(conditions.trim() || notes.trim());
+
+  useEffect(() => {
+    setShowOptional(hasOptional);
+  }, [scenario.id]);
+
+  useEffect(() => {
+    if (hasOptional && !showOptional) {
+      setShowOptional(true);
+    }
+  }, [hasOptional, showOptional]);
 
   async function handlePrimaryChange(value: number | string) {
     onChange({ primary: value });
@@ -68,10 +79,18 @@ export function InterviewMiniForm({
 
   // Render primary answer input based on type
   function renderPrimaryInput() {
+    const header = (
+      <div className="flex items-center justify-between gap-2">
+        <label className="text-sm font-medium">1) {scenario.primary_label}</label>
+        <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Pflicht</span>
+      </div>
+    );
+
     if (scenario.primary_answer_type === "likert5") {
       return (
         <div className="space-y-3">
-          <label className="text-sm font-medium">{scenario.primary_label}</label>
+          {header}
+          <p className="text-xs text-muted-foreground">1 = gar nicht, 5 = sehr.</p>
           <ScaleInput
             value={typeof primary === "number" ? primary : undefined}
             onChange={(val) => handlePrimaryChange(val)}
@@ -92,7 +111,8 @@ export function InterviewMiniForm({
 
       return (
         <div className="space-y-3">
-          <label className="text-sm font-medium">{scenario.primary_label}</label>
+          {header}
+          <p className="text-xs text-muted-foreground">Wähle eine Option.</p>
           <div className="grid grid-cols-3 gap-3">
             {options.map((opt) => {
               const isSelected = primary === opt.value;
@@ -105,6 +125,7 @@ export function InterviewMiniForm({
                   onClick={() => handlePrimaryChange(opt.value)}
                   disabled={disabled}
                   ripple={isSelected}
+                  aria-pressed={isSelected}
                   className={`
                     min-h-[56px] h-14 text-base transition-all duration-200
                     ${
@@ -133,9 +154,11 @@ export function InterviewMiniForm({
 
       {/* Comfort Scale (Optional but recommended) */}
       <div className="space-y-3">
-        <label className="text-sm font-medium">
-          Komfort/Sicherheit (1-5) <span className="text-muted-foreground">(optional)</span>
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label className="text-sm font-medium">2) Komfort/Sicherheit</label>
+          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Optional</span>
+        </div>
+        <p className="text-xs text-muted-foreground">Wie wohl fühlst du dich dabei?</p>
         <ScaleInput
           value={comfort}
           onChange={handleComfortChange}
@@ -147,19 +170,32 @@ export function InterviewMiniForm({
       </div>
 
       {/* Emotion Chips (Optional) */}
-      <EmotionChips value={emotion} onChange={handleEmotionChange} disabled={disabled} />
+      <EmotionChips
+        value={emotion}
+        onChange={handleEmotionChange}
+        disabled={disabled}
+        label="3) Emotionen (optional)"
+        helper="Wähle bis zu zwei Gefühle, die gerade passen."
+      />
 
       {/* Optional Fields (Collapsible) */}
-      <div className="border-t pt-4">
+      <div className="border-t pt-4 space-y-2">
         <button
           type="button"
           onClick={() => setShowOptional(!showOptional)}
           className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           disabled={disabled}
+          aria-expanded={showOptional}
         >
           {showOptional ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          {showOptional ? "Weniger anzeigen" : "Bedingungen/Grenzen & Notizen hinzufügen"}
+          {showOptional ? "Details ausblenden" : "Mehr Details (optional)"}
         </button>
+
+        {!showOptional && (
+          <p className="text-xs text-muted-foreground">
+            Bedingungen, Grenzen oder Notizen ergänzen.
+          </p>
+        )}
 
         {showOptional && (
           <div className="mt-4 space-y-4">

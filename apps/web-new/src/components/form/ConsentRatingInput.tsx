@@ -28,15 +28,20 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
 
   // Update when value prop changes (e.g., when loading saved responses)
   useEffect(() => {
-    if (value) {
-      setStatus((value.status as ConsentStatus) || "");
-      setInterest(value.interest ?? null);
-      setComfort(value.comfort ?? null);
-      // Show comfort section if comfort value exists
-      if (value.comfort !== null && value.comfort !== undefined) {
-        setShowComfort(true);
-      }
+    if (!value) {
+      setStatus("");
+      setInterest(null);
+      setComfort(null);
+      setShowComfort(false);
+      return;
     }
+
+    setStatus((value.status as ConsentStatus) || "");
+    setInterest(value.interest ?? null);
+    setComfort(value.comfort ?? null);
+
+    const hasComfort = value.comfort !== null && value.comfort !== undefined;
+    setShowComfort(hasComfort);
   }, [value?.status, value?.interest, value?.comfort]);
 
   // Notify parent when main answer (status + interest) changes
@@ -88,12 +93,13 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
               type="button"
               onClick={() => setInterest(num)}
               disabled={disabled}
+              aria-pressed={interest === num}
               className={`
-                flex-1 h-12 rounded-lg font-semibold transition-all
+                flex-1 h-12 rounded-lg font-semibold transition-all border
                 ${
                   interest === num
-                    ? "bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary"
-                    : "bg-muted hover:bg-muted/80 text-muted-foreground"
+                    ? "bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary border-primary/70"
+                    : "bg-surface text-foreground border-border/70 hover:border-primary/40 hover:bg-accent"
                 }
                 ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
               `}
@@ -135,12 +141,13 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
                   type="button"
                   onClick={() => setComfort(num)}
                   disabled={disabled}
+                  aria-pressed={comfort === num}
                   className={`
-                    flex-1 h-12 rounded-lg font-semibold transition-all
+                    flex-1 h-12 rounded-lg font-semibold transition-all border
                     ${
                       comfort === num
-                        ? "bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary"
-                        : "bg-muted hover:bg-muted/80 text-muted-foreground"
+                        ? "bg-primary text-primary-foreground ring-2 ring-offset-2 ring-primary border-primary/70"
+                        : "bg-surface text-foreground border-border/70 hover:border-primary/40 hover:bg-accent"
                     }
                     ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
                   `}

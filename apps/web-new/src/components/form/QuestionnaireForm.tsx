@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "preact/hooks";
+import { useState, useEffect, useMemo, useRef } from "preact/hooks";
 import {
   ChevronLeft,
   ChevronRight,
@@ -11,15 +11,29 @@ import {
 } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ConsentRatingInput } from "./ConsentRatingInput";
+import { ConsentRatingVariantInput } from "./ConsentRatingVariantInput";
 import { ScaleInput } from "./ScaleInput";
 import { EnumInput } from "./EnumInput";
 import { MultiInput } from "./MultiInput";
-import { TouchTextInput, QUICK_REPLIES } from "./TouchTextInput";
+import { TouchTextInput } from "./TouchTextInput";
 import { InfoPopover } from "../InfoPopover";
 import { AIHelpDialog } from "../AIHelpDialog";
 import { loadResponses, saveResponses } from "../../services/api";
 import type { Template, Question, Module } from "../../types";
 import type { ResponseMap, ResponseValue, ConsentRatingValue } from "../../types/form";
+import {
+  flattenTemplateQuestions,
+  getAnsweredQuestionCount,
+  getEnumValue,
+  getMultiValues,
+  getQuickRepliesForQuestion,
+  getScaleValue,
+  getTextValue,
+  isMainAnswerValid,
+  normalizeOptions,
+  normalizeResponseForSave,
+  RawResponseValue,
+} from "../../lib/questionnaire";
 
 const SAFETY_GATE_TEMPLATE_ID = "unified_v3_pure";
 const SAFETY_GATE_STORAGE_PREFIX = "gamex:safety_gate";
@@ -68,81 +82,10 @@ export function QuestionnaireForm({
   const touchEndX = useRef<number | null>(null);
   const minSwipeDistance = 50;
 
-  // Helper to normalize options to { value, label } format
-  function normalizeOptions(
-    options: string[] | Array<{ value: string; label: string }>
-  ): Array<{ value: string; label: string }> {
-    if (options.length === 0) return [];
-
-    if (typeof options[0] === "string") {
-      return (options as string[]).map((opt) => ({ value: opt, label: opt }));
-    }
-
-    return options as Array<{ value: string; label: string }>;
-  }
-
-  // Get context-specific quick replies based on question tags
-  function getQuickRepliesForQuestion(question: Question): string[] {
-    const tags = question.tags || [];
-    const label = (question.label || question.text || "").toLowerCase();
-
-    // Check by tags first
-    if (tags.includes("hard_limits") || label.includes("hard limit") || label.includes("tabu")) {
-      return QUICK_REPLIES.hardLimits;
-    }
-    if (tags.includes("soft_limits") || label.includes("soft limit")) {
-      return QUICK_REPLIES.softLimits;
-    }
-    if (tags.includes("aftercare")) {
-      return QUICK_REPLIES.aftercare;
-    }
-    if (tags.includes("fantasy") || tags.includes("fantasies") || label.includes("fantasi")) {
-      return QUICK_REPLIES.fantasies;
-    }
-    if (
-      tags.includes("safewords") ||
-      tags.includes("triggers") ||
-      label.includes("safeword") ||
-      label.includes("stop")
-    ) {
-      return QUICK_REPLIES.safewords;
-    }
-    if (
-      tags.includes("allergies") ||
-      tags.includes("health") ||
-      label.includes("allergi") ||
-      label.includes("gesundheit")
-    ) {
-      return QUICK_REPLIES.allergies;
-    }
-    if (tags.includes("highlight") || label.includes("schön") || label.includes("öfter")) {
-      return QUICK_REPLIES.highlights;
-    }
-    if (tags.includes("less") || label.includes("weniger") || label.includes("pausieren")) {
-      return QUICK_REPLIES.pauseList;
-    }
-
-    // Default quick replies
-    return QUICK_REPLIES.notes;
-  }
-
-  // Flatten all questions from modules with module tracking
-  const allQuestions: (Question & { moduleId?: string; moduleIndex?: number })[] = [];
-  const moduleStartIndices: number[] = [];
-
-  if (template.modules) {
-    let questionIndex = 0;
-    for (let mIdx = 0; mIdx < template.modules.length; mIdx++) {
-      const module = template.modules[mIdx];
-      moduleStartIndices.push(questionIndex);
-      if (module.questions) {
-        for (const q of module.questions) {
-          allQuestions.push({ ...q, moduleId: module.id, moduleIndex: mIdx });
-          questionIndex++;
-        }
-      }
-    }
-  }
+  const { allQuestions, moduleStartIndices } = useMemo(
+    () => flattenTemplateQuestions(template),
+    [template]
+  );
 
   const currentQuestion = allQuestions[currentIndex];
   const progress =
@@ -231,7 +174,7 @@ export function QuestionnaireForm({
     const answered =
       module.questions?.filter((q) => {
         const response = responses[q.id];
-        return response !== null && response !== undefined;
+        return response !== null && response !== undefined && isMainAnswerValid(q, response);
       }).length || 0;
     return { total, answered };
   }
@@ -257,7 +200,7 @@ export function QuestionnaireForm({
         setCurrentIndex(moduleStartIndices[mIdx]);
       }
     }
-  }, [initialModuleId, template.modules]);
+  }, [initialModuleId, template.modules, moduleStartIndices]);
 
   // Update collapsible state when question changes
   useEffect(() => {
@@ -334,10 +277,10 @@ export function QuestionnaireForm({
     }
   }
 
-  function handleAnswerChange(questionId: string, value: ResponseValue) {
+  function handleAnswerChange(question: Question, value: RawResponseValue) {
     setResponses((prev) => ({
       ...prev,
-      [questionId]: value,
+      [question.id]: normalizeResponseForSave(question, value),
     }));
     scheduleAutoSave();
   }
@@ -367,62 +310,6 @@ export function QuestionnaireForm({
       localStorage.setItem(safetyGateKey, "true");
     } catch {
       // Ignore storage failures; gate stays local to this session.
-    }
-  }
-
-  // Check if main answer is valid for the current question
-  function isMainAnswerValid(question: Question, response: ResponseValue): boolean {
-    if (response === null || response === undefined) return false;
-
-    switch (question.schema) {
-      case "consent_rating": {
-        if (typeof response !== "object" || response === null) return false;
-        const consentValue = response as ConsentRatingValue;
-        return !!(
-          consentValue.status &&
-          consentValue.interest !== null &&
-          consentValue.interest !== undefined
-        );
-      }
-      case "scale":
-      case "slider":
-      case "scale_1_10": {
-        // Handle ScaleValue object
-        if (typeof response === "object" && response !== null && "value" in response) {
-          const scaleValue = response as { value: number | null };
-          return (
-            scaleValue.value !== null && scaleValue.value !== undefined && !isNaN(scaleValue.value)
-          );
-        }
-        return false;
-      }
-      case "enum": {
-        // Handle EnumValue object
-        if (typeof response === "object" && response !== null && "value" in response) {
-          const enumValue = response as { value: string | null };
-          return (
-            enumValue.value !== null && enumValue.value !== undefined && enumValue.value.length > 0
-          );
-        }
-        return false;
-      }
-      case "multi": {
-        // Handle MultiValue object
-        if (typeof response === "object" && response !== null && "values" in response) {
-          const multiValue = response as { values: string[] };
-          return Array.isArray(multiValue.values) && multiValue.values.length > 0;
-        }
-        return false;
-      }
-      case "text": {
-        if (typeof response === "object" && response !== null && "text" in response) {
-          const textValue = response as { text: string };
-          return typeof textValue.text === "string" && textValue.text.trim().length > 0;
-        }
-        return false;
-      }
-      default:
-        return true;
     }
   }
 
@@ -640,11 +527,7 @@ export function QuestionnaireForm({
             <div className="grid grid-cols-3 gap-3 text-center">
               <div>
                 <p className="text-2xl font-semibold">
-                  {
-                    Object.keys(responses).filter(
-                      (k) => !k.includes("_notes") && !k.includes("_conditions")
-                    ).length
-                  }
+                  {getAnsweredQuestionCount(template, responses)}
                 </p>
                 <p className="text-sm text-muted-foreground">Beantwortet</p>
               </div>
@@ -743,19 +626,35 @@ export function QuestionnaireForm({
 
           {/* Render appropriate input based on schema */}
           {currentQuestion.schema === "consent_rating" && (
-            <ConsentRatingInput
-              value={responses[currentQuestion.id] as any}
-              onChange={(value) => handleAnswerChange(currentQuestion.id, value)}
-            />
+            <>
+              {currentQuestion.has_dom_sub ? (
+                <ConsentRatingVariantInput
+                  variant="dom_sub"
+                  value={responses[currentQuestion.id] as ConsentRatingValue}
+                  onChange={(value) => handleAnswerChange(currentQuestion, value)}
+                />
+              ) : currentQuestion.has_active_passive ? (
+                <ConsentRatingVariantInput
+                  variant="active_passive"
+                  value={responses[currentQuestion.id] as ConsentRatingValue}
+                  onChange={(value) => handleAnswerChange(currentQuestion, value)}
+                />
+              ) : (
+                <ConsentRatingInput
+                  value={responses[currentQuestion.id] as ConsentRatingValue}
+                  onChange={(value) => handleAnswerChange(currentQuestion, value)}
+                />
+              )}
+            </>
           )}
 
           {(currentQuestion.schema === "scale" ||
             currentQuestion.schema === "slider" ||
             currentQuestion.schema === "scale_1_10") && (
             <ScaleInput
-              value={responses[currentQuestion.id] as number}
+              value={getScaleValue(responses[currentQuestion.id]) ?? undefined}
               onChange={(value) =>
-                handleAnswerChange(currentQuestion.id, { value } as ResponseValue)
+                handleAnswerChange(currentQuestion, value)
               }
               min={currentQuestion.schema === "scale_1_10" ? 1 : currentQuestion.min || 1}
               max={currentQuestion.schema === "scale_1_10" ? 10 : currentQuestion.max || 10}
@@ -765,9 +664,9 @@ export function QuestionnaireForm({
 
           {currentQuestion.schema === "enum" && currentQuestion.options && (
             <EnumInput
-              value={responses[currentQuestion.id] as string}
+              value={getEnumValue(responses[currentQuestion.id]) ?? undefined}
               onChange={(value) =>
-                handleAnswerChange(currentQuestion.id, { value } as ResponseValue)
+                handleAnswerChange(currentQuestion, value)
               }
               options={normalizeOptions(currentQuestion.options)}
             />
@@ -775,9 +674,9 @@ export function QuestionnaireForm({
 
           {currentQuestion.schema === "multi" && currentQuestion.options && (
             <MultiInput
-              value={responses[currentQuestion.id] as string[]}
+              value={getMultiValues(responses[currentQuestion.id])}
               onChange={(value) =>
-                handleAnswerChange(currentQuestion.id, { values: value } as ResponseValue)
+                handleAnswerChange(currentQuestion, value)
               }
               options={normalizeOptions(currentQuestion.options)}
             />
@@ -785,8 +684,12 @@ export function QuestionnaireForm({
 
           {currentQuestion.schema === "text" && (
             <TouchTextInput
-              value={responses[currentQuestion.id] as { text: string }}
-              onChange={(value) => handleAnswerChange(currentQuestion.id, value)}
+              value={
+                getTextValue(responses[currentQuestion.id])
+                  ? ({ text: getTextValue(responses[currentQuestion.id]) } as { text: string })
+                  : undefined
+              }
+              onChange={(value) => handleAnswerChange(currentQuestion, value)}
               placeholder={
                 currentQuestion.help || "Tippe auf eine Schnellantwort oder schreibe selbst..."
               }

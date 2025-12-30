@@ -6,8 +6,9 @@ import { InterviewMiniForm } from "../components/interview/InterviewMiniForm";
 import { ScenariosView } from "../components/ScenariosView";
 import { QuestionnaireForm } from "../components/form/QuestionnaireForm";
 import { ChatQuestionnaire } from "../components/form/ChatQuestionnaire";
-import { loadInterviewScenarios } from "../services/interview-storage";
-import { loadScenarios, loadTemplate } from "../services/api";
+import { getAnsweredCount, loadInterviewScenarios } from "../services/interview-storage";
+import { getTemplateQuestionCount, loadResponses, loadScenarios, loadTemplate } from "../services/api";
+import { getAnsweredQuestionCount } from "../lib/questionnaire";
 import type { InterviewScenario } from "../types/interview";
 import type { Template } from "../types";
 
@@ -30,13 +31,15 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
   const [checkinQuestions, setCheckinQuestions] = useState<InterviewScenario[]>([]);
   const [scenariosData, setScenariosData] = useState<any>(null); // Full scenarios.json data
   const [template, setTemplate] = useState<Template | null>(null);
+  const [questionnaireProgress, setQuestionnaireProgress] = useState({ answered: 0, total: 0 });
+  const [checkinProgress, setCheckinProgress] = useState({ answered: 0, total: 0 });
 
   // Selection State
   const [selectedDeckIndex, setSelectedDeckIndex] = useState<number>(0);
   const [selectedModuleId, setSelectedModuleId] = useState<string>("");
 
   const searchParams = new URLSearchParams(location.split("?")[1] || "");
-  const forceChatMode = searchParams.get("mode") === "chat";
+  const forceFormMode = searchParams.get("mode") === "form";
 
   useEffect(() => {
     loadAllData();
@@ -62,6 +65,31 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
     }
   }
 
+  useEffect(() => {
+    if (!template) return;
+    async function loadQuestionnaireProgress() {
+      try {
+        const responses = await loadResponses(sessionId, person);
+        setQuestionnaireProgress({
+          answered: getAnsweredQuestionCount(template, responses),
+          total: getTemplateQuestionCount(template),
+        });
+      } catch (err) {
+        console.warn("Failed to load questionnaire progress:", err);
+      }
+    }
+
+    loadQuestionnaireProgress();
+  }, [template, sessionId, person]);
+
+  useEffect(() => {
+    if (!checkinQuestions.length) return;
+    setCheckinProgress({
+      answered: getAnsweredCount(sessionId, person),
+      total: checkinQuestions.length,
+    });
+  }, [checkinQuestions, sessionId, person]);
+
   function handleBack() {
     if (stage === "dashboard") {
       setLocation(`/sessions/${sessionId}`);
@@ -71,6 +99,8 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
   }
 
   // --- Sub-Components for this screen ---
+
+  const deckCount = scenariosData?.decks?.length || 0;
 
   const Dashboard = () => (
     <div className="page animate-fade-in">
@@ -83,6 +113,28 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
           <p className="page-subtitle">Wähle dein nächstes Thema für die Session.</p>
         </div>
       </div>
+
+      <section className="section-card">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Dein Fortschritt</h2>
+            <p className="section-subtitle">Person {person} – Überblick über deinen Stand.</p>
+          </div>
+          <span className="pill">{questionnaireProgress.answered} Antworten</span>
+        </div>
+        <div className="section-body">
+          <ProgressLine
+            label="Fragebogen"
+            value={questionnaireProgress.answered}
+            total={questionnaireProgress.total}
+          />
+          <ProgressLine
+            label="Check-in"
+            value={checkinProgress.answered}
+            total={checkinProgress.total}
+          />
+        </div>
+      </section>
 
       <section className="section-card">
         <div className="section-header">
@@ -100,7 +152,17 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
           </div>
           <div className="flex-1 min-w-0">
             <p className="list-card-title">Check-in starten</p>
-            <p className="list-card-meta">Kurzes Warm-up mit 12 Fragen.</p>
+            <p className="list-card-meta">
+              Kurzes Warm-up mit {checkinProgress.total || checkinQuestions.length} Fragen.
+            </p>
+            <div className="mt-3">
+              <ProgressLine
+                label="Fortschritt"
+                value={checkinProgress.answered}
+                total={checkinProgress.total}
+                compact
+              />
+            </div>
           </div>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
         </button>
@@ -126,6 +188,10 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
               <div className="flex-1 min-w-0">
                 <p className="list-card-title">{deck.name}</p>
                 <p className="list-card-meta line-clamp-2">{deck.description}</p>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                  <span className="stat-chip">{deck.scenarios.length} Karten</span>
+                  <span className="stat-chip">{deckCount} Decks</span>
+                </div>
               </div>
               <span className="pill">{deck.scenarios.length} Karten</span>
             </button>
@@ -156,6 +222,14 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
               <div className="flex-1 min-w-0">
                 <p className="list-card-title">{module.name}</p>
                 <p className="list-card-meta line-clamp-2">{module.description}</p>
+                <div className="mt-3">
+                  <ProgressLine
+                    label="Fragen"
+                    value={questionnaireProgress.answered}
+                    total={questionnaireProgress.total}
+                    compact
+                  />
+                </div>
               </div>
             </button>
           ))}
@@ -184,6 +258,8 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
           <ScenariosView
             onClose={() => setStage("dashboard")}
             initialDeckIndex={selectedDeckIndex}
+            person={person}
+            sessionId={sessionId}
           />
         </div>
       )}
@@ -192,7 +268,7 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
       {stage === "module" && template && (
         <div className="h-screen flex flex-col">
           {/* QuestionnaireForm loads full form but jumps to selected module */}
-          {forceChatMode || template.id === "unified_v3_pure" ? (
+          {!forceFormMode ? (
             <ChatQuestionnaire
               sessionId={sessionId}
               person={person}
@@ -344,6 +420,32 @@ function CheckinFlow({
           </Button>
         </div>
       </section>
+    </div>
+  );
+}
+
+function ProgressLine({
+  label,
+  value,
+  total,
+  compact = false,
+}: {
+  label: string;
+  value: number;
+  total: number;
+  compact?: boolean;
+}) {
+  const percent = total > 0 ? Math.min(100, Math.round((value / total) * 100)) : 0;
+
+  return (
+    <div className={`space-y-1 ${compact ? "text-xs" : "text-sm"}`}>
+      <div className="flex items-center justify-between text-muted-foreground">
+        <span>{label}</span>
+        <span className="tabular-nums">{total > 0 ? `${value}/${total}` : "--"}</span>
+      </div>
+      <div className="progress-rail">
+        <div className="progress-rail-fill" style={{ width: `${percent}%` }} />
+      </div>
     </div>
   );
 }

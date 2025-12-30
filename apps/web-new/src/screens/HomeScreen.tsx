@@ -4,14 +4,30 @@
  */
 
 import { useState, useEffect } from "preact/hooks";
-import { Plus, ChevronRight, Clock, Heart } from "lucide-preact";
+import { Plus, ChevronRight, Clock, Heart, ShieldCheck, Sparkles } from "lucide-preact";
 import { Link, useLocation } from "wouter-preact";
 import { Button } from "../components/ui/button";
 import { CreateSessionDialog } from "../components/CreateSessionDialog";
-import { getActiveSessions, getArchivedSessions } from "../services/api";
-import { getAnsweredCount } from "../services/interview-storage";
+import {
+  getActiveSessions,
+  getArchivedSessions,
+  getTemplateById,
+  getTemplateQuestionCount,
+  loadResponses,
+} from "../services/api";
+import { getAnsweredCount, loadInterviewScenarios } from "../services/interview-storage";
+import { getAnsweredQuestionCount } from "../lib/questionnaire";
 import type { SessionListItem } from "../types/session";
 import { SessionCardSkeleton } from "../components/ui/skeleton";
+
+interface SessionProgress {
+  questionnaireTotal: number;
+  questionnaireA: number;
+  questionnaireB: number;
+  checkinTotal: number;
+  checkinA: number;
+  checkinB: number;
+}
 
 export function HomeScreen() {
   const [sessions, setSessions] = useState<SessionListItem[]>([]);
@@ -19,6 +35,8 @@ export function HomeScreen() {
   const [showArchived, setShowArchived] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [progressMap, setProgressMap] = useState<Record<string, SessionProgress>>({});
+  const [checkinTotal, setCheckinTotal] = useState(0);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
@@ -36,6 +54,7 @@ export function HomeScreen() {
 
       setSessions(active);
       setArchivedSessions(archived);
+      await loadProgressData([...active, ...archived]);
     } catch (err) {
       console.error("Failed to load sessions:", err);
     } finally {
@@ -43,36 +62,106 @@ export function HomeScreen() {
     }
   }
 
+  async function loadProgressData(allSessions: SessionListItem[]) {
+    if (allSessions.length === 0) return;
+
+    let totalCheckin = checkinTotal;
+    if (!totalCheckin) {
+      try {
+        const scenarios = await loadInterviewScenarios();
+        totalCheckin = scenarios.length;
+        setCheckinTotal(totalCheckin);
+      } catch (err) {
+        console.warn("Could not load check-in scenarios:", err);
+      }
+    }
+
+    const templateCache = new Map<string, number>();
+    const templateInfoCache = new Map<string, Awaited<ReturnType<typeof getTemplateById>>>();
+    const entries = await Promise.all(
+      allSessions.map(async (session) => {
+        let template = templateInfoCache.get(session.template_id);
+        if (template === undefined) {
+          template = await getTemplateById(session.template_id);
+          templateInfoCache.set(session.template_id, template);
+        }
+
+        let questionnaireTotal = templateCache.get(session.template_id);
+        if (questionnaireTotal === undefined) {
+          questionnaireTotal = getTemplateQuestionCount(template);
+          templateCache.set(session.template_id, questionnaireTotal);
+        }
+
+        const [responsesA, responsesB] = await Promise.all([
+          loadResponses(session.id, "A"),
+          loadResponses(session.id, "B"),
+        ]);
+
+        return [
+          session.id,
+          {
+            questionnaireTotal,
+            questionnaireA: getAnsweredQuestionCount(template, responsesA),
+            questionnaireB: getAnsweredQuestionCount(template, responsesB),
+            checkinTotal: totalCheckin,
+            checkinA: getAnsweredCount(session.id, "A"),
+            checkinB: getAnsweredCount(session.id, "B"),
+          },
+        ] as const;
+      })
+    );
+
+    setProgressMap(Object.fromEntries(entries));
+  }
+
   // Get the most recent session
   const latestSession = sessions[0];
   const hasRecentSession = !!latestSession;
+  const latestProgress = latestSession ? progressMap[latestSession.id] : undefined;
 
   return (
     <div className="page">
       <header className="hero">
-        <div className="hero-icon animate-pulse-glow">
-          <Heart className="w-8 h-8 text-primary" />
-        </div>
-        <div className="space-y-2">
-          <h1 className="hero-title">Intimacy Tool</h1>
-          <p className="hero-subtitle">
-            Ein klarer, sicherer Raum für ehrliche Gespräche über Wünsche und Grenzen.
-          </p>
-        </div>
-      </header>
-
-      <section className="section-card">
-        <div className="section-header">
-          <div>
-            <h2 className="section-title">Neue Session</h2>
-            <p className="section-subtitle">Starte eine neue Runde oder lade eine Person ein.</p>
+        <div className="hero-panel space-y-6">
+          <div className="hero-icon animate-pulse-glow">
+            <Heart className="w-8 h-8 text-primary" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="hero-title">Intimacy Tool</h1>
+            <p className="hero-subtitle">
+              Ein klarer, sicherer Raum für ehrliche Gespräche über Wünsche und Grenzen.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button size="lg" className="w-full sm:w-auto gap-3" onClick={() => setShowCreateDialog(true)}>
+              <Plus className="w-6 h-6" />
+              Neue Session starten
+            </Button>
+            {hasRecentSession && (
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto gap-2"
+                onClick={() => setLocation(`/sessions/${latestSession.id}`)}
+              >
+                <Clock className="w-5 h-5" />
+                Weiter mit {latestSession.name}
+              </Button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <span className="stat-chip">
+              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+              100% lokal gespeichert
+            </span>
+            <span className="stat-chip">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              Strukturierte Gespräche
+            </span>
+            <span className="stat-chip">{sessions.length} aktive Sessions</span>
           </div>
         </div>
-        <Button size="lg" className="w-full gap-3" onClick={() => setShowCreateDialog(true)}>
-          <Plus className="w-6 h-6" />
-          Neue Session starten
-        </Button>
-      </section>
+      </header>
 
       {hasRecentSession && (
         <section className="section-card">
@@ -82,19 +171,52 @@ export function HomeScreen() {
               <p className="section-subtitle">Schnell weitermachen, wo ihr aufgehört habt.</p>
             </div>
           </div>
-          <button
-            onClick={() => setLocation(`/sessions/${latestSession.id}`)}
-            className="list-card w-full text-left card-interactive"
-          >
-            <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
-              <Clock className="w-5 h-5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="list-card-title truncate">{latestSession.name}</p>
-              <p className="list-card-meta">{formatDate(latestSession.created_at)}</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-          </button>
+          <div className="space-y-4">
+            <button
+              onClick={() => setLocation(`/sessions/${latestSession.id}`)}
+              className="list-card w-full text-left card-interactive"
+            >
+              <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+                <Clock className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="list-card-title truncate">{latestSession.name}</p>
+                <p className="list-card-meta">{formatDate(latestSession.created_at)}</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+            </button>
+
+            {latestProgress && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <p className="progress-label">Fragebogen</p>
+                  <ProgressRow
+                    label="A"
+                    value={latestProgress.questionnaireA}
+                    total={latestProgress.questionnaireTotal}
+                  />
+                  <ProgressRow
+                    label="B"
+                    value={latestProgress.questionnaireB}
+                    total={latestProgress.questionnaireTotal}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <p className="progress-label">Check-in</p>
+                  <ProgressRow
+                    label="A"
+                    value={latestProgress.checkinA}
+                    total={latestProgress.checkinTotal}
+                  />
+                  <ProgressRow
+                    label="B"
+                    value={latestProgress.checkinB}
+                    total={latestProgress.checkinTotal}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </section>
       )}
 
@@ -139,8 +261,16 @@ export function HomeScreen() {
                     <p className="list-card-title truncate">{session.name}</p>
                     <p className="list-card-meta">{formatDate(session.created_at)}</p>
                     <div className="flex gap-2 mt-3">
-                      <StatusDot complete={session.has_a} label="A" sessionId={session.id} />
-                      <StatusDot complete={session.has_b} label="B" sessionId={session.id} />
+                      <StatusDot
+                        complete={session.has_a}
+                        label="A"
+                        progress={progressMap[session.id]}
+                      />
+                      <StatusDot
+                        complete={session.has_b}
+                        label="B"
+                        progress={progressMap[session.id]}
+                      />
                     </div>
                   </div>
                   <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
@@ -208,22 +338,54 @@ export function HomeScreen() {
 function StatusDot({
   complete,
   label,
-  sessionId,
+  progress,
 }: {
   complete: boolean;
   label: string;
-  sessionId: string;
+  progress?: SessionProgress;
 }) {
-  const answeredCount = getAnsweredCount(sessionId, label as "A" | "B");
+  const isPersonA = label === "A";
+  const answeredCount = progress
+    ? isPersonA
+      ? progress.questionnaireA
+      : progress.questionnaireB
+    : 0;
+  const totalCount = progress?.questionnaireTotal || 0;
+  const progressText =
+    totalCount > 0 ? `${answeredCount}/${totalCount} Antworten` : complete ? "Gestartet" : "Offen";
 
   return (
     <div
       className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
         complete ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground"
       }`}
-      title={`Person ${label}: ${complete ? `${answeredCount} Antworten` : "Ausstehend"}`}
+      title={`Person ${label}: ${progressText}`}
     >
       {label}
+    </div>
+  );
+}
+
+function ProgressRow({
+  label,
+  value,
+  total,
+}: {
+  label: string;
+  value: number;
+  total: number;
+}) {
+  const percent = total > 0 ? Math.min(100, Math.round((value / total) * 100)) : 0;
+
+  return (
+    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+      <span className="w-6 text-foreground font-semibold">{label}</span>
+      <div className="progress-rail flex-1">
+        <div className="progress-rail-fill" style={{ width: `${percent}%` }} />
+      </div>
+      <span className="tabular-nums">
+        {total > 0 ? `${value}/${total}` : "--"}
+      </span>
     </div>
   );
 }

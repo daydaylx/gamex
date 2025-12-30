@@ -1,5 +1,3 @@
-import { useState, useEffect } from "preact/hooks";
-
 interface MultiInputProps {
   value?: string[];
   onChange: (value: string[]) => void;
@@ -8,17 +6,13 @@ interface MultiInputProps {
 }
 
 export function MultiInput({ value, onChange, options, disabled }: MultiInputProps) {
-  const [selected, setSelected] = useState<string[]>(value || []);
-
-  useEffect(() => {
-    onChange(selected);
-  }, [selected]);
+  const selected = value || [];
 
   function toggleOption(optionValue: string) {
     if (selected.includes(optionValue)) {
-      setSelected(selected.filter((v) => v !== optionValue));
+      onChange(selected.filter((v) => v !== optionValue));
     } else {
-      setSelected([...selected, optionValue]);
+      onChange([...selected, optionValue]);
     }
   }
 

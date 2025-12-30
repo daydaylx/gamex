@@ -215,16 +215,25 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
   }
 
   // Recalculate summary based on combined data
-  const combinedTotal = data.items.length + scenarioResults.length;
-  const combinedMatch =
-    data.items.filter((i) => i.pair_status === "MATCH").length +
-    scenarioResults.filter((i) => i.pair_status === "MATCH").length;
-  const combinedExplore =
-    data.items.filter((i) => i.pair_status === "EXPLORE").length +
-    scenarioResults.filter((i) => i.pair_status === "EXPLORE").length;
-  const combinedBoundary =
-    data.items.filter((i) => i.pair_status === "BOUNDARY").length +
-    scenarioResults.filter((i) => i.pair_status === "BOUNDARY").length;
+  const combinedItems = [...data.items, ...scenarioResults];
+  const combinedTotal = combinedItems.length;
+  const combinedMatch = combinedItems.filter((i) => i.pair_status === "MATCH").length;
+  const combinedExplore = combinedItems.filter((i) => i.pair_status === "EXPLORE").length;
+  const combinedBoundary = combinedItems.filter((i) => i.pair_status === "BOUNDARY").length;
+  const riskSignalCount = combinedItems.filter(
+    (item) =>
+      item.risk_level === "C" ||
+      item.flags.includes("low_comfort_high_interest") ||
+      (item.comfort_a !== null && item.comfort_a <= 2) ||
+      (item.comfort_b !== null && item.comfort_b <= 2)
+  ).length;
+
+  const bucketCounts: Record<MatchLevel | "ALL", number> = {
+    ALL: combinedTotal,
+    MATCH: combinedMatch,
+    EXPLORE: combinedExplore,
+    BOUNDARY: combinedBoundary,
+  };
 
   return (
     <div className="page animate-fade-in">
@@ -254,6 +263,20 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
             <StatTile label="Offen" value={combinedExplore} color="text-amber-400" />
             <StatTile label="Grenzen" value={combinedBoundary} color="text-rose-400" />
           </div>
+          {riskSignalCount > 0 && (
+            <div className="callout mt-4">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-4 w-4 text-rose-400 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Achte auf sensible Themen</p>
+                  <p className="text-xs text-muted-foreground">
+                    {riskSignalCount} Einträge zeigen niedrigen Komfort oder Risiko-Signale. Plant
+                    dafür extra Zeit.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -281,6 +304,9 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
                 className="rounded-full whitespace-nowrap"
               >
                 {option.label}
+                <span className="ml-1 text-[11px] text-muted-foreground">
+                  {bucketCounts[option.value]}
+                </span>
               </Button>
             ))}
             <Button
@@ -291,7 +317,14 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
             >
               <AlertCircle className="h-3 w-3" />
               Risiko
+              <span className="text-[11px] text-muted-foreground">{riskSignalCount}</span>
             </Button>
+          </div>
+
+          <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+            <span className="stat-chip">Match = gleiche Antwort</span>
+            <span className="stat-chip">Erkunden = unterschiedliche Antwort</span>
+            <span className="stat-chip">Grenze = klare No-Grenze</span>
           </div>
 
           <div className="relative">
@@ -301,6 +334,7 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
               placeholder="Nach Themen suchen..."
               value={searchQuery}
               onInput={(e) => setSearchQuery((e.target as HTMLInputElement).value)}
+              aria-label="Suche in den Vergleichsergebnissen"
               className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-border/40 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>

@@ -1,5 +1,3 @@
-import { useState, useEffect } from "preact/hooks";
-
 interface EnumInputProps {
   value?: string;
   onChange: (value: string) => void;
@@ -8,13 +6,7 @@ interface EnumInputProps {
 }
 
 export function EnumInput({ value, onChange, options, disabled }: EnumInputProps) {
-  const [selected, setSelected] = useState<string>(value || "");
-
-  useEffect(() => {
-    if (selected) {
-      onChange(selected);
-    }
-  }, [selected]);
+  const selected = value || "";
 
   return (
     <div className="space-y-2">
@@ -22,7 +14,7 @@ export function EnumInput({ value, onChange, options, disabled }: EnumInputProps
         <button
           key={option.value}
           type="button"
-          onClick={() => setSelected(option.value)}
+          onClick={() => onChange(option.value)}
           disabled={disabled}
           className={`
             w-full text-left px-4 py-3 rounded-lg border transition-all

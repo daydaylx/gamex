@@ -113,6 +113,7 @@ export function ActionPlan({ items, className = "" }: ActionPlanProps) {
                 key={item.question_id}
                 type="button"
                 onClick={() => toggleItem(item.question_id)}
+                aria-pressed={item.selected}
                 className={`list-card w-full text-left items-start ${
                   item.selected ? "ring-2 ring-primary/30" : "card-interactive"
                 }`}

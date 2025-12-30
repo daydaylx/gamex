@@ -7,6 +7,7 @@ interface ScenariosViewProps {
   sessionId?: string;
   onClose?: () => void;
   initialDeckIndex?: number;
+  person?: "A" | "B" | "both";
 }
 
 interface ScenarioOption {
@@ -70,13 +71,43 @@ const riskTypeColors: Record<string, string> = {
   masochism: "bg-red-600/20 text-red-200 border border-red-600/40",
 };
 
-export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewProps) {
+const SCENARIO_ANSWER_KEY_PREFIX = "gamex:scenario-deck-answers:";
+
+type ScenarioAnswerMap = Record<string, { a?: string; b?: string }>;
+
+function loadScenarioAnswers(sessionId?: string): ScenarioAnswerMap {
+  if (!sessionId) return {};
+  try {
+    const raw = localStorage.getItem(`${SCENARIO_ANSWER_KEY_PREFIX}${sessionId}`);
+    return raw ? (JSON.parse(raw) as ScenarioAnswerMap) : {};
+  } catch (error) {
+    console.warn("Failed to load scenario answers:", error);
+    return {};
+  }
+}
+
+function saveScenarioAnswers(sessionId: string, answers: ScenarioAnswerMap): void {
+  try {
+    localStorage.setItem(`${SCENARIO_ANSWER_KEY_PREFIX}${sessionId}`, JSON.stringify(answers));
+  } catch (error) {
+    console.warn("Failed to save scenario answers:", error);
+  }
+}
+
+export function ScenariosView({
+  sessionId,
+  onClose,
+  initialDeckIndex = 0,
+  person = "both",
+}: ScenariosViewProps) {
   const [scenariosData, setScenariosData] = useState<ScenariosData | null>(null);
   const [currentDeckIndex, setCurrentDeckIndex] = useState(initialDeckIndex);
   const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<Record<string, { a?: string; b?: string }>>({});
+  const [answers, setAnswers] = useState<ScenarioAnswerMap>(() =>
+    loadScenarioAnswers(sessionId)
+  );
   const [showInfoCard, setShowInfoCard] = useState(false);
   const [safetyGateAccepted, setSafetyGateAccepted] = useState<Record<string, boolean>>({});
   const [showDeckOverview, setShowDeckOverview] = useState(false);
@@ -89,6 +120,14 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
   useEffect(() => {
     loadScenariosData();
   }, []);
+
+  useEffect(() => {
+    if (!sessionId) {
+      setAnswers({});
+      return;
+    }
+    setAnswers(loadScenarioAnswers(sessionId));
+  }, [sessionId]);
 
   async function loadScenariosData() {
     setLoading(true);
@@ -152,13 +191,19 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
     const scenarioId = currentScenario?.id;
     if (!scenarioId) return;
 
-    setAnswers((prev) => ({
-      ...prev,
-      [scenarioId]: {
-        ...prev[scenarioId],
-        [person]: optionId,
-      },
-    }));
+    setAnswers((prev) => {
+      const updated = {
+        ...prev,
+        [scenarioId]: {
+          ...prev[scenarioId],
+          [person]: optionId,
+        },
+      };
+      if (sessionId) {
+        saveScenarioAnswers(sessionId, updated);
+      }
+      return updated;
+    });
   }
 
   function acceptSafetyGate(deckId: string) {
@@ -254,6 +299,49 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
   const progress = Math.round(((globalIndex + 1) / totalScenarios) * 100);
 
   const currentAnswers = currentScenario ? answers[currentScenario.id] : undefined;
+  const answerKey = person === "A" ? "a" : person === "B" ? "b" : null;
+  const singlePersonKey: "a" | "b" = person === "B" ? "b" : "a";
+  const showBoth = !answerKey;
+
+  function hasAnswer(scenarioId: string) {
+    const entry = answers[scenarioId];
+    if (!entry) return false;
+    if (!answerKey) return Boolean(entry.a || entry.b);
+    return Boolean(entry[answerKey]);
+  }
+
+  function renderAnswerBlock(personKey: "a" | "b", label: string) {
+    return (
+      <div className="section-body">
+        <div>
+          <p className="section-title">{label}</p>
+          <p className="section-subtitle">Wähle die passende Option.</p>
+        </div>
+        <div className="grid gap-2">
+          {currentScenario?.options.map((option) => {
+            const selected = currentAnswers?.[personKey] === option.id;
+            const markerClass =
+              riskTypeColors[option.risk_type] || "bg-muted text-muted-foreground border";
+            return (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => handleAnswer(personKey, option.id)}
+                className={`list-card w-full text-left ${selected ? "ring-2 ring-primary/40" : "card-interactive"}`}
+              >
+                <span
+                  className={`h-7 w-7 rounded-full text-xs font-semibold flex items-center justify-center ${markerClass}`}
+                >
+                  {option.id}
+                </span>
+                <span className="flex-1 min-w-0 text-sm leading-snug">{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   // Deck Overview
   if (showDeckOverview) {
@@ -280,7 +368,7 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
           <div className="section-body">
             {scenariosData.decks.map((deck, index) => {
               const deckScenarios = deck.scenarios.length;
-              const answeredInDeck = deck.scenarios.filter((id) => answers[id]).length;
+              const answeredInDeck = deck.scenarios.filter((id) => hasAnswer(id)).length;
               const deckProgress =
                 deckScenarios > 0 ? Math.round((answeredInDeck / deckScenarios) * 100) : 0;
 
@@ -486,65 +574,15 @@ export function ScenariosView({ onClose, initialDeckIndex = 0 }: ScenariosViewPr
 
           <div className="section-divider" />
 
-          <div className="section-body">
-            <div>
-              <p className="section-title">Person A</p>
-              <p className="section-subtitle">Wähle die passende Option.</p>
-            </div>
-            <div className="grid gap-2">
-              {currentScenario.options.map((option) => {
-                const selected = currentAnswers?.a === option.id;
-                const markerClass =
-                  riskTypeColors[option.risk_type] || "bg-muted text-muted-foreground border";
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => handleAnswer("a", option.id)}
-                    className={`list-card w-full text-left ${selected ? "ring-2 ring-primary/40" : "card-interactive"}`}
-                  >
-                    <span
-                      className={`h-7 w-7 rounded-full text-xs font-semibold flex items-center justify-center ${markerClass}`}
-                    >
-                      {option.id}
-                    </span>
-                    <span className="flex-1 min-w-0 text-sm leading-snug">{option.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="section-divider" />
-
-          <div className="section-body">
-            <div>
-              <p className="section-title">Person B</p>
-              <p className="section-subtitle">Wähle die passende Option.</p>
-            </div>
-            <div className="grid gap-2">
-              {currentScenario.options.map((option) => {
-                const selected = currentAnswers?.b === option.id;
-                const markerClass =
-                  riskTypeColors[option.risk_type] || "bg-muted text-muted-foreground border";
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => handleAnswer("b", option.id)}
-                    className={`list-card w-full text-left ${selected ? "ring-2 ring-primary/40" : "card-interactive"}`}
-                  >
-                    <span
-                      className={`h-7 w-7 rounded-full text-xs font-semibold flex items-center justify-center ${markerClass}`}
-                    >
-                      {option.id}
-                    </span>
-                    <span className="flex-1 min-w-0 text-sm leading-snug">{option.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          {showBoth ? (
+            <>
+              {renderAnswerBlock("a", "Person A")}
+              <div className="section-divider" />
+              {renderAnswerBlock("b", "Person B")}
+            </>
+          ) : (
+            renderAnswerBlock(singlePersonKey, `Person ${singlePersonKey === "a" ? "A" : "B"}`)
+          )}
 
           {currentScenario.tags && currentScenario.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">

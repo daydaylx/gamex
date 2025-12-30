@@ -8,6 +8,7 @@ import type {
   ReportResult,
   ReportData,
 } from "../types/interview";
+import { getAISettings } from "./settings";
 
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 const DEFAULT_HELP_MODEL = "cognitivecomputations/dolphin-mistral-24b-venice-edition:free";
@@ -24,10 +25,20 @@ const SETTINGS_KEY = "gamex_interview_v1_settings";
 export function loadInterviewSettings(): InterviewSettings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw);
+    const stored = raw ? (JSON.parse(raw) as InterviewSettings) : {};
+    const shared = getAISettings();
+    return {
+      openrouter_api_key: stored.openrouter_api_key || shared.apiKey,
+      help_model: stored.help_model || shared.helpModel,
+      report_model: stored.report_model || shared.reportModel,
+    };
   } catch {
-    return {};
+    const shared = getAISettings();
+    return {
+      openrouter_api_key: shared.apiKey,
+      help_model: shared.helpModel,
+      report_model: shared.reportModel,
+    };
   }
 }
 

@@ -2,8 +2,8 @@ import { useState, useEffect } from "preact/hooks";
 import { X } from "lucide-preact";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { createSession, listTemplates } from "../services/api";
-import type { TemplateListItem } from "../types";
+import { createSession, getTemplateById, getTemplateQuestionCount, listTemplates } from "../services/api";
+import type { TemplateListItem, Template } from "../types";
 
 interface CreateSessionDialogProps {
   open: boolean;
@@ -18,12 +18,37 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
   const [loading, setLoading] = useState(false);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [templateInfo, setTemplateInfo] = useState<Template | null>(null);
+  const recommendedTemplateId = "unified_v3_pure";
 
   useEffect(() => {
     if (open) {
       loadTemplatesData();
     }
   }, [open]);
+
+  useEffect(() => {
+    let isActive = true;
+    async function loadTemplateInfo() {
+      if (!selectedTemplate) {
+        setTemplateInfo(null);
+        return;
+      }
+      try {
+        const template = await getTemplateById(selectedTemplate);
+        if (isActive) {
+          setTemplateInfo(template);
+        }
+      } catch (err) {
+        console.warn("Failed to load template info:", err);
+      }
+    }
+
+    loadTemplateInfo();
+    return () => {
+      isActive = false;
+    };
+  }, [selectedTemplate]);
 
   async function loadTemplatesData() {
     setLoadingTemplates(true);
@@ -151,7 +176,8 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
                   >
                     {templates.map((template) => (
                       <option key={template.id} value={template.id}>
-                        {template.name} {template.version ? `(${template.version})` : ""}
+                        {template.name} {template.version ? `(${template.version})` : ""}{" "}
+                        {template.id === recommendedTemplateId ? "• Empfohlen" : ""}
                       </option>
                     ))}
                   </select>
@@ -160,6 +186,30 @@ export function CreateSessionDialog({ open, onClose, onSuccess }: CreateSessionD
                   <p className="text-sm text-destructive">Keine Templates gefunden</p>
                 )}
               </div>
+
+              {templateInfo && (
+                <div className="rounded-xl border border-border/40 bg-surface-elevated p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold">{templateInfo.name}</p>
+                      {templateInfo.description && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {templateInfo.description}
+                        </p>
+                      )}
+                    </div>
+                    {templateInfo.version && (
+                      <span className="pill">v{templateInfo.version}</span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                    <span className="stat-chip">{templateInfo.modules.length} Module</span>
+                    <span className="stat-chip">
+                      {getTemplateQuestionCount(templateInfo)} Fragen
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Error Message */}
               {error && (

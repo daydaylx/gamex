@@ -6,8 +6,24 @@
 import { useState, useEffect } from "preact/hooks";
 import { Link, useRoute, useLocation } from "wouter-preact";
 import { ArrowLeft, User, Users, MessageSquare, ChevronRight } from "lucide-preact";
-import { getSessionInfo } from "../services/api";
+import {
+  getSessionInfo,
+  getTemplateById,
+  getTemplateQuestionCount,
+  loadResponses,
+} from "../services/api";
+import { getAnsweredCount, loadInterviewScenarios } from "../services/interview-storage";
+import { getAnsweredQuestionCount } from "../lib/questionnaire";
 import type { SessionInfo } from "../types/session";
+
+interface SessionProgress {
+  questionnaireTotal: number;
+  questionnaireA: number;
+  questionnaireB: number;
+  checkinTotal: number;
+  checkinA: number;
+  checkinB: number;
+}
 
 export function SessionView() {
   const [match, params] = useRoute<{ id: string }>("/sessions/:id");
@@ -17,12 +33,20 @@ export function SessionView() {
   const [session, setSession] = useState<SessionInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState<SessionProgress | null>(null);
+  const [progressLoading, setProgressLoading] = useState(false);
 
   useEffect(() => {
     if (sessionId && sessionId !== "unknown") {
       loadSession();
     }
   }, [sessionId]);
+
+  useEffect(() => {
+    if (session) {
+      loadProgress();
+    }
+  }, [session]);
 
   async function loadSession() {
     setLoading(true);
@@ -35,6 +59,32 @@ export function SessionView() {
       setError(err instanceof Error ? err.message : "Fehler beim Laden der Session");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadProgress() {
+    if (!session) return;
+    setProgressLoading(true);
+    try {
+      const [template, responsesA, responsesB, scenarios] = await Promise.all([
+        getTemplateById(session.template_id),
+        loadResponses(session.id, "A"),
+        loadResponses(session.id, "B"),
+        loadInterviewScenarios(),
+      ]);
+
+      setProgress({
+        questionnaireTotal: getTemplateQuestionCount(template),
+        questionnaireA: getAnsweredQuestionCount(template, responsesA),
+        questionnaireB: getAnsweredQuestionCount(template, responsesB),
+        checkinTotal: scenarios.length,
+        checkinA: getAnsweredCount(session.id, "A"),
+        checkinB: getAnsweredCount(session.id, "B"),
+      });
+    } catch (err) {
+      console.warn("Failed to load session progress:", err);
+    } finally {
+      setProgressLoading(false);
     }
   }
 
@@ -89,6 +139,9 @@ export function SessionView() {
     session.template?.id === "unified_v3_pure" || session.template_id === "unified_v3_pure";
   const interviewPath = (person: "A" | "B") =>
     `/sessions/${sessionId}/interview/${person}${isChatDefault ? "?mode=chat" : ""}`;
+  const missingPeople = [!session.has_a ? "Person A" : null, !session.has_b ? "Person B" : null]
+    .filter(Boolean)
+    .join(" & ");
 
   return (
     <div className="page animate-fade-in">
@@ -114,7 +167,7 @@ export function SessionView() {
         <div className="section-header">
           <div>
             <h2 className="section-title">Session beitreten</h2>
-            <p className="section-subtitle">Wähle deine Rolle für diese Session.</p>
+            <p className="section-subtitle">Wähle deine Rolle und setze deinen Fortschritt fort.</p>
           </div>
         </div>
         <div className="section-body">
@@ -122,11 +175,15 @@ export function SessionView() {
             person="A"
             completed={session.has_a}
             onClick={() => setLocation(interviewPath("A"))}
+            progress={progress}
+            loading={progressLoading}
           />
           <PersonActionCard
             person="B"
             completed={session.has_b}
             onClick={() => setLocation(interviewPath("B"))}
+            progress={progress}
+            loading={progressLoading}
           />
         </div>
       </section>
@@ -144,7 +201,7 @@ export function SessionView() {
           description={
             session.has_a && session.has_b
               ? "Ergebnisse vergleichen und besprechen"
-              : "Beide Personen müssen erst das Interview abschließen"
+              : `Fehlt noch: ${missingPeople}`
           }
           disabled={!session.has_a || !session.has_b}
           onClick={() => setLocation(`/sessions/${sessionId}/compare`)}
@@ -162,10 +219,23 @@ interface PersonActionCardProps {
   person: "A" | "B";
   completed: boolean;
   onClick: () => void;
+  progress?: SessionProgress | null;
+  loading?: boolean;
 }
 
-function PersonActionCard({ person, completed, onClick }: PersonActionCardProps) {
+function PersonActionCard({
+  person,
+  completed,
+  onClick,
+  progress,
+  loading = false,
+}: PersonActionCardProps) {
   const Icon = person === "A" ? User : Users;
+  const questionnaireValue =
+    person === "A" ? progress?.questionnaireA ?? 0 : progress?.questionnaireB ?? 0;
+  const checkinValue = person === "A" ? progress?.checkinA ?? 0 : progress?.checkinB ?? 0;
+  const questionnaireTotal = progress?.questionnaireTotal ?? 0;
+  const checkinTotal = progress?.checkinTotal ?? 0;
 
   return (
     <button type="button" onClick={onClick} className="list-card card-interactive w-full">
@@ -181,6 +251,18 @@ function PersonActionCard({ person, completed, onClick }: PersonActionCardProps)
         <p className="list-card-meta">
           {completed ? "Abgeschlossen – Erneut bearbeiten" : "Interview starten"}
         </p>
+        {loading ? (
+          <div className="mt-3 text-xs text-muted-foreground">Fortschritt wird geladen...</div>
+        ) : (
+          <div className="mt-3 space-y-3">
+            <ProgressLine
+              label="Fragebogen"
+              value={questionnaireValue}
+              total={questionnaireTotal}
+            />
+            <ProgressLine label="Check-in" value={checkinValue} total={checkinTotal} />
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         {completed && <span className="pill">Fertig</span>}
@@ -215,5 +297,29 @@ function ActionCard({ icon, title, description, disabled, onClick }: ActionCardP
       </div>
       {!disabled && <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
     </button>
+  );
+}
+
+function ProgressLine({
+  label,
+  value,
+  total,
+}: {
+  label: string;
+  value: number;
+  total: number;
+}) {
+  const percent = total > 0 ? Math.min(100, Math.round((value / total) * 100)) : 0;
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+        <span>{label}</span>
+        <span className="tabular-nums">{total > 0 ? `${value}/${total}` : "--"}</span>
+      </div>
+      <div className="progress-rail">
+        <div className="progress-rail-fill" style={{ width: `${percent}%` }} />
+      </div>
+    </div>
   );
 }

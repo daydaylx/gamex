@@ -27,23 +27,19 @@ export function TouchTextInput({
   const [showFreeText, setShowFreeText] = useState(false);
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
 
-  // Parse existing text value to find selected chips
   useEffect(() => {
-    if (value?.text) {
-      setText(value.text);
-      // Check if any quick replies are in the existing text
-      const found = quickReplies.filter((qr) => value.text.includes(qr));
-      setSelectedChips(found);
-      // Show free text if there's content beyond quick replies
-      const remainingText = quickReplies.reduce(
-        (acc, qr) => acc.replace(qr, "").trim(),
-        value.text
-      );
-      if (remainingText.length > 0 && remainingText !== "; ") {
-        setShowFreeText(true);
-      }
-    }
-  }, []);
+    const nextText = value?.text || "";
+    setText(nextText);
+
+    const found = quickReplies.filter((qr) => nextText.includes(qr));
+    setSelectedChips(found);
+
+    const remainingText = quickReplies.reduce(
+      (acc, qr) => acc.replace(qr, "").trim(),
+      nextText
+    );
+    setShowFreeText(remainingText.length > 0 && remainingText !== "; ");
+  }, [value?.text, quickReplies]);
 
   function handleChipToggle(chip: string) {
     const newSelected = selectedChips.includes(chip)
@@ -191,43 +187,3 @@ export function TouchTextInput({
 }
 
 // Context-specific quick replies for common question types
-export const QUICK_REPLIES = {
-  hardLimits: ["Keine Hard Limits", "Möchte ich persönlich besprechen", "Siehe Liste unten"],
-  softLimits: ["Keine Soft Limits aktuell", "Vielleicht später erkunden", "Brauche mehr Zeit"],
-  aftercare: [
-    "Kuscheln & Nähe",
-    "Wasser & Snacks",
-    "Stille & Ruhe",
-    "Reden & Austauschen",
-    "Warme Decke",
-    "Allein sein",
-  ],
-  fantasies: [
-    "Möchte ich mündlich teilen",
-    "Habe aktuell keine konkreten",
-    "Muss darüber nachdenken",
-  ],
-  safewords: [
-    "Ampelsystem (Rot/Gelb/Grün)",
-    "Eigenes Safeword vereinbart",
-    "Müssen wir noch festlegen",
-  ],
-  allergies: [
-    "Keine bekannten Allergien",
-    "Latexallergie",
-    "Duftstoffallergie",
-    "Siehe separaten Hinweis",
-  ],
-  notes: ["Keine weiteren Anmerkungen", "Später ergänzen", "Mündlich besprechen"],
-  highlights: [
-    "Mehr spontane Momente",
-    "Mehr Zeit für Vorspiel",
-    "Mehr Kommunikation",
-    "Mehr Experimentierfreude",
-  ],
-  pauseList: [
-    "Aktuell keine Pausen nötig",
-    "Brauche Pause bei intensiven Praktiken",
-    "Möchte langsamer vorgehen",
-  ],
-};

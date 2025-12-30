@@ -1,25 +1,36 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
-import { ChevronLeft, Send } from "lucide-preact";
+import { ChevronDown, ChevronLeft, ChevronUp, Send, Sparkles } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ConsentRatingInput } from "./ConsentRatingInput";
+import { ConsentRatingVariantInput } from "./ConsentRatingVariantInput";
 import { ScaleInput } from "./ScaleInput";
 import { EnumInput } from "./EnumInput";
 import { MultiInput } from "./MultiInput";
-import { TouchTextInput, QUICK_REPLIES } from "./TouchTextInput";
+import { TouchTextInput } from "./TouchTextInput";
 import { loadResponses, saveResponses } from "../../services/api";
+import { askAIHelp } from "../../services/ai/help";
+import { hasAPIKey } from "../../services/settings";
 import type { Template, Question } from "../../types";
+import type { AIHelpRequest } from "../../types/ai";
 import type { ResponseMap, ResponseValue, ConsentRatingValue } from "../../types/form";
+import {
+  flattenTemplateQuestions,
+  formatResponseForChat,
+  getEnumValue,
+  getMultiValues,
+  getQuestionTitle,
+  getQuickRepliesForQuestion,
+  getScaleValue,
+  getTextValue,
+  isMainAnswerValid,
+  normalizeOptions,
+  normalizeResponseForSave,
+} from "../../lib/questionnaire";
 
 const SAFETY_GATE_TEMPLATE_ID = "unified_v3_pure";
 const SAFETY_GATE_STORAGE_PREFIX = "gamex:safety_gate";
 const TYPING_DELAY_MS = 650;
-
-const STATUS_LABELS: Record<string, string> = {
-  YES: "Ja",
-  MAYBE: "Vielleicht",
-  NO: "Nein",
-  HARD_LIMIT: "Hard Limit",
-};
+const MAX_CHAT_MESSAGES = 18;
 
 interface ChatQuestionnaireProps {
   sessionId: string;
@@ -30,7 +41,7 @@ interface ChatQuestionnaireProps {
   initialModuleId?: string;
 }
 
-type ChatRole = "system" | "user";
+type ChatRole = "system" | "user" | "assistant";
 
 interface ChatMessage {
   id: string;
@@ -39,263 +50,9 @@ interface ChatMessage {
   detail?: string;
 }
 
-function normalizeOptions(
-  options: string[] | Array<{ value: string; label: string }>
-): Array<{ value: string; label: string }> {
-  if (options.length === 0) return [];
-
-  if (typeof options[0] === "string") {
-    return (options as string[]).map((opt) => ({ value: opt, label: opt }));
-  }
-
-  return options as Array<{ value: string; label: string }>;
-}
-
-function getQuickRepliesForQuestion(question: Question): string[] {
-  const tags = question.tags || [];
-  const label = (question.label || question.text || "").toLowerCase();
-
-  if (tags.includes("hard_limits") || label.includes("hard limit") || label.includes("tabu")) {
-    return QUICK_REPLIES.hardLimits;
-  }
-  if (tags.includes("soft_limits") || label.includes("soft limit")) {
-    return QUICK_REPLIES.softLimits;
-  }
-  if (tags.includes("aftercare")) {
-    return QUICK_REPLIES.aftercare;
-  }
-  if (tags.includes("fantasy") || tags.includes("fantasies") || label.includes("fantasi")) {
-    return QUICK_REPLIES.fantasies;
-  }
-  if (
-    tags.includes("safewords") ||
-    tags.includes("triggers") ||
-    label.includes("safeword") ||
-    label.includes("stop")
-  ) {
-    return QUICK_REPLIES.safewords;
-  }
-  if (
-    tags.includes("allergies") ||
-    tags.includes("health") ||
-    label.includes("allergi") ||
-    label.includes("gesundheit")
-  ) {
-    return QUICK_REPLIES.allergies;
-  }
-  if (
-    tags.includes("highlight") ||
-    label.includes("schoen") ||
-    label.includes("sch\u00f6n") ||
-    label.includes("oeffter") ||
-    label.includes("\u00f6fter")
-  ) {
-    return QUICK_REPLIES.highlights;
-  }
-  if (tags.includes("less") || label.includes("weniger") || label.includes("pausieren")) {
-    return QUICK_REPLIES.pauseList;
-  }
-
-  return QUICK_REPLIES.notes;
-}
-
-function getQuestionTitle(question?: Question): string {
-  return question?.text || question?.label || "Frage";
-}
-
-function getConsentCoreValue(value: ConsentRatingValue): {
-  status?: string;
-  interest?: number;
-  comfort?: number;
-} {
-  return {
-    status:
-      value.status ||
-      value.dom_status ||
-      value.sub_status ||
-      value.active_status ||
-      value.passive_status,
-    interest:
-      value.interest ??
-      value.dom_interest ??
-      value.sub_interest ??
-      value.active_interest ??
-      value.passive_interest,
-    comfort:
-      value.comfort ??
-      value.dom_comfort ??
-      value.sub_comfort ??
-      value.active_comfort ??
-      value.passive_comfort,
-  };
-}
-
-function getScaleValue(response: ResponseValue): number | null {
-  if (response === null || response === undefined) return null;
-  if (typeof response === "number" && !isNaN(response)) return response;
-  if (typeof response === "object" && response !== null && "value" in response) {
-    const value = response.value as number | null;
-    return value ?? null;
-  }
-  return null;
-}
-
-function getEnumValue(response: ResponseValue): string | null {
-  if (response === null || response === undefined) return null;
-  if (typeof response === "string") return response;
-  if (typeof response === "object" && response !== null && "value" in response) {
-    return (response.value as string | null) ?? null;
-  }
-  return null;
-}
-
-function getMultiValues(response: ResponseValue): string[] {
-  if (response === null || response === undefined) return [];
-  if (Array.isArray(response)) return response as string[];
-  if (typeof response === "object" && response !== null && "values" in response) {
-    return (response.values as string[]) || [];
-  }
-  return [];
-}
-
-function getTextValue(response: ResponseValue): string {
-  if (response === null || response === undefined) return "";
-  if (typeof response === "string") return response;
-  if (typeof response === "object" && response !== null && "text" in response) {
-    return String(response.text || "");
-  }
-  return "";
-}
-
-function normalizeForSave(question: Question, response: ResponseValue): ResponseValue {
-  if (response === null || response === undefined) return response;
-
-  switch (question.schema) {
-    case "scale":
-    case "slider":
-    case "scale_1_10": {
-      if (typeof response === "number") {
-        return { value: response };
-      }
-      return response;
-    }
-    case "enum": {
-      if (typeof response === "string") {
-        return { value: response };
-      }
-      return response;
-    }
-    case "multi": {
-      if (Array.isArray(response)) {
-        return { values: response };
-      }
-      return response;
-    }
-    case "text": {
-      if (typeof response === "string") {
-        return { text: response };
-      }
-      return response;
-    }
-    default:
-      return response;
-  }
-}
-
-function formatResponse(question: Question, response: ResponseValue): string {
-  if (response === null || response === undefined) return "Keine Antwort";
-
-  switch (question.schema) {
-    case "consent_rating": {
-      if (typeof response !== "object" || response === null) return "Keine Antwort";
-      const consent = response as ConsentRatingValue;
-      const { status, interest, comfort } = getConsentCoreValue(consent);
-      const statusLabel = (status && STATUS_LABELS[status]) || status || "Antwort";
-      const parts = [statusLabel];
-      if (interest !== null && interest !== undefined) {
-        parts.push(`Interesse ${interest}/5`);
-      }
-      if (comfort !== null && comfort !== undefined) {
-        parts.push(`Komfort ${comfort}/5`);
-      }
-      return parts.join(", ");
-    }
-    case "scale":
-    case "slider":
-    case "scale_1_10": {
-      const value = getScaleValue(response);
-      const max = question.schema === "scale_1_10" ? 10 : question.max || 5;
-      return value !== null ? `${value}/${max}` : "Keine Antwort";
-    }
-    case "enum": {
-      const value = getEnumValue(response);
-      if (!value) return "Keine Antwort";
-      const options = question.options ? normalizeOptions(question.options) : [];
-      return options.find((opt) => opt.value === value)?.label || value;
-    }
-    case "multi": {
-      const values = getMultiValues(response);
-      if (values.length === 0) return "Keine Antwort";
-      const options = question.options ? normalizeOptions(question.options) : [];
-      const labelMap = new Map(options.map((opt) => [opt.value, opt.label]));
-      return values.map((val) => labelMap.get(val) || val).join(", ");
-    }
-    case "text": {
-      const text = getTextValue(response);
-      return text.trim().length > 0 ? text : "Keine Antwort";
-    }
-    default:
-      return "Antwort gespeichert";
-  }
-}
-
-function isMainAnswerValid(question: Question, response: ResponseValue): boolean {
-  if (response === null || response === undefined) return false;
-
-  switch (question.schema) {
-    case "consent_rating": {
-      if (typeof response !== "object" || response === null) return false;
-      const consent = response as ConsentRatingValue;
-      const { status, interest } = getConsentCoreValue(consent);
-      return Boolean(status && interest !== null && interest !== undefined);
-    }
-    case "scale":
-    case "slider":
-    case "scale_1_10": {
-      if (typeof response === "number") return !isNaN(response);
-      if (typeof response === "object" && response !== null && "value" in response) {
-        const value = response.value as number | null;
-        return value !== null && value !== undefined && !isNaN(value);
-      }
-      return false;
-    }
-    case "enum": {
-      if (typeof response === "string") return response.length > 0;
-      if (typeof response === "object" && response !== null && "value" in response) {
-        const value = response.value as string | null;
-        return Boolean(value && value.length > 0);
-      }
-      return false;
-    }
-    case "multi": {
-      if (Array.isArray(response)) return response.length > 0;
-      if (typeof response === "object" && response !== null && "values" in response) {
-        const values = response.values as string[];
-        return Array.isArray(values) && values.length > 0;
-      }
-      return false;
-    }
-    case "text": {
-      if (typeof response === "string") return response.trim().length > 0;
-      if (typeof response === "object" && response !== null && "text" in response) {
-        const text = response.text as string;
-        return typeof text === "string" && text.trim().length > 0;
-      }
-      return false;
-    }
-    default:
-      return true;
-  }
+function trimMessages(list: ChatMessage[]): ChatMessage[] {
+  if (list.length <= MAX_CHAT_MESSAGES) return list;
+  return list.slice(list.length - MAX_CHAT_MESSAGES);
 }
 
 export function ChatQuestionnaire({
@@ -316,6 +73,12 @@ export function ChatQuestionnaire({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [aiTyping, setAiTyping] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [showAiHelper, setShowAiHelper] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [showConditions, setShowConditions] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [safetyChecks, setSafetyChecks] = useState({ safeword: false, boundaries: false });
   const [safetyGateAccepted, setSafetyGateAccepted] = useState(() => {
@@ -329,27 +92,12 @@ export function ChatQuestionnaire({
 
   const typingTimeoutRef = useRef<number | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const inputStageRef = useRef<HTMLDivElement>(null);
 
-  const { allQuestions, moduleStartIndices } = useMemo(() => {
-    const questions: (Question & { moduleId?: string; moduleIndex?: number })[] = [];
-    const moduleStarts: number[] = [];
-
-    if (template.modules) {
-      let questionIndex = 0;
-      for (let mIdx = 0; mIdx < template.modules.length; mIdx++) {
-        const module = template.modules[mIdx];
-        moduleStarts.push(questionIndex);
-        if (module.questions) {
-          for (const q of module.questions) {
-            questions.push({ ...q, moduleId: module.id, moduleIndex: mIdx });
-            questionIndex++;
-          }
-        }
-      }
-    }
-
-    return { allQuestions: questions, moduleStartIndices: moduleStarts };
-  }, [template.modules]);
+  const { allQuestions, moduleStartIndices } = useMemo(
+    () => flattenTemplateQuestions(template),
+    [template]
+  );
 
   const currentQuestion = allQuestions[currentIndex];
   const progress =
@@ -362,6 +110,7 @@ export function ChatQuestionnaire({
   const isCurrentAnswerValid =
     currentQuestion && draftResponse ? isMainAnswerValid(currentQuestion, draftResponse) : false;
   const canConfirmSafety = safetyChecks.safeword && safetyChecks.boundaries;
+  const canUseAI = hasAPIKey();
 
   useEffect(() => {
     loadExistingResponses();
@@ -382,9 +131,86 @@ export function ChatQuestionnaire({
   }, [isSafetyGateTemplate, safetyGateKey]);
 
   useEffect(() => {
+    const stage = inputStageRef.current;
+    if (!stage) return;
+
+    const root = stage.closest(".chat-questionnaire") as HTMLElement | null;
+    if (!root) return;
+
+    const updateHeight = () => {
+      const { height } = stage.getBoundingClientRect();
+      root.style.setProperty("--chat-input-height", `${Math.round(height)}px`);
+
+      const viewport = window.visualViewport;
+      const offset = viewport
+        ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
+        : 0;
+      root.style.setProperty("--chat-input-offset", `${Math.round(offset)}px`);
+    };
+
+    updateHeight();
+
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(updateHeight);
+      observer.observe(stage);
+    }
+
+    const viewport = window.visualViewport;
+    viewport?.addEventListener("resize", updateHeight);
+    window.addEventListener("resize", updateHeight);
+    window.addEventListener("orientationchange", updateHeight);
+
+    return () => {
+      observer?.disconnect();
+      viewport?.removeEventListener("resize", updateHeight);
+      window.removeEventListener("resize", updateHeight);
+      window.removeEventListener("orientationchange", updateHeight);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!currentQuestion) return;
     setDraftResponse(responses[currentQuestion.id] ?? null);
   }, [currentQuestion?.id]);
+
+  useEffect(() => {
+    setAiQuestion("");
+    setAiError(null);
+    setShowAiHelper(false);
+  }, [currentQuestion?.id]);
+
+  useEffect(() => {
+    if (!currentQuestion) return;
+    const notesKey = `${currentQuestion.id}_notes`;
+    const conditionsKey = `${currentQuestion.id}_conditions`;
+    const notesResponse = responses[notesKey];
+    const conditionsResponse = responses[conditionsKey];
+
+    if (
+      notesResponse &&
+      typeof notesResponse === "object" &&
+      notesResponse !== null &&
+      "text" in notesResponse
+    ) {
+      const notesText = (notesResponse as { text: string }).text;
+      setShowNotes(Boolean(notesText && notesText.trim().length > 0));
+    } else {
+      setShowNotes(false);
+    }
+
+    if (
+      conditionsResponse &&
+      typeof conditionsResponse === "object" &&
+      conditionsResponse !== null &&
+      "text" in conditionsResponse
+    ) {
+      const conditionsText = (conditionsResponse as { text: string }).text;
+      setShowConditions(Boolean(conditionsText && conditionsText.trim().length > 0));
+    } else {
+      setShowConditions(false);
+    }
+  }, [currentQuestion?.id, responses]);
 
   useEffect(() => {
     if (!chatEndRef.current) return;
@@ -404,7 +230,25 @@ export function ChatQuestionnaire({
     return {
       id: `a-${question.id}`,
       role: "user",
-      text: formatResponse(question, response),
+      text: formatResponseForChat(question, response),
+    };
+  }
+
+  function createAIQuestionMessage(question: string): ChatMessage {
+    return {
+      id: `ai-q-${Date.now()}`,
+      role: "user",
+      text: question,
+      detail: "Frage an KI",
+    };
+  }
+
+  function createAIAnswerMessage(answer: string): ChatMessage {
+    return {
+      id: `ai-a-${Date.now()}`,
+      role: "assistant",
+      text: answer,
+      detail: "KI-Antwort",
     };
   }
 
@@ -425,7 +269,7 @@ export function ChatQuestionnaire({
     for (let i = startIndex; i < allQuestions.length; i++) {
       const question = allQuestions[i];
       const response = data[question.id];
-      if (response && isMainAnswerValid(question, response)) {
+      if (response !== null && response !== undefined && isMainAnswerValid(question, response)) {
         history.push(createSystemMessage(question));
         history.push(createUserMessage(question, response));
         nextIndex = i + 1;
@@ -445,7 +289,7 @@ export function ChatQuestionnaire({
       });
     }
 
-    setMessages(history);
+    setMessages(trimMessages(history));
     setIsComplete(nextIndex >= allQuestions.length);
     const clampedIndex = Math.min(nextIndex, Math.max(allQuestions.length - 1, 0));
     setCurrentIndex(clampedIndex);
@@ -469,7 +313,7 @@ export function ChatQuestionnaire({
 
   async function handleSend() {
     if (!currentQuestion || !draftResponse || isTyping || saving) return;
-    const normalized = normalizeForSave(currentQuestion, draftResponse);
+    const normalized = normalizeResponseForSave(currentQuestion, draftResponse);
     if (!isMainAnswerValid(currentQuestion, normalized)) return;
 
     const nextResponses = {
@@ -477,7 +321,7 @@ export function ChatQuestionnaire({
       [currentQuestion.id]: normalized,
     };
     setResponses(nextResponses);
-    setMessages((prev) => [...prev, createUserMessage(currentQuestion, normalized)]);
+    setMessages((prev) => trimMessages([...prev, createUserMessage(currentQuestion, normalized)]));
     setDraftResponse(null);
     setIsTyping(true);
     setError(null);
@@ -499,13 +343,17 @@ export function ChatQuestionnaire({
 
     typingTimeoutRef.current = window.setTimeout(() => {
       if (nextIndex < allQuestions.length) {
-        setMessages((prev) => [...prev, createSystemMessage(allQuestions[nextIndex])]);
+        setMessages((prev) =>
+          trimMessages([...prev, createSystemMessage(allQuestions[nextIndex])])
+        );
         setCurrentIndex(nextIndex);
       } else {
-        setMessages((prev) => [
-          ...prev,
-          { id: "complete", role: "system", text: "Alles beantwortet. Danke dir." },
-        ]);
+        setMessages((prev) =>
+          trimMessages([
+            ...prev,
+            { id: "complete", role: "system", text: "Alles beantwortet. Danke dir." },
+          ])
+        );
         setIsComplete(true);
         if (onComplete) {
           onComplete();
@@ -513,6 +361,42 @@ export function ChatQuestionnaire({
       }
       setIsTyping(false);
     }, TYPING_DELAY_MS);
+  }
+
+  async function handleAskAI() {
+    if (!currentQuestion || !aiQuestion.trim() || aiTyping) return;
+
+    if (!canUseAI) {
+      setAiError("OpenRouter API-Key ist nicht konfiguriert. Bitte in den Einstellungen setzen.");
+      return;
+    }
+
+    const questionText = aiQuestion.trim();
+    setAiError(null);
+    setAiQuestion("");
+    setShowAiHelper(false);
+    setMessages((prev) => trimMessages([...prev, createAIQuestionMessage(questionText)]));
+    setAiTyping(true);
+
+    const request: AIHelpRequest = {
+      questionId: currentQuestion.id,
+      questionText: getQuestionTitle(currentQuestion),
+      sectionTitle: moduleLabel,
+      helpText: currentQuestion.help,
+      answerType: currentQuestion.schema,
+      options: currentQuestion.options,
+      currentAnswer: draftResponse,
+      userQuestion: questionText,
+    };
+
+    try {
+      const response = await askAIHelp(request);
+      setMessages((prev) => trimMessages([...prev, createAIAnswerMessage(response.answer)]));
+    } catch (err) {
+      setAiError(err instanceof Error ? err.message : "KI-Hilfe fehlgeschlagen");
+    } finally {
+      setAiTyping(false);
+    }
   }
 
   function handleSafetyConfirm() {
@@ -523,6 +407,22 @@ export function ChatQuestionnaire({
     } catch {
       // Ignore storage failures; gate stays local to this session.
     }
+  }
+
+  function handleNotesChange(questionId: string, notes: string) {
+    const notesKey = `${questionId}_notes`;
+    setResponses((prev) => ({
+      ...prev,
+      [notesKey]: { text: notes } as ResponseValue,
+    }));
+  }
+
+  function handleConditionsChange(questionId: string, conditions: string) {
+    const conditionsKey = `${questionId}_conditions`;
+    setResponses((prev) => ({
+      ...prev,
+      [conditionsKey]: { text: conditions } as ResponseValue,
+    }));
   }
 
   if (loading) {
@@ -653,7 +553,7 @@ export function ChatQuestionnaire({
       </div>
 
       <div className="chat-stream flex-1 overflow-y-auto">
-        <div className="chat-stream-inner relative max-w-2xl mx-auto w-full px-4 pt-6 pb-32 space-y-5">
+        <div className="chat-stream-inner relative max-w-2xl mx-auto w-full px-4 pt-6 space-y-5">
           {messages.map((message) => (
             <ChatBubble key={message.id} message={message} />
           ))}
@@ -663,7 +563,18 @@ export function ChatQuestionnaire({
               message={{
                 id: "typing",
                 role: "system",
-                text: "Partner schreibt...",
+                text: "Guide schreibt...",
+              }}
+              typing
+            />
+          )}
+
+          {aiTyping && (
+            <ChatBubble
+              message={{
+                id: "ai-typing",
+                role: "assistant",
+                text: "KI schreibt...",
               }}
               typing
             />
@@ -674,11 +585,13 @@ export function ChatQuestionnaire({
           )}
 
           <div ref={chatEndRef} />
-          <div className="h-32" />
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 chat-input-stage pb-safe">
+      <div
+        ref={inputStageRef}
+        className="fixed bottom-0 left-0 right-0 z-40 chat-input-stage pb-safe"
+      >
         <div className="max-w-2xl mx-auto w-full px-4 pb-4">
           <div className="chat-sheet rounded-3xl border shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.3)] overflow-hidden">
             <div className="flex justify-center pt-3">
@@ -689,7 +602,7 @@ export function ChatQuestionnaire({
                 Antwort
               </p>
               <p className="text-display text-base text-foreground/95">
-                {currentQuestion ? getQuestionTitle(currentQuestion) : "Alles beantwortet"}
+                {currentQuestion ? `Auf: ${getQuestionTitle(currentQuestion)}` : "Alles beantwortet"}
               </p>
             </div>
 
@@ -703,11 +616,29 @@ export function ChatQuestionnaire({
               ) : (
                 <div key={currentQuestion.id} className="space-y-4">
                   {currentQuestion.schema === "consent_rating" && (
-                    <ConsentRatingInput
-                      value={draftResponse as ConsentRatingValue}
-                      onChange={(value) => setDraftResponse(value)}
-                      disabled={isTyping || saving}
-                    />
+                    <>
+                      {currentQuestion.has_dom_sub ? (
+                        <ConsentRatingVariantInput
+                          variant="dom_sub"
+                          value={draftResponse as ConsentRatingValue}
+                          onChange={(value) => setDraftResponse(value)}
+                          disabled={isTyping || saving}
+                        />
+                      ) : currentQuestion.has_active_passive ? (
+                        <ConsentRatingVariantInput
+                          variant="active_passive"
+                          value={draftResponse as ConsentRatingValue}
+                          onChange={(value) => setDraftResponse(value)}
+                          disabled={isTyping || saving}
+                        />
+                      ) : (
+                        <ConsentRatingInput
+                          value={draftResponse as ConsentRatingValue}
+                          onChange={(value) => setDraftResponse(value)}
+                          disabled={isTyping || saving}
+                        />
+                      )}
+                    </>
                   )}
 
                   {(currentQuestion.schema === "scale" ||
@@ -768,22 +699,151 @@ export function ChatQuestionnaire({
                 </div>
               )}
 
-              <div className="flex justify-end">
-                <Button
-                  onClick={handleSend}
-                  disabled={
-                    isTyping ||
-                    saving ||
-                    isComplete ||
-                    !currentQuestion ||
-                    !isCurrentAnswerValid
-                  }
-                  size="icon"
-                  className="h-12 w-12 rounded-full shadow-lg shadow-rose-500/20 bg-rose-600 text-white hover:bg-rose-500"
-                  aria-label="Senden"
-                >
-                  <Send className="h-5 w-5" />
-                </Button>
+              {currentQuestion && !isComplete && !isTyping && (
+                <div className="rounded-2xl border border-border/40 bg-background/40 p-3 space-y-3">
+                  <p className="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+                    Optional
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setShowNotes((prev) => !prev)}
+                    className={`list-card w-full text-left ${
+                      showNotes ? "ring-2 ring-primary/30" : "card-interactive"
+                    }`}
+                    disabled={isTyping || saving}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="list-card-title">Notiz hinzufuegen</p>
+                      <p className="list-card-meta">Persoenliche Ergaenzungen zur Frage.</p>
+                    </div>
+                    {showNotes ? (
+                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </button>
+
+                  {showNotes && (
+                    <textarea
+                      value={
+                        (responses[`${currentQuestion.id}_notes`] as { text: string } | undefined)
+                          ?.text || ""
+                      }
+                      onInput={(e) =>
+                        handleNotesChange(
+                          currentQuestion.id,
+                          (e.target as HTMLTextAreaElement).value
+                        )
+                      }
+                      placeholder="Hier kannst du zusaetzliche Notizen zu dieser Frage hinterlassen..."
+                      className="w-full min-h-[110px] px-3 py-2 border border-input rounded-xl bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      style={{ fontSize: "16px" }}
+                      disabled={isTyping || saving}
+                    />
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setShowConditions((prev) => !prev)}
+                    className={`list-card w-full text-left ${
+                      showConditions ? "ring-2 ring-primary/30" : "card-interactive"
+                    }`}
+                    disabled={isTyping || saving}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="list-card-title">Bedingungen/Grenzen</p>
+                      <p className="list-card-meta">Spezifische Voraussetzungen festhalten.</p>
+                    </div>
+                    {showConditions ? (
+                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </button>
+
+                  {showConditions && (
+                    <textarea
+                      value={
+                        (
+                          responses[`${currentQuestion.id}_conditions`] as
+                            | { text: string }
+                            | undefined
+                        )?.text || ""
+                      }
+                      onInput={(e) =>
+                        handleConditionsChange(
+                          currentQuestion.id,
+                          (e.target as HTMLTextAreaElement).value
+                        )
+                      }
+                      placeholder="Hier kannst du Bedingungen oder Grenzen zu dieser Frage angeben..."
+                      className="w-full min-h-[110px] px-3 py-2 border border-input rounded-xl bg-background text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      style={{ fontSize: "16px" }}
+                      disabled={isTyping || saving}
+                    />
+                  )}
+                </div>
+              )}
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAiHelper((prev) => !prev)}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                    disabled={!currentQuestion}
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    KI Hilfe (optional)
+                  </button>
+                  <Button
+                    onClick={handleSend}
+                    disabled={
+                      isTyping ||
+                      saving ||
+                      isComplete ||
+                      !currentQuestion ||
+                      !isCurrentAnswerValid
+                    }
+                    size="icon"
+                    className="h-12 w-12 rounded-full shadow-lg shadow-rose-500/20 bg-rose-600 text-white hover:bg-rose-500"
+                    aria-label="Senden"
+                  >
+                    <Send className="h-5 w-5" />
+                  </Button>
+                </div>
+
+                {showAiHelper && (
+                  <div className="rounded-2xl border border-border/40 bg-background/40 p-3 space-y-3">
+                    <label className="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+                      Frage an KI
+                    </label>
+                    <textarea
+                      value={aiQuestion}
+                      onInput={(e) => setAiQuestion((e.target as HTMLTextAreaElement).value)}
+                      placeholder="z.B. Was bedeutet die Frage genau?"
+                      className="w-full min-h-[84px] px-3 py-2 rounded-lg border border-input bg-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                      disabled={aiTyping}
+                    />
+                    {!canUseAI && (
+                      <p className="text-xs text-muted-foreground">
+                        KI benötigt einen OpenRouter API-Key in den Einstellungen.
+                      </p>
+                    )}
+                    {aiError && <p className="text-xs text-destructive">{aiError}</p>}
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={handleAskAI}
+                        disabled={!aiQuestion.trim() || aiTyping || !canUseAI}
+                        size="sm"
+                        variant="outline"
+                        className="gap-2"
+                      >
+                        {aiTyping ? "KI schreibt..." : "Frage senden"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -798,7 +858,7 @@ export function ChatQuestionnaire({
 
 function ChatBubble({ message, typing = false }: { message: ChatMessage; typing?: boolean }) {
   const isUser = message.role === "user";
-  const label = isUser ? "Du" : "Butler";
+  const label = isUser ? "Du" : message.role === "assistant" ? "KI" : "Guide";
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>

@@ -24,6 +24,8 @@ export interface Question {
   min?: number; // For scale questions
   max?: number; // For scale questions
   labels?: { min?: string; max?: string }; // For scale questions
+  has_dom_sub?: boolean;
+  has_active_passive?: boolean;
 }
 
 export interface Module {
@@ -37,5 +39,6 @@ export interface Template {
   id: string;
   name: string;
   version: number;
+  description?: string;
   modules: Module[];
 }

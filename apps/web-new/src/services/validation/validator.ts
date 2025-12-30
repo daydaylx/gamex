@@ -285,6 +285,9 @@ export function validateResponses(
 
     const question = questionMap[qid];
     if (!question) {
+      if (qid.endsWith("_notes") || qid.endsWith("_conditions")) {
+        continue;
+      }
       warnings.push({
         question_id: qid,
         field: undefined,

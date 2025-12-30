@@ -36,6 +36,15 @@ vi.mock('../../src/components/form/QuestionnaireForm', () => ({
   )
 }));
 
+vi.mock('../../src/components/form/ChatQuestionnaire', () => ({
+  ChatQuestionnaire: ({ onComplete, initialModuleId }: any) => (
+    <div data-testid="chat-questionnaire">
+      Chat Questionnaire (Mod {initialModuleId})
+      <button onClick={onComplete}>Finish</button>
+    </div>
+  )
+}));
+
 describe('UnifiedInterviewScreen', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -76,14 +85,14 @@ describe('UnifiedInterviewScreen', () => {
     expect(screen.getByText('Themen-Wahl')).toBeInTheDocument();
   });
 
-  it('should navigate to QuestionnaireForm when module selected', async () => {
+  it('should navigate to ChatQuestionnaire when module selected', async () => {
     render(<UnifiedInterviewScreen sessionId="123" person="A" />);
     await waitFor(() => screen.getByText('Module 1'));
 
     fireEvent.click(screen.getByText('Module 1').closest('div')!);
 
-    expect(screen.getByTestId('questionnaire-form')).toBeInTheDocument();
-    expect(screen.getByText('Questionnaire Form (Mod m1)')).toBeInTheDocument();
+    expect(screen.getByTestId('chat-questionnaire')).toBeInTheDocument();
+    expect(screen.getByText('Chat Questionnaire (Mod m1)')).toBeInTheDocument();
   });
 
   it('should navigate to Check-in', async () => {

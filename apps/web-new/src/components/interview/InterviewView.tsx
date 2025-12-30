@@ -21,6 +21,7 @@ import {
   updateInterviewProgress,
   getInterviewAnswer,
   getCombinedSession,
+  findFirstIncompleteIndex,
 } from "../../services/interview-storage";
 import { haptics, useInterviewBackButton } from "../../platform/capacitor";
 import type { InterviewScenario, InterviewSession, InterviewAnswer } from "../../types/interview";
@@ -44,6 +45,7 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
   const [showAskAI, setShowAskAI] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState<Partial<InterviewAnswer>>({});
+  const [showAnswerHint, setShowAnswerHint] = useState(false);
 
   // Swipe state
   const [swipeOffset, setSwipeOffset] = useState(0);
@@ -97,7 +99,12 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
         );
       }
       setSession(loadedSession);
-      setCurrentIndex(loadedSession.progress.current_index);
+      const resumeIndex = findFirstIncompleteIndex(
+        sessionId,
+        person,
+        loadedScenarios.map((s) => s.id)
+      );
+      setCurrentIndex(resumeIndex >= 0 ? resumeIndex : loadedSession.progress.current_index);
     } catch (err) {
       console.error("Failed to load interview data:", err);
       setError(err instanceof Error ? err.message : "Fehler beim Laden");
@@ -108,12 +115,18 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
 
   function handleAnswerChange(partialAnswer: Partial<InterviewAnswer>) {
     setCurrentAnswer((prev) => ({ ...prev, ...partialAnswer }));
+    setShowAnswerHint(false);
     // Light haptic on answer change
     haptics.light();
   }
 
   async function handleNext() {
     if (!currentScenario || !session) return;
+    if (currentAnswer.primary === undefined || currentAnswer.primary === null) {
+      setShowAnswerHint(true);
+      await haptics.light();
+      return;
+    }
 
     // Haptic feedback
     await haptics.medium();
@@ -315,6 +328,8 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
   const existingAnswer = getInterviewAnswer(sessionId, person, currentScenario.id);
   const _isAnswered = !!existingAnswer && !existingAnswer.skipped;
   void _isAnswered; // Reserved for answer state visualization
+  const canContinue = currentAnswer.primary !== undefined && currentAnswer.primary !== null;
+  const remainingQuestions = Math.max(0, scenarios.length - (currentIndex + 1));
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-120px)] relative">
@@ -330,7 +345,7 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
               </span>
             </div>
             <span className="text-muted-foreground whitespace-nowrap">
-              {currentIndex + 1}/{scenarios.length} • {progress}%
+              {currentIndex + 1}/{scenarios.length} • {progress}% • Noch {remainingQuestions}
             </span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -422,6 +437,12 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
                 person={person}
                 onChange={handleAnswerChange}
               />
+
+              {!canContinue && (
+                <div className="callout text-sm">
+                  Bitte wähle eine Antwort, um fortzufahren oder nutze Skip.
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -454,6 +475,7 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
             <Button
               onClick={handleNext}
               className="gap-1.5 min-h-[48px] px-5 font-semibold touch-feedback shadow-lg shadow-primary/20"
+              disabled={!canContinue}
             >
               {currentIndex === scenarios.length - 1 ? "Fertig" : "Weiter"}
               <ChevronRight className="h-5 w-5" />
