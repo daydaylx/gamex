@@ -1,11 +1,5 @@
-/**
- * Mobile-First Home Screen
- * Clear CTA, minimal navigation, recent sessions
- */
-
-import { useState, useEffect } from "preact/hooks";
-import { Plus, ChevronRight, Clock, Heart, ShieldCheck, Sparkles } from "lucide-preact";
-import { Link, useLocation } from "wouter-preact";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import { Link } from "wouter-preact";
 import { Button } from "../components/ui/button";
 import { CreateSessionDialog } from "../components/CreateSessionDialog";
 import {
@@ -19,6 +13,7 @@ import { getAnsweredCount, loadInterviewScenarios } from "../services/interview-
 import { getAnsweredQuestionCount } from "../lib/questionnaire";
 import type { SessionListItem } from "../types/session";
 import { SessionCardSkeleton } from "../components/ui/skeleton";
+import { Clock, MessageCircle, Plus, Sparkles } from "lucide-preact";
 
 interface SessionProgress {
   questionnaireTotal: number;
@@ -37,18 +32,67 @@ export function HomeScreen() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [progressMap, setProgressMap] = useState<Record<string, SessionProgress>>({});
   const [checkinTotal, setCheckinTotal] = useState(0);
-  const [, setLocation] = useLocation();
 
-  useEffect(() => {
-    loadSessions();
-  }, []);
+  const loadProgressData = useCallback(
+    async (allSessions: SessionListItem[]) => {
+      if (allSessions.length === 0) return;
 
-  async function loadSessions() {
+      let totalCheckin = checkinTotal;
+      if (!totalCheckin) {
+        try {
+          const scenarios = await loadInterviewScenarios();
+          totalCheckin = scenarios.length;
+          setCheckinTotal(totalCheckin);
+        } catch (err) {
+          console.warn("Could not load check-in scenarios:", err);
+        }
+      }
+
+      const templateCache = new Map<string, number>();
+      const templateInfoCache = new Map<string, Awaited<ReturnType<typeof getTemplateById>>>();
+      const entries = await Promise.all(
+        allSessions.map(async (session) => {
+          let template = templateInfoCache.get(session.template_id);
+          if (template === undefined) {
+            template = await getTemplateById(session.template_id);
+            templateInfoCache.set(session.template_id, template);
+          }
+
+          let questionnaireTotal = templateCache.get(session.template_id);
+          if (questionnaireTotal === undefined) {
+            questionnaireTotal = getTemplateQuestionCount(template);
+            templateCache.set(session.template_id, questionnaireTotal);
+          }
+
+          const [responsesA, responsesB] = await Promise.all([
+            loadResponses(session.id, "A"),
+            loadResponses(session.id, "B"),
+          ]);
+
+          return [
+            session.id,
+            {
+              questionnaireTotal,
+              questionnaireA: getAnsweredQuestionCount(template, responsesA),
+              questionnaireB: getAnsweredQuestionCount(template, responsesB),
+              checkinTotal: totalCheckin,
+              checkinA: getAnsweredCount(session.id, "A"),
+              checkinB: getAnsweredCount(session.id, "B"),
+            },
+          ] as const;
+        })
+      );
+
+      setProgressMap(Object.fromEntries(entries));
+    },
+    [checkinTotal]
+  );
+
+  const loadSessions = useCallback(async () => {
     setLoading(true);
     try {
       const [active, archived] = await Promise.all([getActiveSessions(), getArchivedSessions()]);
 
-      // Sort by most recent first
       active.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       archived.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
@@ -60,260 +104,154 @@ export function HomeScreen() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [loadProgressData]);
 
-  async function loadProgressData(allSessions: SessionListItem[]) {
-    if (allSessions.length === 0) return;
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions]);
 
-    let totalCheckin = checkinTotal;
-    if (!totalCheckin) {
-      try {
-        const scenarios = await loadInterviewScenarios();
-        totalCheckin = scenarios.length;
-        setCheckinTotal(totalCheckin);
-      } catch (err) {
-        console.warn("Could not load check-in scenarios:", err);
-      }
-    }
-
-    const templateCache = new Map<string, number>();
-    const templateInfoCache = new Map<string, Awaited<ReturnType<typeof getTemplateById>>>();
-    const entries = await Promise.all(
-      allSessions.map(async (session) => {
-        let template = templateInfoCache.get(session.template_id);
-        if (template === undefined) {
-          template = await getTemplateById(session.template_id);
-          templateInfoCache.set(session.template_id, template);
-        }
-
-        let questionnaireTotal = templateCache.get(session.template_id);
-        if (questionnaireTotal === undefined) {
-          questionnaireTotal = getTemplateQuestionCount(template);
-          templateCache.set(session.template_id, questionnaireTotal);
-        }
-
-        const [responsesA, responsesB] = await Promise.all([
-          loadResponses(session.id, "A"),
-          loadResponses(session.id, "B"),
-        ]);
-
-        return [
-          session.id,
-          {
-            questionnaireTotal,
-            questionnaireA: getAnsweredQuestionCount(template, responsesA),
-            questionnaireB: getAnsweredQuestionCount(template, responsesB),
-            checkinTotal: totalCheckin,
-            checkinA: getAnsweredCount(session.id, "A"),
-            checkinB: getAnsweredCount(session.id, "B"),
-          },
-        ] as const;
-      })
-    );
-
-    setProgressMap(Object.fromEntries(entries));
-  }
-
-  // Get the most recent session
-  const latestSession = sessions[0];
-  const hasRecentSession = !!latestSession;
-  const latestProgress = latestSession ? progressMap[latestSession.id] : undefined;
+  const lobbySessions = useMemo(
+    () =>
+      sessions.map((session) => ({
+        ...session,
+        progress: progressMap[session.id],
+      })),
+    [sessions, progressMap]
+  );
 
   return (
-    <div className="page">
-      <header className="hero">
-        <div className="hero-panel space-y-6">
-          <div className="hero-icon animate-pulse-glow">
-            <Heart className="w-8 h-8 text-primary" />
-          </div>
-          <div className="space-y-2">
-            <h1 className="hero-title">Intimacy Tool</h1>
-            <p className="hero-subtitle">
-              Ein klarer, sicherer Raum für ehrliche Gespräche über Wünsche und Grenzen.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button size="lg" className="w-full sm:w-auto gap-3" onClick={() => setShowCreateDialog(true)}>
-              <Plus className="w-6 h-6" />
-              Neue Session starten
-            </Button>
-            {hasRecentSession && (
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto gap-2"
-                onClick={() => setLocation(`/sessions/${latestSession.id}`)}
-              >
-                <Clock className="w-5 h-5" />
-                Weiter mit {latestSession.name}
-              </Button>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="stat-chip">
-              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              100% lokal gespeichert
-            </span>
-            <span className="stat-chip">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              Strukturierte Gespräche
-            </span>
-            <span className="stat-chip">{sessions.length} aktive Sessions</span>
-          </div>
+    <div className="page chat-lobby">
+      <div className="lobby-topbar">
+        <div className="space-y-1">
+          <p className="eyebrow">Chat-Lobby</p>
+          <h1 className="page-title">Eure Sessions als Chats</h1>
+          <p className="page-subtitle">
+            Springt direkt in eure Threads, seht den letzten Stand und wo noch Antworten fehlen.
+          </p>
         </div>
-      </header>
+        <div className="topbar-actions">
+          <Button
+            size="lg"
+            className="cta-primary"
+            onClick={() => setShowCreateDialog(true)}
+            aria-label="Neue Session starten"
+          >
+            <Plus className="w-5 h-5" />
+            Neuen Chat starten
+          </Button>
+        </div>
+      </div>
 
-      {hasRecentSession && (
-        <section className="section-card">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">Zuletzt geöffnet</h2>
-              <p className="section-subtitle">Schnell weitermachen, wo ihr aufgehört habt.</p>
-            </div>
+      <section className="thread-list-card">
+        <div className="thread-list-header">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Sparkles className="h-4 w-4" />
+            {sessions.length > 0 ? `${sessions.length} aktive Threads` : "Keine aktiven Threads"}
           </div>
+          <div className="text-xs text-muted-foreground">Letzte Aktivität · Fragebogen & Check-ins</div>
+        </div>
+
+        {loading && (
           <div className="space-y-4">
-            <button
-              onClick={() => setLocation(`/sessions/${latestSession.id}`)}
-              className="list-card w-full text-left card-interactive"
-            >
-              <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="list-card-title truncate">{latestSession.name}</p>
-                <p className="list-card-meta">{formatDate(latestSession.created_at)}</p>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-            </button>
-
-            {latestProgress && (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <p className="progress-label">Fragebogen</p>
-                  <ProgressRow
-                    label="A"
-                    value={latestProgress.questionnaireA}
-                    total={latestProgress.questionnaireTotal}
-                  />
-                  <ProgressRow
-                    label="B"
-                    value={latestProgress.questionnaireB}
-                    total={latestProgress.questionnaireTotal}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <p className="progress-label">Check-in</p>
-                  <ProgressRow
-                    label="A"
-                    value={latestProgress.checkinA}
-                    total={latestProgress.checkinTotal}
-                  />
-                  <ProgressRow
-                    label="B"
-                    value={latestProgress.checkinB}
-                    total={latestProgress.checkinTotal}
-                  />
-                </div>
-              </div>
-            )}
+            <SessionCardSkeleton />
+            <SessionCardSkeleton />
           </div>
-        </section>
-      )}
+        )}
 
-      {loading && (
-        <section className="section-card">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">Sessions</h2>
-              <p className="section-subtitle">Lade deine aktuellen Sessions.</p>
+        {!loading && sessions.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">
+              <MessageCircle className="w-5 h-5" />
             </div>
-          </div>
-          <div className="section-body">
-            <SessionCardSkeleton />
-            <SessionCardSkeleton />
-          </div>
-        </section>
-      )}
-
-      {!loading && sessions.length === 0 && (
-        <section className="section-card">
-          <div className="section-body text-center">
-            <p className="section-subtitle">
-              Noch keine Sessions vorhanden. Erstelle deine erste, um loszulegen.
+            <p className="text-sm text-muted-foreground">
+              Noch keine Sessions – starte einen neuen Chat und lade deine Partnerin / deinen Partner ein.
             </p>
+            <Button variant="secondary" onClick={() => setShowCreateDialog(true)}>
+              Neue Session
+            </Button>
           </div>
-        </section>
-      )}
+        )}
 
-      {sessions.length > 1 && (
-        <section className="section-card">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">Alle Sessions</h2>
-              <p className="section-subtitle">{sessions.length} Sessions verfügbar</p>
-            </div>
-          </div>
-          <div className="section-body">
-            {sessions.slice(1, 7).map((session) => (
-              <Link key={session.id} href={`/sessions/${session.id}`}>
-                <a className="list-card card-interactive">
-                  <div className="flex-1 min-w-0">
-                    <p className="list-card-title truncate">{session.name}</p>
-                    <p className="list-card-meta">{formatDate(session.created_at)}</p>
-                    <div className="flex gap-2 mt-3">
-                      <StatusDot
-                        complete={session.has_a}
-                        label="A"
-                        progress={progressMap[session.id]}
-                      />
-                      <StatusDot
-                        complete={session.has_b}
-                        label="B"
-                        progress={progressMap[session.id]}
-                      />
-                    </div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                </a>
-              </Link>
-            ))}
+        <div className="thread-stack">
+          {lobbySessions.map((session) => (
+            <Link key={session.id} href={`/sessions/${session.id}`}>
+              <a className="thread-row card-interactive" aria-label={`Chat ${session.name}`}>
+                {(() => {
+                  const unreadCount = getUnreadCount(session.progress);
 
-            {sessions.length > 7 && (
-              <div className="text-sm text-center text-muted-foreground">
-                +{sessions.length - 7} weitere Sessions
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+                  return (
+                    <>
+                      <div className="thread-avatar">
+                        <span className="thread-initials">{session.name.slice(0, 2).toUpperCase()}</span>
+                        <span className={`presence-dot ${unreadCount > 0 ? "presence-active" : ""}`} aria-hidden />
+                      </div>
+                      <div className="thread-body">
+                        <div className="thread-title-row">
+                          <p className="thread-title">{session.name}</p>
+                          <span className="thread-time">{formatShortDate(session.created_at)}</span>
+                        </div>
+                        <div className="thread-preview">{getPreviewText(session, session.progress)}</div>
+                        <div className="thread-meta-row">
+                          <ProgressBadge
+                            label="A"
+                            progress={session.progress?.questionnaireA}
+                            total={session.progress?.questionnaireTotal}
+                          />
+                          <ProgressBadge
+                            label="B"
+                            progress={session.progress?.questionnaireB}
+                            total={session.progress?.questionnaireTotal}
+                          />
+                          <ProgressBadge
+                            label="Check-ins"
+                            progress={session.progress?.checkinA + session.progress?.checkinB}
+                            total={(session.progress?.checkinTotal || 0) * 2}
+                            compact
+                          />
+                          {unreadCount > 0 ? (
+                            <span className="unread-pill">{unreadCount} offen</span>
+                          ) : (
+                            <span className="resolved-pill">Alles synchron</span>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+              </a>
+            </Link>
+          ))}
+        </div>
+      </section>
 
-      {archivedSessions.length > 0 && !loading && (
-        <section className="section-card">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">Archiv</h2>
-              <p className="section-subtitle">
-                Ältere Sessions kannst du hier jederzeit wieder öffnen.
-              </p>
+      {archivedSessions.length > 0 && (
+        <section className="thread-list-card">
+          <div className="thread-list-header">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Clock className="h-4 w-4" /> Archiv
             </div>
             <button
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setShowArchived(!showArchived)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {showArchived ? "Ausblenden" : `Anzeigen (${archivedSessions.length})`}
             </button>
           </div>
 
           {showArchived && (
-            <div className="section-body">
+            <div className="thread-stack">
               {archivedSessions.map((session) => (
                 <Link key={session.id} href={`/sessions/${session.id}`}>
-                  <a className="list-card card-interactive">
-                    <div className="flex-1 min-w-0">
-                      <p className="list-card-title truncate">{session.name}</p>
-                      <p className="list-card-meta">
-                        {formatDate(session.created_at)} • Archiviert
-                      </p>
+                  <a className="thread-row thread-row-archived card-interactive" aria-label={`Archivierter Chat ${session.name}`}>
+                    <div className="thread-avatar muted">
+                      <span className="thread-initials">{session.name.slice(0, 2).toUpperCase()}</span>
+                    </div>
+                    <div className="thread-body">
+                      <div className="thread-title-row">
+                        <p className="thread-title">{session.name}</p>
+                        <span className="thread-time">{formatShortDate(session.created_at)}</span>
+                      </div>
+                      <div className="thread-preview">Archiviert · Erinnerungen jederzeit abrufbar</div>
                     </div>
                   </a>
                 </Link>
@@ -335,67 +273,71 @@ export function HomeScreen() {
   );
 }
 
-function StatusDot({
-  complete,
+function ProgressBadge({
   label,
-  progress,
+  progress = 0,
+  total = 0,
+  compact = false,
 }: {
-  complete: boolean;
   label: string;
-  progress?: SessionProgress;
+  progress?: number;
+  total?: number;
+  compact?: boolean;
 }) {
-  const isPersonA = label === "A";
-  const answeredCount = progress
-    ? isPersonA
-      ? progress.questionnaireA
-      : progress.questionnaireB
-    : 0;
-  const totalCount = progress?.questionnaireTotal || 0;
-  const progressText =
-    totalCount > 0 ? `${answeredCount}/${totalCount} Antworten` : complete ? "Gestartet" : "Offen";
+  const percent = total > 0 ? Math.round((progress / total) * 100) : 0;
+  const content = compact ? `${progress}/${total}` : `${label}: ${progress}/${total}`;
 
   return (
-    <div
-      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
-        complete ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground"
-      }`}
-      title={`Person ${label}: ${progressText}`}
-    >
-      {label}
-    </div>
+    <span className="progress-pill" aria-label={`${label} Fortschritt ${percent}%`}>
+      {content}
+    </span>
   );
 }
 
-function ProgressRow({
-  label,
-  value,
-  total,
-}: {
-  label: string;
-  value: number;
-  total: number;
-}) {
-  const percent = total > 0 ? Math.min(100, Math.round((value / total) * 100)) : 0;
+function getUnreadCount(progress?: SessionProgress) {
+  if (!progress) return 1;
+  const outstanding = [
+    progress.questionnaireTotal - progress.questionnaireA,
+    progress.questionnaireTotal - progress.questionnaireB,
+    progress.checkinTotal - progress.checkinA,
+    progress.checkinTotal - progress.checkinB,
+  ].filter((value) => value > 0);
 
-  return (
-    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-      <span className="w-6 text-foreground font-semibold">{label}</span>
-      <div className="progress-rail flex-1">
-        <div className="progress-rail-fill" style={{ width: `${percent}%` }} />
-      </div>
-      <span className="tabular-nums">
-        {total > 0 ? `${value}/${total}` : "--"}
-      </span>
-    </div>
-  );
+  return outstanding.length;
 }
 
-function formatDate(dateString: string): string {
+function getPreviewText(session: SessionListItem, progress?: SessionProgress) {
+  if (!progress) {
+    return `Noch keine Antworten · ${formatShortDate(session.created_at)}`;
+  }
+
+  const parts = [] as string[];
+  if (progress.questionnaireA || progress.questionnaireB) {
+    parts.push(
+      `Fragebogen A ${progress.questionnaireA}/${progress.questionnaireTotal}, B ${progress.questionnaireB}/${progress.questionnaireTotal}`
+    );
+  }
+
+  if (progress.checkinA || progress.checkinB) {
+    parts.push(`Check-ins ${progress.checkinA + progress.checkinB}/${progress.checkinTotal * 2}`);
+  }
+
+  if (parts.length === 0) {
+    parts.push("Noch nichts beantwortet");
+  }
+
+  return parts.join(" · ");
+}
+
+function formatShortDate(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
-  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  const diffMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
 
-  if (diffDays === 0) return "Heute";
+  if (diffMinutes < 60) return `${diffMinutes} min`;
+  if (diffHours < 24) return `${diffHours} h`;
   if (diffDays === 1) return "Gestern";
   if (diffDays < 7) return `Vor ${diffDays} Tagen`;
 
