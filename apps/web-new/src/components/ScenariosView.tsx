@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "preact/hooks";
+import type { JSX } from "preact";
 import { ChevronLeft, ChevronRight, X, AlertTriangle, Info, Shield, Layers } from "lucide-preact";
 import { Button } from "./ui/button";
 import { loadScenarios } from "../services/api";
@@ -218,11 +219,11 @@ export function ScenariosView({
   }
 
   // Swipe handlers
-  function handleTouchStart(e: TouchEvent) {
+  function handleTouchStart(e: JSX.TargetedTouchEvent<HTMLDivElement>) {
     touchStartX.current = e.touches[0].clientX;
   }
 
-  function handleTouchMove(e: TouchEvent) {
+  function handleTouchMove(e: JSX.TargetedTouchEvent<HTMLDivElement>) {
     touchEndX.current = e.touches[0].clientX;
   }
 
@@ -486,8 +487,8 @@ export function ScenariosView({
   return (
     <div
       className="page"
-      onTouchStart={handleTouchStart as any}
-      onTouchMove={handleTouchMove as any}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       <section className="section-card">

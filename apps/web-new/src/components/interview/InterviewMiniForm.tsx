@@ -13,7 +13,7 @@ import type { InterviewAnswer, InterviewScenario } from "../../types/interview";
 
 interface InterviewMiniFormProps {
   scenario: InterviewScenario;
-  answer?: InterviewAnswer | null;
+  answer?: Partial<InterviewAnswer> | null;
   person: "A" | "B";
   onChange: (answer: Partial<InterviewAnswer>) => void;
   disabled?: boolean;

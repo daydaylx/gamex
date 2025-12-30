@@ -103,31 +103,39 @@ export async function callOpenRouter(
       });
 
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       clearTimeout(timeoutId);
 
-      if (error.name === "AbortError") {
+      // Handle AbortError (DOMException)
+      if (typeof error === "object" && error !== null && "name" in error && error.name === "AbortError") {
         throw new Error(`Anfrage-Timeout nach ${timeout}ms. Bitte erneut versuchen.`);
       }
 
+      // Handle TypeError (network errors)
       if (error instanceof TypeError && error.message.includes("fetch")) {
         throw new Error("Netzwerkfehler. Bitte Internetverbindung überprüfen.");
       }
 
-      // If this was a retry attempt and we still have retries left, continue
-      if (attempt < maxRetries && error.message && error.message.includes("502|503|504")) {
-        lastError = error;
-        await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
-        continue;
+      // Handle Error instances
+      if (error instanceof Error) {
+        // If this was a retry attempt and we still have retries left, continue
+        if (attempt < maxRetries && error.message.includes("502|503|504")) {
+          lastError = error;
+          await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
+          continue;
+        }
+
+        // Re-throw if it's already a formatted error
+        if (!error.message.includes("OpenRouter API")) {
+          throw error;
+        }
+
+        // Otherwise, wrap it
+        throw new Error(error.message);
       }
 
-      // Re-throw if it's already a formatted error
-      if (error.message && !error.message.includes("OpenRouter API")) {
-        throw error;
-      }
-
-      // Otherwise, wrap it
-      throw new Error(error.message || "Unbekannter Fehler bei OpenRouter API-Anfrage");
+      // Handle unknown error types
+      throw new Error("Unbekannter Fehler bei OpenRouter API-Anfrage");
     }
   }
 

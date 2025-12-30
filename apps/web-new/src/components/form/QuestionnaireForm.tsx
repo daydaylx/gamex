@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo, useRef } from "preact/hooks";
+import { useState, useEffect, useMemo, useRef, useCallback } from "preact/hooks";
+import type { JSX } from "preact";
 import {
   ChevronLeft,
   ChevronRight,
@@ -189,9 +190,53 @@ export function QuestionnaireForm({
     return { total, answered };
   }
 
+  const loadExistingResponses = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await loadResponses(sessionId, person);
+      setResponses(data || {});
+    } catch (err) {
+      console.error("Failed to load responses:", err);
+      setError(err instanceof Error ? err.message : "Fehler beim Laden");
+    } finally {
+      setLoading(false);
+    }
+  }, [sessionId, person]);
+
+  const handleSave = useCallback(async () => {
+    setSaving(true);
+    setSaveSuccess(false);
+    try {
+      await saveResponses(sessionId, person, responses);
+      setSaveSuccess(true);
+      await haptics.success();
+      showSuccessToast("Fortschritt gespeichert", 2000);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    } catch (err) {
+      console.error("Failed to save:", err);
+      const errorMsg = err instanceof Error ? err.message : "Fehler beim Speichern";
+      setError(errorMsg);
+      await haptics.error();
+      showErrorToast(errorMsg, 3000);
+    } finally {
+      setSaving(false);
+    }
+  }, [sessionId, person, responses, showSuccessToast, showErrorToast]);
+
+  const scheduleAutoSave = useCallback(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = window.setTimeout(() => {
+      handleSave();
+    }, 2000); // Auto-save after 2 seconds of inactivity
+  }, [handleSave]);
+
   useEffect(() => {
     loadExistingResponses();
-  }, [sessionId, person]);
+  }, [loadExistingResponses]);
 
   useEffect(() => {
     if (!isSafetyGateTemplate) return;
@@ -246,51 +291,7 @@ export function QuestionnaireForm({
         setShowConditions(false);
       }
     }
-  }, [currentQuestion?.id, responses]);
-
-  async function loadExistingResponses() {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await loadResponses(sessionId, person);
-      setResponses(data || {});
-    } catch (err) {
-      console.error("Failed to load responses:", err);
-      setError(err instanceof Error ? err.message : "Fehler beim Laden");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function scheduleAutoSave() {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
-    saveTimeoutRef.current = window.setTimeout(() => {
-      handleSave();
-    }, 2000); // Auto-save after 2 seconds of inactivity
-  }
-
-  async function handleSave() {
-    setSaving(true);
-    setSaveSuccess(false);
-    try {
-      await saveResponses(sessionId, person, responses);
-      setSaveSuccess(true);
-      await haptics.success();
-      showSuccessToast("Fortschritt gespeichert", 2000);
-      setTimeout(() => setSaveSuccess(false), 2000);
-    } catch (err) {
-      console.error("Failed to save:", err);
-      const errorMsg = err instanceof Error ? err.message : "Fehler beim Speichern";
-      setError(errorMsg);
-      await haptics.error();
-      showErrorToast(errorMsg, 3000);
-    } finally {
-      setSaving(false);
-    }
-  }
+  }, [currentQuestion, responses]);
 
   function handleAnswerChange(question: Question, value: RawResponseValue) {
     setResponses((prev) => ({
@@ -358,11 +359,11 @@ export function QuestionnaireForm({
   }
 
   // Swipe handlers
-  function handleTouchStart(e: TouchEvent) {
+  function handleTouchStart(e: JSX.TargetedTouchEvent<HTMLDivElement>) {
     touchStartX.current = e.touches[0].clientX;
   }
 
-  function handleTouchMove(e: TouchEvent) {
+  function handleTouchMove(e: JSX.TargetedTouchEvent<HTMLDivElement>) {
     touchEndX.current = e.touches[0].clientX;
   }
 
@@ -564,8 +565,8 @@ export function QuestionnaireForm({
   return (
     <div
       className="page"
-      onTouchStart={handleTouchStart as any}
-      onTouchMove={handleTouchMove as any}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       <div className="page-header">

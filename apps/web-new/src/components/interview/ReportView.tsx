@@ -3,11 +3,12 @@
  * Displays AI-generated report with JSON parsing fallback
  */
 
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { FileText, Loader2, AlertCircle } from "lucide-preact";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { generateReport } from "../../services/openrouter";
+import { buildSceneNarratives, loadInterviewScenarios } from "../../services/interview-storage";
 import type { InterviewSession, ReportData } from "../../types/interview";
 
 interface ReportViewProps {
@@ -20,6 +21,115 @@ export function ReportView({ session, onClose }: ReportViewProps) {
   const [report, setReport] = useState<ReportData | null>(null);
   const [rawText, setRawText] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [narratives, setNarratives] = useState<Record<"A" | "B", string[]>>({ A: [], B: [] });
+  const [narrativeError, setNarrativeError] = useState<string | null>(null);
+  const [narrativesLoading, setNarrativesLoading] = useState(false);
+  const hasNarratives = narratives.A.length > 0 || narratives.B.length > 0;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadNarratives() {
+      try {
+        setNarrativesLoading(true);
+        const scenarios = await loadInterviewScenarios();
+        if (!isMounted) return;
+        setNarratives(buildSceneNarratives(session, scenarios));
+        setNarrativeError(null);
+      } catch (err) {
+        if (!isMounted) return;
+        setNarrativeError(
+          err instanceof Error
+            ? err.message
+            : "Pfadentscheidungen konnten nicht ausgewertet werden"
+        );
+      } finally {
+        if (isMounted) {
+          setNarrativesLoading(false);
+        }
+      }
+    }
+
+    void loadNarratives();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [session]);
+
+  function renderNarrativeCard() {
+    if (narrativesLoading) {
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle>Chat-Zusammenfassung</CardTitle>
+            <CardDescription>Pfadentscheidungen werden geladen...</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm text-muted-foreground">Sammle deine Szenen-Notizen...</div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (narrativeError) {
+      return (
+        <Card className="border-destructive/50">
+          <CardHeader>
+            <CardTitle>Chat-Zusammenfassung</CardTitle>
+            <CardDescription>Pfadentscheidungen</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm text-destructive">{narrativeError}</div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (!hasNarratives) return null;
+
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Chat-Zusammenfassung</CardTitle>
+          <CardDescription>Was ihr in den Szenen gewählt habt</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {narratives.A.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-sm font-semibold text-foreground">Person A</div>
+              <div className="space-y-2">
+                {narratives.A.map((line, idx) => (
+                  <div key={`A-${idx}`} className="flex items-start gap-2">
+                    <div className="mt-1 h-7 w-7 rounded-full bg-primary/10 text-primary text-xs font-semibold flex items-center justify-center">
+                      A
+                    </div>
+                    <div className="rounded-lg bg-muted px-3 py-2 text-sm leading-relaxed">{line}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {narratives.B.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-sm font-semibold text-foreground">Person B</div>
+              <div className="space-y-2">
+                {narratives.B.map((line, idx) => (
+                  <div key={`B-${idx}`} className="flex items-start gap-2">
+                    <div className="mt-1 h-7 w-7 rounded-full bg-secondary/20 text-secondary-foreground text-xs font-semibold flex items-center justify-center">
+                      B
+                    </div>
+                    <div className="rounded-lg bg-muted px-3 py-2 text-sm leading-relaxed">{line}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
 
   async function handleGenerateReport() {
     setLoading(true);
@@ -55,6 +165,8 @@ export function ReportView({ session, onClose }: ReportViewProps) {
             </Button>
           )}
         </div>
+
+        {renderNarrativeCard()}
 
         {/* Summary */}
         <Card>
@@ -191,6 +303,8 @@ export function ReportView({ session, onClose }: ReportViewProps) {
           )}
         </div>
 
+        {renderNarrativeCard()}
+
         <Card className="border-yellow-500/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -237,6 +351,8 @@ export function ReportView({ session, onClose }: ReportViewProps) {
           </Button>
         )}
       </div>
+
+      {renderNarrativeCard()}
 
       <Card>
         <CardHeader>

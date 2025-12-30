@@ -10,7 +10,7 @@ import type { Question } from "../types/template";
 interface AIHelpDialogProps {
   question: Question;
   sectionTitle?: string;
-  currentAnswer?: any;
+  currentAnswer?: unknown;
   className?: string;
 }
 

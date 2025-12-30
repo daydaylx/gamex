@@ -182,19 +182,19 @@ export async function compareSession(sessionId: string): Promise<CompareResponse
 }
 
 // Scenario types
-interface ScenarioOption {
+export interface ScenarioOption {
   id: string;
   label: string;
   risk_type: string;
 }
 
-interface InfoCard {
+export interface InfoCard {
   emotional_context?: string;
   typical_risks?: string;
   safety_gate?: string;
 }
 
-interface Scenario {
+export interface Scenario {
   id: string;
   title: string;
   description: string;
@@ -204,7 +204,7 @@ interface Scenario {
   options: ScenarioOption[];
 }
 
-interface Deck {
+export interface Deck {
   id: string;
   name: string;
   description: string;
@@ -213,7 +213,7 @@ interface Deck {
   requires_safety_gate?: boolean;
 }
 
-interface ScenariosData {
+export interface ScenariosData {
   decks: Deck[];
   scenarios: Scenario[];
 }
@@ -272,8 +272,8 @@ export async function archiveSession(sessionId: string): Promise<void> {
   const session = sessions.find((s) => s.id === sessionId);
 
   if (session) {
-    (session as any).archived = true;
-    (session as any).archived_at = new Date().toISOString();
+    session.archived = true;
+    session.archived_at = new Date().toISOString();
     setStorage(SESSIONS_KEY, sessions);
   }
 }
@@ -286,7 +286,7 @@ export async function unarchiveSession(sessionId: string): Promise<void> {
   const session = sessions.find((s) => s.id === sessionId);
 
   if (session) {
-    (session as any).archived = false;
+    session.archived = false;
     setStorage(SESSIONS_KEY, sessions);
   }
 }
@@ -296,7 +296,7 @@ export async function unarchiveSession(sessionId: string): Promise<void> {
  */
 export async function getArchivedSessions(): Promise<SessionListItem[]> {
   const sessions = await listSessions();
-  return sessions.filter((s) => (s as any).archived === true);
+  return sessions.filter((s) => s.archived === true);
 }
 
 /**
@@ -304,7 +304,7 @@ export async function getArchivedSessions(): Promise<SessionListItem[]> {
  */
 export async function getActiveSessions(): Promise<SessionListItem[]> {
   const sessions = await listSessions();
-  return sessions.filter((s) => (s as any).archived !== true);
+  return sessions.filter((s) => s.archived !== true);
 }
 
 /**

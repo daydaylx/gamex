@@ -9,8 +9,9 @@ import { ChatQuestionnaire } from "../components/form/ChatQuestionnaire";
 import { getAnsweredCount, loadInterviewScenarios } from "../services/interview-storage";
 import { getTemplateQuestionCount, loadResponses, loadScenarios, loadTemplate } from "../services/api";
 import { getAnsweredQuestionCount } from "../lib/questionnaire";
-import type { InterviewScenario } from "../types/interview";
-import type { Template } from "../types";
+import type { InterviewScenario, InterviewAnswer } from "../types/interview";
+import type { Template, Module } from "../types/template";
+import type { ScenariosData, Deck } from "../services/api";
 
 // Import directly to avoid circular dependency issues if refactoring later
 // Assuming ScenariosView and QuestionnaireForm export props interfaces or are flexible
@@ -29,7 +30,7 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
 
   // Data State
   const [checkinQuestions, setCheckinQuestions] = useState<InterviewScenario[]>([]);
-  const [scenariosData, setScenariosData] = useState<any>(null); // Full scenarios.json data
+  const [scenariosData, setScenariosData] = useState<ScenariosData | null>(null);
   const [template, setTemplate] = useState<Template | null>(null);
   const [questionnaireProgress, setQuestionnaireProgress] = useState({ answered: 0, total: 0 });
   const [checkinProgress, setCheckinProgress] = useState({ answered: 0, total: 0 });
@@ -200,7 +201,7 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
           </div>
         </div>
         <div className="section-body">
-          {scenariosData?.decks?.map((deck: any, index: number) => (
+          {scenariosData?.decks?.map((deck: Deck, index: number) => (
             <button
               key={deck.id}
               onClick={() => {
@@ -231,7 +232,7 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
           </div>
         </div>
         <div className="section-body">
-          {template?.modules?.map((module: any) => (
+          {template?.modules?.map((module: Module) => (
             <button
               key={module.id}
               onClick={() => {
@@ -363,30 +364,56 @@ function CheckinFlow({
   }
 
   // Reuse InterviewMiniForm but adapted for this context
-  const [answer, setAnswer] = useState<any>({});
+  const [answer, setAnswer] = useState<Partial<InterviewAnswer> | null>(null);
+
+  function isPrimaryAnswerValidForScenario(
+    scenario: InterviewScenario,
+    value: unknown
+  ): value is InterviewAnswer["primary"] {
+    if (scenario.primary_answer_type === "likert5") {
+      return typeof value === "number" && Number.isFinite(value) && value >= 1 && value <= 5;
+    }
+
+    if (scenario.primary_answer_type === "yes_maybe_no") {
+      return value === "ja" || value === "vielleicht" || value === "nein";
+    }
+
+    return false;
+  }
 
   useEffect(() => {
     // Load existing answer
     const existing = getInterviewAnswer(sessionId, person, currentQ.id);
-    setAnswer(existing || {});
-  }, [currentQ.id]);
+    setAnswer(existing);
+  }, [currentQ.id, sessionId, person]);
 
-  function onAnswerChange(partial: any) {
-    setAnswer((prev: any) => ({ ...prev, ...partial }));
+  function onAnswerChange(partial: Partial<InterviewAnswer>) {
+    setAnswer((prev) => {
+      if (!prev) {
+        return { ...partial };
+      }
+      return { ...prev, ...partial };
+    });
   }
 
   function saveAndNext() {
     // Save
-    if (answer.primary) {
-      saveInterviewAnswer(sessionId, person, {
-        scenario_id: currentQ.id,
-        person,
-        ...answer,
-        timestamp: new Date().toISOString(),
-      });
-    }
+    const primary = answer?.primary;
+    if (!isPrimaryAnswerValidForScenario(currentQ, primary)) return;
+
+    const baseAnswer: Partial<InterviewAnswer> = answer ?? {};
+    saveInterviewAnswer(sessionId, person, {
+      ...baseAnswer,
+      scenario_id: currentQ.id,
+      person,
+      primary,
+      skipped: baseAnswer.skipped ?? false,
+      timestamp: new Date().toISOString(),
+    });
     handleNext();
   }
+
+  const canProceed = isPrimaryAnswerValidForScenario(currentQ, answer?.primary);
 
   return (
     <div className="page">
@@ -443,7 +470,7 @@ function CheckinFlow({
 
       <section className="section-card">
         <div className="section-body">
-          <Button className="w-full" onClick={saveAndNext}>
+          <Button className="w-full" onClick={saveAndNext} disabled={!canProceed}>
             {index === questions.length - 1 ? "Abschließen" : "Weiter"}
           </Button>
         </div>

@@ -8,10 +8,12 @@ import type {
   InterviewScenario,
   InterviewScenariosFile,
   InterviewAnswer,
+  InterviewSceneDecision,
+  InterviewSceneNode,
 } from "../types/interview";
 
 const INTERVIEW_STORAGE_PREFIX = "gamex_interview_v1";
-const CURRENT_SCHEMA_VERSION = 1;
+const CURRENT_SCHEMA_VERSION = 2;
 
 /**
  * Storage Keys - STRICTLY separated from gamex:sessions
@@ -95,8 +97,15 @@ export function loadInterviewSession(
       if (!session.updated_at) {
         session.updated_at = new Date().toISOString();
       }
+      if (!session.scene_paths) {
+        session.scene_paths = [];
+      }
       // Migrate and save
       saveInterviewSession(session, person);
+    }
+
+    if (!session.scene_paths) {
+      session.scene_paths = [];
     }
 
     return session;
@@ -115,6 +124,10 @@ export function saveInterviewSession(session: InterviewSession, person: "A" | "B
 
   if (!session.created_at) {
     session.created_at = new Date().toISOString();
+  }
+
+  if (!session.scene_paths) {
+    session.scene_paths = [];
   }
 
   try {
@@ -137,6 +150,7 @@ export function createInterviewSession(sessionId: string, scenarioIds: string[])
     people: ["A", "B"],
     scenario_order: scenarioIds,
     answers: [],
+    scene_paths: [],
     progress: { current_index: 0 },
     created_at: now,
     updated_at: now,
@@ -219,6 +233,168 @@ export function getInterviewAnswers(sessionId: string, person: "A" | "B"): Inter
 }
 
 /**
+ * Scene path handling
+ */
+export function getSceneDecisions(
+  sessionId: string,
+  person: "A" | "B",
+  scenarioId: string
+): InterviewSceneDecision[] {
+  const session = loadInterviewSession(sessionId, person);
+  if (!session?.scene_paths) return [];
+
+  return session.scene_paths
+    .filter((p) => p.scenario_id === scenarioId && p.person === person)
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+}
+
+export function saveSceneDecision(
+  sessionId: string,
+  person: "A" | "B",
+  decision: InterviewSceneDecision
+): void {
+  let session = loadInterviewSession(sessionId, person);
+  if (!session) {
+    session = createInterviewSession(sessionId, [decision.scenario_id]);
+  }
+
+  const updatedDecision = {
+    ...decision,
+    person,
+    timestamp: decision.timestamp || new Date().toISOString(),
+  };
+
+  const existingWithoutNode = session.scene_paths.filter(
+    (d) => !(d.scenario_id === updatedDecision.scenario_id && d.node_id === updatedDecision.node_id && d.person === person)
+  );
+
+  session.scene_paths = [...existingWithoutNode, updatedDecision];
+  saveInterviewSession(session, person);
+}
+
+export interface SceneStreamMessage {
+  id: string;
+  role: "guide" | "user" | "reaction";
+  text: string;
+  node_id?: string;
+  choice_id?: string;
+}
+
+export interface SceneResolutionResult {
+  stream: SceneStreamMessage[];
+  pendingNode: InterviewSceneNode | null;
+}
+
+export function buildSceneReaction(
+  scenario: InterviewScenario,
+  node: InterviewSceneNode,
+  choiceLabel: string,
+  reactionTemplate?: string
+): string {
+  const template =
+    reactionTemplate ||
+    node.reaction_template ||
+    scenario.reaction_templates?.default ||
+    "Notiert: {{choice}}";
+
+  return template
+    .replace(/{{choice}}/g, choiceLabel)
+    .replace(/{{prompt}}/g, node.prompt)
+    .replace(/{{title}}/g, scenario.title);
+}
+
+function getStartNode(scenario: InterviewScenario): InterviewSceneNode | null {
+  if (!scenario.scene_nodes || scenario.scene_nodes.length === 0) return null;
+  if (scenario.scene_entry) {
+    const found = scenario.scene_nodes.find((n) => n.id === scenario.scene_entry);
+    if (found) return found;
+  }
+  return scenario.scene_nodes[0];
+}
+
+function findNodeById(nodes: InterviewSceneNode[] | undefined, id?: string): InterviewSceneNode | null {
+  if (!nodes || !id) return null;
+  return nodes.find((n) => n.id === id) || null;
+}
+
+function getNextNodeId(node: InterviewSceneNode, choiceId?: string): string | undefined {
+  const choice = node.choices.find((c) => c.id === choiceId);
+  return choice?.followup || choice?.next || node.followup || node.next;
+}
+
+export function resolveSceneStream(
+  scenario: InterviewScenario,
+  decisions: InterviewSceneDecision[]
+): SceneResolutionResult {
+  if (!scenario.scene_nodes || scenario.scene_nodes.length === 0) {
+    return {
+      stream: [
+        {
+          id: `${scenario.id}-intro`,
+          role: "guide",
+          text: scenario.scenario_text,
+        },
+      ],
+      pendingNode: null,
+    };
+  }
+
+  const stream: SceneStreamMessage[] = [
+    {
+      id: `${scenario.id}-intro`,
+      role: "guide",
+      text: scenario.scenario_text,
+    },
+  ];
+
+  const visited = new Set<string>();
+  let currentNode: InterviewSceneNode | null = getStartNode(scenario);
+
+  while (currentNode && !visited.has(currentNode.id)) {
+    visited.add(currentNode.id);
+    stream.push({
+      id: `${scenario.id}-${currentNode.id}-prompt`,
+      role: "guide",
+      text: currentNode.prompt,
+      node_id: currentNode.id,
+    });
+
+    const decision = decisions.find((d) => d.node_id === currentNode?.id);
+    if (!decision) {
+      return { stream, pendingNode: currentNode };
+    }
+
+    const choice = currentNode.choices.find((c) => c.id === decision.choice_id);
+    if (choice) {
+      stream.push({
+        id: `${scenario.id}-${currentNode.id}-choice`,
+        role: "user",
+        text: choice.label,
+        node_id: currentNode.id,
+        choice_id: choice.id,
+      });
+
+      const reaction =
+        decision.reaction || buildSceneReaction(scenario, currentNode, choice.label, choice.reaction_template);
+      stream.push({
+        id: `${scenario.id}-${currentNode.id}-reaction`,
+        role: "reaction",
+        text: reaction,
+        node_id: currentNode.id,
+        choice_id: choice.id,
+      });
+
+      const nextId = getNextNodeId(currentNode, choice.id);
+      currentNode = findNodeById(scenario.scene_nodes, nextId);
+    } else {
+      return { stream, pendingNode: currentNode };
+    }
+  }
+
+  return { stream, pendingNode: null };
+}
+
+/**
  * Combine answers from both persons for report generation
  */
 export function getCombinedSession(sessionId: string): InterviewSession | null {
@@ -246,6 +422,20 @@ export function getCombinedSession(sessionId: string): InterviewSession | null {
     }
   }
   combined.answers = allAnswers;
+
+  // Merge scene path decisions from both persons
+  const allScenePaths = [...(combined.scene_paths || [])];
+  if (sessionB?.scene_paths) {
+    for (const path of sessionB.scene_paths) {
+      const exists = allScenePaths.some(
+        (p) => p.scenario_id === path.scenario_id && p.person === path.person && p.node_id === path.node_id
+      );
+      if (!exists) {
+        allScenePaths.push(path);
+      }
+    }
+  }
+  combined.scene_paths = allScenePaths;
 
   return combined;
 }
@@ -299,4 +489,34 @@ export function getAnsweredCount(sessionId: string, person: "A" | "B"): number {
 
   return session.answers.filter((a) => !a.skipped && a.primary !== null && a.primary !== undefined)
     .length;
+}
+
+export function buildSceneNarratives(
+  session: InterviewSession,
+  scenarios: InterviewScenario[]
+): Record<"A" | "B", string[]> {
+  const narratives: Record<"A" | "B", string[]> = { A: [], B: [] };
+  const scenarioMap = new Map<string, InterviewScenario>();
+  scenarios.forEach((s) => scenarioMap.set(s.id, s));
+
+  for (const decision of session.scene_paths || []) {
+    const scenario = scenarioMap.get(decision.scenario_id);
+    if (!scenario) continue;
+
+    const node = scenario.scene_nodes?.find((n) => n.id === decision.node_id);
+    const choice = node?.choices.find((c) => c.id === decision.choice_id);
+    const reaction =
+      decision.reaction ||
+      (choice && node ? buildSceneReaction(scenario, node, choice.label, choice.reaction_template) : null);
+
+    const sentence =
+      reaction ||
+      `${scenario.title}: ${choice?.label || decision.choice_id}`;
+
+    if (decision.person === "A" || decision.person === "B") {
+      narratives[decision.person].push(sentence);
+    }
+  }
+
+  return narratives;
 }
