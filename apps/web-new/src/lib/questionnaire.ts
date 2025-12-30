@@ -191,28 +191,28 @@ export function normalizeResponseForSave(
       if (typeof response === "number") {
         return { value: response };
       }
-      return response;
+      return response as ResponseValue;
     }
     case "enum": {
       if (typeof response === "string") {
         return { value: response };
       }
-      return response;
+      return response as ResponseValue;
     }
     case "multi": {
       if (Array.isArray(response)) {
         return { values: response };
       }
-      return response;
+      return response as ResponseValue;
     }
     case "text": {
       if (typeof response === "string") {
         return { text: response };
       }
-      return response;
+      return response as ResponseValue;
     }
     default:
-      return response;
+      return response as ResponseValue;
   }
 }
 

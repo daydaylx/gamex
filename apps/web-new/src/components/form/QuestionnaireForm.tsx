@@ -8,6 +8,7 @@ import {
   ChevronUp,
   Layers,
   CheckCircle,
+  MessageSquare,
 } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ConsentRatingInput } from "./ConsentRatingInput";
@@ -18,6 +19,8 @@ import { MultiInput } from "./MultiInput";
 import { TouchTextInput } from "./TouchTextInput";
 import { InfoPopover } from "../InfoPopover";
 import { AIHelpDialog } from "../AIHelpDialog";
+import { useToast, ToastContainer } from "../ui/toast";
+import { haptics } from "../../platform/capacitor";
 import { loadResponses, saveResponses } from "../../services/api";
 import type { Template, Question, Module } from "../../types";
 import type { ResponseMap, ResponseValue, ConsentRatingValue } from "../../types/form";
@@ -45,6 +48,8 @@ interface QuestionnaireFormProps {
   onComplete?: () => void;
   onExit?: () => void;
   initialModuleId?: string;
+  onToggleMode?: () => void;
+  currentMode?: "chat" | "form";
 }
 
 export function QuestionnaireForm({
@@ -54,6 +59,8 @@ export function QuestionnaireForm({
   onComplete,
   onExit,
   initialModuleId,
+  onToggleMode,
+  currentMode: _currentMode = "form",
 }: QuestionnaireFormProps) {
   const isSafetyGateTemplate = template.id === SAFETY_GATE_TEMPLATE_ID;
   const safetyGateKey = `${SAFETY_GATE_STORAGE_PREFIX}:${sessionId}:${person}:${template.id}`;
@@ -64,6 +71,9 @@ export function QuestionnaireForm({
   const [error, setError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const saveTimeoutRef = useRef<number | null>(null);
+
+  // Toast notifications
+  const { toasts, success: showSuccessToast, error: showErrorToast, closeToast } = useToast();
   const [showNotes, setShowNotes] = useState(false);
   const [showConditions, setShowConditions] = useState(false);
   const [showModuleOverview, setShowModuleOverview] = useState(false);
@@ -268,10 +278,15 @@ export function QuestionnaireForm({
     try {
       await saveResponses(sessionId, person, responses);
       setSaveSuccess(true);
+      await haptics.success();
+      showSuccessToast("Fortschritt gespeichert", 2000);
       setTimeout(() => setSaveSuccess(false), 2000);
     } catch (err) {
       console.error("Failed to save:", err);
-      setError(err instanceof Error ? err.message : "Fehler beim Speichern");
+      const errorMsg = err instanceof Error ? err.message : "Fehler beim Speichern";
+      setError(errorMsg);
+      await haptics.error();
+      showErrorToast(errorMsg, 3000);
     } finally {
       setSaving(false);
     }
@@ -566,6 +581,19 @@ export function QuestionnaireForm({
           </p>
         </div>
         <div className="ml-auto flex items-center gap-2">
+          {onToggleMode && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onToggleMode}
+              className="gap-2"
+              aria-label="Wechsle zwischen Chat- und Formular-Modus"
+              title="Chat-Modus"
+            >
+              <MessageSquare className="h-4 w-4" />
+              <span className="hidden sm:inline text-xs">Chat</span>
+            </Button>
+          )}
           <Button variant="ghost" size="icon" onClick={() => setShowModuleOverview(true)}>
             <Layers className="h-5 w-5" />
           </Button>
@@ -842,6 +870,9 @@ export function QuestionnaireForm({
           </div>
         </section>
       )}
+
+      {/* Toast notifications */}
+      <ToastContainer toasts={toasts} onClose={closeToast} />
     </div>
   );
 }

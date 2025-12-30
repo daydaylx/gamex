@@ -1,3 +1,5 @@
+import { haptics } from "../../platform/capacitor";
+
 interface MultiInputProps {
   value?: string[];
   onChange: (value: string[]) => void;
@@ -9,6 +11,7 @@ export function MultiInput({ value, onChange, options, disabled }: MultiInputPro
   const selected = value || [];
 
   function toggleOption(optionValue: string) {
+    haptics.light();
     if (selected.includes(optionValue)) {
       onChange(selected.filter((v) => v !== optionValue));
     } else {

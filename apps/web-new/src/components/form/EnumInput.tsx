@@ -1,3 +1,5 @@
+import { haptics } from "../../platform/capacitor";
+
 interface EnumInputProps {
   value?: string;
   onChange: (value: string) => void;
@@ -14,7 +16,10 @@ export function EnumInput({ value, onChange, options, disabled }: EnumInputProps
         <button
           key={option.value}
           type="button"
-          onClick={() => onChange(option.value)}
+          onClick={() => {
+            haptics.light();
+            onChange(option.value);
+          }}
           disabled={disabled}
           className={`
             w-full text-left px-4 py-3 rounded-lg border transition-all

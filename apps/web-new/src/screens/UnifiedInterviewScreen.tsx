@@ -38,8 +38,32 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
   const [selectedDeckIndex, setSelectedDeckIndex] = useState<number>(0);
   const [selectedModuleId, setSelectedModuleId] = useState<string>("");
 
-  const searchParams = new URLSearchParams(location.split("?")[1] || "");
-  const forceFormMode = searchParams.get("mode") === "form";
+  // Interview Mode State (chat vs form)
+  const [interviewMode, setInterviewMode] = useState<"chat" | "form">(() => {
+    // Check URL parameter first (for backwards compatibility)
+    const searchParams = new URLSearchParams(location.split("?")[1] || "");
+    const urlMode = searchParams.get("mode");
+    if (urlMode === "form") return "form";
+
+    // Check localStorage preference
+    try {
+      const saved = localStorage.getItem("gamex:interview_mode_preference");
+      return (saved as "chat" | "form") || "chat";
+    } catch {
+      return "chat";
+    }
+  });
+
+  // Save mode preference to localStorage
+  function toggleInterviewMode() {
+    const newMode = interviewMode === "chat" ? "form" : "chat";
+    setInterviewMode(newMode);
+    try {
+      localStorage.setItem("gamex:interview_mode_preference", newMode);
+    } catch (err) {
+      console.warn("Could not save mode preference:", err);
+    }
+  }
 
   useEffect(() => {
     loadAllData();
@@ -268,7 +292,7 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
       {stage === "module" && template && (
         <div className="h-screen flex flex-col">
           {/* QuestionnaireForm loads full form but jumps to selected module */}
-          {!forceFormMode ? (
+          {interviewMode === "chat" ? (
             <ChatQuestionnaire
               sessionId={sessionId}
               person={person}
@@ -276,6 +300,8 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
               onComplete={() => setStage("dashboard")}
               onExit={() => setStage("dashboard")}
               initialModuleId={selectedModuleId}
+              onToggleMode={toggleInterviewMode}
+              currentMode={interviewMode}
             />
           ) : (
             <QuestionnaireForm
@@ -285,6 +311,8 @@ export function UnifiedInterviewScreen({ sessionId, person }: UnifiedInterviewSc
               onComplete={() => setStage("dashboard")}
               onExit={() => setStage("dashboard")}
               initialModuleId={selectedModuleId}
+              onToggleMode={toggleInterviewMode}
+              currentMode={interviewMode}
             />
           )}
         </div>

@@ -7,6 +7,7 @@ interface TouchTextInputProps {
   placeholder?: string;
   quickReplies?: string[];
   disabled?: boolean;
+  onSubmit?: () => void;
 }
 
 // Default quick reply suggestions for common text questions
@@ -22,6 +23,7 @@ export function TouchTextInput({
   placeholder = "Deine Antwort...",
   quickReplies = DEFAULT_QUICK_REPLIES,
   disabled,
+  onSubmit,
 }: TouchTextInputProps) {
   const [text, setText] = useState(value?.text || "");
   const [showFreeText, setShowFreeText] = useState(false);
@@ -144,6 +146,13 @@ export function TouchTextInput({
           <textarea
             value={text}
             onChange={(e) => handleTextChange((e.target as HTMLTextAreaElement).value)}
+            onKeyDown={(e) => {
+              // Enter without Shift submits, Shift+Enter adds newline
+              if (e.key === "Enter" && !e.shiftKey && onSubmit && !disabled) {
+                e.preventDefault();
+                onSubmit();
+              }
+            }}
             placeholder={placeholder}
             disabled={disabled}
             className={`

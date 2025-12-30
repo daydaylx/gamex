@@ -1,3 +1,5 @@
+import { haptics } from "../../platform/capacitor";
+
 interface ScaleInputProps {
   value?: number;
   onChange: (value: number) => void;
@@ -25,7 +27,10 @@ export function ScaleInput({
           <button
             key={num}
             type="button"
-            onClick={() => onChange(num)}
+            onClick={() => {
+              haptics.light();
+              onChange(num);
+            }}
             disabled={disabled}
             aria-pressed={selected === num}
             className={`

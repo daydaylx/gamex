@@ -45,7 +45,6 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
   const [showAskAI, setShowAskAI] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState<Partial<InterviewAnswer>>({});
-  const [showAnswerHint, setShowAnswerHint] = useState(false);
 
   // Swipe state
   const [swipeOffset, setSwipeOffset] = useState(0);
@@ -115,7 +114,6 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
 
   function handleAnswerChange(partialAnswer: Partial<InterviewAnswer>) {
     setCurrentAnswer((prev) => ({ ...prev, ...partialAnswer }));
-    setShowAnswerHint(false);
     // Light haptic on answer change
     haptics.light();
   }
@@ -123,7 +121,7 @@ export function InterviewView({ sessionId, person, onComplete, onClose }: Interv
   async function handleNext() {
     if (!currentScenario || !session) return;
     if (currentAnswer.primary === undefined || currentAnswer.primary === null) {
-      setShowAnswerHint(true);
+      // User tried to continue without answering - haptic feedback
       await haptics.light();
       return;
     }

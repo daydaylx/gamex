@@ -58,7 +58,7 @@ describe('QuestionnaireForm', () => {
       />
     );
 
-    expect(screen.getByText('Lädt Fragebogen...')).toBeInTheDocument();
+    expect(screen.getByText('Fragen werden geladen...')).toBeInTheDocument();
     
     await waitFor(() => {
       expect(screen.getByText('Question 1')).toBeInTheDocument();
@@ -109,10 +109,10 @@ describe('QuestionnaireForm', () => {
 
   it('should call onComplete when finished', async () => {
     const onComplete = vi.fn();
-    // Render with only one question for simplicity
+    // Render with only one question for simplicity - use scale_1_10 which renders number buttons
     const shortTemplate = {
        ...mockTemplate,
-       modules: [{ id: 'm1', questions: [{ id: 'q1', text: 'Q1', schema: 'text' }] }]
+       modules: [{ id: 'm1', name: 'Module 1', questions: [{ id: 'q1', text: 'Q1', schema: 'scale_1_10', min: 1, max: 10 }] }]
     };
 
     render(
@@ -126,18 +126,17 @@ describe('QuestionnaireForm', () => {
 
     await waitFor(() => screen.getByText('Q1'));
     
-    // Expand free text area first
-    fireEvent.click(screen.getByText(/Eigenen Text hinzufügen/i));
-    
-    // Find text input
-    const input = screen.getByRole('textbox');
-    fireEvent.input(input, { target: { value: 'Answer' } });
-    fireEvent.change(input, { target: { value: 'Answer' } }); // Ensure change event fires
+    // Click on scale button "5" to answer the question
+    const button5 = screen.getByRole('button', { name: '5' });
+    fireEvent.click(button5);
     
     const finishBtn = screen.getByText('Fertig');
     await waitFor(() => expect(finishBtn).not.toBeDisabled());
     
     fireEvent.click(finishBtn);
-    expect(onComplete).toHaveBeenCalled();
+    
+    await waitFor(() => {
+      expect(onComplete).toHaveBeenCalled();
+    });
   });
 });

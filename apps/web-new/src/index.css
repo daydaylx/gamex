@@ -1124,6 +1124,46 @@ button:disabled {
   .swipe-container {
     /* Handled in JavaScript - threshold: 60px instead of 80px */
   }
+
+  /* Side-by-side layout for question/answer in landscape */
+  .landscape-split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    align-items: start;
+  }
+
+  /* Compact bubble spacing in landscape */
+  .landscape-bubble {
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  /* Reduce header height significantly */
+  .landscape-header {
+    min-height: 48px;
+    padding-top: var(--spacing-xs);
+    padding-bottom: var(--spacing-xs);
+  }
+
+  /* Compact progress indicators */
+  .landscape-progress {
+    font-size: 0.75rem;
+    gap: var(--spacing-xs);
+  }
+
+  /* Optimize input areas for landscape */
+  .landscape-input-area {
+    max-height: 40vh;
+  }
+}
+
+/* Wider landscape mode (tablets in landscape) */
+@media (orientation: landscape) and (min-width: 768px) {
+  .landscape-split-layout {
+    grid-template-columns: 5fr 7fr; /* More space for input */
+    gap: var(--spacing-xl);
+  }
 }
 
 /* Responsive text sizing for small screens */

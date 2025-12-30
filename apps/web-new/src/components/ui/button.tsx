@@ -4,6 +4,7 @@
 
 import type { ComponentChildren } from "preact";
 import { cn } from "../../lib/utils";
+import { haptics } from "../../platform/capacitor";
 
 export interface ButtonProps {
   variant?:
@@ -66,6 +67,14 @@ export function Button({
     ripple &&
     (variant === "yes" || variant === "maybe" || variant === "no" || variant === "default");
 
+  // Wrap onClick with haptic feedback
+  const handleClick = onClick
+    ? (e: MouseEvent) => {
+        haptics.medium();
+        onClick(e);
+      }
+    : undefined;
+
   return (
     <button
       type={type}
@@ -89,7 +98,7 @@ export function Button({
         sizeClasses[size],
         className
       )}
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled}
       aria-label={ariaLabel}
       title={title}

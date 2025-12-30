@@ -321,10 +321,31 @@ export function ComparisonView({ sessionId, onClose }: ComparisonViewProps) {
             </Button>
           </div>
 
-          <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
-            <span className="stat-chip">Match = gleiche Antwort</span>
-            <span className="stat-chip">Erkunden = unterschiedliche Antwort</span>
-            <span className="stat-chip">Grenze = klare No-Grenze</span>
+          <div className="rounded-xl border border-border/40 bg-surface-elevated/50 p-3">
+            <p className="text-xs font-semibold text-foreground mb-2.5 flex items-center gap-1.5">
+              <Info className="h-3.5 w-3.5" />
+              Legende
+            </p>
+            <div className="flex flex-wrap gap-3 text-xs">
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                <span className="text-foreground/90">
+                  <strong>Match:</strong> Gleiche Antwort
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Info className="h-4 w-4 text-amber-500 flex-shrink-0" />
+                <span className="text-foreground/90">
+                  <strong>Erkunden:</strong> Unterschiedliche Antwort
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-red-500 flex-shrink-0" />
+                <span className="text-foreground/90">
+                  <strong>Grenze:</strong> Klare No-Grenze
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="relative">

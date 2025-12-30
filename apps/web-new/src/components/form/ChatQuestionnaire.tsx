@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
-import { ChevronDown, ChevronLeft, ChevronUp, Send, Sparkles } from "lucide-preact";
+import { ChevronDown, ChevronLeft, ChevronUp, Send, Sparkles, LayoutList, Check } from "lucide-preact";
 import { Button } from "../ui/button";
 import { ConsentRatingInput } from "./ConsentRatingInput";
 import { ConsentRatingVariantInput } from "./ConsentRatingVariantInput";
@@ -7,9 +7,13 @@ import { ScaleInput } from "./ScaleInput";
 import { EnumInput } from "./EnumInput";
 import { MultiInput } from "./MultiInput";
 import { TouchTextInput } from "./TouchTextInput";
+import { InfoPopover } from "../InfoPopover";
+import { useToast, ToastContainer } from "../ui/toast";
+import { useLandscape } from "../../hooks/useLandscape";
 import { loadResponses, saveResponses } from "../../services/api";
 import { askAIHelp } from "../../services/ai/help";
 import { hasAPIKey } from "../../services/settings";
+import { haptics } from "../../platform/capacitor";
 import type { Template, Question } from "../../types";
 import type { AIHelpRequest } from "../../types/ai";
 import type { ResponseMap, ResponseValue, ConsentRatingValue } from "../../types/form";
@@ -39,6 +43,8 @@ interface ChatQuestionnaireProps {
   onComplete?: () => void;
   onExit?: () => void;
   initialModuleId?: string;
+  onToggleMode?: () => void;
+  currentMode?: "chat" | "form";
 }
 
 type ChatRole = "system" | "user" | "assistant";
@@ -62,6 +68,8 @@ export function ChatQuestionnaire({
   onComplete,
   onExit,
   initialModuleId,
+  onToggleMode,
+  currentMode: _currentMode = "chat",
 }: ChatQuestionnaireProps) {
   const isSafetyGateTemplate = template.id === SAFETY_GATE_TEMPLATE_ID;
   const safetyGateKey = `${SAFETY_GATE_STORAGE_PREFIX}:${sessionId}:${person}:${template.id}`;
@@ -71,6 +79,7 @@ export function ChatQuestionnaire({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [aiTyping, setAiTyping] = useState(false);
@@ -93,6 +102,12 @@ export function ChatQuestionnaire({
   const typingTimeoutRef = useRef<number | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const inputStageRef = useRef<HTMLDivElement>(null);
+
+  // Toast notifications
+  const { toasts, success: showSuccessToast, closeToast } = useToast();
+
+  // Landscape mode detection
+  const isLandscape = useLandscape();
 
   const { allQuestions, moduleStartIndices } = useMemo(
     () => flattenTemplateQuestions(template),
@@ -329,9 +344,15 @@ export function ChatQuestionnaire({
     setSaving(true);
     try {
       await saveResponses(sessionId, person, nextResponses);
+      // Success feedback
+      await haptics.success();
+      showSuccessToast("Antwort gespeichert", 2000);
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 1500);
     } catch (err) {
       console.error("Failed to save responses:", err);
       setError(err instanceof Error ? err.message : "Fehler beim Speichern");
+      await haptics.error();
     } finally {
       setSaving(false);
     }
@@ -523,9 +544,9 @@ export function ChatQuestionnaire({
 
   return (
     <div className="chat-questionnaire min-h-screen flex flex-col">
-      <div className="chat-header sticky top-0 z-30 backdrop-blur-md">
-        <div className="max-w-2xl mx-auto w-full px-4 pt-safe pb-3">
-          <div className="flex items-center gap-3">
+      <div className={`chat-header sticky top-0 z-30 backdrop-blur-md ${isLandscape ? "landscape-header" : ""}`}>
+        <div className={`max-w-2xl mx-auto w-full px-4 ${isLandscape ? "pt-1 pb-1" : "pt-safe pb-3"}`}>
+          <div className={`flex items-center ${isLandscape ? "gap-2" : "gap-3"}`}>
             {onExit && (
               <Button variant="ghost" size="icon" onClick={onExit}>
                 <ChevronLeft className="h-5 w-5" />
@@ -539,11 +560,24 @@ export function ChatQuestionnaire({
                 Person {person} - {moduleLabel}
               </p>
             </div>
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
+            {onToggleMode && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleMode}
+                className="gap-2"
+                aria-label="Wechsle zwischen Chat- und Formular-Modus"
+                title="Formular-Modus"
+              >
+                <LayoutList className="h-4 w-4" />
+                <span className="hidden sm:inline text-xs">Formular</span>
+              </Button>
+            )}
+            <span className={`text-xs text-muted-foreground whitespace-nowrap ${isLandscape ? "landscape-progress" : ""}`}>
               {Math.min(currentIndex + 1, allQuestions.length)}/{allQuestions.length}
             </span>
           </div>
-          <div className="mt-3 h-1.5 chat-progress-track rounded-full overflow-hidden">
+          <div className={`${isLandscape ? "mt-1 h-1" : "mt-3 h-1.5"} chat-progress-track rounded-full overflow-hidden`}>
             <div
               className="h-full bg-[var(--chat-accent)] transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
@@ -552,8 +586,9 @@ export function ChatQuestionnaire({
         </div>
       </div>
 
-      <div className="chat-stream flex-1 overflow-y-auto">
-        <div className="chat-stream-inner relative max-w-2xl mx-auto w-full px-4 pt-6 space-y-5">
+      <div className={`flex-1 ${isLandscape ? "flex landscape-split-layout items-start px-4 pt-2" : ""}`}>
+        <div className={`chat-stream ${isLandscape ? "flex-1 overflow-y-auto max-h-[calc(100vh-80px)]" : "flex-1 overflow-y-auto"}`}>
+          <div className={`chat-stream-inner relative max-w-2xl mx-auto w-full ${isLandscape ? "px-2 pt-2 space-y-2" : "px-4 pt-6 space-y-5"}`}>
           {messages.map((message) => (
             <ChatBubble key={message.id} message={message} />
           ))}
@@ -585,15 +620,15 @@ export function ChatQuestionnaire({
           )}
 
           <div ref={chatEndRef} />
+          </div>
         </div>
-      </div>
 
-      <div
-        ref={inputStageRef}
-        className="fixed bottom-0 left-0 right-0 z-40 chat-input-stage pb-safe"
-      >
-        <div className="max-w-2xl mx-auto w-full px-4 pb-4">
-          <div className="chat-sheet rounded-3xl border shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.3)] overflow-hidden">
+        <div
+          ref={inputStageRef}
+          className={`${isLandscape ? "flex-1 relative z-40" : "fixed bottom-0 left-0 right-0 z-40 chat-input-stage pb-safe"}`}
+        >
+          <div className={`${isLandscape ? "h-full px-2" : "max-w-2xl mx-auto w-full px-4 pb-4"}`}>
+            <div className={`chat-sheet rounded-3xl border ${isLandscape ? "shadow-md h-full landscape-input-area overflow-y-auto" : "shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.3)] overflow-hidden"}`}>
             <div className="flex justify-center pt-3">
               <div className="chat-sheet-handle" />
             </div>
@@ -601,9 +636,19 @@ export function ChatQuestionnaire({
               <p className="text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground/70">
                 Antwort
               </p>
-              <p className="text-display text-base text-foreground/95">
-                {currentQuestion ? `Auf: ${getQuestionTitle(currentQuestion)}` : "Alles beantwortet"}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-display text-base text-foreground/95 flex-1">
+                  {currentQuestion ? `Auf: ${getQuestionTitle(currentQuestion)}` : "Alles beantwortet"}
+                </p>
+                {currentQuestion && (currentQuestion.help || currentQuestion.info_details || currentQuestion.examples) && (
+                  <InfoPopover
+                    title={getQuestionTitle(currentQuestion)}
+                    content={currentQuestion.info_details}
+                    help={currentQuestion.help}
+                    examples={currentQuestion.examples}
+                  />
+                )}
+              </div>
             </div>
 
             <div className="px-4 pb-4 space-y-4 max-h-[65vh] min-h-[280px] overflow-y-auto">
@@ -694,6 +739,7 @@ export function ChatQuestionnaire({
                       }
                       quickReplies={getQuickRepliesForQuestion(currentQuestion)}
                       disabled={isTyping || saving}
+                      onSubmit={handleSend}
                     />
                   )}
                 </div>
@@ -786,7 +832,7 @@ export function ChatQuestionnaire({
               )}
 
               <div className="space-y-3">
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-start gap-3">
                   <button
                     type="button"
                     onClick={() => setShowAiHelper((prev) => !prev)}
@@ -796,21 +842,6 @@ export function ChatQuestionnaire({
                     <Sparkles className="h-4 w-4" />
                     KI Hilfe (optional)
                   </button>
-                  <Button
-                    onClick={handleSend}
-                    disabled={
-                      isTyping ||
-                      saving ||
-                      isComplete ||
-                      !currentQuestion ||
-                      !isCurrentAnswerValid
-                    }
-                    size="icon"
-                    className="h-12 w-12 rounded-full shadow-lg shadow-rose-500/20 bg-rose-600 text-white hover:bg-rose-500"
-                    aria-label="Senden"
-                  >
-                    <Send className="h-5 w-5" />
-                  </Button>
                 </div>
 
                 {showAiHelper && (
@@ -850,8 +881,42 @@ export function ChatQuestionnaire({
           {saving && (
             <p className="mt-3 text-xs text-muted-foreground">Antwort wird gespeichert...</p>
           )}
+          </div>
         </div>
       </div>
+
+      {/* Floating Action Button (FAB) - One-handed mode */}
+      {!isComplete && currentQuestion && (
+        <div className="fixed bottom-safe right-4 z-50 sm:bottom-6 sm:right-6">
+          <Button
+            onClick={handleSend}
+            disabled={
+              isTyping ||
+              saving ||
+              isComplete ||
+              !currentQuestion ||
+              !isCurrentAnswerValid
+            }
+            size="icon"
+            className="h-14 w-14 sm:h-16 sm:w-16 rounded-full shadow-xl shadow-rose-500/30 bg-rose-600 text-white hover:bg-rose-500 active:scale-95 transition-transform relative"
+            aria-label="Antwort senden"
+          >
+            {justSaved ? (
+              <Check className="h-6 w-6 sm:h-7 sm:w-7 animate-in" />
+            ) : (
+              <Send className="h-6 w-6 sm:h-7 sm:w-7" />
+            )}
+            {saving && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              </div>
+            )}
+          </Button>
+        </div>
+      )}
+
+      {/* Toast notifications */}
+      <ToastContainer toasts={toasts} onClose={closeToast} />
     </div>
   );
 }

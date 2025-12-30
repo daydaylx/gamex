@@ -9,11 +9,13 @@ vi.mock('../../src/services/api', () => ({
   loadScenarios: vi.fn(),
   loadTemplate: vi.fn(),
   loadResponses: vi.fn().mockResolvedValue({}), // needed by QuestionnaireForm
+  getTemplateQuestionCount: vi.fn().mockReturnValue(10),
 }));
 
 vi.mock('../../src/services/interview-storage', () => ({
   loadInterviewScenarios: vi.fn(),
   getInterviewAnswer: vi.fn(),
+  getAnsweredCount: vi.fn().mockReturnValue(0),
 }));
 
 // Mock child components to simplify integration test
@@ -59,7 +61,7 @@ describe('UnifiedInterviewScreen', () => {
     // Wait for loading to finish
     await waitFor(() => {
         expect(screen.queryByRole('status')).not.toBeInTheDocument(); // assuming spinner has role status or just wait for text
-        expect(screen.getByText('Themen-Wahl')).toBeInTheDocument();
+        expect(screen.getByText('Themenwahl')).toBeInTheDocument();
     });
 
     expect(screen.getByText('Deck 1')).toBeInTheDocument();
@@ -82,7 +84,7 @@ describe('UnifiedInterviewScreen', () => {
     fireEvent.click(screen.getByText('Deck 1').closest('div')!);
     
     fireEvent.click(screen.getByText('Close'));
-    expect(screen.getByText('Themen-Wahl')).toBeInTheDocument();
+    expect(screen.getByText('Themenwahl')).toBeInTheDocument();
   });
 
   it('should navigate to ChatQuestionnaire when module selected', async () => {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "preact/hooks";
 import { ChevronDown, ChevronUp } from "lucide-preact";
+import { haptics } from "../../platform/capacitor";
 import type { ConsentRatingValue } from "../../types/form";
 import type { YesMaybeNo } from "../../types/common";
 
@@ -69,7 +70,10 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
             <button
               key={option.value}
               type="button"
-              onClick={() => setStatus(option.value)}
+              onClick={() => {
+                haptics.light();
+                setStatus(option.value);
+              }}
               disabled={disabled}
               className={`
                 px-4 py-3 rounded-lg font-medium text-white transition-all
@@ -91,7 +95,10 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
             <button
               key={num}
               type="button"
-              onClick={() => setInterest(num)}
+              onClick={() => {
+                haptics.light();
+                setInterest(num);
+              }}
               disabled={disabled}
               aria-pressed={interest === num}
               className={`
@@ -114,7 +121,10 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
       <div className="space-y-3">
         <button
           type="button"
-          onClick={() => setShowComfort(!showComfort)}
+          onClick={() => {
+            haptics.light();
+            setShowComfort(!showComfort);
+          }}
           disabled={disabled}
           className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
         >
@@ -139,7 +149,10 @@ export function ConsentRatingInput({ value, onChange, disabled }: ConsentRatingI
                 <button
                   key={num}
                   type="button"
-                  onClick={() => setComfort(num)}
+                  onClick={() => {
+                    haptics.light();
+                    setComfort(num);
+                  }}
                   disabled={disabled}
                   aria-pressed={comfort === num}
                   className={`
